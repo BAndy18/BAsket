@@ -1,0 +1,65 @@
+﻿html, 
+body, 
+#view-port {    height: 100%; }
+body {    margin: 0;    padding: 0;    /*text-align: center;*/}
+
+.dx-button {  margin: 2px 0;}
+
+.copyright {  position:fixed;  bottom:0px;  width: 100%;  height:50px;  font-size:smaller; }
+
+.startstop {  margin-top: 5px;  font-size: 120%; }
+
+.tile { border-radius: .5em;  text-align: center;  /*color: white;*/  background: gray;}
+.tileicon { width: 55px; height: 55px; background-size: 55px 55px; display: inline-block;}
+
+.basket-header  {font-size: 200%;  margin: 50px;}
+
+.center {text-align: center}
+.image { width: 50%}
+.but20 {  width:20%; margin: 10px; }
+.but50 {  width:50%; margin: 10px; }
+
+.fl-left {  float:left}
+.fl-right {  float:right}
+.alignright {  text-align:right}
+
+.dx-table {  width: 100%;  display: table; }
+.cell70, .cell50, .cell35, .cell30, .cell20, .cell10 {
+  display: table-cell !important;
+  display: inline; /* для IE */
+}
+.cell70 {  width:70%; }
+.cell50 {  width:50%; }
+.cell35 {  width:35%; }
+.cell30 {  width:30%; }
+.cell20 {  width:20%; }
+.cell10 {  width:10%; }
+
+
+
+.dx-theme-ios  #tabs + div.map {
+    height: 100%;
+    padding-bottom: 44px;
+    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; 
+    box-sizing: border-box;
+}
+
+.dx-theme-android  #tabs  + div.map {
+    height: 100%;
+    padding-bottom: 46px;
+    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; 
+    box-sizing: border-box;
+}
+
+.dx-theme-win8phone  #tabs  + div.map {
+    height: 100%;
+    padding-bottom: 21px;
+    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; 
+    box-sizing: border-box;
+}

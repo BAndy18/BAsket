@@ -1,0 +1,35 @@
+<div data-options="dxView : { name: 'DXhome', title: 'DXhome' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="text: name, dxAction: '#DXproducts/{id}'"></div>
+        </div>
+    </div>
+</div>
+
+
+<div data-options="dxView : { name: 'DXproducts', title: 'DXproducts' } " >
+    <div data-bind="dxCommand: { title: 'Search', placeholder: 'Search...', location: 'create', icon: 'find', action: find }" ></div>
+    <div data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxTextBox: { mode: 'search', value: searchString, visible: showSearch, valueUpdateEvent: 'search change keyup' }"></div>
+        <div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="text: name, dxAction: '#DXproduct-details/{id}'"></div>
+        </div>
+    </div>
+</div> 
+
+
+<div data-options="dxView : { name: 'DXproduct-details', title: 'DXproduct' } " >
+    <div data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="dx-field-label">Id: </div>
+                <div class="dx-field-value" data-bind="text: id"></div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label">Name: </div>
+                <div class="dx-field-value" data-bind="text: name"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

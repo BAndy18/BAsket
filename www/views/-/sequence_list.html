@@ -1,0 +1,14 @@
+﻿<div data-options="dxView : { name: 'sequence_list', title: 'Sequences' } " >
+  <div class="sequence_list-view"  data-options="dxContent : { targetPlaceholder: 'content' } ">
+    <div data-bind="dxToolbar: { items: [ 
+    ] }" ></div>
+    
+    <div data-bind="dxTextBox: { mode: 'search', value: searchString, valueUpdateEvent:'keyup', placeholder:'type to search'}"></div>
+    
+    <div data-bind="dxList: { dataSource: dataSource}">
+      <div data-options="dxTemplate : { name: 'item' }"
+      data-bind="text: name, dxAction: '#sequence/{id}'" ></div>    
+    </div>
+    
+  </div>
+</div>

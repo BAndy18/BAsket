@@ -1,0 +1,7 @@
+<div data-options="dxView : { name: 'BilHeader', title: 'BilHeader' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="text: name, dxAction: '#products/{id}'"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<div data-options="dxView : { name: 'Order', layout: 'empty' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxToolbar: { items: [
+          {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#_back'}},
+          {  align: 'center', text: 'Order'},
+          {  align: 'right', widget: 'button', options: { icon: 'product', text: 'Products', clickAction: '#products/{id}'}},
+        ]}"></div>
+       <!--  <div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="text: name, dxAction: '#products/{id}'"></div>
+        </div> -->
+        <br/><br/>
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="dx-field-label">Date</div>
+                <div class="dx-field-value">
+                    <div data-bind="dxDateBox: { format: 'date' }"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label">Client</div>
+                <div class="dx-field-value">
+                    <div data-bind="dxLookup: { title: 'Color Picker', dataSource: lookup.data, value: lookup.value, searchEnabled: true, placeholder: 'Select Client ...' }"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label">Trade Point</div>
+                <div class="dx-field-value">
+                    <div data-bind="dxLookup: { title: 'Color Picker', dataSource: lookup.data, value: lookup.value, searchEnabled: true, placeholder: 'Select Point ...' }"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    <div data-bind="dxLookup: { title: 'Parameter', dataSource: params.data, value: params.value, searchEnabled: false }"></div>
+                </div>
+                <div class="dx-field-value">
+                    <div data-bind="dxLookup: { title: 'Color Picker', dataSource: lookup.data, value: lookup.value, searchEnabled: true, placeholder: 'Select color ...' }"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label">Note</div>
+                <div class="dx-field-value">
+                    <div data-bind="dxTextArea: { placeholder: 'Comments, if any' }"></div>
+                </div>
+            </div>
+        </div>
+
+		<div class="dx-button but20 fl-right" data-bind="dxButton:{text:'Save', clickAction: buttonClicked}">
+		</div>
+
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'OrderList', title: 'Orders List' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+
+		<div class="dx-table">
+            <div class="cell10 dx-button" data-bind="text: R.get('Date')"></div>
+            <div class="cell50 dx-button" data-bind="text: R.get('Name')"></div>
+            <div class="cell10 dx-button" data-bind="text: R.get('Note')"></div>
+            <div class="cell10 dx-button" data-bind="text: R.get('Other')"></div>
+            <div class="cell20 dx-button" data-bind="text: R.get('Wars')"></div>
+        </div>
+		<div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{id}'">
+                <div class="dx-table">
+                    <div class="cell10" data-bind="text: $data.DateDoc"></div>
+                    <div class="cell50" data-bind="text: $data.Name"></div>
+                    <div class="cell10" data-bind="text: $data.sNote"></div>
+                    <div class="cell10" data-bind="text: $data.sOther"></div>
+                    <div class="cell20" data-bind="text: $data.sWars"></div>
+<!--                     <div class="cell10 alignright" data-bind="text: Globalize.format($data.upak, 'c2')"></div>
+                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.ostat, 'c2')"></div>
+                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.price, 'n2')"></strong></div>
+ -->                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+<div data-options="dxView : { name: 'Preferences', title: 'Preferences' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+		<div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
+		<div id="tabContent" >
+			 <!-- ko if: !selectedTab() -->
+				<div class="dx-fieldset">
+					Tab1
+				</div>
+				<div class="but50" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: clickRecreateLocal}"></div>
+            <!-- /ko -->
+            <!-- ko if: selectedTab() == 1 -->
+				<div class="dx-fieldset">
+					Tab2					
+				</div>
+
+		<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
+		  <div data-options="dxTemplate : { name: 'item' }">
+				<div class="dx-field-value" data-bind="dxLookup: {placeholder:sql, dataSource: dsSQLiteTable, 
+					displayExpr:'name', valueExpr: 'name', value: name, width:'100%' }"/>
+		  </div>
+		</div>
+
+<!-- 				<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
+		            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#products/{id}'">
+		                <div class="dx-table">
+		                    <div class="cell10" data-bind="text: $data.name"></div>
+		                    <div class="cell50" data-bind="text: $data.sql"></div>
+		                </div>
+		            </div>
+		        </div>
+ -->
+			<!-- /ko -->
+            <!-- ko if: selectedTab() == 2 -->
+	            <div class="dx-fieldset">
+	                <div class="dx-field">
+	                    <div class="dx-field-label">Admin Password</div>
+	                    <div class="dx-field-value">
+	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
+	                    </div>
+	                </div>
+	            </div>
+            <!-- /ko -->
+		</div>
+    </div>
+
+	<div data-bind="dxPopup:{visible:popupVisible}">
+	    <div data-options="dxTemplate:{name: 'title'}">
+	        <p><b data-bind="text: popupTitle"></b></p>
+	    </div>
+	    <div data-options="dxTemplate:{name: 'content'}">
+            <div class="dx-fieldset">
+                <div class="dx-field">
+                    <div class="dx-field-label">Password</div>
+                    <div class="dx-field-value">
+                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+				<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: clickLogin}"></div>
+				<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: clickCancel}"></div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+
+<div data-options="dxView : { name: 'Info', title: 'Info' } " >
+    <div class="home-view center"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+    	<div><b class="basket-header">BAsket</b></div>
+
+	    phone: <span data-bind="text: P.deviceInfo.phone"></span> 
+	    tablet : <span data-bind="text: P.deviceInfo.tablet "></span> 
+	    android  : <span data-bind="text: P.deviceInfo.android  "></span> 
+	    ios  : <span data-bind="text: P.deviceInfo.ios  "></span> 
+	    win8  : <span data-bind="text: P.deviceInfo.win8  "></span> 
+	    tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> <br/>
+	    platform  : <span data-bind="text: P.deviceInfo.platform  "></span> 
+
+	    <br/><br/>
+    	<span data-bind="text: P.navAgent"></span>
+
+		<div class="copyright">
+	      <p>BAsket &copy; 2013 BAndy soft. All rights reserved (<span data-bind="text: P.deviceClass"></span>; ver. 1.0.0)</p>
+	     <!--  <p>BAsket is an application to help people make the yoga exercises individually</p> -->
+		</div>
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'ReadNews', title: 'Read News' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " style="text-align:center" >
+
+		<div class="startstop" data-bind="dxButton: { text: 'Load Data', clickAction: DAL.ReadNews, width:'300px' }"></div>
+
+		<div data-bind="dxLoadPanel:{message: 'Loading...', visible: P.loadPanelVisible }"></
+
+    </div>
+</div>

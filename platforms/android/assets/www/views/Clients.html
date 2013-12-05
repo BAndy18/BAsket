@@ -1,0 +1,55 @@
+<div data-options="dxView : { name: 'RoadMapList', title: 'Road Map List' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+		<div class="but20 fl-right" data-bind="dxButton:{text:'Показать на карте', clickAction: clickShowRoadMap}"></div>
+
+		<div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{id}'">
+                <div class="dx-table">
+                    <div class="cell10" data-bind="text: $data.DateDoc"></div>
+                    <div class="cell50" data-bind="text: $data.Name"></div>
+                    <div class="cell10" data-bind="text: $data.sNote"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'RoadMap', title: 'RoadMap' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
+       <!--  <div class="map"> -->
+            <div data-bind="dxMap: options"></div>
+        <!-- </div> -->
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'Clients', title: 'Clients' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+    	<div data-bind="dxList: { dataSource: dataSource }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{id}'">
+                <div class="dx-table">
+                    <div class="cell10" data-bind="text: $data.id"></div>
+                    <div class="cell30" data-bind="text: $data.Name"></div>
+                    <div class="cell30" data-bind="text: $data.Adres"></div>
+                    <div class="cell10" data-bind="text: $data.geoLoc"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
+        <div class="map">
+            <div data-bind="dxMap: options"></div>
+        </div> -->
+
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'Client', title: 'Client' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
+       <!--  <div class="map"> -->
+            <div data-bind="dxMap: options"></div>
+        <!-- </div> -->
+    </div>
+</div>
+

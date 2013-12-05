@@ -1,0 +1,35 @@
+﻿<div data-options="dxView : { name: 'sequence', title: 'Sequence' } " >
+  <div class="sequence-view"  data-options="dxContent : { targetPlaceholder: 'content' } ">
+    <div data-bind="dxToolbar: { items: [ 
+    {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#_back'}},
+    {  align: 'center', text: namesec},
+    ] }" ></div>
+
+    <!--div data-bind="dxList: { dataSource: dataSource}">
+      <div data-options="dxTemplate : { name: 'item' }"
+      data-bind="text: name, dxAction: '#pose/{id}'" ></div>    
+    </div-->
+    <div class = "sequence-center" data-bind="dxGallery: { height: 700, swipeEnabled: true, dataSource: poses, showNavButtons: true}">
+      <div data-options="dxTemplate: { name: 'item'}">
+        <h1 class = "pose-header" data-bind="text: name"></h1>
+        <img class = "pose-image" data-bind="attr: { src: url }" />
+        <div class="dx-fieldset">
+        <table class="sequence-center">
+          <tr>
+            <td class="sequence-text sequence-label">Description: </td>
+            <td class="sequence-text">
+               <div data-bind="text: desc"/>
+            </td>
+          </tr>
+          <tr>
+            <td class="sequence-text sequence-label">Minumal duration: </td>
+            <td class="sequence-text">
+               <div data-bind="text: durMin"/>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    </div>
+    </div>
+    </div>
