@@ -4,21 +4,28 @@
 		<div id="tabContent" >
 			 <!-- ko if: !selectedTab() -->
 				<div class="dx-fieldset">
-					Tab1
+	                <div class="dx-field">
+		                <div class="dx-field-label">Layout Style</div>
+	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: changePlatform}"></div>
+					</div>
+	                <div class="dx-field">
+		                <div class="dx-field-label">Map Provider</div>
+	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: changeMapProvider}"></div>
+					</div>
 				</div>
-				<div class="but50" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: clickRecreateLocal}"></div>
             <!-- /ko -->
             <!-- ko if: selectedTab() == 1 -->
 				<div class="dx-fieldset">
 					Tab2					
 				</div>
+				<div class="but50" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: clickRecreateLocal}"></div>
 
-		<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
+<!-- 		<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
 		  <div data-options="dxTemplate : { name: 'item' }">
 				<div class="dx-field-value" data-bind="dxLookup: {placeholder:sql, dataSource: dsSQLiteTable, 
 					displayExpr:'name', valueExpr: 'name', value: name, width:'100%' }"/>
 		  </div>
-		</div>
+		</div> -->
 
 <!-- 				<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
 		            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#products/{id}'">

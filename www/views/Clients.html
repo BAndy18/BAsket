@@ -47,6 +47,15 @@
 <div data-options="dxView : { name: 'Client', title: 'Client' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="dx-field-label">Current Position</div>
+                <div class="dx-field-value" >
+                 	<div style="width: 20%" data-bind="dxTextBox: {value: P.geoCurrent}" />
+					<div class="dx-button but20 fl-right" data-bind="dxButton:{text:'Save', clickAction: clickSaveGeo}"/>
+                </div>
+			</div>
+		</div>
        <!--  <div class="map"> -->
             <div data-bind="dxMap: options"></div>
         <!-- </div> -->

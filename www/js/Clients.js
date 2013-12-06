@@ -16,7 +16,7 @@ BAsket.RoadMap = function (params) {
     P.getGeo();
     var viewModel = {
         options: {
-            provider: "googleStatic",
+            provider: P.mapProvider,
             mapType: "roadmap",
             location: P.geoCurrent,
 //            location: "56.8532,53.2155",
@@ -55,6 +55,10 @@ BAsket.Clients = function (params) {
 };
 
 BAsket.Client = function (params) {
+    P.getGeo();
+    clickSaveGeo = function(arg) {
+        DAL_local.ExecQuery("UPDATE CLI set geoLoc='" + P.geoCurrent() + "' WHERE id='" + params.id + "'");
+    }    
     var viewModel = {
         //dataSource: DAL.Clients(),
         // tabs: [
@@ -65,9 +69,10 @@ BAsket.Client = function (params) {
         options: {
             // provider: ko.observable(),
             // mapType: ko.observable(),
-            provider: "google",
+            provider: P.mapProvider,
             mapType: "roadmap",
-            location: "56.844278,53.206272",
+            location: P.geoCurrent(),
+            //"56.844278,53.206272",
             width: "100%",
             height: "100%",
             zoom: 15,

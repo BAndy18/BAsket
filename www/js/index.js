@@ -17,51 +17,6 @@ $(function() {
     BAsket.app.navigate();  
 });
 
-// (function () {
-//     var data = DevExpress.data;
-//     data.CustomStore = data.Store.inherit({
-//         ctor: function (options) {
-//             this.callBase(options);
-//             this._myCallbackFunction = options.MyFunction
-//         },
-//         _loadImpl: function (options) {
-//             var result = $.Deferred();
-//             //debugger;
-//             result.resolve(this._myCallbackFunction());
-//             return result.promise();
-//         }
-//     });
-// })();
-
-// BAsket.home = function () {
-//     return {
-//     doHome: function () {
-//       //BAsket.app.navigate("home");
-//             $("#accordion").accordion({
-//                 active: false,
-//                 collapsible: true
-//             });
-//     },
-//     // doIndex: function () {
-//     //   BAsket.app.navigate("accordion");
-//     // },
-//   //   doPoses: function () {
-//   //     BAsket.app.navigate("pose_list");
-//   //   },
-//   //   doAbout: function () {
-//   //     BAsket.app.navigate("about");
-//   //   },
-//   };
-// }
-// function onViewShown(args) {
-//     var viewInfo = args.viewInfo;
-//     if (viewInfo.model.hideNavigationButton)
-//         viewInfo.renderResult.$markup.find(".nav-button-item").remove();
-
-//     //currentBackAction = viewInfo.model.backButtonDown;
-// }
-
-
 //type: 'info'|'warning'|'error'|'success', default == "success"
 BAsket.notify = function(message, type, time) {
   if (!type) type = "success";
@@ -85,7 +40,6 @@ BAsket.home = function () {
     return viewModel;
 }
 
-
 var R = (function ($, window) {
     var root = {};
 
@@ -104,6 +58,7 @@ var R = (function ($, window) {
         "Pack": "упаковка",
         "Price": "цена",
         "Count": "остаток",
+        "NewOrder": "New Order",
     }
 
     return root;
@@ -112,6 +67,7 @@ var R = (function ($, window) {
 
 var P = (function ($, window) {
     var root = {};
+//                "title":  _('NewOrder'),
 
     root.navigation = [
             {
@@ -122,7 +78,7 @@ var P = (function ($, window) {
             },
             {
                 "id": "Order",
-                "title": "New Order",
+                "title":   R.get("NewOrder"),
                 "action": "#Order", "heightRatio": 4, "widthRatio": 8,
                 "icon": "cart"
             },
@@ -189,12 +145,32 @@ var P = (function ($, window) {
     
     root.loadPanelVisible = ko.observable(false);
 
+    function iniLocalStor(key, defval) {
+        var vari = window.localStorage.getItem(key);
+        if (!vari){
+            vari = defval;
+            window.localStorage.setItem(key, vari);
+        }
+        return vari;
+    };
+    root.ChangeLookup = function (id, key){
+        var lookup = $(id).data("dxLookup");
+        var value = lookup.option("value");      
+        window.localStorage.setItem(key, value);
+        return value;
+    }
+
     root.Init = function(){
-        root.deviceClass = root.deviceInfo.platform;
-        if (root.navAgent.indexOf(' MSIE ') > 0) root.deviceClass = 'win8Phone';
-        
-        if (root.deviceInfo.platform == 'desktop') root.deviceClass = 'iPhone';
+        root.mapProvider = iniLocalStor("MapProvider", "google");
+        root.languageUI = iniLocalStor("LanguageUI", "Default");
+
+        root.platformDevice = root.deviceClass = iniLocalStor("Platform", "Default");
+        if (root.deviceClass == 'Default')
+            root.deviceClass = root.deviceInfo.platform;
+        //if (root.navAgent.indexOf(' MSIE ') > 0) root.deviceClass = 'win8Phone';
+        if (root.deviceClass == 'desktop') root.deviceClass = 'iPhone';
         // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
+
 
         root.ReadFirstCategory();
     };
@@ -211,18 +187,18 @@ var P = (function ($, window) {
         })
     };
 
-    root.geoCurrent = "";
+    root.geoCurrent = ko.observable("");
     root.getGeo = function(){
         if (navigator.geolocation)
         {
             navigator.geolocation.getCurrentPosition(
             function(position) {
-                root.geoCurrent = position.coords.latitude + ',' + position.coords.longitude;
-                alert(root.geoCurrent);
+                root.geoCurrent(position.coords.latitude + ',' + position.coords.longitude);
+                ///alert(root.geoCurrent);
             },
             function(msg) {
-                root.geoCurrent = typeof msg == 'string' ? msg : "failed";
-                alert(root.geoCurrent);
+                root.geoCurrent(typeof msg == 'string' ? msg : "failed");
+                //alert(root.geoCurrent);
             })
         }
     };

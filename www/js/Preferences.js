@@ -1,8 +1,8 @@
 BAsket.Preferences = function (params) {
 	tabs = [
-	  { text: "comment", icon: "comment" },
-	  { text: "find", icon: "find" },
-	  { text: "admin", icon: "user" },
+	  { text: "Main Properties", icon: "comment" },
+	  { text: "Functions", icon: "find" },
+	  { text: "Admin", icon: "user" },
 	];
 	 
 	tabContent = ko.observable();
@@ -39,18 +39,48 @@ BAsket.Preferences = function (params) {
     	tabContent(tabs[selectedTab()].content);
 	});
 
-	// var viewModel = {
-	// 	dataSource: dataSource,
-	// };
-	//return viewModel;
+	var viewModel = {
+	//	dataSource: dataSource,
+    // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
+		dsPlatform: {
+            data: ["Default", "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
+            value: ko.observable(P.platformDevice)
+		},
+		dsMapProvider: {
+            data: ["google", "googleStatic", "bing"],
+            value: ko.observable(P.mapProvider)
+		},
+		dsLanguage: {
+            data: ["Default", "English", "Russian"],
+            value: ko.observable(P.languageUI)
+		}
+	};
+
+	changePlatform = function(arg){
+		if (arg.element.length > 0) {
+			P.platformDevice = P.ChangeLookup("#lookupPlatform", "Platform");
+	        DevExpress.devices.current(P.platformDevice);
+	        window.location.reload();
+		}
+	}
+	changeMapProvider = function(arg){
+		if (arg.element.length > 0) 
+			P.mapProvider = P.ChangeLookup("#lookupMapProvider", "MapProvider");
+	}
+	changeLanguageUI = function(arg){
+		if (arg.element.length > 0) 
+			P.languageUI = P.ChangeLookup("#lookupMapProvider", "LanguageUI");
+	}
+
 
 	dsSQLiteSystem = DAL_local.ExecDataSource("select * from sqlite_master where type='table'");
 	// dsSQLiteTable = function (arg) {
 	// 	return [{name:'Mo '}, {name:'Tu '}, {name:'We '}, {name:'Th '}, {name:'Fr '}, {name:'Sa '}, {name:'Su '}];
 	// }
-	dsSQLiteTable =  DAL_local.ExecDataSource2(name);
+	//dsSQLiteTable =  DAL_local.ExecDataSource2(name);
 	//[{name:'Mo '}, {name:'Tu '}, {name:'We '}, {name:'Th '}, {name:'Fr '}, {name:'Sa '}, {name:'Su '}];
 
+	return viewModel;
 };
 
 BAsket.ReadNews = function (params) {
