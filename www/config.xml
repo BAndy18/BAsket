@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="bandy18.basket" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="net.bandy18.basket" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BAsket</name>
     <description>
-        A sample BAsket
+        A BAsket for trading
     </description>
     <author email="bandy18ru@gmail.com" href="http://bandy18ru.net">
         BAndy18
