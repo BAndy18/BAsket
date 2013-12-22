@@ -13,6 +13,13 @@ BAsket.Order = function (params) {
 
 	};
 
+	clickBack = function(arg){
+		if (location.hash.indexOf('/') > 0)
+			BAsket.app.navigate('OrderList/');
+		else
+			BAsket.app.navigate('home', { root: true });
+	};
+
 	buttonClicked  = function () {
 		 BAsket.notify("buttonClicked", "info");
 		//P.loadPanelVisible(!P.loadPanelVisible());

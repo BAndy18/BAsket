@@ -8,7 +8,8 @@ $(function() {
     BAsket.app = new DevExpress.framework.html.HtmlApplication({
         namespace: BAsket,
         defaultLayout: P.layout,
-        navigation: P.navigation
+        navigation: P.navigation,
+        navigateToRootViewMode: true
     });
     //Globalize.culture = Globalize.culture["ru-RU"];
     //$.preferCulture("ru-RU");
@@ -40,90 +41,44 @@ BAsket.home = function () {
     return viewModel;
 }
 
-var R = (function ($, window) {
-    var root = {};
-
-    root.get = function(str){
-        var ret = str;
-        if (navigator.language == 'ru'){
-            var tr = ru[str];
-            if (tr)
-                ret = tr;
-        }
-        return ret;
-    }
-
-    var ru = {
-        "Name": "наименование",
-        "Pack": "упаковка",
-        "Price": "цена",
-        "Count": "остаток",
-        "NewOrder": "New Order",
-    }
-
-    return root;
-})(jQuery, window);
-
+var _ = EN_US;
 
 var P = (function ($, window) {
     var root = {};
-//                "title":  _('NewOrder'),
 
     root.navigation = [
             {
-                "id": "Home",
-                "title": "BAsket",
-                "action": "#home", "heightRatio": 4, "widthRatio": 5,
-                "icon": "home"
+                "id": "Home",   "action": "#home", "heightRatio": 4, "widthRatio": 5,    "icon": "home",
+                "title": "BAsket",                
             },
             {
-                "id": "Order",
-                "title":   R.get("NewOrder"),
-                "action": "#Order", "heightRatio": 4, "widthRatio": 8,
-                "icon": "cart"
+                "id": "Order",  "action": "#Order", "heightRatio": 4, "widthRatio": 8,   "icon": "cart",
+                "title": "NewOrder",
             },
             {
-                "id": "OrderList",
+                "id": "OrderList",  "action": "#OrderList", "heightRatio": 4, "widthRatio": 5,  "icon": "favorites",
                 "title": "Order List",
-                "action": "#OrderList", "heightRatio": 4, "widthRatio": 5,
-                "icon": "favorites"
             },
             {
-                "id": "RoadMap",
+                "id": "RoadMap",    "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8,    "icon": "map",
                 "title": "RoadMap",
-                "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8,
-                "icon": "map"
             },
             {
-                "id": "Clients",
+                "id": "Clients",    "action": "#Clients", "heightRatio": 4, "widthRatio": 8,    "icon": "globe",
                 "title": "Clients",
-                "action": "#Clients", "heightRatio": 4, "widthRatio": 8,
-                "icon": "globe"
             },
             {
-                "id": "ReadNews",
+                "id": "ReadNews",   "action": "#ReadNews", "heightRatio": 4, "widthRatio": 5,   "icon": "download",
                 "title": "ReadNews",
-                "action": "#ReadNews", "heightRatio": 4, "widthRatio": 5,
-                "icon": "download"
             },
             {
-                "id": "Preferences",
+                "id": "Preferences",    "action": "#Preferences", "heightRatio": 4, "widthRatio": 5,    "icon": "preferences",
                 "title": "Preferences",
-                "action": "#Preferences", "heightRatio": 4, "widthRatio": 5,
-                "icon": "preferences"
             },
             {
-                "id": "Info",
+                "id": "Info",   "action": "#Info",  "heightRatio": 4, "widthRatio": 2,  "icon": "info",
                 "title": "Info",
-                "action": "#Info",  "heightRatio": 4, "widthRatio": 2,
-                "icon": "info"
             },
-            // {
-            //     "id": "DataBoundApp",
-            //     "title": "DataBoundApp",
-            //     "action": "#DXhome",
-            //     "icon": "home"
-            // },
         ];
 
     root.navAgent = navigator.userAgent;
@@ -144,7 +99,6 @@ var P = (function ($, window) {
     //root.dataSouceType = "dataTest";
     
     root.loadPanelVisible = ko.observable(false);
-
     function iniLocalStor(key, defval) {
         var vari = window.localStorage.getItem(key);
         if (!vari){
@@ -160,12 +114,42 @@ var P = (function ($, window) {
         return value;
     }
 
-    root.Init = function(){
-        root.mapProvider = iniLocalStor("MapProvider", "google");
-        root.languageUI = iniLocalStor("LanguageUI", "Default");
+    var languageMap = {
+        'English' : EN_US,
+        'Русский' : RU_RU,
+    }
+    function getValue(obj, key){
+        for (var i in obj) {
+            if (!obj.hasOwnProperty(i)) continue;
+            if (i == key) {
+                return obj[i];
+            }
+        }
+    }
 
-        root.platformDevice = root.deviceClass = iniLocalStor("Platform", "Default");
-        if (root.deviceClass == 'Default')
+    root.ChangeLanguageUI = function (){
+        if (root.languageUI == '-')
+            _ = RU_RU;
+        else
+            _ = getValue(languageMap, root.languageUI);
+
+        root.navigation.forEach(function(entry) {
+            var nav = eval("_.Navigation." + entry.id);
+            if (nav)
+                entry.title = nav;
+        })
+    }
+
+    root.Init = function(){
+
+        root.mapProvider = iniLocalStor("MapProvider", "google");
+        root.languageUI = '-';
+        root.languageUI = iniLocalStor("LanguageUI", '-');
+        root.ChangeLanguageUI();
+
+        root.platformDevice = root.deviceClass = 'iPhone';
+        root.platformDevice = root.deviceClass = iniLocalStor("Platform", '-');
+        if (root.deviceClass == '-')
             root.deviceClass = root.deviceInfo.platform;
         //if (root.navAgent.indexOf(' MSIE ') > 0) root.deviceClass = 'win8Phone';
         if (root.deviceClass == 'desktop') root.deviceClass = 'iPhone';

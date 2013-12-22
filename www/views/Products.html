@@ -1,7 +1,7 @@
 ﻿<div data-options="dxView : { name: 'products', title: 'products', layout: 'empty'} " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#NewOrder', direction: 'none'}},
+          {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#_back', direction: 'none'}},
           {  align: 'center', text: lbltitle},
           {  align: 'right', widget: 'button', options: { icon: 'cart', text: 'swich to BAsket', clickAction: buttonClicked}},
         ]}"></div>
@@ -21,10 +21,10 @@
         </div>
 
         <div class="dx-table">
-            <div class="cell70 dx-button" data-bind="text: R.get('Name')"></div>
-            <div class="cell10 dx-button" data-bind="text: R.get('Pack')"></div>
-            <div class="cell10 dx-button" data-bind="text: R.get('Count')"></div>
-            <div class="cell10 dx-button" data-bind="text: R.get('Price')"></div>
+            <div class="cell70 dx-button" data-bind="text: _.Products.ColName"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Products.ColPack"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Products.ColCount"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Products.ColPrice"></div>
         </div>
 
         <div data-bind="dxList: { dataSource: dataSource }">

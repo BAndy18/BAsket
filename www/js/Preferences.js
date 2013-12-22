@@ -1,8 +1,8 @@
 BAsket.Preferences = function (params) {
 	tabs = [
-	  { text: "Main Properties", icon: "comment" },
-	  { text: "Functions", icon: "find" },
-	  { text: "Admin", icon: "user" },
+	  { text: _.Preferences.Main, icon: "comment" },
+	  { text: _.Preferences.Functions, icon: "find" },
+	  { text: _.Preferences.Admin, icon: "user" },
 	];
 	 
 	tabContent = ko.observable();
@@ -22,7 +22,7 @@ BAsket.Preferences = function (params) {
 	  	}
 	  	else
 	  		//BAsket.error("Incorrect password");
-	  		DevExpress.ui.notify("Incorrect password", "error", 1000);
+	  		DevExpress.ui.notify(_.Preferences.Incorrect_password, "error", 1000);
 	};
 	clickCancel = function () {
 		//selectedTab(0);
@@ -43,7 +43,7 @@ BAsket.Preferences = function (params) {
 	//	dataSource: dataSource,
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {
-            data: ["Default", "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
+            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
             value: ko.observable(P.platformDevice)
 		},
 		dsMapProvider: {
@@ -51,7 +51,7 @@ BAsket.Preferences = function (params) {
             value: ko.observable(P.mapProvider)
 		},
 		dsLanguage: {
-            data: ["Default", "English", "Russian"],
+            data: ['-', "English", "Русский"],
             value: ko.observable(P.languageUI)
 		}
 	};
@@ -59,7 +59,7 @@ BAsket.Preferences = function (params) {
 	changePlatform = function(arg){
 		if (arg.element.length > 0) {
 			P.platformDevice = P.ChangeLookup("#lookupPlatform", "Platform");
-	        DevExpress.devices.current(P.platformDevice);
+	        //DevExpress.devices.current(P.platformDevice);
 	        window.location.reload();
 		}
 	}
@@ -68,8 +68,11 @@ BAsket.Preferences = function (params) {
 			P.mapProvider = P.ChangeLookup("#lookupMapProvider", "MapProvider");
 	}
 	changeLanguageUI = function(arg){
-		if (arg.element.length > 0) 
-			P.languageUI = P.ChangeLookup("#lookupMapProvider", "LanguageUI");
+		if (arg.element.length > 0) {
+			P.languageUI = P.ChangeLookup("#lookupLanguageUI", "LanguageUI");
+			//P.ChangeLanguageUI();
+			window.location.reload();
+		}
 	}
 
 

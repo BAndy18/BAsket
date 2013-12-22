@@ -1,16 +1,20 @@
-<div data-options="dxView : { name: 'Preferences', title: 'Preferences' } " >
+<div data-options="dxView : { name: 'Preferences', title: _.Preferences.Title } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 		<div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
 		<div id="tabContent" >
 			 <!-- ko if: !selectedTab() -->
 				<div class="dx-fieldset">
 	                <div class="dx-field">
-		                <div class="dx-field-label">Layout Style</div>
+		                <div class="dx-field-label" data-bind="text: _.Preferences.Layout"></div>
 	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: changePlatform}"></div>
 					</div>
 	                <div class="dx-field">
-		                <div class="dx-field-label">Map Provider</div>
+		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
 	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: changeMapProvider}"></div>
+					</div>
+	                <div class="dx-field">
+		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
+	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: changeLanguageUI}"></div>
 					</div>
 				</div>
             <!-- /ko -->

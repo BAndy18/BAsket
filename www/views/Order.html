@@ -1,8 +1,8 @@
 <div data-options="dxView : { name: 'Order', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#_back'}},
-          {  align: 'center', text: 'Order'},
+          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: clickBack}},
+          {  align: 'center', text: _.Order.Title},
           {  align: 'right', widget: 'button', options: { icon: 'product', text: 'Products', clickAction: '#products/{id}'}},
         ]}"></div>
        <!--  <div data-bind="dxList: { dataSource: dataSource }">
@@ -54,11 +54,11 @@
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
 		<div class="dx-table">
-            <div class="cell10 dx-button" data-bind="text: R.get('Date')"></div>
-            <div class="cell50 dx-button" data-bind="text: R.get('Name')"></div>
-            <div class="cell10 dx-button" data-bind="text: R.get('Note')"></div>
-            <div class="cell10 dx-button" data-bind="text: R.get('Other')"></div>
-            <div class="cell20 dx-button" data-bind="text: R.get('Wars')"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Order.ColDate"></div>
+            <div class="cell50 dx-button" data-bind="text: _.Order.ColName"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Order.ColNote"></div>
+            <div class="cell10 dx-button" data-bind="text: _.Order.ColOther"></div>
+            <div class="cell20 dx-button" data-bind="text: _.Order.ColWars"></div>
         </div>
 		<div data-bind="dxList: { dataSource: dataSource }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{id}'">
