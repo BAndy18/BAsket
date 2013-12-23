@@ -110,5 +110,37 @@ var DAL_web = (function ($, window) {
     	return dataSource;	
     }
 
+    root.Clients = function (params){
+        var dataSource = DevExpress.data.createDataSource({
+            beforeSend: function (request) {
+            },
+            load: function (loadOptions) {
+                if (loadOptions.refresh) {
+                    var deferred = new $.Deferred();
+                    $
+                    .ajax({
+                        url: P.dataSouce + 'Clients',
+                    })
+                    .done(function (result) {
+                        var mapped = $.map(result, function (data) {
+                            return {
+                                id: data.Id,
+                                idPar: data.IdPar,
+                                Name: data.Name,
+                                Adres: data.Adres,
+                            }
+                        });
+                        deferred.resolve(mapped);
+                    });
+                    return deferred;
+                }
+            },
+            lookup: function(key){
+                return 'lookup';
+            }
+        });
+        return dataSource;  
+    };
+
     return root;
 })(jQuery, window);

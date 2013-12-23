@@ -94,8 +94,14 @@ var DAL_local = (function ($, window) {
         );
     }
 
+    root.ClientsRoot = function (params){
+        return root.ExecDataSource("SELECT * FROM CLI Where idPar='0'");  
+    };    
     root.Clients = function (params){
-        return root.ExecDataSource("SELECT * FROM CLI");  
+        var cliPar = 0;
+        if (params)
+            cliPar = params;
+        return root.ExecDataSource("SELECT * FROM CLI Where idPar='" + cliPar + "'");  
     };    
     root.RoadMap = function (params){
         return root.ExecDataSource("SELECT r.*, c.Name FROM RMAP r Join CLI c On r.r_cli=c.id");  
@@ -147,6 +153,10 @@ var DAL_local = (function ($, window) {
         var source2 = DAL_web.Products({id:0});
         if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
         else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+
+        var source3 = DAL_web.Clients();
+        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
+        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
 
     };
     root.RecreateLocalDB = function(){
@@ -224,9 +234,16 @@ var DAL_local = (function ($, window) {
             db.transaction(writeToCAT, 
                 function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
                 function() {console.log("write " + table + ": success");});
-        } else {
+        } 
+        if (table == 'WAR') {
             arrWAR = dataArray;
             db.transaction(writeToWAR, 
+                function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
+                function() {console.log("write " + table + ": success");});
+        }
+        if (table == 'CLI') {
+            arrCLI = dataArray;
+            db.transaction(writeToCLI, 
                 function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
                 function() {console.log("write " + table + ": success");});
         }
@@ -264,6 +281,21 @@ var DAL_local = (function ($, window) {
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
             console.log('Прочитано записей: ' + i);
         P.loadPanelVisible(false);            
+    }
+    function writeToCLI(tx) {
+            var arr = arrCLI;
+            var i, maxlen = 50000;
+            //tx.executeSql("BEGIN TRANSACTION");
+            var len = arr.length;   // < maxlen? arr.length:maxlen;
+            //console.log('writeWars: writing=' + len);
+                for (i = 0; i < len; i++) { 
+                dbLastQ = "INSERT INTO CLI (id, idPar, name, adres) VALUES('" + arr[i].id + "','" + arr[i].idPar + "','" + arr[i].Name + "','" + arr[i].Adres + 
+                    //"','" + arr[i].geoLoc + 
+                    "')"
+                tx.executeSql(dbLastQ);
+            }
+            //tx.executeSql("COMMIT TRANSACTION", errorCB);
+            console.log('Прочитано записей: ' + i);
     }
 
 

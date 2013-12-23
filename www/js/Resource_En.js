@@ -90,6 +90,12 @@ var RU_RU = (function (window) {
 
 	root.Order = {
 		Title: "Заказ", 
+		Products: "Товары",
+		Date : 'Дата', 
+		Client : 'Покупатель', 
+		SelectClient : 'Выбор покупателя ',
+		Point : 'Торговая точка',
+		SelectPoint : 'Выбор точки ',
     	ColDate : 'дата',
     	ColName : 'имя',
     	ColNote : 'примечание',

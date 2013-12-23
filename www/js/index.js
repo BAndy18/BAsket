@@ -202,14 +202,14 @@ var P = (function ($, window) {
         'DROP TABLE IF EXISTS RMAP',
         'CREATE TABLE IF NOT EXISTS CAT (id unique, name)',
         'CREATE TABLE IF NOT EXISTS WAR (id unique, idGr, name, price DECIMAL(20,2), nameArt, nameManuf, urlPict, upak, ostat, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS CLI (id unique, r_fcli, Name, Adres, geoLoc)',
+        'CREATE TABLE IF NOT EXISTS CLI (id unique, idPar, Name, Adres, geoLoc)',
         'CREATE TABLE IF NOT EXISTS NMS (T_NMS unique, N_NMS TINYINT, Name, NameC)',
-        'CREATE TABLE IF NOT EXISTS BILM (id unique, DateDoc DateTime, r_cli, r_fcli, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
-        'CREATE TABLE IF NOT EXISTS RMAP (id unique, DateDoc DateTime, r_cli, r_fcli, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
-        "INSERT INTO CLI (id,  r_fcli, Name, Adres, geoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
-        "INSERT INTO CLI (id,  r_fcli, Name, Adres, geoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
-        "INSERT INTO BILM (id,  DateDoc, r_cli, r_fcli, sNote, sOther, sWars) VALUES('111', '22/12/2013', '10','','Note', '1:2', '10:1;11:2')",
-        "INSERT INTO RMAP (id,  DateDoc, r_cli, r_fcli, sNote) VALUES('1', '12/11/2013', '10','','Note')",
+        'CREATE TABLE IF NOT EXISTS BILM (id unique, DateDoc DateTime, idCli, idPar, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS RMAP (id unique, DateDoc DateTime, idCli, idPar, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
+        "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
+        "INSERT INTO BILM (id,  DateDoc, idCli, idPar, sNote, sOther, sWars) VALUES('111', '22/12/2013', '10','','Note', '1:2', '10:1;11:2')",
+        "INSERT INTO RMAP (id,  DateDoc, idCli, idPar, sNote) VALUES('1', '12/11/2013', '10','','Note')",
     ];
     return root;
 })(jQuery, window);
