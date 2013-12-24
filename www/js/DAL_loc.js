@@ -7,6 +7,54 @@ var DAL_local = (function ($, window) {
     var dbName = 'BAsketDB';
     var dbSize = 50000000;
 
+    root.SaveBil = function(params){
+        var query = "";
+        if (params['id']) {
+            query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"' WHERE id='" + params['id'] + "'"
+        } else {
+            query = "INSERT INTO BILM (DateDoc, idCli, idPar, sNote, sOther, sWars) VALUES('"+ params['date'] +
+                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','Note', '1:2', '10:1;11:2')"
+        };
+        return root.ExecQuery(query);
+    }
+
+    root.ExecDataSource = function(query){
+        var dataSource = DevExpress.data.createDataSource({
+            load: function (loadOptions) {
+                if (loadOptions.refresh) 
+                    return root.ExecQuery(query);
+            },
+            lookup: function(key){
+                return 'lookup';
+            }
+        });
+        return dataSource;
+    }
+    root.ExecQuery = function(query, tryExist){
+        var skip = 0;
+        var PAGE_SIZE = 30;
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+        var deferred = new $.Deferred();
+        db.transaction(function(tx) {
+            dbLastQ = query;
+            tx.executeSql(dbLastQ, [], function(tx, results) {
+                var res = [];
+                for (var i=0; i<results.rows.length; i++) {
+                    res.push(results.rows.item(i));
+                }
+                deferred.resolve(res);
+            }, function(err, err2){
+                if (tryExist && err2.message && err2.message.indexOf('1 no such table:') > 0){
+                    root.RecreateLocalDB();
+                }
+                else
+                    errorCB("*ExecQuery sql*", err, err2);
+            }
+            );
+        }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
+        );
+        return deferred;
+    }
 
     root.Categories = function (params){
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -94,6 +142,7 @@ var DAL_local = (function ($, window) {
         );
     }
 
+
     root.ClientsRoot = function (params){
         return root.ExecDataSource("SELECT * FROM CLI Where idPar='0'");  
     };    
@@ -104,39 +153,15 @@ var DAL_local = (function ($, window) {
         return root.ExecDataSource("SELECT * FROM CLI Where idPar='" + cliPar + "'");  
     };    
     root.RoadMap = function (params){
-        return root.ExecDataSource("SELECT r.*, c.Name FROM RMAP r Join CLI c On r.r_cli=c.id");  
+        return root.ExecDataSource("SELECT r.*, c.Name FROM RMAP r Join CLI c On r.idCli=c.id");  
     };    
 
     root.BilM = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name FROM BILM b Join CLI c On b.r_cli=c.id");
+        return root.ExecDataSource("SELECT b.*, c.Name FROM BILM b Join CLI c On b.idCli=c.id");
+    };
 
-        // var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        // var dataSource = DevExpress.data.createDataSource({
-        //     load: function (loadOptions) {
-        //         if (loadOptions.refresh) {
-        //             var deferred = new $.Deferred();
-        //             db.transaction(function(tx) {
-        //                 dbLastQ = "SELECT b.*, c.Name FROM BILM b Join CLI c On b.r_cli=c.id";
-        //                 //console.log("getWarByGrId: "+dbLastQ);
-        //                 tx.executeSql(dbLastQ, [], function(tx, results) {
-        //                     //console.log('getWarByGrId: прочитано ' + results.rows.length);
-        //                     var res = [];
-        //                     for (var i=0; i<results.rows.length; i++) {
-        //                         res.push(results.rows.item(i));
-        //                     }
-        //                     deferred.resolve(res);
-        //                 }, function(err, err2){errorCB("*readBILM sql*", err, err2);}
-        //                 );
-        //             }, function(err, err2){errorCB("*readBILM*", err, err2);}
-        //             );
-        //             return deferred;
-        //         }
-        //     },
-        //     lookup: function(key){
-        //         return 'lookup';
-        //     }
-        // });
-        // return dataSource;  
+    root.NMS = function (params){
+        return root.ExecDataSource("SELECT * FROM NMS Where idRoot='" + params + "'");
     };
 
 
@@ -188,41 +213,6 @@ var DAL_local = (function ($, window) {
     //     return dataSource;
     // }
 
-    root.ExecDataSource = function(query){
-        var dataSource = DevExpress.data.createDataSource({
-            load: function (loadOptions) {
-                if (loadOptions.refresh) 
-                    return root.ExecQuery(query);
-            },
-            lookup: function(key){
-                return 'lookup';
-            }
-        });
-        return dataSource;
-    }
-    root.ExecQuery = function(query, tryExist){
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        var deferred = new $.Deferred();
-        db.transaction(function(tx) {
-            dbLastQ = query;
-            tx.executeSql(dbLastQ, [], function(tx, results) {
-                var res = [];
-                for (var i=0; i<results.rows.length; i++) {
-                    res.push(results.rows.item(i));
-                }
-                deferred.resolve(res);
-            }, function(err, err2){
-                if (tryExist && err2.message && err2.message.indexOf('1 no such table:') > 0){
-                    root.RecreateLocalDB();
-                }
-                else
-                    errorCB("*ExecQuery sql*", err, err2);
-            }
-            );
-        }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
-        );
-        return deferred;
-    }
 
     var arrWAR;
     var arrCAT;

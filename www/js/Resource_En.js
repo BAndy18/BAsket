@@ -39,6 +39,8 @@ var EN_US = (function (window) {
 
     root.Order = {
 		Title: "Order", 
+		Note: 'Note',
+		NotePrompt: 'Comments, if any',
     	ColDate : 'Date',
     	ColName : 'Name',
     	ColNote : 'Note',
@@ -64,6 +66,8 @@ var RU_RU = (function (window) {
     root.Common = {
     	Default : "по умолчанию",
     	Back: "назад",
+    	Save: 'Сохранить',
+    	Select : 'Выбор',
     };
 
 	root.Navigation = {
@@ -96,6 +100,10 @@ var RU_RU = (function (window) {
 		SelectClient : 'Выбор покупателя ',
 		Point : 'Торговая точка',
 		SelectPoint : 'Выбор точки ',
+		SelectDop: 'Выбор типа параметра ',
+		SelectParam: 'Выбор параметра ',
+		Note: 'Примечания',
+		NotePrompt: 'комментарии если есть',
     	ColDate : 'дата',
     	ColName : 'имя',
     	ColNote : 'примечание',

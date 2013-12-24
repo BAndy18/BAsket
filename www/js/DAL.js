@@ -11,6 +11,9 @@ var DAL = (function ($, window) {
 
 	root.BilM = function (params) { return loadFunction(params, "BilM"); };
 	root.RoadMap = function (params) { return loadFunction(params, "RoadMap"); };
+	root.NMS = function (params) { return loadFunction(params, "NMS"); };
+
+	root.SaveBil = function (params) { return loadFunction(params, "SaveBil"); };
 
 	function loadFunction(params, funcNm){
 		var funcName = P.dataSouceType + '.' + funcNm;

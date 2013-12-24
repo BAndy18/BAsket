@@ -7,13 +7,13 @@ BAsket.products = function (params) {
             viewModel.showSearch(!viewModel.showSearch());
             viewModel.searchString('');
         },
-        categoryId: idCategory,
         showSearch: ko.observable(false),
 
         dataSource: DAL.Products({id:idCategory, search:searchStr}),
 
         dataSourceCat: DAL.Categories(),
 
+        categoryId: idCategory,
         categoryName: P.currentCategory['name'],
         lbltitle: "Choice the Product",
     };
@@ -28,15 +28,16 @@ BAsket.products = function (params) {
     buttonClicked  = function () {
         BAsket.notify("buttonClicked", "info");
     };
+
+    categoryChanged = function(arg) {
+        if (arg.element.length <= 0) return;
+     
+        var lookup = $("#CategoryLookup").data("dxLookup");
+        var value = lookup.option("value");
+        categoryId = value;
+        P.currentCategory['name'] = $(".dx-state-active").html();
+        BAsket.app.navigate('products/' + categoryId, { direction: 'none'});
+    }
     return viewModel;
 };
 
-BAsket.CategoryChange = function(arg) {
-    if (arg.element.lenght <= 0) return;
- 
-    var lookup = $("#CategoryLookup").data("dxLookup");
-    var value = lookup.option("value");
-    categoryId = value;
-    P.currentCategory['name'] = $(".dx-state-active").html();
-    BAsket.app.navigate('products/' + categoryId, { direction: 'none'});
-}

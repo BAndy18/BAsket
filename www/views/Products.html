@@ -12,10 +12,10 @@
 		        	valueUpdateEvent: 'search change keyup' }">		        	
                 </div>
                 <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { title: 'Select Category', 
-                    dataSource: dataSourceCat, displayExpr: 'name', valueExpr: 'id', value: categoryId, 
+                    dataSource: dataSourceCat, displayExpr: 'name', valueExpr: 'id', value: categoryId, placeholder: categoryName,
                     searchEnabled: false, 
-                    valueChangeAction: BAsket.CategoryChange,
-                    placeholder: categoryName, width:'50%'}">   
+                    valueChangeAction: categoryChanged,
+                    width:'50%'}">   
 		        </div>
             </div>
         </div>

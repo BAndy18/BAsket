@@ -5,50 +5,36 @@
           {  align: 'center', text: _.Order.Title},
           {  align: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: '#products/{id}'}},
         ]}"></div>
-       <!--  <div data-bind="dxList: { dataSource: dataSource }">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="text: name, dxAction: '#products/{id}'"></div>
-        </div> -->
-        
+
         <div class="dx-fieldset">
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Date" />
-                <div class="dx-field-value">
-                    <div data-bind="dxDateBox: { format: 'date' }"></div>
-                </div>
+                <div id="idDate" class="dx-field-value" data-bind="dxDateBox: { format: 'date', value: dataVal }"/>
             </div>
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Client" />
-                <div class="dx-field-value">
-                    <div data-bind="dxLookup: { title: _.Order.SelectClient, dataSource: clients, displayExpr: 'Name', valueExpr: 'id', searchEnabled: true, placeholder: _.Order.SelectClient + '...', valueChangeAction: clientChanged}"></div>
-                </div>
+	            <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectClient, dataSource: clients, displayExpr: 'Name', valueExpr: 'id', searchEnabled: true, value: cliId, placeholder: cliName, valueChangeAction: clientChanged}"/>
             </div>
-            <div class="dx-field" id="fieldTradePoint">
+            <!-- <div class="dx-button" data-bind="text: 'arrayTP.length = ' + arrayTP.length + ' ; showTP='+ showTP()"></div> -->
+            <div class="dx-field" data-bind="visible: showTP()">
                 <div class="dx-field-label" data-bind="text: _.Order.Point" />
-                <div class="dx-field-value">
-                    <div data-bind="dxLookup: { title: _.Order.SelectPoint, dataSource: lookup.data, value: lookup.value, searchEnabled: true, placeholder: _.Order.SelectPoint + '...' }"></div>
-                </div>
+                <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectPoint, dataSource: arrayTP, displayExpr: 'Name', valueExpr: 'id',searchEnabled: true, placeholder: tpName }"/>
             </div>
         </div>
         <div class="dx-fieldset">
             <div class="dx-field">
-                <div class="dx-field-label">
-                    <div data-bind="dxLookup: { title: 'Parameter', dataSource: params.data, value: params.value, searchEnabled: false }"></div>
-                </div>
-                <div class="dx-field-value">
-                    <div data-bind="dxLookup: { title: 'Color Picker', dataSource: lookup.data, value: lookup.value, searchEnabled: true, placeholder: 'Select color ...' }"></div>
-                </div>
+                <div id="lookupNms" class="dx-field-label" data-bind="dxLookup: { title: _.Order.SelectDop, dataSource: dsNms,  displayExpr: 'Name', valueExpr: 'id', searchEnabled: false,  valueChangeAction: nmsChanged, placeholder: _.Common.Select + ' ...' }"/>
+
+                <div id="lookupParam" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: arrayNms, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select + ' ...'}"/>
             </div>
             <div class="dx-field">
-                <div class="dx-field-label">Note</div>
-                <div class="dx-field-value">
-                    <div data-bind="dxTextArea: { placeholder: 'Comments, if any' }"></div>
-                </div>
+                <div class="dx-field-label" data-bind="text: _.Order.Note" />
+                <div id="lookupNote" class="dx-field-value" data-bind="dxTextArea: { placeholder: _.Order.NotePrompt }"/>
             </div>
         </div>
 
-		<div class="dx-button but20 fl-right" data-bind="dxButton:{text:'Save', clickAction: buttonClicked}">
-		</div>
-
+		<div class="dx-button but20 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: btnSaveClicked}"/>
+		
     </div>
 </div>
 

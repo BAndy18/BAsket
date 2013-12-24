@@ -90,6 +90,7 @@ var P = (function ($, window) {
     root.deviceClass = 'androidTablet';
 
     root.currentCategory = null;
+    root.currentNms = [{'id':'1', 'Name':'...'}]
 
     //root.dataSouce = "http://sampleservices.devexpress.com/api/";
     root.dataSouce = "http://192.168.1.146//BAsketWS/api/";
@@ -157,6 +158,7 @@ var P = (function ($, window) {
 
 
         root.ReadFirstCategory();
+        root.ReadFirstNms();
     };
     root.ReadFirstCategory = function () {
         DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
@@ -169,6 +171,14 @@ var P = (function ($, window) {
                 })
             }
         })
+    };
+    root.ReadFirstNms = function () {
+        DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
+            root.currentNms = [{id:result[0].id, Name:result[0].Name}];
+            DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='" + result[0].id + "'").done(function (result) {
+                root.currentNms.push({id:result[0].id, Name:result[0].Name});
+            })
+        })            
     };
 
     root.geoCurrent = ko.observable("");
@@ -200,16 +210,23 @@ var P = (function ($, window) {
         'DROP TABLE IF EXISTS CLI',
         'DROP TABLE IF EXISTS BILM',
         'DROP TABLE IF EXISTS RMAP',
+        'DROP TABLE IF EXISTS NMS',
         'CREATE TABLE IF NOT EXISTS CAT (id unique, name)',
         'CREATE TABLE IF NOT EXISTS WAR (id unique, idGr, name, price DECIMAL(20,2), nameArt, nameManuf, urlPict, upak, ostat, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (id unique, idPar, Name, Adres, geoLoc)',
-        'CREATE TABLE IF NOT EXISTS NMS (T_NMS unique, N_NMS TINYINT, Name, NameC)',
-        'CREATE TABLE IF NOT EXISTS BILM (id unique, DateDoc DateTime, idCli, idPar, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
-        'CREATE TABLE IF NOT EXISTS RMAP (id unique, DateDoc DateTime, idCli, idPar, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS NMS (idRoot, id, Name)',
+        'CREATE TABLE IF NOT EXISTS BILM (id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, idCli, idPar, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS RMAP (id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, idCli, idPar, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
         "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
-        "INSERT INTO BILM (id,  DateDoc, idCli, idPar, sNote, sOther, sWars) VALUES('111', '22/12/2013', '10','','Note', '1:2', '10:1;11:2')",
-        "INSERT INTO RMAP (id,  DateDoc, idCli, idPar, sNote) VALUES('1', '12/11/2013', '10','','Note')",
+        "INSERT INTO BILM (DateDoc, idCli, idPar, sNote, sOther, sWars) VALUES('22/12/2013', '10','','Note', '1:2', '10:1;11:2')",
+        "INSERT INTO RMAP (DateDoc, idCli, idPar, sNote) VALUES('12/11/2013', '10','','Note')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '1', 'Предприятие')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '2', 'Тип Оплаты')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('1', '1', 'Пупкин ЧП')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('1', '2', 'Ступкин ООО')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('2', '1', 'наличные')",
+        "INSERT INTO NMS (idRoot, id, Name) VALUES('2', '2', 'безнал')",
     ];
     return root;
 })(jQuery, window);
