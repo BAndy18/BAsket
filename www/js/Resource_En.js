@@ -68,6 +68,7 @@ var RU_RU = (function (window) {
     	Back: "назад",
     	Save: 'Сохранить',
     	Select : 'Выбор',
+    	NoDataText: "No data to display",
     };
 
 	root.Navigation = {
@@ -105,13 +106,18 @@ var RU_RU = (function (window) {
 		Note: 'Примечания',
 		NotePrompt: 'комментарии если есть',
     	ColDate : 'дата',
-    	ColName : 'имя',
+    	ColName : 'имя покупателя',
+    	ColTpName : 'точка',
     	ColNote : 'примечание',
     	ColOther : 'Other',
     	ColWars : 'Wars',
     };
 
     root.Products = {
+    	Title1 : 'Выбор товаров',
+    	Title2 : 'Состав корзины',
+    	btnSwText1 : 'корзина',
+    	btnSwText2 : 'выбор товаров',
     	ColName : 'наименнование',
     	ColPack : 'упаковка',
     	ColCount : 'количество',

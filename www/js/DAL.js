@@ -10,6 +10,7 @@ var DAL = (function ($, window) {
 	root.Clients = function (params) { return loadFunction(params, "Clients"); };
 
 	root.BilM = function (params) { return loadFunction(params, "BilM"); };
+	root.BilMById = function (params) { return loadFunction(params, "BilMById"); };
 	root.RoadMap = function (params) { return loadFunction(params, "RoadMap"); };
 	root.NMS = function (params) { return loadFunction(params, "NMS"); };
 

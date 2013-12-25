@@ -1,12 +1,12 @@
 ﻿<div data-options="dxView : { name: 'products', title: 'products', layout: 'empty'} " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: 'Back', clickAction: '#_back', direction: 'none'}},
+          {  align: 'left', widget: 'button', options: { type: 'back', text:  _.Common.Back, clickAction: '#_back' }},
           {  align: 'center', text: lbltitle},
-          {  align: 'right', widget: 'button', options: { icon: 'cart', text: 'swich to BAsket', clickAction: buttonClicked}},
+          {  align: 'right', widget: 'button', options: { icon: 'cart', text: btnSwText, clickAction: swichClicked}},
         ]}"></div>
     
-        <div class="dx-fieldset">
+        <div class="dx-fieldset" data-bind="visible: bChoice()">
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', value: searchString, visible: true, 
 		        	valueUpdateEvent: 'search change keyup' }">		        	
@@ -27,7 +27,7 @@
             <div class="cell10 dx-button" data-bind="text: _.Products.ColPrice"></div>
         </div>
 
-        <div data-bind="dxList: { dataSource: dataSource }">
+        <div id="listProducts" data-bind="dxList: { dataSource: dataSource }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{id}'">
                 <div class="dx-table">
                     <div class="cell70" data-bind="text: $data.name"></div>

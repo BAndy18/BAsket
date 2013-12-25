@@ -1,6 +1,10 @@
 BAsket.products = function (params) {   
     var searchStr = ko.observable('')
-    var idCategory = (params.id == 'undefined') ? P.currentCategory['id'] : params.id;
+    var categoryId = (params.id == 'undefined') ? P.currentCategory['id'] : params.id;
+    var bChoice = ko.observable(true);
+    var lbltitle =  ko.observable(_.Products.Title1);
+    var btnSwText = ko.observable(_.Products.btnSwText1);
+
     var viewModel = {
         searchString: searchStr,
         find: function () {
@@ -9,13 +13,15 @@ BAsket.products = function (params) {
         },
         showSearch: ko.observable(false),
 
-        dataSource: DAL.Products({id:idCategory, search:searchStr}),
-
+        dataSource: DAL.Products({id:categoryId, search:searchStr}),
         dataSourceCat: DAL.Categories(),
 
-        categoryId: idCategory,
+        categoryId: categoryId,
         categoryName: P.currentCategory['name'],
-        lbltitle: "Choice the Product",
+
+        bChoice: bChoice,
+        lbltitle: lbltitle,
+        btnSwText: btnSwText,
     };
     ko.computed(function () {
         return viewModel.searchString();
@@ -25,8 +31,21 @@ BAsket.products = function (params) {
         viewModel.dataSource.reload();
     });
 
-    buttonClicked  = function () {
-        BAsket.notify("buttonClicked", "info");
+    swichClicked  = function () {
+        //BAsket.notify("swichClicked", "info");
+        if (bChoice()){
+            bChoice(false);
+            lbltitle(_.Products.Title2);
+            btnSwText(_.Products.btnSwText2);
+            viewModel.dataSource = [];
+        } else {
+            bChoice(true);
+            lbltitle(_.Products.Title1);
+            btnSwText(_.Products.btnSwText1);
+            viewModel.dataSource = DAL.Products({id:categoryId, search:searchStr});
+        }
+        var list = $("#listProducts").data("dxList");
+        list.repaint();
     };
 
     categoryChanged = function(arg) {

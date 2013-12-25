@@ -10,10 +10,11 @@ var DAL_local = (function ($, window) {
     root.SaveBil = function(params){
         var query = "";
         if (params['id']) {
-            query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"' WHERE id='" + params['id'] + "'"
+            query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"', idTp='"+ params['idTp'] +"', sNote='"+ params['idNote'] +
+                "' WHERE id='" + params['id'] + "'"
         } else {
-            query = "INSERT INTO BILM (DateDoc, idCli, idPar, sNote, sOther, sWars) VALUES('"+ params['date'] +
-                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','Note', '1:2', '10:1;11:2')"
+            query = "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('"+ params['date'] +
+                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['idNote'] +"', '', '10:1;11:2')"
         };
         return root.ExecQuery(query);
     }
@@ -153,13 +154,15 @@ var DAL_local = (function ($, window) {
         return root.ExecDataSource("SELECT * FROM CLI Where idPar='" + cliPar + "'");  
     };    
     root.RoadMap = function (params){
-        return root.ExecDataSource("SELECT r.*, c.Name FROM RMAP r Join CLI c On r.idCli=c.id");  
+        return root.ExecDataSource("SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.idCli=c.id Left Join CLI t On r.idTp=t.id");  
     };    
 
     root.BilM = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name FROM BILM b Join CLI c On b.idCli=c.id");
+        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id");
     };
-
+    root.BilMById = function (params){
+        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id WHERE b.id='" + params + "'");
+    };
     root.NMS = function (params){
         return root.ExecDataSource("SELECT * FROM NMS Where idRoot='" + params + "'");
     };
