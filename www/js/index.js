@@ -89,8 +89,18 @@ var P = (function ($, window) {
 
     root.deviceClass = 'androidTablet';
 
-    root.currentCategory = null;
+    root.curCategoryId = 0;
+    root.curCategoryName = '';
     root.currentNms = [{'id':'1', 'Name':'...'}]
+    root.arrayBAsket = [];
+    // root.getBAsketArray = function(){
+    //     var basket = [];
+    //     $.each(P.arrayBAsket, function(i, obj) {
+    //         var b = {'id':i, 'name':obj.name,'upak':obj.upak,'quant':obj.quant,'price':obj.price};
+    //         basket.push(b);
+    //     });
+    // }
+
 
     //root.dataSouce = "http://sampleservices.devexpress.com/api/";
     root.dataSouce = "http://192.168.1.146//BAsketWS/api/";
@@ -162,12 +172,16 @@ var P = (function ($, window) {
     };
     root.ReadFirstCategory = function () {
         DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
-            if (result.length > 0)
-                root.currentCategory = {id:result[0].id, name:result[0].name};
+            if (result.length > 0) {
+                root.curCategoryId = result[0].id;
+                root.curCategoryName = result[0].name;
+            }
             else {
                 DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
-                    if (result.length > 0)
-                        root.currentCategory = {id:result[0].id, name:result[0].name};
+                    if (result.length > 0) {
+                        root.curCategoryId = result[0].id;
+                        root.curCategoryName = result[0].name;
+                    }
                 })
             }
         })
@@ -219,8 +233,8 @@ var P = (function ($, window) {
         'CREATE TABLE IF NOT EXISTS RMAP (id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, idCli, idTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
         "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
-        "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('22/12/2013', '10','','Note', '1:2', '10:1;11:2')",
-        "INSERT INTO RMAP (DateDoc, idCli, idTp, sNote) VALUES('12/11/2013', '10','','Note')",
+        "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
+        "INSERT INTO RMAP (DateDoc, idCli, idTp, sNote) VALUES('12.11.2013', '10','','Note')",
         "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '1', 'Предприятие')",
         "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '2', 'Тип Оплаты')",
         "INSERT INTO NMS (idRoot, id, Name) VALUES('1', '1', 'Пупкин ЧП')",

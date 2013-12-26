@@ -24,6 +24,7 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 .alignright {  text-align:right}
 
 .dx-table {  width: 100%;  display: table; }
+.tbhead {border: 1px solid black}
 .cell70, .cell50, .cell35, .cell30, .cell20, .cell10 {
   display: table-cell !important;
   display: inline; /* для IE */

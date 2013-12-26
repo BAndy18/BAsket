@@ -14,6 +14,8 @@ var DAL = (function ($, window) {
 	root.RoadMap = function (params) { return loadFunction(params, "RoadMap"); };
 	root.NMS = function (params) { return loadFunction(params, "NMS"); };
 
+	root.ProductsByWars = function (params) { return loadFunction(params, "ProductsByWars"); };
+
 	root.SaveBil = function (params) { return loadFunction(params, "SaveBil"); };
 
 	function loadFunction(params, funcNm){

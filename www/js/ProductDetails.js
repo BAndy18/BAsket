@@ -17,7 +17,23 @@
 };
 
 BAsket.buttonClicked = function(arg) {
-	alert('buttonClicked:' + this.quant());
-	if (BAsket.app.canBack())
-		BAsket.app.back(); 
+    var bFound = false;
+    for (var i in P.arrayBAsket) {
+        //if (!P.arrayBAsket.hasOwnProperty(i)) continue;
+        //if (i == key && P.arrayBAsket[i].id == this.id()) {
+        if (P.arrayBAsket[i].id == this.id) {
+            if (this.quant())
+                P.arrayBAsket[i].quant = this.quant();
+            else
+                P.arrayBAsket.splice(i, 1);
+            bFound = true;
+            break;
+        }
+    }
+    if (!bFound){
+        P.arrayBAsket.push({'id':this.id, 'name':this.name(),'upak':this.upak(),'quant':this.quant(),'price':this.price()});
+    }
+
+    BAsket.app.navigate('products/' + P.curCategoryId);
+    //BAsket.app.back(); 
 }

@@ -1,6 +1,9 @@
 BAsket.products = function (params) {   
-    var searchStr = ko.observable('')
-    var categoryId = (params.id == 'undefined') ? P.currentCategory['id'] : params.id;
+    var searchStr = ko.observable('');
+    //var categoryId = 
+    P.curCategoryId = (params.id == 'undefined') ? P.curCategoryId : params.id;
+    var arrayBAsket = ko.observable([]);
+
     var bChoice = ko.observable(true);
     var lbltitle =  ko.observable(_.Products.Title1);
     var btnSwText = ko.observable(_.Products.btnSwText1);
@@ -13,11 +16,12 @@ BAsket.products = function (params) {
         },
         showSearch: ko.observable(false),
 
-        dataSource: DAL.Products({id:categoryId, search:searchStr}),
         dataSourceCat: DAL.Categories(),
+        dataSourceProd: DAL.Products({id:P.curCategoryId, search:searchStr}),
+        dataSourceBasket: P.arrayBAsket,
 
-        categoryId: categoryId,
-        categoryName: P.currentCategory['name'],
+        //categoryId: categoryId,
+        categoryName: P.curCategoryName,
 
         bChoice: bChoice,
         lbltitle: lbltitle,
@@ -37,15 +41,13 @@ BAsket.products = function (params) {
             bChoice(false);
             lbltitle(_.Products.Title2);
             btnSwText(_.Products.btnSwText2);
-            viewModel.dataSource = [];
         } else {
             bChoice(true);
             lbltitle(_.Products.Title1);
             btnSwText(_.Products.btnSwText1);
-            viewModel.dataSource = DAL.Products({id:categoryId, search:searchStr});
         }
         var list = $("#listProducts").data("dxList");
-        list.repaint();
+        //list.repaint();
     };
 
     categoryChanged = function(arg) {
@@ -53,9 +55,10 @@ BAsket.products = function (params) {
      
         var lookup = $("#CategoryLookup").data("dxLookup");
         var value = lookup.option("value");
-        categoryId = value;
-        P.currentCategory['name'] = $(".dx-state-active").html();
-        BAsket.app.navigate('products/' + categoryId, { direction: 'none'});
+        //categoryId = value;
+        P.curCategoryId = value;
+        P.curCategoryName = $(".dx-state-active").html();
+        BAsket.app.navigate('products/' + P.curCategoryId, { direction: 'none'});
     }
     return viewModel;
 };

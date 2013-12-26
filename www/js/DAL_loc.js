@@ -10,20 +10,21 @@ var DAL_local = (function ($, window) {
     root.SaveBil = function(params){
         var query = "";
         if (params['id']) {
-            query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"', idTp='"+ params['idTp'] +"', sNote='"+ params['idNote'] +
+            query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"', idTp='"+ params['idTp'] +
+                "', sNote='"+ params['Note'] + "', sWars='"+ params['sWars'] +
                 "' WHERE id='" + params['id'] + "'"
         } else {
             query = "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('"+ params['date'] +
-                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['idNote'] +"', '', '10:1;11:2')"
+                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['Note'] + "', '', '" + params['sWars'] + "')"
         };
         return root.ExecQuery(query);
     }
 
-    root.ExecDataSource = function(query){
+    root.ExecDataSource = function(query, setQ){
         var dataSource = DevExpress.data.createDataSource({
             load: function (loadOptions) {
                 if (loadOptions.refresh) 
-                    return root.ExecQuery(query);
+                    return root.ExecQuery(query, setQ);
             },
             lookup: function(key){
                 return 'lookup';
@@ -31,7 +32,7 @@ var DAL_local = (function ($, window) {
         });
         return dataSource;
     }
-    root.ExecQuery = function(query, tryExist){
+    root.ExecQuery = function(query, setQ, tryExist){
         var skip = 0;
         var PAGE_SIZE = 30;
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -41,7 +42,10 @@ var DAL_local = (function ($, window) {
             tx.executeSql(dbLastQ, [], function(tx, results) {
                 var res = [];
                 for (var i=0; i<results.rows.length; i++) {
-                    res.push(results.rows.item(i));
+                    var resrow = results.rows.item(i);
+                    if (setQ)
+                        resrow = setQuant(resrow);
+                    res.push(resrow);
                 }
                 deferred.resolve(res);
             }, function(err, err2){
@@ -55,6 +59,16 @@ var DAL_local = (function ($, window) {
         }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
         );
         return deferred;
+    }
+
+    function setQuant(resrow){
+        for (var i in P.arrayBAsket) {
+            if (P.arrayBAsket[i].id == resrow.id) {
+                resrow.quant = P.arrayBAsket[i].quant;
+                return resrow;
+            }
+        }
+        return resrow;
     }
 
     root.Categories = function (params){
@@ -109,8 +123,9 @@ var DAL_local = (function ($, window) {
                     tx.executeSql(dbLastQ, [], function(tx, results) {
                         skip += PAGE_SIZE;                    
                         var res = [];
-                        for (var i=0; i<results.rows.length; i++) {
-                            res.push(results.rows.item(i));
+                        for (var ir=0; ir<results.rows.length; ir++) {
+                            var resrow = setQuant(results.rows.item(ir));
+                            res.push(resrow);
                         }
                         deferred.resolve(res);
                     }, function(err, err2){errorCB("*readProducts sql*", err, err2);}
@@ -128,6 +143,15 @@ var DAL_local = (function ($, window) {
         db.transaction(function(tx) {
             dbLastQ = "SELECT * FROM WAR WHERE id='" + params.id + "'";
             tx.executeSql(dbLastQ, [], function(tx, results) {
+                // var quant = '0';
+                // for (var i in P.arrayBAsket) {
+                //     if (P.arrayBAsket[i].id == params.id) {
+                //         quant = P.arrayBAsket[i].quant;
+                //         break;
+                //     }
+                // }
+                params.quant = '0';
+                params = setQuant(params);
                 if (results.rows.length > 0) {
                     params.model.name(results.rows.item(0).name),
                     params.model.price(results.rows.item(0).price.toFixed(2))
@@ -135,7 +159,8 @@ var DAL_local = (function ($, window) {
                     params.model.nameManuf(results.rows.item(0).nameManuf),
                     params.model.urlPict(results.rows.item(0).urlPict),
                     params.model.upak(results.rows.item(0).upak),
-                    params.model.ostat(results.rows.item(0).ostat)
+                    params.model.ostat(results.rows.item(0).ostat),
+                    params.model.quant(params.quant)
                 }
             }, function(err, err2){errorCB("*readProductDetail sql*", err, err2);}
             );
@@ -165,6 +190,20 @@ var DAL_local = (function ($, window) {
     };
     root.NMS = function (params){
         return root.ExecDataSource("SELECT * FROM NMS Where idRoot='" + params + "'");
+    };
+
+    root.ProductsByWars = function (params){
+        var ids = '';
+        P.arrayBAsket = [];
+        var w = params.split(';');
+        for (var i in w) {
+            var v = w[i].split(':');
+            if (v[0]){
+                P.arrayBAsket.push({'id':v[0], 'quant':v[1]});
+                ids += "'" + v[0] + "',";
+            }
+        }
+        return root.ExecDataSource("SELECT * FROM WAR WHERE id in (" + ids.substring(0, ids.length - 1) + ")", true);
     };
 
 

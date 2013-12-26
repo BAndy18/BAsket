@@ -10,6 +10,7 @@ BAsket.Order = function (params) {
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
 
+	P.arrayBAsket = [];
 	if (location.hash.indexOf('/') > 0) {
 		var bil = DAL.BilMById(location.hash.split('/')[1]);
 		bil.load().done(function (result) {
@@ -19,6 +20,13 @@ BAsket.Order = function (params) {
 			cliId(result[0].idCli);
 			cliName(result[0].cName);
 			tpId(result[0].idTp);
+			DAL.ProductsByWars(result[0].sWars).load().done(function (result) {
+				P.arrayBAsket = result;
+			})
+			// P.arrayBAsket = [
+			// 		{'id':'39007', 'name':'test','upak':'4','quant':'2','price':'10.02'},
+			// 		{'id':'29657', 'name':'test2','upak':'46','quant':'3','price':'1011.02'},
+			// 	];
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
     		DAL.Clients(result[0].idCli).load().done(function (result) {
@@ -99,28 +107,32 @@ BAsket.Order = function (params) {
 
 	clickBack = function(arg){
 		if (location.hash.indexOf('/') > 0)
-			BAsket.app.navigate('OrderList/');
+			BAsket.app.navigate('OrderList', { root: true });
 		else
 			BAsket.app.navigate('home', { root: true });
 	};
 
 	btnSaveClicked  = function () {
+		if (P.arrayBAsket.length == 0){
+			BAsket.notify(_.Order.ErrNoWars, "error");
+			return;
+		}
 		var valueDate = $("#idDate").data("dxDateBox").option("value");
 		if (!valueDate) {
-			BAsket.notify("idDate", "info");
+			BAsket.notify(_.Order.ErrNoDate, "error");
 			return;
 		}
 		var valueCli = $("#lookupClient").data("dxLookup").option("value");
 		if (!valueCli) {
-			BAsket.notify("lookupClient", "info");
+			BAsket.notify(_.Order.ErrNoCli, "error");
 			return;
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
 		var valueNms = $("#lookupNms").data("dxLookup").option("value");
-		if (!valueNms) {
-			BAsket.notify("lookupNms", "info");
-			//return;
-		}
+		// if (!valueNms) {
+		// 	BAsket.notify("lookupNms", "error");
+		// 	return;
+		// }
 		var params = {};
 		var hash = location.hash.split('/');
 		if (hash.length > 1)
@@ -129,12 +141,14 @@ BAsket.Order = function (params) {
 		params['idCli'] = valueCli;
 		params['idTp'] = (valueTP ? valueTP:0);
 		params['idNms'] = valueNms;
-		params['idNote'] = $("#txtNote").data("dxTextArea").option("value");;
+		params['Note'] = $("#txtNote").data("dxTextArea").option("value");
+		var sWars = '';
+		for (var i in P.arrayBAsket) {
+        	sWars += P.arrayBAsket[i].id + ':' + P.arrayBAsket[i].quant + ';';
+        }
+    	params['sWars'] = sWars;
 
-		//var dop = valueDate.option();
-		
 		DAL.SaveBil(params);
-		//BAsket.notify("buttonClicked", "info");
 		clickBack();
 	};
 	

@@ -111,6 +111,10 @@ var RU_RU = (function (window) {
     	ColNote : 'примечание',
     	ColOther : 'Other',
     	ColWars : 'Wars',
+
+    	ErrNoWars : 'Не выбраны товары в заказ',
+    	ErrNoDate : 'Не установлена дата в заказе',
+    	ErrNoCli : 'Не выбраны покупатель в заказе',
     };
 
     root.Products = {
@@ -118,10 +122,20 @@ var RU_RU = (function (window) {
     	Title2 : 'Состав корзины',
     	btnSwText1 : 'корзина',
     	btnSwText2 : 'выбор товаров',
-    	ColName : 'наименнование',
+    	ColName : 'наименование',
     	ColPack : 'упаковка',
     	ColCount : 'количество',
     	ColPrice : 'цена',
+    	TitleDetails: 'установи количество для товара',
+    	ErrQuantity : 'Введите число больше либо равно 0',
+    	FldQuantity : 'Количество:',
+    	FldName : 'Наименование:',
+    	FldPrice : 'Цена:',
+    	FldNameArt : 'Артикул:',
+    	FldNameManuf : 'Производитель:',
+    	FldUpak : 'Количество в упаковке:',
+    	FldOstat : 'Остаток:',
+    	FldUrlPict : 'картинка:',
     };
 
     root.getObj = function(obj){

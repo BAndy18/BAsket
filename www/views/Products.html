@@ -1,4 +1,4 @@
-﻿<div data-options="dxView : { name: 'products', title: 'products', layout: 'empty'} " >
+﻿<div data-options="dxView : { name: 'products', layout: 'empty'} " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
           {  align: 'left', widget: 'button', options: { type: 'back', text:  _.Common.Back, clickAction: '#_back' }},
@@ -12,7 +12,7 @@
 		        	valueUpdateEvent: 'search change keyup' }">		        	
                 </div>
                 <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { title: 'Select Category', 
-                    dataSource: dataSourceCat, displayExpr: 'name', valueExpr: 'id', value: categoryId, placeholder: categoryName,
+                    dataSource: dataSourceCat, displayExpr: 'name', valueExpr: 'id', value: P.curCategoryId, placeholder: categoryName,
                     searchEnabled: false, 
                     valueChangeAction: categoryChanged,
                     width:'50%'}">   
@@ -21,21 +21,33 @@
         </div>
 
         <div class="dx-table">
-            <div class="cell70 dx-button" data-bind="text: _.Products.ColName"></div>
-            <div class="cell10 dx-button" data-bind="text: _.Products.ColPack"></div>
-            <div class="cell10 dx-button" data-bind="text: _.Products.ColCount"></div>
-            <div class="cell10 dx-button" data-bind="text: _.Products.ColPrice"></div>
+            <div class="cell70 dx-button tbhead" data-bind="text: _.Products.ColName"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Products.ColPack"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Products.ColCount"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Products.ColPrice"></div>
         </div>
 
-        <div id="listProducts" data-bind="dxList: { dataSource: dataSource }">
+        <div id="listProducts" data-bind="dxList: { dataSource: dataSourceProd }, visible: bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{id}'">
                 <div class="dx-table">
                     <div class="cell70" data-bind="text: $data.name"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.upak, 'c2')"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.ostat, 'c2')"></div>
+                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.upak, 'n')"></div>
+                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.quant, 'n')"></div>
                     <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.price, 'n2')"></strong></div>
                 </div>
             </div>
         </div>
+
+        <div id="listBAsket" data-bind="dxList: { dataSource: dataSourceBasket }, visible: !bChoice()">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{id}'">
+                <div class="dx-table">
+                    <div class="cell70" data-bind="text: $data.name"></div>
+                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.upak, 'n')"></div>
+                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.quant, 'n')"></div>
+                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.price, 'n2')"></strong></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
