@@ -1,14 +1,10 @@
 ﻿/* Layout */
 
-.navbar-layout {
+.navbar-layout,
+.navbar-layout-tablet {
     height: 100%;
     width: 100%;
     position: relative;
-}
-
-.navbar-layout .load-panel.dx-loadpanel-content {
-    background: transparent;
-    border: none;
 }
 
 .navbar-layout .layout-header {
@@ -24,7 +20,7 @@
 
 .navbar-layout .layout-content > div,
 .navbar-layout .transition-frame {
-    position: absolute;
+    -position: absolute;
     height: 100%;
     width: 100%;
 }
@@ -36,112 +32,128 @@
 
 /* ios */
 
-.dx-theme-ios .navbar-layout .layout-header {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .layout-header,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .layout-header {
     top: 0;
     height: 44px;
 }
 
-.dx-theme-ios .navbar-layout .layout-content {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .layout-content,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .layout-content {
     top: 44px;
     bottom: 0;
 }
 
-.dx-theme-ios .navbar-layout .layout-content.has-navbar {
+.dx-theme-ios.dx-version-major-5 .navbar-layout.has-navbar .layout-content,
+.dx-theme-ios.dx-version-major-6 .navbar-layout.has-navbar .layout-content {
     bottom: 59px;
 }
 
-.dx-theme-ios .navbar-layout .layout-footer {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .layout-footer,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .layout-footer {
     height: 59px;
     bottom: 0;
 }
 
-.dx-theme-ios .navbar-layout .view-footer {
-    position: static;
-}
-
-.dx-theme-ios .navbar-layout .view-toolbar-bottom.dx-toolbar {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-toolbar-bottom.dx-toolbar,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-toolbar-bottom.dx-toolbar {
     background: transparent;
     border: none;
     margin-bottom: 10px;
 }
-
-.dx-theme-ios .navbar-layout .view-toolbar-bottom.dx-toolbar .dx-toolbar-center {
-    width: 100%;
+ 
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-footer,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-footer {
+    position: static;
 }
 
-.dx-theme-ios .navbar-layout .view-footer .dx-toolbar {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-footer .dx-toolbar,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-footer .dx-toolbar {
     height: 57px;
 }
 
-.dx-theme-ios .navbar-layout .view-footer .dx-button {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-toolbar-bottom.dx-toolbar .dx-toolbar-center,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-toolbar-bottom.dx-toolbar .dx-toolbar-center {
+    width: 100%;
+}
+
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-footer .dx-button,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-footer .dx-button {
     width: 97%;
     overflow: visible;
 }
 
-.dx-theme-ios .navbar-layout .view-footer .dx-button .dx-button-content {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-footer .dx-button .dx-button-content,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-footer .dx-button .dx-button-content {
     height: 44px;
     border-radius: 6px;
     width: 100%;
     box-sizing: border-box;
 }
 
-.dx-theme-ios .navbar-layout .view-footer .dx-button .dx-button-content .dx-button-text {
+.dx-theme-ios.dx-version-major-5 .navbar-layout .view-footer .dx-button .dx-button-content .dx-button-text,
+.dx-theme-ios.dx-version-major-6 .navbar-layout .view-footer .dx-button .dx-button-content .dx-button-text {
     font-size: 20px;
     line-height: 38px;
 }
 
 /* ios7 */
 
-.dx-theme-ios7 .navbar-layout .layout-header {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .layout-header {
     top: 0;
     height: 44px;
 }
 
-.dx-theme-ios7 .navbar-layout .layout-content {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .layout-content {
     top: 44px;
     bottom: 0;
+    background-color: #fff;
 }
 
-.dx-theme-ios7 .navbar-layout .layout-content.has-navbar {
+.dx-theme-ios.dx-version-major-7 .navbar-layout.has-navbar .layout-content {
     bottom: 59px;
 }
 
-.dx-theme-ios7 .navbar-layout .layout-footer {
+.dx-theme-ios.dx-version-major-7 .navbar-layout.has-navbar .layout-footer {
     height: 59px;
     bottom: 0;
 }
 
-.dx-theme-ios7 .navbar-layout .view-footer {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer {
     position: static;
 }
 
-.dx-theme-ios7 .navbar-layout .view-toolbar-bottom.dx-toolbar {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-toolbar-bottom.dx-toolbar {
     background: transparent;
     border: none;
     margin-bottom: 10px;
 }
 
-.dx-theme-ios7 .navbar-layout .view-toolbar-bottom.dx-toolbar .dx-toolbar-center {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-toolbar-bottom.dx-toolbar .dx-toolbar-center {
     width: 100%;
 }
 
-.dx-theme-ios7 .navbar-layout .view-footer .dx-toolbar {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer .dx-toolbar {
     height: 57px;
 }
 
-.dx-theme-ios7 .navbar-layout .view-footer .dx-button {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer .dx-toolbar-center {
+    width: 100%;
+}
+
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer .dx-button {
     width: 97%;
     overflow: visible;
 }
 
-.dx-theme-ios7 .navbar-layout .view-footer .dx-button .dx-button-content {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer .dx-button .dx-button-content {
     height: 44px;
     border-radius: 6px;
     width: 100%;
     box-sizing: border-box;
 }
 
-.dx-theme-ios7 .navbar-layout .view-footer .dx-button .dx-button-content .dx-button-text {
+.dx-theme-ios.dx-version-major-7 .navbar-layout .view-footer .dx-button .dx-button-content .dx-button-text {
     font-size: 20px;
     line-height: 38px;
 }
@@ -159,11 +171,11 @@
     bottom: 0;
 }
 
-.dx-theme-android .navbar-layout .layout-content.has-toolbar {
+.dx-theme-android .navbar-layout.has-toolbar .layout-content {
     bottom: 40px;
 }
 
-.dx-theme-android .navbar-layout .layout-content.has-navbar {
+.dx-theme-android .navbar-layout.has-navbar .layout-content {
     top: 79px;
 }
 
@@ -173,7 +185,7 @@
     display: none;
 }
 
-.dx-theme-android .navbar-layout .layout-footer.has-toolbar {
+.dx-theme-android .navbar-layout.has-toolbar .layout-footer {
     display: block;
 }
 
@@ -200,7 +212,7 @@
 .dx-theme-win8 .navbar-layout-tablet  {
     display: -ms-grid;
     -ms-grid-columns: 1fr;
-    -ms-grid-rows: 104px 1fr;
+    -ms-grid-rows: 274px 1fr;
     overflow: hidden;
 }
 
@@ -220,59 +232,7 @@
     /* for IE */
     -ms-grid-column: 1;
     -ms-grid-row: 2;
-    padding: 110px 60px 60px 60px\9; /* #B230682 */
     /* end for IE */
-}
-
-/* Windows phone 8 */
-.dx-theme-win8phone {
-    background: #000;
-}
-
-.dx-theme-win8 .navbar-layout-phone {
-    height: 100%;
-}
-
-.dx-theme-win8 .navbar-layout-phone .layout-content.has-toolbar-bottom {
-}
-
-.dx-theme-win8 .navbar-layout-phone .dx-toolbar.layout-toolbar-bottom {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 0;
-
-    -webkit-transition: all .2s;
-    -moz-transition: all .2s;
-    -o-transition: all .2s;
-    transition: all .2s;
-}
-
-.dx-theme-win8 .navbar-layout-phone .dx-toolbar.layout-toolbar-bottom.semi-hidden {
-    margin-bottom: -20px;
-
-    -webkit-transition: all .2s;
-    -moz-transition: all .2s;
-    -o-transition: all .2s;
-    transition: all .2s;
-}
-
-.dx-theme-win8 .navbar-layout-phone .layout-content {
-    top: 45px;
-}
-
-.dx-theme-win8 .navbar-layout-phone .layout-content.has-toolbar-bottom {
-    overflow: hidden;
-    width: 100%;
-    bottom: 40px;
-    position: absolute;
-}
-
-.dx-theme-win8 .navbar-layout-phone .dx-toolbar {
-    height: 60px;
-}
-
-.dx-theme-win8 .navbar-layout-phone .layout-header .dx-toolbar {
-    opacity: 1;
 }
 
 /* tizen */
@@ -291,7 +251,7 @@
     bottom: 40px;
 }
 
-.dx-theme-tizen .navbar-layout .layout-content.has-navbar {
+.dx-theme-tizen .navbar-layout.has-navbar .layout-content {
     top: 71px;
 }
 
@@ -301,10 +261,47 @@
     display: none;
 }
 
-.dx-theme-tizen .navbar-layout .layout-footer.has-toolbar {
+.dx-theme-tizen .navbar-layout.has-toolbar .layout-footer {
     display: block;
 }
 
 .dx-theme-tizen .navbar-layout .dx-tabs.dx-navbar {
     padding: 0;
+}
+
+/* generic */
+
+.dx-theme-generic .navbar-layout .layout-header #navBar {
+    top: 0;
+    height: 46px;
+}
+
+.dx-theme-generic .navbar-layout .layout-content {
+    top: 0;
+    bottom: 54px;
+}
+
+.dx-theme-generic .navbar-layout .layout-content.has-toolbar {
+    bottom: 76px;
+}
+
+.dx-theme-generic .navbar-layout.has-navbar .layout-content {
+    top: 46px;
+}
+
+.dx-theme-generic .navbar-layout .layout-footer {
+    bottom: 0;
+    height: 54px;
+}
+
+.dx-theme-generic .navbar-layout.has-toolbar .layout-footer {
+    display: block;
+}
+
+.dx-theme-generic .navbar-layout .dx-tabs.dx-navbar {
+    padding: 0;
+}
+
+.dx-theme-generic .navbar-layout .view-footer {
+    position: static;
 }

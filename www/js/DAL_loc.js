@@ -7,6 +7,32 @@ var DAL_local = (function ($, window) {
     var dbName = 'BAsketDB';
     var dbSize = 50000000;
 
+    root.ClientsRoot = function (params){
+        return root.ExecDataSource("SELECT * FROM CLI Where idPar='0'");  
+    };    
+    root.Clients = function (params){
+        var cliPar = 0;
+        if (params)
+            cliPar = params;
+        return root.ExecDataSource("SELECT * FROM CLI Where idPar='" + cliPar + "'");  
+    };    
+    root.RoadMap = function (params){
+        return root.ExecDataSource("SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.idCli=c.id Left Join CLI t On r.idTp=t.id");  
+    };    
+
+    root.BilM = function (params){
+        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id");
+    };
+    root.BilMById = function (params){
+        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id WHERE b.id='" + params + "'");
+    };
+    root.NMS = function (params){
+        return root.ExecDataSource("SELECT * FROM NMS Where idRoot='" + params + "'");
+    };
+
+    root.DeleteBil = function (params){
+        return root.ExecQuery("DELETE FROM BILM Where id='" + params + "'");
+    };
     root.SaveBil = function(params){
         var query = "";
         if (params['id']) {
@@ -21,7 +47,7 @@ var DAL_local = (function ($, window) {
     }
 
     root.ExecDataSource = function(query, setQ){
-        var dataSource = DevExpress.data.createDataSource({
+        var dataSource = new DevExpress.data.DataSource({
             load: function (loadOptions) {
                 if (loadOptions.refresh) 
                     return root.ExecQuery(query, setQ);
@@ -73,7 +99,7 @@ var DAL_local = (function ($, window) {
 
     root.Categories = function (params){
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        var dataSource = DevExpress.data.createDataSource({
+        var dataSource = new DevExpress.data.DataSource({
             load: function (loadOptions) {
                 if (loadOptions.refresh) {
                     var deferred = new $.Deferred();
@@ -106,7 +132,7 @@ var DAL_local = (function ($, window) {
         var skip = 0;
         var PAGE_SIZE = 30;
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        var dataSource = DevExpress.data.createDataSource({
+        var dataSource = new DevExpress.data.DataSource({
             load: function (loadOptions) {
                 if (loadOptions.refresh) {
                     skip = 0;
@@ -168,29 +194,6 @@ var DAL_local = (function ($, window) {
         );
     }
 
-
-    root.ClientsRoot = function (params){
-        return root.ExecDataSource("SELECT * FROM CLI Where idPar='0'");  
-    };    
-    root.Clients = function (params){
-        var cliPar = 0;
-        if (params)
-            cliPar = params;
-        return root.ExecDataSource("SELECT * FROM CLI Where idPar='" + cliPar + "'");  
-    };    
-    root.RoadMap = function (params){
-        return root.ExecDataSource("SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.idCli=c.id Left Join CLI t On r.idTp=t.id");  
-    };    
-
-    root.BilM = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id");
-    };
-    root.BilMById = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.idCli=c.id Left Join CLI t On b.idTp=t.id WHERE b.id='" + params + "'");
-    };
-    root.NMS = function (params){
-        return root.ExecDataSource("SELECT * FROM NMS Where idRoot='" + params + "'");
-    };
 
     root.ProductsByWars = function (params){
         var ids = '';

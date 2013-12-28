@@ -13,6 +13,7 @@ var EN_US = (function (window) {
     root.Common = {
     	Default : "Default",
     	Back: "Back",
+    	NoDataText: "No data to display",
     };
 
 	root.Navigation = {
@@ -64,11 +65,15 @@ var RU_RU = (function (window) {
     root.Language = 'Русский';
 
     root.Common = {
+    	Yes : "Да",
+    	No : "Нет",
+    	Cancel: 'Отменить',
     	Default : "по умолчанию",
     	Back: "назад",
     	Save: 'Сохранить',
     	Select : 'Выбор',
-    	NoDataText: "No data to display",
+    	Confirm: 'Подтвердите',
+    	NoDataText: "Нет данных",
     };
 
 	root.Navigation = {
@@ -111,6 +116,8 @@ var RU_RU = (function (window) {
     	ColNote : 'примечание',
     	ColOther : 'Other',
     	ColWars : 'Wars',
+
+    	ActionDelete : 'Удалить заказ',
 
     	ErrNoWars : 'Не выбраны товары в заказ',
     	ErrNoDate : 'Не установлена дата в заказе',

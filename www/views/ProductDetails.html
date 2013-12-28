@@ -1,4 +1,4 @@
-﻿<div data-options="dxView : { name: 'product-details', title: 'Product', layout: 'default' } " >
+﻿<div data-options="dxView : { name: 'product-details', layout: 'empty' } " >
     <div class="product-details" data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
           {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
@@ -23,7 +23,7 @@
               value: quant,
               placeholder: _.Products.ErrQuantity                     
             }" />
-          <div class="dx-button but20 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: BAsket.buttonClicked}" />
+          <div class="dx-button but20 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: Product_Details_saveClicked}" />
         </div>
       </div>
     </div>

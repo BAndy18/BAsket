@@ -17,6 +17,7 @@ var DAL = (function ($, window) {
 	root.ProductsByWars = function (params) { return loadFunction(params, "ProductsByWars"); };
 
 	root.SaveBil = function (params) { return loadFunction(params, "SaveBil"); };
+	root.DeleteBil = function (params) { return loadFunction(params, "DeleteBil"); };
 
 	function loadFunction(params, funcNm){
 		var funcName = P.dataSouceType + '.' + funcNm;

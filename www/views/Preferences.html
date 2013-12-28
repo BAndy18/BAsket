@@ -6,15 +6,15 @@
 				<div class="dx-fieldset">
 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Layout"></div>
-	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: changePlatform}"></div>
+	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: Preferences_changePlatform}"></div>
 					</div>
 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
-	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: changeMapProvider}"></div>
+	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: Preferences_changeMapProvider}"></div>
 					</div>
 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
-	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: changeLanguageUI}"></div>
+	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
 					</div>
 				</div>
             <!-- /ko -->

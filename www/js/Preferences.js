@@ -43,7 +43,8 @@ BAsket.Preferences = function (params) {
 	//	dataSource: dataSource,
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {
-            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
+            data: ['-', "generic", "ios", "android", "win8", "tizen"],
+//            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
             value: ko.observable(P.platformDevice)
 		},
 		dsMapProvider: {
@@ -56,18 +57,18 @@ BAsket.Preferences = function (params) {
 		}
 	};
 
-	changePlatform = function(arg){
+	Preferences_changePlatform = function(arg){
 		if (arg.element.length > 0) {
 			P.platformDevice = P.ChangeLookup("#lookupPlatform", "Platform");
 	        //DevExpress.devices.current(P.platformDevice);
 	        window.location.reload();
 		}
 	}
-	changeMapProvider = function(arg){
+	Preferences_changeMapProvider = function(arg){
 		if (arg.element.length > 0) 
 			P.mapProvider = P.ChangeLookup("#lookupMapProvider", "MapProvider");
 	}
-	changeLanguageUI = function(arg){
+	Preferences_changeLanguageUI = function(arg){
 		if (arg.element.length > 0) {
 			P.languageUI = P.ChangeLookup("#lookupLanguageUI", "LanguageUI");
 			//P.ChangeLanguageUI();
@@ -76,7 +77,7 @@ BAsket.Preferences = function (params) {
 	}
 
 
-	dsSQLiteSystem = DAL_local.ExecDataSource("select * from sqlite_master where type='table'");
+	//dsSQLiteSystem = DAL_local.ExecDataSource("select * from sqlite_master where type='table'");
 	// dsSQLiteTable = function (arg) {
 	// 	return [{name:'Mo '}, {name:'Tu '}, {name:'We '}, {name:'Th '}, {name:'Fr '}, {name:'Sa '}, {name:'Su '}];
 	// }
@@ -88,7 +89,7 @@ BAsket.Preferences = function (params) {
 
 BAsket.ReadNews = function (params) {
 	var viewModel = {
-		dataSource: DAL.Categories(),
+		//dataSource: DAL.Categories(),
 	};
 	return viewModel;
 };

@@ -3,7 +3,7 @@ var DAL_web = (function ($, window) {
     var root = {};
 
     root.Categories = function (params){
-        var dataSource = DevExpress.data.createDataSource({
+        var dataSource = new DevExpress.data.DataSource({
             beforeSend: function (request) {
             //    request.headers["Authorization"] = "Basic " + DevExpress.data.base64_encode([app.UserName, app.Password].join(":"))
             },
@@ -40,7 +40,7 @@ var DAL_web = (function ($, window) {
     root.Products = function (params){
     	var skip = 0;
         var PAGE_SIZE = 30;
-    	var dataSource = DevExpress.data.createDataSource({
+    	var dataSource = new DevExpress.data.DataSource({
             load: function (loadOptions) {
                 if (loadOptions.refresh) {
                     skip = 0;
@@ -111,7 +111,7 @@ var DAL_web = (function ($, window) {
     }
 
     root.Clients = function (params){
-        var dataSource = DevExpress.data.createDataSource({
+        var dataSource = new DevExpress.data.DataSource({
             beforeSend: function (request) {
             },
             load: function (loadOptions) {

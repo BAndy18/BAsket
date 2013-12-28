@@ -4,10 +4,11 @@ window.BAsket = {};
 $(function() {
     P.Init();
 
-    DevExpress.devices.current(P.deviceClass);
+    DevExpress.devices.current({platform: P.deviceClass, version: '6'});
+    //DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform);
     BAsket.app = new DevExpress.framework.html.HtmlApplication({
         namespace: BAsket,
-        defaultLayout: P.layout,
+        navigationType: P.layout,
         navigation: P.navigation,
         navigateToRootViewMode: true
     });
@@ -85,13 +86,15 @@ var P = (function ($, window) {
     root.deviceInfo = DevExpress.devices.current();
     root.layout = "slideout";
     //root.layout = "navbar";
-    //root.layout = "default";
+    //root.layout = "simple";
+    //root.layout = "pivot";
 
     root.deviceClass = 'androidTablet';
 
     root.curCategoryId = 0;
     root.curCategoryName = '';
-    root.currentNms = [{'id':'1', 'Name':'...'}]
+    root.curModeChoice = true;
+    root.currentNms = []
     root.arrayBAsket = [];
     // root.getBAsketArray = function(){
     //     var basket = [];
@@ -158,12 +161,13 @@ var P = (function ($, window) {
         root.languageUI = iniLocalStor("LanguageUI", '-');
         root.ChangeLanguageUI();
 
-        root.platformDevice = root.deviceClass = 'iPhone';
+        root.platformDevice = root.deviceClass = 'ios';
+//        root.platformDevice = root.deviceClass = 'iPhone';
         root.platformDevice = root.deviceClass = iniLocalStor("Platform", '-');
         if (root.deviceClass == '-')
             root.deviceClass = root.deviceInfo.platform;
         //if (root.navAgent.indexOf(' MSIE ') > 0) root.deviceClass = 'win8Phone';
-        if (root.deviceClass == 'desktop') root.deviceClass = 'iPhone';
+        //if (root.deviceClass == 'desktop') root.deviceClass = 'iPhone';
         // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 
 
@@ -188,10 +192,12 @@ var P = (function ($, window) {
     };
     root.ReadFirstNms = function () {
         DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
-            root.currentNms = [{id:result[0].id, Name:result[0].Name}];
-            DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='" + result[0].id + "'").done(function (result) {
-                root.currentNms.push({id:result[0].id, Name:result[0].Name});
-            })
+            for (var i=0; i<result.length; i++) {
+                DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
+                    root.currentNms.push(result);
+                    //root.currentNms.push({id:result[0].id, Name:result[0].Name});
+                })
+            }
         })            
     };
 
