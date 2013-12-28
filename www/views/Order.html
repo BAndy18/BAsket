@@ -22,21 +22,23 @@
             </div>
         </div>
         <div class="dx-fieldset">
-            <div class="dx-field" data-bind="visible: false">
+            <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
-<!--                 <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {datasource: dsNms1, displayExpr: 'Name' }" />
- -->
-                <div id="idNms1" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select + ' ...'}"/>
+                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'id', placeholder: nmsName1 }" ></div>
+<!-- 
+                <div id="idNms1" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select}"/> -->
  
              </div>
-            <div class="dx-field" data-bind="visible: false">
+            <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
-                <div id="idNms2" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select + ' ...'}"/>
-             </div>
+                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'id', placeholder: nmsNames()[1] }" />
 
-<!--                 <div id="lookupNms" class="dx-field-label" data-bind="dxLookup: { title: _.Order.SelectDop, dataSource: dsNms,  displayExpr: 'Name', valueExpr: 'id', searchEnabled: false,  valueChangeAction: Order_nmsChanged, placeholder: _.Common.Select + ' ...' }"/>
+<!--                 <div id="idNms2" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select}"/>
+ -->             </div>
 
-                <div id="lookupParam" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: arrayNms, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select + ' ...'}"/>
+<!--                 <div id="lookupNms" class="dx-field-label" data-bind="dxLookup: { title: _.Order.SelectDop, dataSource: dsNms,  displayExpr: 'Name', valueExpr: 'id', searchEnabled: false,  valueChangeAction: Order_nmsChanged, placeholder: _.Common.Select }"/>
+
+                <div id="lookupParam" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: arrayNms, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select}"/>
              </div>
  -->
             <div class="dx-field">

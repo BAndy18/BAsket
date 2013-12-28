@@ -71,7 +71,7 @@ var RU_RU = (function (window) {
     	Default : "по умолчанию",
     	Back: "назад",
     	Save: 'Сохранить',
-    	Select : 'Выбор',
+    	Select : 'Выбор ...',
     	Confirm: 'Подтвердите',
     	NoDataText: "Нет данных",
     };

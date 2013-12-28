@@ -32,7 +32,7 @@ BAsket.products = function (params) {
     }).extend({
         throttle: 500
     }).subscribe(function () {
-        viewModel.dataSource.reload();
+        viewModel.dataSourceProd.reload();
     });
 
     Products_swichClicked  = function () {

@@ -37,11 +37,12 @@ var DAL_local = (function ($, window) {
         var query = "";
         if (params['id']) {
             query = "UPDATE BILM set DateDoc='"+ params['date'] +"', idCli='"+ params['idCli'] +"', idTp='"+ params['idTp'] +
-                "', sNote='"+ params['Note'] + "', sWars='"+ params['sWars'] +
+                "', sNote='"+ params['Note'] + "', sOther='"+ params['sOther'] + "', sWars='"+ params['sWars'] +
                 "' WHERE id='" + params['id'] + "'"
         } else {
             query = "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('"+ params['date'] +
-                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['Note'] + "', '', '" + params['sWars'] + "')"
+                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['Note'] + "', '"+ params['sOther'] + 
+                "', '" + params['sWars'] + "')"
         };
         return root.ExecQuery(query);
     }

@@ -192,8 +192,9 @@ var P = (function ($, window) {
     };
     root.ReadFirstNms = function () {
         DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
+            root.currentNms.push(result);
             for (var i=0; i<result.length; i++) {
-                DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
+                DAL_local.ExecQuery("SELECT id,Name FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
                     root.currentNms.push(result);
                     //root.currentNms.push({id:result[0].id, Name:result[0].Name});
                 })

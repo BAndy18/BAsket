@@ -10,6 +10,8 @@ BAsket.Order = function (params) {
 	var tpId = ko.observable(0);
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
+	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
+	var nmsName1 = ko.observable( _.Common.Select);
 
 	var viewModel = {
 		clients: DAL.Clients(),
@@ -23,8 +25,11 @@ BAsket.Order = function (params) {
         tpName: tpName,
         noteVal: noteVal,
 
-        dsNms1: P.currentNms[0],
-        dsNms2: P.currentNms[1],
+        nmsNames: nmsNames,
+        nmsName1: nmsName1,
+        dsNms1: P.currentNms[1],
+        dsNms2: P.currentNms[2],
+        //id:id,
         //dsNms: DAL.NMS(0),
         //arrayNms: arrayNms,
        
@@ -49,6 +54,22 @@ BAsket.Order = function (params) {
 			// 		{'id':'39007', 'name':'test','upak':'4','quant':'2','price':'10.02'},
 			// 		{'id':'29657', 'name':'test2','upak':'46','quant':'3','price':'1011.02'},
 			// 	];
+			var arr = nmsNames();
+			var sOther = result[0].sOther.split(';');
+			for (var i=0; i<sOther.length; i++) {
+				var sNms = sOther[i].split(':');
+				if (sNms.length < 2) continue;
+				var iNms = parseInt(sNms[0]);
+				var setNms = $("#idNms" + iNms).data("dxSelectBox");
+				if (setNms){
+					setNms.option().value = sNms[1];
+					var val = P.currentNms[iNms][sNms[1]-1].Name;
+					//arr[iNms - 1] = 
+					nmsName1(val);
+				}
+			}
+			//nmsNames.removeAll();
+			//nmsNames(arr);
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
     		DAL.Clients(result[0].idCli).load().done(function (result) {
@@ -65,16 +86,12 @@ BAsket.Order = function (params) {
 			if (setNms.length == 1){
 				setNms.parent().show();
 				setNms[0].parentNode.children[0].innerText = result[i].Name;
-				//setNms[0].nextSibling.data = result[i].Name;
-				//var q = 'viewModel.dsNms' + result[i].id + '=DAL.NMS(' + result[i].id + ')';
-				//eval(q);
-				//setNms.data("dxLookup").datasource = viewModel.dsNms1;
 
-				// DAL.NMS(1).load().done(function (result) {
-				// 	var selNms = $("#idNms" + result[0].idRoot).data("dxLookup");
-				// 	selNms.datasource = result;
-				// 	//selNms.repaint();
-				// });
+				//var lookNms = setNms.data("dxSelectBox");
+				//lookNms.option().placeholder = 'dddd' + i;
+				//lookNms._dataSource._items = P.currentNms[0];
+				//lookNms.dataSource.reload();
+
 				//setNms.data("dxSelectBox").datasource.load();
 				//setNms.data("dxSelectBox")._refreshDataSource();
 				//viewModel.dsNms1=DAL.NMS(1);
@@ -145,7 +162,7 @@ BAsket.Order = function (params) {
 	Order_btnSaveClicked  = function () {
 		if (P.arrayBAsket.length == 0){
 			BAsket.notify(_.Order.ErrNoWars, "error");
-			return;
+		//	return;
 		}
 		var valueDate = $("#idDate").data("dxDateBox").option("value");
 		if (!valueDate) {
@@ -155,10 +172,10 @@ BAsket.Order = function (params) {
 		var valueCli = $("#lookupClient").data("dxLookup").option("value");
 		if (!valueCli) {
 			BAsket.notify(_.Order.ErrNoCli, "error");
-			return;
+		//	return;
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
-		var valueNms = $("#lookupNms").data("dxLookup").option("value");
+		//var valueNms = $("#lookupNms").data("dxLookup").option("value");
 		// if (!valueNms) {
 		// 	BAsket.notify("lookupNms", "error");
 		// 	return;
@@ -170,7 +187,14 @@ BAsket.Order = function (params) {
 		params['date'] = valueDate.toLocaleString().split(' ')[0];
 		params['idCli'] = valueCli;
 		params['idTp'] = (valueTP ? valueTP:0);
-		params['idNms'] = valueNms;
+		
+		params['sOther'] = '';
+		for (var i=0; i<P.currentNms[1].length; i++) {
+			var setNms = $("#idNms" + (i+1)).data("dxSelectBox");
+			if (setNms && setNms.option().value){
+				params['sOther'] += (i+1) + ':' + setNms.option().value + ';';
+			}
+		}
 		params['Note'] = $("#txtNote").data("dxTextArea").option("value");
 		var sWars = '';
 		for (var i in P.arrayBAsket) {
