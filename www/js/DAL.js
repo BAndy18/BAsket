@@ -8,6 +8,7 @@ var DAL = (function ($, window) {
 	root.ProductDetails = function (params) { return loadFunction(params, "ProductDetails"); };
 
 	root.Clients = function (params) { return loadFunction(params, "Clients"); };
+	root.ClientsPar = function (params) { return loadFunction(params, "ClientsPar"); };
 
 	root.BilM = function (params) { return loadFunction(params, "BilM"); };
 	root.BilMById = function (params) { return loadFunction(params, "BilMById"); };

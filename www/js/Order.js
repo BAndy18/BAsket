@@ -1,7 +1,7 @@
 BAsket.Order = function (params) {	
 
-	var arrayTP = ko.observable([{"id":"", "Name":""}]);
-	var arrayNms = ko.observable([{"id":"", "Name":""}]);
+	var arrayTP = ko.observable([{"Id":"", "Name":""}]);
+	var arrayNms = ko.observable([{"Id":"", "Name":""}]);
     var showTP = ko.observable(false);
 	
 	var dataVal = ko.observable(new Date());
@@ -11,7 +11,6 @@ BAsket.Order = function (params) {
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
 	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
-	var nmsName1 = ko.observable( _.Common.Select);
 
 	var viewModel = {
 		clients: DAL.Clients(),
@@ -26,13 +25,10 @@ BAsket.Order = function (params) {
         noteVal: noteVal,
 
         nmsNames: nmsNames,
-        nmsName1: nmsName1,
         dsNms1: P.currentNms[1],
         dsNms2: P.currentNms[2],
-        //id:id,
         //dsNms: DAL.NMS(0),
-        //arrayNms: arrayNms,
-       
+        //arrayNms: arrayNms,       
 		//nmsId: P.currentNms[0]['id'],
         //nmsName: P.currentNms[0]['Name'],
 	};
@@ -44,16 +40,13 @@ BAsket.Order = function (params) {
 			var dateParts = result[0].DateDoc.split(".");
 			dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
 			noteVal(result[0].sNote);
-			cliId(result[0].idCli);
+			cliId(result[0].IdCli);
 			cliName(result[0].cName);
-			tpId(result[0].idTp);
+			tpId(result[0].IdTp);
 			DAL.ProductsByWars(result[0].sWars).load().done(function (result) {
 				P.arrayBAsket = result;
 			})
-			// P.arrayBAsket = [
-			// 		{'id':'39007', 'name':'test','upak':'4','quant':'2','price':'10.02'},
-			// 		{'id':'29657', 'name':'test2','upak':'46','quant':'3','price':'1011.02'},
-			// 	];
+
 			var arr = nmsNames();
 			var sOther = result[0].sOther.split(';');
 			for (var i=0; i<sOther.length; i++) {
@@ -64,15 +57,13 @@ BAsket.Order = function (params) {
 				if (setNms){
 					setNms.option().value = sNms[1];
 					var val = P.currentNms[iNms][sNms[1]-1].Name;
-					//arr[iNms - 1] = 
-					nmsName1(val);
+					arr[iNms - 1] = val;
 				}
 			}
-			//nmsNames.removeAll();
-			//nmsNames(arr);
+			nmsNames(arr);
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
-    		DAL.Clients(result[0].idCli).load().done(function (result) {
+    		DAL.Clients(result[0].IdCli).load().done(function (result) {
 		    	arrayTP(result);
 		    	showTP(result.length > 0);
 			})
@@ -80,7 +71,6 @@ BAsket.Order = function (params) {
 	}
 
 	DAL.NMS(0).load().done(function (result) {
-		//return;
 		for (var i=0; i<result.length; i++) {
 			var setNms = $("#idNms" + (i+1));
 			if (setNms.length == 1){
@@ -100,57 +90,24 @@ BAsket.Order = function (params) {
 		}
 	})
 
-
-	// $(function() {
-	// 	debugger;
-	// });
-
 	Order_clientChanged = function(arg){
 		var value = "";
 		if (arg && arg.element.length > 0) {
 			var lookupCli = $("#lookupClient").data("dxLookup");
-    		value = lookupCli.option("value");
+    		value = lookupCli.option().value;	//("value");
 	    }
 
 	    if (value) {
 	    	var self = this;
 	    	self.tpId(0);
 			self.tpName(_.Order.SelectPoint + '...'); 
-	    	DAL.Clients(value).load().done(function (result) {
+	    	DAL.ClientsPar(value).load().done(function (result) {
 		    	self.arrayTP(result);
 		    	self.showTP(result.length > 0);
 			})
 	    }
 	};
-	// setVisibleFieldTp = function(arg){
-	// 	var fieldTP = $("#fieldTradePoint");
-	// 	if (fieldTP && fieldTP.length == 1) {
-	// 		fieldTP[0].hidden = (arg == 0);
-	// 	}
-	// }
-
-	// Order_nmsChanged = function(arg){
-	// 	var value = "";
-	// 	if (arg && arg.element.length > 0) {
-	// 		var lookupNms = $("#lookupNms").data("dxLookup");
- //    		value = lookupNms.option("value");
-	//     }
-
-	//     if (value) {
-	//     	var self = this;
-	//     	DAL.NMS(value).load().done(function (result) {
-	// 	    	self.arrayNms(result);
-				
-	// 	    	var lookupTP = $("#lookupTP").data("dxLookup");
-	// 	    	var opt = lookupTP.option();
-	// 	    	//lookupTP.repaint();
- //    			// var v1 = lookupTP.option("value");
- //    			// lookupTP.option("value", -1);
- //    			// var v2 = lookupTP.option("value");
-	// 		})
-	//     }
-	// };
-
+	
 	Order_clickBack = function(arg){
 		if (location.hash.indexOf('/') > 0)
 			BAsket.app.navigate('OrderList', { root: true });
@@ -175,11 +132,7 @@ BAsket.Order = function (params) {
 		//	return;
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
-		//var valueNms = $("#lookupNms").data("dxLookup").option("value");
-		// if (!valueNms) {
-		// 	BAsket.notify("lookupNms", "error");
-		// 	return;
-		// }
+
 		var params = {};
 		var hash = location.hash.split('/');
 		if (hash.length > 1)
@@ -198,7 +151,7 @@ BAsket.Order = function (params) {
 		params['Note'] = $("#txtNote").data("dxTextArea").option("value");
 		var sWars = '';
 		for (var i in P.arrayBAsket) {
-        	sWars += P.arrayBAsket[i].id + ':' + P.arrayBAsket[i].quant + ';';
+        	sWars += P.arrayBAsket[i].Id + ':' + P.arrayBAsket[i].quant + ';';
         }
     	params['sWars'] = sWars.substring(0, sWars.length - 1);
 
@@ -266,10 +219,10 @@ BAsket.OrderList = function (params) {
 	// 	DevExpress.ui.notify( name.itemData + " item clicked", "success", 2000 );
 	// }
 	Order_processItemHold = function (arg) {
-		idSelected(arg.itemData.id);
+		idSelected(arg.itemData.Id);
 		popVisible(true);
 	};
 
-	viewModel.dataSource.load();
+	//viewModel.dataSource.load();
 	return viewModel;
 };

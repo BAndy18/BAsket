@@ -15,7 +15,7 @@ $(function() {
     //Globalize.culture = Globalize.culture["ru-RU"];
     //$.preferCulture("ru-RU");
    // BAsket.app.viewShown.add(onViewShown);
-    BAsket.app.router.register(":view/:id", {view: "home", id: undefined});
+    BAsket.app.router.register(":view/:Id", {view: "home", Id: undefined});
     BAsket.app.navigate();  
 });
 
@@ -111,6 +111,8 @@ var P = (function ($, window) {
     root.dataSouceType = "DAL_local";
     //root.dataSouceType = "DAL_web";
     //root.dataSouceType = "dataTest";
+
+    root.pageSize = 30;
     
     root.loadPanelVisible = ko.observable(false);
     function iniLocalStor(key, defval) {
@@ -191,10 +193,12 @@ var P = (function ($, window) {
         })
     };
     root.ReadFirstNms = function () {
-        DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
+//        DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
+        DAL.NMS(0).load().done(function (result) {
             root.currentNms.push(result);
             for (var i=0; i<result.length; i++) {
-                DAL_local.ExecQuery("SELECT id,Name FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
+//                DAL_local.ExecQuery("SELECT id,Name FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
+                DAL.NMS(result[i].Id).load().done(function (result) {
                     root.currentNms.push(result);
                     //root.currentNms.push({id:result[0].id, Name:result[0].Name});
                 })
@@ -232,22 +236,22 @@ var P = (function ($, window) {
         'DROP TABLE IF EXISTS BILM',
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
-        'CREATE TABLE IF NOT EXISTS CAT (id unique, name)',
-        'CREATE TABLE IF NOT EXISTS WAR (id unique, idGr, name, price DECIMAL(20,2), nameArt, nameManuf, urlPict, upak, ostat, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS CLI (id unique, idPar, Name, Adres, geoLoc)',
-        'CREATE TABLE IF NOT EXISTS NMS (idRoot, id, Name)',
-        'CREATE TABLE IF NOT EXISTS BILM (id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, idCli, idTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
-        'CREATE TABLE IF NOT EXISTS RMAP (id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, idCli, idTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
-        "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
-        "INSERT INTO CLI (id,  idPar, Name, Adres, geoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
-        "INSERT INTO BILM (DateDoc, idCli, idTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
-        "INSERT INTO RMAP (DateDoc, idCli, idTp, sNote) VALUES('12.11.2013', '10','','Note')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '1', 'Предприятие')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('0', '2', 'Тип Оплаты')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('1', '1', 'Пупкин ЧП')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('1', '2', 'Ступкин ООО')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('2', '1', 'наличные')",
-        "INSERT INTO NMS (idRoot, id, Name) VALUES('2', '2', 'безнал')",
+        'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
+        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
+        'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
+        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        "INSERT INTO RMAP (DateDoc, IdCli, IdTp, sNote) VALUES('12.11.2013', '10','','Note')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
     ];
+        // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
+        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
+        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
     return root;
 })(jQuery, window);

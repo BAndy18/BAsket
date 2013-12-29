@@ -1,7 +1,6 @@
 BAsket.products = function (params) {   
     var searchStr = ko.observable('');
-    //var categoryId = 
-    P.curCategoryId = (params.id == 'undefined') ? P.curCategoryId : params.id;
+    P.curCategoryId = (params.Id == 'undefined') ? P.curCategoryId : params.Id;
     var arrayBAsket = ko.observable([]);
 
     var bChoice = ko.observable(P.curModeChoice);
@@ -17,7 +16,7 @@ BAsket.products = function (params) {
         showSearch: ko.observable(false),
 
         dataSourceCat: DAL.Categories(),
-        dataSourceProd: DAL.Products({id:P.curCategoryId, search:searchStr}),
+        dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
         dataSourceBasket: P.arrayBAsket,
 
         //categoryId: categoryId,
@@ -32,7 +31,8 @@ BAsket.products = function (params) {
     }).extend({
         throttle: 500
     }).subscribe(function () {
-        viewModel.dataSourceProd.reload();
+        //viewModel.dataSourceProd.pageIndex(0);        
+        viewModel.dataSourceProd.load();
     });
 
     Products_swichClicked  = function () {

@@ -9,56 +9,56 @@
     <div class="dx-fieldset">
       <div class="dx-field">
           <div class="dx-field-label" data-bind="text: _.Products.FldName" />
-          <div class="dx-field-value" data-bind="text: name" />
+          <div class="dx-field-value" data-bind="text: Name" />
       </div>
       <div class="dx-field">
           <div class="dx-field-label" data-bind="text: _.Products.FldPrice" />
-          <div class="dx-field-value" data-bind="text: price" />
+          <div class="dx-field-value" data-bind="text: Price" />
       </div>
       <div class="dx-field">
         <div class="dx-field-label" data-bind="text: _.Products.FldQuantity"/>
         <div class="dx-field-value">
           <div style="width: 20%" data-bind="dxNumberBox: {
               min: 0,
-              value: quant,
+              value: Quant,
               placeholder: _.Products.ErrQuantity                     
             }" />
           <div class="dx-button but20 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: Product_Details_saveClicked}" />
         </div>
       </div>
     </div>
-    <div class="dx-fieldset" data-bind="visible: nameArt">
+    <div class="dx-fieldset" data-bind="visible: NameArt">
       <div class="dx-field">
             <div class="dx-field-label" data-bind="text: _.Products.FldUpak" />
-            <div class="dx-field-value" data-bind="text: upak" />
+            <div class="dx-field-value" data-bind="text: Upak" />
       </div>
       <div class="dx-field">
             <div class="dx-field-label" data-bind="text: _.Products.FldOstat" />
-            <div class="dx-field-value" data-bind="text: ostat" />
+            <div class="dx-field-value" data-bind="text: Ostat" />
       </div>
       <div class="dx-field">
             <div class="dx-field-label" data-bind="text: _.Products.FldNameArt" />
-            <div class="dx-field-value" data-bind="text: nameArt" />
+            <div class="dx-field-value" data-bind="text: NameArt" />
       </div>
-      <div class="dx-field" data-bind="visible: nameManuf">
+      <div class="dx-field" data-bind="visible: NameManuf">
             <div class="dx-field-label" data-bind="text: _.Products.FldNameManuf" />
-            <div class="dx-field-value" data-bind="text: nameManuf" />
+            <div class="dx-field-value" data-bind="text: NameManuf" />
       </div>
-      <div class="dx-field" data-bind="visible: urlPict">
+      <div class="dx-field" data-bind="visible: UrlPict">
             <div class="dx-field-label" data-bind="text: _.Products.FldUrlPict" />
-            <div class="dx-field-value" data-bind="text: urlPict" />
+            <div class="dx-field-value" data-bind="text: UrlPict" />
       </div>
 
       <div class="dx-field">
             <div class="dx-field-label">Id: </div>
-            <div class="dx-field-value" data-bind="text: id"></div>
+            <div class="dx-field-value" data-bind="text: Id"></div>
       </div>
 
     </div>
 
     <center>
       <div>
-        <img class = "image" data-bind="attr: { src: urlPict }" />
+        <img class = "image" data-bind="attr: { src: UrlPict }" />
       </div>
     </center>
   
