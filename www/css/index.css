@@ -9,7 +9,7 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 
 .startstop {  margin-top: 5px;  font-size: 120%; }
 
-.tile { border-radius: .5em;  text-align: center;  /*color: white;*/  background: gray;}
+.tile { border-radius: .5em;  text-align: center;  color: white;  background: gray;}
 .tileicon { width: 55px; height: 55px; background-size: 55px 55px; display: inline-block;}
 
 .basket-header  {font-size: 200%;  margin: 50px;}
@@ -36,7 +36,11 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 .cell20 {  width:20%; }
 .cell10 {  width:10%; }
 
-
+.tile-text {color: black; font-size:smaller; opacity: 0.8; position: absolute; bottom: 0;
+    left: 0.5em;}
+.tile-image { text-align: center; margin-top: 0px; margin-bottom: 0px; padding: 3px; position: relative;
+    height: 100px; wight: 100px;
+}
 
 .dx-theme-ios  #tabs + div.map {
     height: 100%;

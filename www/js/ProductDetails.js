@@ -9,10 +9,15 @@
         Upak: ko.observable(''),
         Ostat: ko.observable(''),
 
-        Quant: ko.observable(0)
+        Quant: ko.observable(0),
+        
+        viewShown: function() {
+            var quant = $("#idQuant").data("dxNumberBox");
+            quant.focus();
+        }
     };
 	DAL.ProductDetails({Id: params.Id, model: viewModel});
-    
+
     Product_Details_saveClicked = function(arg) {
         var bFound = false;
         for (var i in P.arrayBAsket) {
@@ -20,7 +25,7 @@
             //if (i == key && P.arrayBAsket[i].id == this.id()) {
             if (P.arrayBAsket[i].Id == this.Id) {
                 if (this.Quant())
-                    P.arrayBAsket[i].quant = this.Quant();
+                    P.arrayBAsket[i].Quant = this.Quant();
                 else
                     P.arrayBAsket.splice(i, 1);
                 bFound = true;

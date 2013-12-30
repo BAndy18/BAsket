@@ -1,7 +1,7 @@
 /*! 
 * DevExpress Mobile View and Layout Framework (part of PhoneJS)
-* Version: 13.2.5
-* Build date: Dec 3, 2013
+* Version: 13.2.6
+* Build date: Dec 26, 2013
 *
 * Copyright (c) 2012 - 2013 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -1395,7 +1395,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
                         direction: direction
                     };
                 self._processEvent("viewShowing", eventArgs, viewInfo.model);
-                return self._showViewImpl(eventArgs.viewInfo, direction).done(function() {
+                return self._showViewImpl(eventArgs.viewInfo, eventArgs.direction).done(function() {
                         self._processEvent("viewShown", eventArgs, viewInfo.model)
                     })
             },
@@ -1680,7 +1680,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
                 return false
             },
             _findCommands: function($view) {
-                var result = $.map($view.children(".dx-command"), function(element) {
+                var result = $.map($view.addBack().find(".dx-command"), function(element) {
                         return $(element).dxCommand("instance")
                     });
                 return result
@@ -1691,14 +1691,19 @@ if (!DevExpress.MOD_FRAMEWORK) {
                     });
                 return result
             },
+            _checkCommandId: function(id, command) {
+                if (id === null) {
+                    var encodedHtml = String(command._element().get(0).outerHTML).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                    throw new Error("The command's 'id' option should be specified. The command markup: '" + encodedHtml + "'.");
+                }
+            },
             _arrangeCommandsToContainers: function(commands, containers) {
                 var self = this,
                     commandHash = {},
                     commandIds = [];
                 $.each(commands, function(i, command) {
                     var id = command.option("id");
-                    if (id === null)
-                        throw new Error("The command markup: '" + command._element().get(0).outerHTML + "'. The command's 'id' option should be specified.");
+                    self._checkCommandId(id, command);
                     commandIds.push(id);
                     commandHash[id] = command
                 });
@@ -1764,7 +1769,8 @@ if (!DevExpress.MOD_FRAMEWORK) {
             ctor: function(options) {
                 options = options || {};
                 this._layoutTemplateName = options.layoutTemplateName || "";
-                this._disableViewLoadingState = options.disableViewLoadingState
+                this._disableViewLoadingState = options.disableViewLoadingState;
+                this._layoutModel = options.layoutModel || {}
             },
             init: function(options) {
                 options = options || {};
@@ -1800,6 +1806,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
                 self._blankViewInfo = self._createBlankViewInfo($layoutTemplate)
             },
             _createNavigation: function(navigationCommands) {
+                this._viewEngine._applyTemplate(this._$mainLayout, this._layoutModel);
                 this._renderCommands(this._$mainLayout, navigationCommands)
             },
             _getRootElement: function() {
@@ -1821,7 +1828,10 @@ if (!DevExpress.MOD_FRAMEWORK) {
                 });
                 var result = {
                         model: model,
-                        renderResult: {$markup: $blankView},
+                        renderResult: {
+                            $markup: $blankView,
+                            $viewItems: $()
+                        },
                         isBlankView: true
                     };
                 self._appendViewToLayout(result);
@@ -1868,7 +1878,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
             disposeView: function(viewInfo) {
                 if (viewInfo.renderResult) {
                     viewInfo.renderResult.$markup.remove();
-                    viewInfo.renderResult.$transitionContentElements.remove();
+                    viewInfo.renderResult.$viewItems.remove();
                     delete viewInfo.renderResult
                 }
             },
@@ -1878,22 +1888,36 @@ if (!DevExpress.MOD_FRAMEWORK) {
             _renderView: function($viewTemplate, viewInfo) {
                 var self = this;
                 var $layout = this._createViewLayoutTemplate();
-                var viewItems = $viewTemplate.children();
+                var $viewItems = $viewTemplate.children();
                 this._getTransitionElements($layout).each(function(i, item) {
                     self._viewEngine._applyTemplate($(item), viewInfo.model)
                 });
                 this._viewEngine._applyLayoutCore($viewTemplate, $layout);
-                viewItems.each(function(i, item) {
-                    self._viewEngine._applyTemplate($(item), viewInfo.model)
+                var isSimplifiedMarkup = true,
+                    outOfContentItems = $();
+                $viewItems.each(function(i, item) {
+                    var $item = $(item);
+                    self._viewEngine._applyTemplate($item, viewInfo.model);
+                    if ($item.is(".dx-command,.dx-content,script"))
+                        isSimplifiedMarkup = false;
+                    else
+                        outOfContentItems = outOfContentItems.add($item)
                 });
-                return $layout
+                if (outOfContentItems.length && !isSimplifiedMarkup)
+                    throw new Error("All the dxView element children should be either of the dxCommand or dxContent type.\r\nProcessed markup: " + $('<div/>').text(outOfContentItems[0].outerHTML).html());
+                viewInfo.renderResult = {
+                    $markup: $layout,
+                    $viewItems: $viewItems
+                }
             },
             _renderCommands: function($markup, commands) {
                 var commandContainers = this._findCommandContainers($markup);
                 this._commandManager._arrangeCommandsToContainers(commands, commandContainers)
             },
-            _applyViewCommands: function($markup, viewInfo) {
-                var viewCommands = this._commandManager._findCommands($markup);
+            _applyViewCommands: function(viewInfo) {
+                var $viewItems = viewInfo.renderResult.$viewItems,
+                    $markup = viewInfo.renderResult.$markup,
+                    viewCommands = this._commandManager._findCommands($viewItems);
                 viewInfo.commands = DX.framework.utils.mergeCommands(viewInfo.commands || [], viewCommands);
                 this._renderCommands($markup, viewInfo.commands)
             },
@@ -1905,12 +1929,11 @@ if (!DevExpress.MOD_FRAMEWORK) {
                 if (!viewInfo.renderResult) {
                     var $viewTemplate = viewInfo.$viewTemplate || this._viewEngine.findViewTemplate(viewInfo.viewName);
                     this._prepareViewTemplate($viewTemplate, viewInfo);
-                    var $markup = this._renderView($viewTemplate, viewInfo);
-                    this._applyViewCommands($markup, viewInfo);
-                    viewInfo.renderResult = {$markup: $markup};
+                    this._renderView($viewTemplate, viewInfo);
+                    this._applyViewCommands(viewInfo);
+                    self._appendViewToLayout(viewInfo);
                     self._onRenderComplete(viewInfo);
-                    self.viewRendered.fire(viewInfo);
-                    self._appendViewToLayout(viewInfo)
+                    self.viewRendered.fire(viewInfo)
                 }
             },
             _appendViewToLayout: function(viewInfo) {
@@ -1929,7 +1952,9 @@ if (!DevExpress.MOD_FRAMEWORK) {
                     $transition.append($viewElement);
                     $transitionContentElements = $transitionContentElements.add($viewElement)
                 });
-                viewInfo.renderResult.$transitionContentElements = $transitionContentElements
+                self._$mainLayout.append(viewInfo.renderResult.$viewItems.filter(".dx-command"));
+                $markup.remove();
+                viewInfo.renderResult.$markup = $transitionContentElements
             },
             _onRenderComplete: function(){},
             _onViewShown: function(viewInfo) {
@@ -1938,7 +1963,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
             _doTransition: function(viewInfo, direction) {
                 var self = this,
                     deferred = $.Deferred();
-                var transitions = $.map(viewInfo.renderResult.$transitionContentElements, function(transitionContent) {
+                var transitions = $.map(viewInfo.renderResult.$markup, function(transitionContent) {
                         var $transitionContent = $(transitionContent),
                             $transition = $transitionContent.parent(),
                             transitionType = self._disableTransitions ? "none" : $transition.data("dx-transition-type");
@@ -1955,7 +1980,8 @@ if (!DevExpress.MOD_FRAMEWORK) {
                 return deferred.promise()
             },
             _hideView: function(viewInfo) {
-                this._hideViewElements(viewInfo.renderResult.$transitionContentElements)
+                if (viewInfo.renderResult)
+                    this._hideViewElements(viewInfo.renderResult.$markup)
             },
             _showViewImpl: function(viewInfo, direction) {
                 var self = this,
@@ -2399,7 +2425,7 @@ if (!DevExpress.MOD_FRAMEWORK) {
                     $placeholder.empty();
                     $placeholder.append($placeholderContent)
                 });
-                $view.children().hide().appendTo($layout);
+                $placeholderContents.filter(":not(.dx-content-placeholder .dx-content)").remove();
                 return $layout
             }
         })
@@ -2454,7 +2480,8 @@ if (!DevExpress.MOD_FRAMEWORK) {
             _resolveLayoutController: function(viewInfo) {
                 var args = {
                         viewInfo: viewInfo,
-                        layoutController: null
+                        layoutController: null,
+                        availableLayoutControllers: this._availableLayoutControllers
                     };
                 this._processEvent("resolveLayoutController", args, viewInfo.model);
                 return args.layoutController || this._resolveLayoutControllerImpl(viewInfo)
@@ -2526,7 +2553,11 @@ if (!DevExpress.MOD_FRAMEWORK) {
             },
             _createViewModel: function(viewInfo) {
                 this.callBase(viewInfo);
-                viewInfo.model = $.extend({}, viewInfo.viewTemplateInfo, viewInfo.model)
+                var templateInfo = viewInfo.viewTemplateInfo,
+                    model = viewInfo.model;
+                for (var name in templateInfo)
+                    if (!(name in model))
+                        model[name] = templateInfo[name]
             },
             _checklayoutControllersRegistration: function(controllers) {
                 var result = [];
@@ -2576,7 +2607,8 @@ if (!DevExpress.MOD_FRAMEWORK) {
             },
             _getColorSchemeClass: function() {
                 var $indicator = $("<div>").addClass("dx-color-scheme").appendTo(this._$viewPort),
-                    colorSchemeName = $indicator.css("font-family").replace(/^['"]|['"]$/g, "");
+                    markerThemeProperty = "font-family",
+                    colorSchemeName = $indicator.css(markerThemeProperty).replace(/^['"]|['"]$/g, "");
                 $indicator.remove();
                 if (!colorSchemeName || colorSchemeName === "#") {
                     DX.utils.logger.info("Color scheme name is undefined");

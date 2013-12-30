@@ -1,7 +1,7 @@
 /*! 
 * DevExpress Core Library
-* Version: 13.2.5
-* Build date: Dec 3, 2013
+* Version: 13.2.6
+* Build date: Dec 26, 2013
 *
 * Copyright (c) 2012 - 2013 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -254,6 +254,199 @@ if (!window.DevExpress) {
             underscore: underscore
         }
     })(jQuery, DevExpress);
+    /*! Module core, file devices.js */
+    (function($, DX, undefined) {
+        var knownUATable = {
+                iPhone: "iPhone",
+                iPhone5: "iPhone 5",
+                iPad: "iPad",
+                iPadMini: "iPad Mini",
+                androidPhone: "Android Mobile",
+                androidTablet: "Android",
+                win8: "MSAppHost",
+                win8Phone: "Windows Phone 8",
+                msSurface: "MSIE ARM Tablet PC",
+                desktop: "desktop",
+                tizen: "Tizen Mobile"
+            };
+        var knownMajorVersion = {
+                ios: [5, 6, 7],
+                android: [2, 3, 4],
+                win8: [8],
+                tizen: [2],
+                desktop: [],
+                generic: []
+            };
+        var device;
+        var current = function(deviceOrName) {
+                if (deviceOrName)
+                    device = getDevice(deviceOrName);
+                else {
+                    if (!device) {
+                        deviceOrName = undefined;
+                        try {
+                            deviceOrName = getDeviceOrNameFromWindowScope()
+                        }
+                        catch(e) {
+                            deviceOrName = getDeviceNameFromSessionStorage()
+                        }
+                        finally {
+                            if (!deviceOrName)
+                                deviceOrName = getDeviceNameFromSessionStorage()
+                        }
+                        device = getDevice(deviceOrName)
+                    }
+                    return device
+                }
+            };
+        var getDevice = function(deviceName) {
+                if (deviceName === "genericPhone")
+                    return {
+                            deviceType: "phone",
+                            platform: "generic",
+                            generic: true
+                        };
+                if ($.isPlainObject(deviceName))
+                    return fromConfig(deviceName);
+                else {
+                    var ua;
+                    if (deviceName) {
+                        ua = knownUATable[deviceName];
+                        if (!ua)
+                            throw Error("Unknown device");
+                    }
+                    else
+                        ua = navigator.userAgent;
+                    return fromUA(ua)
+                }
+            };
+        var fromConfig = function(config) {
+                var shortcuts = {
+                        phone: config.deviceType === "phone",
+                        tablet: config.deviceType === "tablet",
+                        android: config.platform === "android",
+                        ios: config.platform === "ios",
+                        win8: config.platform === "win8",
+                        tizen: config.platform === "tizen",
+                        generic: config.platform === "generic"
+                    };
+                return $.extend({}, defaultDevice, shortcuts, config)
+            };
+        var fromUA = function(ua) {
+                return deviceParser.ios(ua) || deviceParser.android(ua) || deviceParser.win8(ua) || deviceParser.tizen(ua) || deviceParser.desktop(ua) || genericDevice
+            };
+        var defaultDevice = {
+                deviceType: "",
+                platform: "",
+                version: [],
+                phone: false,
+                tablet: false,
+                android: false,
+                ios: false,
+                win8: false,
+                tizen: false,
+                generic: false
+            };
+        var genericDevice = $.extend(defaultDevice, {
+                platform: "generic",
+                deviceType: "phone",
+                generic: true
+            });
+        var deviceParser = {
+                ios: function(userAgent) {
+                    if (!/ip(hone|od|ad)/i.test(userAgent))
+                        return;
+                    var isPhone = /ip(hone|od)/i.test(userAgent);
+                    var matches = userAgent.match(/os (\d+)_(\d+)_?(\d+)?/i);
+                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10), parseInt(matches[3] || 0, 10)] : [];
+                    return fromConfig({
+                            deviceType: isPhone ? "phone" : "tablet",
+                            platform: "ios",
+                            version: version
+                        })
+                },
+                android: function(userAgent) {
+                    if (!/android|htc_|silk/i.test(userAgent))
+                        return;
+                    var isPhone = /mobile/i.test(userAgent);
+                    var matches = userAgent.match(/android (\d+)\.(\d+)\.?(\d+)?/i);
+                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10), parseInt(matches[3] || 0, 10)] : [];
+                    return fromConfig({
+                            deviceType: isPhone ? "phone" : "tablet",
+                            platform: "android",
+                            version: version
+                        })
+                },
+                win8: function(userAgent) {
+                    var isPhone = /windows phone/i.test(userAgent),
+                        isTablet = /msie(.*)arm(.*)tablet\spc/i.test(userAgent),
+                        isDesktop = !isTablet && /msapphost/i.test(userAgent);
+                    if (!(isPhone || isTablet || isDesktop))
+                        return;
+                    var matches = userAgent.match(/windows phone (\d+).(\d+)/i) || userAgent.match(/windows nt (\d+).(\d+)/i),
+                        version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10)] : [];
+                    return fromConfig({
+                            deviceType: isPhone ? "phone" : isTablet ? "tablet" : "desktop",
+                            platform: "win8",
+                            version: version
+                        })
+                },
+                tizen: function(userAgent) {
+                    if (!/tizen/i.test(userAgent))
+                        return;
+                    var isPhone = /mobile/i.test(userAgent);
+                    var matches = userAgent.match(/tizen (\d+)\.(\d+)/i);
+                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10)] : [];
+                    return fromConfig({
+                            deviceType: isPhone ? "phone" : "tablet",
+                            platform: "tizen",
+                            version: version
+                        })
+                },
+                desktop: function(userAgent) {
+                    if (!/desktop/i.test(userAgent))
+                        return;
+                    return fromConfig({
+                            deviceType: "desktop",
+                            platform: "desktop"
+                        })
+                }
+            };
+        var getDeviceOrNameFromWindowScope = function() {
+                var result;
+                if (window.top["dx-force-device-object"] || window.top["dx-force-device"])
+                    result = window.top["dx-force-device-object"] || window.top["dx-force-device"];
+                return result
+            };
+        var getDeviceNameFromSessionStorage = function() {
+                return window.sessionStorage && (sessionStorage.getItem("dx-force-device") || sessionStorage.getItem("dx-simulator-device"))
+            };
+        var getDeviceMajorVersionClass = function(device) {
+                var versions = knownMajorVersion[device.platform],
+                    deviceVersion = device.version && device.version[0],
+                    lastVersion = versions[versions.length - 1];
+                if (deviceVersion) {
+                    var isKnownVersion = $.inArray(parseInt(deviceVersion, 10), versions) !== -1,
+                        version = isKnownVersion ? deviceVersion : lastVersion;
+                    return " dx-version-major-" + version
+                }
+                return lastVersion ? " dx-version-major-" + lastVersion : ""
+            };
+        DX.devices = {
+            attachCss: function(element, device) {
+                var $element = $(element);
+                device = device || this.current();
+                var deviceTypeClass = device.deviceType ? " dx-device-" + device.deviceType : "";
+                $element.addClass("dx-theme-" + device.platform).addClass("dx-theme-" + device.platform + "-typography").addClass(deviceTypeClass).addClass(getDeviceMajorVersionClass(device))
+            },
+            current: current,
+            real: getDevice(),
+            isRippleEmulator: function() {
+                return !!window.tinyHippos
+            }
+        };
+        DX.devices.__internals = {fromUA: fromUA}
+    })(jQuery, DevExpress);
     /*! Module core, file support.js */
     (function($, DX, window) {
         var cssPrefixes = ["", "Webkit", "Moz", "O", "ms"],
@@ -276,13 +469,14 @@ if (!window.DevExpress) {
         var supportProp = function(prop) {
                 return !!styleProp(prop)
             };
+        var isRetinaIPad = DX.devices.real.ios && DX.devices.real.deviceType === "tablet" && window.devicePixelRatio > 1;
         DX.support = {
             touch: "ontouchstart" in window,
             pointer: window.navigator.pointerEnabled,
-            transform3d: supportProp("perspective"),
-            transition: supportProp("transition"),
+            transform3d: !isRetinaIPad && supportProp("perspective"),
+            transition: !isRetinaIPad && supportProp("transition"),
             transitionEndEventName: transitionEndEventNames[styleProp("transition")],
-            animation: supportProp("animation"),
+            animation: !isRetinaIPad && supportProp("animation"),
             winJS: "WinJS" in window,
             styleProp: styleProp,
             supportProp: supportProp,
@@ -433,9 +627,10 @@ if (!window.DevExpress) {
                                 offset: -data.offset
                             });
                         initMyLocation(inverseData);
-                        if (inverseData.myLocation >= bounds.min && inverseData.myLocation <= bounds.max || inverseData.myLocation > data.myLocation)
+                        if (inverseData.myLocation >= bounds.min && inverseData.myLocation <= bounds.max || inverseData.myLocation > data.myLocation) {
                             data.myLocation = inverseData.myLocation;
-                        return true
+                            return true
+                        }
                     }
                     return false
                 }
@@ -513,14 +708,16 @@ if (!window.DevExpress) {
                 initMyLocation(v);
                 var bounds = function() {
                         var win = $(window),
+                            windowWidth = win.width(),
+                            windowHeight = win.height(),
                             left = win.scrollLeft(),
-                            top = win.scrollTop();
+                            top = win.scrollTop(),
+                            hScrollbar = document.width > document.documentElement.clientWidth,
+                            vScrollbar = document.height > document.documentElement.clientHeight,
+                            hZoomLevel = DX.support.touch ? document.documentElement.clientWidth / (vScrollbar ? windowWidth - scrollbarWidth : windowWidth) : 1,
+                            vZoomLevel = DX.support.touch ? document.documentElement.clientHeight / (hScrollbar ? windowHeight - scrollbarWidth : windowHeight) : 1;
                         if (scrollbarWidth === undefined)
                             scrollbarWidth = calculateScrollbarWidth();
-                        var hScrollbar = document.width > document.documentElement.clientWidth,
-                            vScrollbar = document.height > document.documentElement.clientHeight,
-                            hZoomLevel = DX.support.touch ? document.documentElement.clientWidth / (vScrollbar ? window.innerWidth - scrollbarWidth : window.innerWidth) : 1,
-                            vZoomLevel = DX.support.touch ? document.documentElement.clientHeight / (hScrollbar ? window.innerHeight - scrollbarWidth : window.innerHeight) : 1;
                         return {
                                 h: {
                                     min: left,
@@ -546,15 +743,17 @@ if (!window.DevExpress) {
                 var $what = $(what);
                 if (!options)
                     return $what.offset();
-                var targetPosition = calculatePosition($what, options);
+                var targetPosition = options.h && options.v ? options : calculatePosition($what, options);
                 $what.offset({
                     left: targetPosition.h.location,
                     top: targetPosition.v.location
-                })
+                });
+                return targetPosition
             };
         $.extend(DX, {
             calculatePosition: calculatePosition,
-            position: position
+            position: position,
+            inverseAlign: inverseAlign
         });
         var calculateScrollbarWidth = function() {
                 var $scrollDiv = $("<div>").css({
@@ -609,7 +808,8 @@ if (!window.DevExpress) {
                     this._beforeExecute = config.beforeExecute || $.noop;
                     this._afterExecute = config.afterExecute || $.noop;
                     this._component = config.component;
-                    this._excludeValidators = config.excludeValidators
+                    this._excludeValidators = config.excludeValidators;
+                    this._eventBubble = "eventBubble" in config ? config.eventBubble : true
                 },
                 execute: function() {
                     var e = {
@@ -622,6 +822,8 @@ if (!window.DevExpress) {
                         };
                     if (!this._validateAction(e))
                         return;
+                    if (!this._eventBubble)
+                        e.args[0].jQueryEvent.stopPropagation();
                     this._beforeExecute.call(this._context, e);
                     if (e.canceled)
                         return;
@@ -1339,8 +1541,9 @@ if (!window.DevExpress) {
                 }
                 return result
             };
-        var move = function($element, position) {
-                if (!support.transform3d) {
+        var move = function($element, position, config) {
+                config = config || {};
+                if (!support.transform3d && !config.cssTransform) {
                     $element.css(position);
                     return
                 }
@@ -1357,7 +1560,7 @@ if (!window.DevExpress) {
                 })
             };
         var getTranslate = function($element) {
-                var transformValue = $element.css("transform"),
+                var transformValue = $element.css("transform") || "translate3d(0, 0, 0)",
                     matrix = transformValue.match(TRANSFORM_MATRIX_REGEX),
                     is3D = matrix && matrix[1];
                 if (matrix) {
@@ -1439,199 +1642,6 @@ if (!window.DevExpress) {
                 return !(this._stopped || this._finished)
             }
         })
-    })(jQuery, DevExpress);
-    /*! Module core, file devices.js */
-    (function($, DX, undefined) {
-        var knownUATable = {
-                iPhone: "iPhone",
-                iPhone5: "iPhone 5",
-                iPad: "iPad",
-                iPadMini: "iPad Mini",
-                androidPhone: "Android Mobile",
-                androidTablet: "Android",
-                win8: "MSAppHost",
-                win8Phone: "Windows Phone 8",
-                msSurface: "MSIE ARM Tablet PC",
-                desktop: "desktop",
-                tizen: "Tizen Mobile"
-            };
-        var knownMajorVersion = {
-                ios: [5, 6, 7],
-                android: [2, 3, 4],
-                win8: [8],
-                tizen: [2],
-                desktop: [],
-                generic: []
-            };
-        var device;
-        var current = function(deviceOrName) {
-                if (deviceOrName)
-                    device = getDevice(deviceOrName);
-                else {
-                    if (!device) {
-                        var deviceOrName = undefined;
-                        try {
-                            deviceOrName = getDeviceOrNameFromWindowScope()
-                        }
-                        catch(e) {
-                            deviceOrName = getDeviceNameFromSessionStorage()
-                        }
-                        finally {
-                            if (!deviceOrName)
-                                deviceOrName = getDeviceNameFromSessionStorage()
-                        }
-                        device = getDevice(deviceOrName)
-                    }
-                    return device
-                }
-            };
-        var getDevice = function(deviceName) {
-                if (deviceName === "genericPhone")
-                    return {
-                            deviceType: "phone",
-                            platform: "generic",
-                            generic: true
-                        };
-                if ($.isPlainObject(deviceName))
-                    return fromConfig(deviceName);
-                else {
-                    var ua;
-                    if (deviceName) {
-                        ua = knownUATable[deviceName];
-                        if (!ua)
-                            throw Error("Unknown device");
-                    }
-                    else
-                        ua = navigator.userAgent;
-                    return fromUA(ua)
-                }
-            };
-        var fromConfig = function(config) {
-                var shortcuts = {
-                        phone: config.deviceType === "phone",
-                        tablet: config.deviceType === "tablet",
-                        android: config.platform === "android",
-                        ios: config.platform === "ios",
-                        win8: config.platform === "win8",
-                        tizen: config.platform === "tizen",
-                        generic: config.platform === "generic"
-                    };
-                return $.extend({}, defaultDevice, shortcuts, config)
-            };
-        var fromUA = function(ua) {
-                return deviceParser.ios(ua) || deviceParser.android(ua) || deviceParser.win8(ua) || deviceParser.tizen(ua) || deviceParser.desktop(ua) || genericDevice
-            };
-        var defaultDevice = {
-                deviceType: "",
-                platform: "",
-                version: [],
-                phone: false,
-                tablet: false,
-                android: false,
-                ios: false,
-                win8: false,
-                tizen: false,
-                generic: false
-            };
-        var genericDevice = $.extend(defaultDevice, {
-                platform: "generic",
-                deviceType: "phone",
-                generic: true
-            });
-        var deviceParser = {
-                ios: function(userAgent) {
-                    if (!/ip(hone|od|ad)/i.test(userAgent))
-                        return;
-                    var isPhone = /ip(hone|od)/i.test(userAgent);
-                    var matches = userAgent.match(/os (\d+)_(\d+)_?(\d+)?/i);
-                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10), parseInt(matches[3] || 0, 10)] : [];
-                    return fromConfig({
-                            deviceType: isPhone ? "phone" : "tablet",
-                            platform: "ios",
-                            version: version
-                        })
-                },
-                android: function(userAgent) {
-                    if (!/android|htc_|silk/i.test(userAgent))
-                        return;
-                    var isPhone = /mobile/i.test(userAgent);
-                    var matches = userAgent.match(/android (\d+)\.(\d+)\.?(\d+)?/i);
-                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10), parseInt(matches[3] || 0, 10)] : [];
-                    return fromConfig({
-                            deviceType: isPhone ? "phone" : "tablet",
-                            platform: "android",
-                            version: version
-                        })
-                },
-                win8: function(userAgent) {
-                    var isPhone = /windows phone/i.test(userAgent),
-                        isTablet = /msie(.*)arm(.*)tablet\spc/i.test(userAgent),
-                        isDesktop = !isTablet && /msapphost/i.test(userAgent);
-                    if (!(isPhone || isTablet || isDesktop))
-                        return;
-                    var matches = userAgent.match(/windows phone (\d+).(\d+)/i) || userAgent.match(/windows nt (\d+).(\d+)/i),
-                        version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10)] : [];
-                    return fromConfig({
-                            deviceType: isPhone ? "phone" : isTablet ? "tablet" : "desktop",
-                            platform: "win8",
-                            version: version
-                        })
-                },
-                tizen: function(userAgent) {
-                    if (!/tizen/i.test(userAgent))
-                        return;
-                    var isPhone = /mobile/i.test(userAgent);
-                    var matches = userAgent.match(/tizen (\d+)\.(\d+)/i);
-                    var version = matches ? [parseInt(matches[1], 10), parseInt(matches[2], 10)] : [];
-                    return fromConfig({
-                            deviceType: isPhone ? "phone" : "tablet",
-                            platform: "tizen",
-                            version: version
-                        })
-                },
-                desktop: function(userAgent) {
-                    if (!/desktop/i.test(userAgent))
-                        return;
-                    return fromConfig({
-                            deviceType: "desktop",
-                            platform: "desktop"
-                        })
-                }
-            };
-        var getDeviceOrNameFromWindowScope = function() {
-                var result = undefined;
-                if (window.top["dx-force-device-object"] || window.top["dx-force-device"])
-                    result = window.top["dx-force-device-object"] || window.top["dx-force-device"];
-                return result
-            };
-        var getDeviceNameFromSessionStorage = function() {
-                return window.sessionStorage && (sessionStorage.getItem("dx-force-device") || sessionStorage.getItem("dx-simulator-device"))
-            };
-        var getDeviceMajorVersionClass = function(device) {
-                var versions = knownMajorVersion[device.platform],
-                    deviceVersion = device.version && device.version[0],
-                    lastVersion = versions[versions.length - 1];
-                if (deviceVersion) {
-                    var isKnownVersion = $.inArray(parseInt(deviceVersion, 10), versions) !== -1,
-                        version = isKnownVersion ? deviceVersion : lastVersion;
-                    return " dx-version-major-" + version
-                }
-                return lastVersion ? " dx-version-major-" + lastVersion : ""
-            };
-        DX.devices = {
-            attachCss: function(element, device) {
-                var $element = $(element);
-                device = device || this.current();
-                var deviceTypeClass = device.deviceType ? " dx-device-" + device.deviceType : "";
-                $element.addClass("dx-theme-" + device.platform).addClass("dx-theme-" + device.platform + "-typography").addClass(deviceTypeClass).addClass(getDeviceMajorVersionClass(device))
-            },
-            current: current,
-            real: getDevice(),
-            isRippleEmulator: function() {
-                return !!window.tinyHippos
-            }
-        };
-        DX.devices.__internals = {fromUA: fromUA}
     })(jQuery, DevExpress);
     /*! Module core, file fx.js */
     (function($, DX, undefined) {
@@ -1889,14 +1899,21 @@ if (!window.DevExpress) {
                     baseConfigValidator(config, "slide")
                 },
                 setup: function($element, config) {
-                    var animStrategy = getAnimationStrategy(config);
-                    if (!support.transform3d || animStrategy !== TransitionAnimationStrategy && animStrategy !== FrameAnimationStrategy)
+                    if (!support.transform3d)
                         return;
-                    this._setupConfig($element, config.from);
-                    this._setupConfig($element, config.to)
+                    var currentLocation = translator.getTranslate($element);
+                    this._setupConfig($element, config.from, currentLocation);
+                    this._setupConfig($element, config.to, currentLocation)
                 },
-                _setupConfig: function($element, config) {
-                    var translate = translator.getTranslate($element),
+                _resetLocation: function($element) {
+                    $element.css({
+                        top: 0,
+                        left: 0,
+                        transform: "translate3d(0px, 0px, 0px)"
+                    })
+                },
+                _setupConfig: function($element, config, currentLocation) {
+                    var translate = $.extend({}, currentLocation),
                         left = config.left,
                         top = config.top;
                     if (left !== undefined) {
@@ -1922,17 +1939,15 @@ if (!window.DevExpress) {
                     baseConfigValidator(config, "pop")
                 },
                 setup: function($element, config) {
-                    if (!support.transform3d)
-                        return;
                     var from = config.from,
                         to = config.to,
                         fromOpacity = "opacity" in from ? from.opacity : $element.css("opacity"),
-                        toOpacicy = "opacity" in to ? to.opacity : 1,
+                        toOpacity = "opacity" in to ? to.opacity : 1,
                         fromScale = "scale" in from ? from.scale : 0,
                         toScale = "scale" in to ? to.scale : 1;
                     config.from = {opacity: fromOpacity};
                     config.from[TRANSFORM_PROP] = this._getCssTransform(fromScale);
-                    config.to = {opacity: toOpacicy};
+                    config.to = {opacity: toOpacity};
                     config.to[TRANSFORM_PROP] = this._getCssTransform(toScale)
                 },
                 _getCssTransform: function(scale) {
@@ -2784,11 +2799,18 @@ if (!window.DevExpress) {
             constructor: Color,
             highlight: function(step) {
                 step = step || 10;
-                return toHexFromRgb(normalize(this.r + step), normalize(this.g + step), normalize(this.b + step))
+                return this.alter(step).toHex()
             },
             darken: function(step) {
                 step = step || 10;
-                return toHexFromRgb(normalize(this.r - step), normalize(this.g - step), normalize(this.b - step))
+                return this.alter(-step).toHex()
+            },
+            alter: function(step) {
+                var result = new Color;
+                result.r = normalize(this.r + step);
+                result.g = normalize(this.g + step);
+                result.b = normalize(this.b + step);
+                return result
             },
             blend: function(blendColor, opacity) {
                 var other = blendColor instanceof Color ? blendColor : new Color(blendColor),
@@ -5291,25 +5313,37 @@ if (!window.DevExpress) {
         var ui = DX.ui = {};
         var initViewport = function(options) {
                 options = $.extend({}, options);
-                var device = DX.devices.real;
+                var device = DX.devices.current();
                 var allowZoom = options.allowZoom,
-                    allowPan = options.allowPan;
+                    allowPan = options.allowPan,
+                    allowSelection = "allowSelection" in options ? options.allowSelection : device.platform == "desktop";
                 DX.overlayTargetContainer(".dx-viewport");
                 var metaSelector = "meta[name=viewport]";
                 if (!$(metaSelector).length)
                     $("<meta />").attr("name", "viewport").appendTo("head");
                 var metaVerbs = ["width=device-width"],
                     msTouchVerbs = [];
+                if (DX.devices.real.ios && DX.devices.real.version[0] > 6) {
+                    var isPhoneGap = document.location.protocol == "file:";
+                    if (isPhoneGap)
+                        metaVerbs.push("height=device-height")
+                }
                 if (allowZoom)
                     msTouchVerbs.push("pinch-zoom");
                 else
-                    metaVerbs.push("initial-scale=1.0", "maximum-scale=1.0");
+                    metaVerbs.push("initial-scale=1.0", "maximum-scale=1.0, user-scalable=no");
                 if (allowPan)
                     msTouchVerbs.push("pan-x", "pan-y");
                 if (!allowPan && !allowZoom)
                     $("html, body").css("overflow", "hidden");
                 else
                     $("html").css("-ms-overflow-style", "-ms-autohiding-scrollbar");
+                if (!allowSelection) {
+                    $(document).on("selectstart", function() {
+                        return false
+                    });
+                    $(".dx-viewport").css("user-select", "none")
+                }
                 $(metaSelector).attr("content", metaVerbs.join());
                 $("html").css("-ms-touch-action", msTouchVerbs.join(" ") || "none");
                 if (DX.support.touch)
@@ -5448,6 +5482,8 @@ if (!window.DevExpress) {
                         }
                     }).data("dxPopup");
                 popupInstance._wrapper().addClass(DX_DIALOG_WRAPPER_CLASSNAME);
+                if (options.position)
+                    popupInstance.option("position", options.position);
                 $.each(options.buttons || [DEFAULT_BUTTON], function() {
                     var button = $("<div/>").addClass(DX_DIALOG_BUTTON_CLASSNAME).appendTo($buttons);
                     var action = new DX.Action(this.clickAction, {context: popupInstance});
@@ -5733,6 +5769,42 @@ if (!window.DevExpress) {
             fireEvent: fireEvent
         }
     })(jQuery, DevExpress);
+    /*! Module core, file ui.events.mspointer.js */
+    (function($, DX, undefined) {
+        var POINTER_TYPE_MAP = {
+                2: "touch",
+                3: "pen",
+                4: "mouse"
+            };
+        var pointerEventHook = {
+                filter: function(event, originalEvent) {
+                    var pointerType = originalEvent.pointerType;
+                    if ($.isNumeric(pointerType))
+                        event.pointerType = POINTER_TYPE_MAP[pointerType];
+                    return event
+                },
+                props: $.event.mouseHooks.props.concat(["pointerId", "originalTarget", "namespace", "width", "height", "pressure", "result", "tiltX", "charCode", "tiltY", "detail", "isPrimary", "prevValue"])
+            };
+        $.each(["MSPointerDown", "MSPointerMove", "MSPointerUp", "MSPointerCancel", "MSPointerOver", "MSPointerOut", "MSPointerEnter", "MSPointerLeave", "pointerdown", "pointermove", "pointerup", "pointercancel", "pointerover", "pointerout", "pointerenter", "pointerleave"], function() {
+            $.event.fixHooks[this] = pointerEventHook
+        })
+    })(jQuery, DevExpress);
+    /*! Module core, file ui.events.touch.js */
+    (function($, DX, undefined) {
+        var touchEventHook = {
+                filter: function(event, originalEvent) {
+                    if (originalEvent.changedTouches.length) {
+                        event.pageX = originalEvent.changedTouches[0].pageX;
+                        event.pageY = originalEvent.changedTouches[0].pageY
+                    }
+                    return event
+                },
+                props: $.event.mouseHooks.props.concat(["touches", "changedTouches", "targetTouches", "detail", "result", "namespace", "originalTarget", "charCode", "prevValue"])
+            };
+        $.each(["touchstart", "touchmove", "touchend", "touchcancel"], function() {
+            $.event.fixHooks[this] = touchEventHook
+        })
+    })(jQuery, DevExpress);
     /*! Module core, file ui.events.pointer.js */
     (function($, DX, undefined) {
         var ui = DX.ui,
@@ -5835,21 +5907,49 @@ if (!window.DevExpress) {
         })
     })(jQuery, DevExpress);
     /*! Module core, file ui.events.click.js */
-    (function($, DX, undefined) {
-        var ui = DX.ui,
+    (function($, DX, wnd, undefined) {
+        var ua = navigator.userAgent,
+            screen = wnd.screen,
+            ui = DX.ui,
             events = ui.events,
+            support = DX.support,
             jqSpecialEvent = $.event.special,
+            device = DX.devices.real,
             EVENTS_NAME_SPACE = "dxSpecialEvents",
-            CLICK_NAME_SPACE = "dxClick",
+            CLICK_NAME_SPACE = "dxClick" + EVENTS_NAME_SPACE,
             CLICK_EVENT_NAME = "dxclick",
-            CLICK_DATA_KEY = EVENTS_NAME_SPACE + "." + CLICK_NAME_SPACE,
             SCROLLABLE_PARENT_DATA_KEY = "dxClickScrollableParent",
-            SCROLLABLE_PARENT_SCROLL_OFFSET_DATA_KEY = "dxClickScrollableParentOffset";
+            SCROLLABLE_PARENT_SCROLL_OFFSET_DATA_KEY = "dxClickScrollableParentOffset",
+            preferNativeClick = function() {
+                var iPhone4SAndElder = device.deviceType === "phone" && screen.height <= 480,
+                    iPad2AndElder = device.deviceType === "tablet" && wnd.devicePixelRatio < 2,
+                    IOS7AndNewer = device.platform === "ios" && device.version[0] > 6;
+                return IOS7AndNewer && (iPhone4SAndElder || iPad2AndElder)
+            }(),
+            useNativeClick = function() {
+                if (!support.touch)
+                    return true;
+                var chromeInfo = ua.match(/Chrome\/([0-9]+)/) || [],
+                    chrome = !!chromeInfo[0],
+                    chromeVersion = ~~chromeInfo[1],
+                    android = device.platform === "android";
+                if (chrome)
+                    if (android) {
+                        if (chromeVersion > 31 && wnd.innerWidth <= screen.width)
+                            return true;
+                        if ($("meta[name=viewport][content*='user-scalable=no']").length)
+                            return true
+                    }
+                    else
+                        return true;
+                return false
+            }();
         var SimulatedStrategy = {
                 TOUCH_BOUNDARY: 10,
                 _startX: 0,
                 _startY: 0,
                 _handlerCount: 0,
+                _target: null,
                 _touchWasMoved: function(e) {
                     var boundary = SimulatedStrategy.TOUCH_BOUNDARY;
                     return Math.abs(e.pageX - SimulatedStrategy._startX) > boundary || Math.abs(e.pageY - SimulatedStrategy._startY) > boundary
@@ -5861,7 +5961,7 @@ if (!window.DevExpress) {
                     else {
                         var $current = $element;
                         while ($current.length) {
-                            if ($current[0].scrollHeight > $current[0].offsetHeight) {
+                            if ($current[0].scrollHeight - $current[0].offsetHeight > 1) {
                                 $scrollParent = $current;
                                 $element.data(SCROLLABLE_PARENT_DATA_KEY, $scrollParent);
                                 break
@@ -5880,37 +5980,57 @@ if (!window.DevExpress) {
                     var $scrollable = $element.data(SCROLLABLE_PARENT_DATA_KEY);
                     return $scrollable && $scrollable.scrollTop() !== $element.data(SCROLLABLE_PARENT_SCROLL_OFFSET_DATA_KEY)
                 },
+                _hasClosestScrollable: function($element) {
+                    var $scrollable = SimulatedStrategy._getClosestScrollable($element);
+                    if (!$scrollable.length)
+                        return false;
+                    if ($scrollable.is("body"))
+                        return false;
+                    if ($scrollable === window)
+                        return false;
+                    if ($scrollable.css("overflow") === "hidden")
+                        return false;
+                    return true
+                },
                 _handleStart: function(e) {
                     if (events.isMouseEvent(e) && e.which !== 1)
                         return;
-                    $(e.currentTarget).data(CLICK_DATA_KEY).trackingClick = true;
                     SimulatedStrategy._saveClosestScrollableOffset($(e.target));
+                    SimulatedStrategy._target = e.target;
                     SimulatedStrategy._startX = e.pageX;
                     SimulatedStrategy._startY = e.pageY
                 },
                 _handleEnd: function(e) {
-                    var data = $(e.currentTarget).data(CLICK_DATA_KEY);
-                    if (SimulatedStrategy._touchWasMoved(e)) {
-                        data.trackingClick = false;
-                        return
-                    }
-                    if (!data.trackingClick)
-                        return;
-                    data.trackingClick = false;
-                    if (SimulatedStrategy._closestScrollableWasMoved($(e.target)))
+                    var $target = $(e.target);
+                    if (!$target.is(SimulatedStrategy._target) || SimulatedStrategy._touchWasMoved(e) || SimulatedStrategy._closestScrollableWasMoved($target) || preferNativeClick && SimulatedStrategy._hasClosestScrollable($target))
                         return;
                     events.fireEvent({
                         type: CLICK_EVENT_NAME,
                         originalEvent: e
-                    })
+                    });
+                    SimulatedStrategy._reset()
                 },
                 _handleCancel: function(e) {
-                    $(e.currentTarget).data(CLICK_DATA_KEY).trackingClick = false
+                    SimulatedStrategy._reset()
+                },
+                _reset: function() {
+                    SimulatedStrategy._target = null
+                },
+                _handleClick: function(e) {
+                    var $target = $(e.target);
+                    if ($target.is(SimulatedStrategy._target) && SimulatedStrategy._hasClosestScrollable($target))
+                        events.fireEvent({
+                            type: CLICK_EVENT_NAME,
+                            originalEvent: e
+                        });
+                    SimulatedStrategy._reset()
                 },
                 setup: function() {
                     if (SimulatedStrategy._handlerCount > 0)
                         return;
-                    $(document).data(CLICK_DATA_KEY, {}).on(events.addNamespace("dxpointerdown", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleStart, this)).on(events.addNamespace("dxpointerup", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleEnd, this)).on(events.addNamespace("dxpointercancel", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleCancel, this))
+                    var $doc = $(document).on(events.addNamespace("dxpointerdown", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleStart, this)).on(events.addNamespace("dxpointerup", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleEnd, this)).on(events.addNamespace("dxpointercancel", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleCancel, this));
+                    if (preferNativeClick)
+                        $doc.on(events.addNamespace("click", CLICK_NAME_SPACE), $.proxy(SimulatedStrategy._handleClick, this))
                 },
                 add: function() {
                     SimulatedStrategy._handlerCount++
@@ -5921,20 +6041,20 @@ if (!window.DevExpress) {
                 teardown: function() {
                     if (SimulatedStrategy._handlerCount)
                         return;
-                    $(document).off("." + CLICK_NAME_SPACE).removeData(CLICK_DATA_KEY)
+                    $(document).off("." + CLICK_NAME_SPACE)
                 }
             };
         var NativeStrategy = {
                 bindType: "click",
                 delegateType: "click"
             };
-        jqSpecialEvent[CLICK_EVENT_NAME] = NativeStrategy;
+        jqSpecialEvent[CLICK_EVENT_NAME] = useNativeClick ? NativeStrategy : SimulatedStrategy;
         DX.ui.events.__internals = DX.ui.events.__internals || {};
         $.extend(DX.ui.events.__internals, {
             NativeClickStrategy: NativeStrategy,
             SimulatedClickStrategy: SimulatedStrategy
         })
-    })(jQuery, DevExpress);
+    })(jQuery, DevExpress, window);
     /*! Module core, file ui.events.hold.js */
     (function($, DX, undefined) {
         var ui = DX.ui,
@@ -5946,7 +6066,7 @@ if (!window.DevExpress) {
             HOLD_TIMER_DATA_KEY = EVENTS_NAME_SPACE + "HoldTimer";
         var hold = jqSpecialEvent[HOLD_EVENT_NAME] = {
                 HOLD_TIMEOUT: 750,
-                TOUCH_BOUNDARY: 10,
+                TOUCH_BOUNDARY: 5,
                 _startX: 0,
                 _startY: 0,
                 _touchWasMoved: function(e) {
@@ -6086,12 +6206,7 @@ if (!window.DevExpress) {
                     this._parentsLength = this._activeSwipeable.parents().length;
                     this._startEventData = events.eventData(e);
                     this._tickData = {time: 0};
-                    this._swipeStage = this.STAGE_TOUCHED;
-                    if (events.isMouseEvent(e)) {
-                        if ($(":focus", activeSwipeable).length)
-                            utils.resetActiveElement();
-                        e.preventDefault()
-                    }
+                    this._swipeStage = this.STAGE_TOUCHED
                 },
                 _handleMove: function(e) {
                     if (!this._activeSwipeable || this._swipeStage === this.STAGE_SLEEP)
@@ -6106,25 +6221,26 @@ if (!window.DevExpress) {
                     if (!delta.x && !delta.y)
                         return;
                     if (!this._getStrategy().isSwipeAngleAllowed.call(this, delta) || events.needSkipEvent(e)) {
+                        this._fireSwipeCancelEvent(e);
                         this._reset();
                         return
                     }
-                    var direction = this._data("direction");
-                    if (e.originalEvent.pointerMoveData[direction] !== this._parentsLength)
-                        return;
-                    e.originalEvent.isScrollingEvent = false;
-                    this._activeSwipeable.data(GESTURE_LOCK_KEY, true);
+                    if ($(":focus", this._activeSwipeable).length)
+                        utils.resetActiveElement();
+                    if (e.originalEvent) {
+                        var direction = this._data("direction");
+                        if (e.originalEvent.pointerMoveData[direction] !== this._parentsLength)
+                            return;
+                        e.originalEvent.isScrollingEvent = false
+                    }
+                    this._prepareGesture();
                     e = events.fireEvent({
                         type: "dxswipestart",
                         originalEvent: e,
                         target: this._activeSwipeable.get(0)
                     });
                     if (e.cancel) {
-                        events.fireEvent({
-                            type: "dxswipecancel",
-                            originalEvent: e,
-                            target: this._activeSwipeable.get(0)
-                        });
+                        this._fireSwipeCancelEvent(e);
                         this._reset();
                         return
                     }
@@ -6133,6 +6249,13 @@ if (!window.DevExpress) {
                     this._maxTopOffset = e.maxTopOffset;
                     this._maxBottomOffset = e.maxBottomOffset;
                     this._swipeStage = this.STAGE_SWIPING
+                },
+                _fireSwipeCancelEvent: function(e) {
+                    events.fireEvent({
+                        type: "dxswipecancel",
+                        originalEvent: e,
+                        target: this._activeSwipeable.get(0)
+                    })
                 },
                 _handleBodyPointerMove: function(e) {
                     if (!this._activeSwipeable || !e.originalEvent)
@@ -6204,8 +6327,18 @@ if (!window.DevExpress) {
                         result = Math.round(offsetRatio);
                     return result
                 },
+                _prepareGesture: function() {
+                    clearTimeout(this._gestureEndTimer);
+                    this._activeSwipeable.data(GESTURE_LOCK_KEY, true)
+                },
+                _forgetGesture: function() {
+                    var swipeable = this._activeSwipeable;
+                    this._gestureEndTimer = setTimeout($.proxy(function() {
+                        swipeable.data(GESTURE_LOCK_KEY, false)
+                    }, this), 400)
+                },
                 _reset: function() {
-                    this._activeSwipeable.data(GESTURE_LOCK_KEY, false);
+                    this._forgetGesture();
                     this._activeSwipeable = null;
                     this._swipeStage = this.STAGE_SLEEP
                 },
@@ -6224,6 +6357,7 @@ if (!window.DevExpress) {
                 }
             });
         var swipeDispatcher = null;
+        var handlerCount = 0;
         $.each([SWIPE_START_EVENT_NAME, SWIPE_EVENT_NAME, SWIPE_END_EVENT_NAME, SWIPE_CANCEL_EVENT_NAME], function() {
             jqSpecialEvent[this] = {
                 noBubble: true,
@@ -6236,21 +6370,17 @@ if (!window.DevExpress) {
                         swipeDispatcher = new SwipeDispatcher
                 },
                 add: function() {
-                    var data = $(this).data(SWIPEABLE_DATA_KEY);
-                    data.handlerCount = data.handlerCount || 0;
-                    data.handlerCount++
+                    handlerCount++
                 },
                 remove: function() {
-                    var data = $(this).data(SWIPEABLE_DATA_KEY);
-                    data.handlerCount = data.handlerCount || 0;
-                    data.handlerCount--
+                    handlerCount--
                 },
                 teardown: function() {
-                    var element = $(this),
-                        data = $(this).data(SWIPEABLE_DATA_KEY);
-                    if (data && data.handlerCount)
+                    var element = $(this);
+                    if (element.data(SWIPEABLE_DATA_KEY))
+                        element.removeData(SWIPEABLE_DATA_KEY);
+                    if (handlerCount)
                         return;
-                    element.removeData(SWIPEABLE_DATA_KEY);
                     if (!swipeDispatcher)
                         return;
                     swipeDispatcher.dispose();
@@ -6622,9 +6752,16 @@ if (!window.DevExpress) {
             });
         ko.bindingHandlers.dxAction = {update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
                 var $element = $(element);
-                var actionSource = ko.utils.unwrapObservable(valueAccessor()),
-                    action = new DX.Action(actionSource, {context: element});
-                $element.off(".dxActionBinding").on("dxclick.dxActionBinding", function() {
+                var unwrappedValue = ko.utils.unwrapObservable(valueAccessor()),
+                    actionSource = unwrappedValue,
+                    actionOptions = {context: element},
+                    action;
+                if (unwrappedValue.execute) {
+                    actionSource = unwrappedValue.execute;
+                    $.extend(actionOptions, unwrappedValue)
+                }
+                action = new DX.Action(actionSource, actionOptions);
+                $element.off(".dxActionBinding").on("dxclick.dxActionBinding", function(e) {
                     action.execute({
                         element: $element,
                         model: viewModel,
@@ -6634,7 +6771,8 @@ if (!window.DevExpress) {
                                 context = ko.contextFor(element);
                             var getter = DX.data.utils.compileGetter(expression);
                             return getter(context)
-                        }
+                        },
+                        jQueryEvent: e
                     })
                 })
             }};
@@ -6659,7 +6797,7 @@ if (!window.DevExpress) {
                 additionalProperties = additionalProperties || "";
                 return "<" + tagName + " data-bind=\"" + bindAttr + "\" " + additionalProperties + ">" + (closeTag ? "</" + tagName + ">" : "")
             };
-        var defaultKoTemplateBasicBindings = {css: "{ 'dx-state-disabled': $data.disabled, 'dx-state-invisible': !$data.visible && $data.visible !== undefined }"};
+        var defaultKoTemplateBasicBindings = {css: "{ 'dx-state-disabled': $data.disabled, 'dx-state-invisible': !($data.visible === undefined || ko.unwrap($data.visible)) }"};
         var DEFAULT_ITEM_TEMPLATE_GENERATORS = {base: function() {
                     var template = [createElementWithBindAttr("div", defaultKoTemplateBasicBindings, false)],
                         htmlBinding = createElementWithBindAttr("div", {html: "html"}),
@@ -6724,7 +6862,7 @@ if (!window.DevExpress) {
             return template
         };
         DEFAULT_ITEM_TEMPLATE_GENERATORS.dxActionSheet = function() {
-            return createElementWithBindAttr("div", {dxButton: "{ text: $data.text, clickAction: $data.clickAction, type: $data.type, disabled: !!$data.disabled }"})
+            return createElementWithBindAttr("div", {dxButton: "{ text: $data.text, clickAction: $data.clickAction, type: $data.type, disabled: !!ko.unwrap($data.disabled) }"})
         };
         DEFAULT_ITEM_TEMPLATE_GENERATORS.dxNavBar = DEFAULT_ITEM_TEMPLATE_GENERATORS.dxTabs;
         var cleanKoData = function(element, andSelf) {
@@ -7381,6 +7519,7 @@ if (!window.DevExpress) {
                         });
                     else
                         templates[ANONYMOUS_TEMPLATE_NAME] = self._createTemplate(self._element().contents());
+                    this._externalTemplates = {};
                     this._templates = templates
                 },
                 _initContentReadyAction: function() {
@@ -7417,7 +7556,7 @@ if (!window.DevExpress) {
                         return this._createTemplate(templateSource)
                     }
                     if (typeof templateSource === "string")
-                        return this._templates[templateSource];
+                        return this._getTemplates()[templateSource];
                     if ($.isFunction(templateSource)) {
                         var args = $.makeArray(arguments).slice(1);
                         return this._acquireTemplate(templateSource.apply(this, args))
@@ -7444,6 +7583,12 @@ if (!window.DevExpress) {
                 },
                 addTemplate: function(template) {
                     $.extend(this._templates, template)
+                },
+                addExternalTemplate: function(template) {
+                    $.extend(this._externalTemplates, template)
+                },
+                _getTemplates: function() {
+                    return $.extend({}, this._templates, this._externalTemplates)
                 }
             });
         ui.ContainerWidget = ContainerWidget
@@ -7654,11 +7799,11 @@ if (!window.DevExpress) {
                     if (this._initialized && items && this._shouldAppendItems()) {
                         this._renderedItemsCount = items.length;
                         this.option().items = items.concat(newItems);
-                        this._renderContent()
+                        this._renderContent();
+                        this._forgetNextPageLoading()
                     }
                     else
-                        this.option("items", newItems);
-                    this._forgetNextPageLoading()
+                        this.option("items", newItems)
                 },
                 _handleDataSourceLoadError: function() {
                     this._forgetNextPageLoading()
@@ -7757,7 +7902,7 @@ if (!window.DevExpress) {
                 _createItemByRenderer: function(itemRenderer, renderArgs) {
                     var itemElement = $("<div />").appendTo(renderArgs.container);
                     var rendererResult = itemRenderer.call(this, renderArgs.item, renderArgs.index, itemElement);
-                    if (rendererResult && itemElement[0] !== rendererResult[0])
+                    if (rendererResult != null && itemElement[0] !== rendererResult[0])
                         itemElement.append(rendererResult);
                     return itemElement
                 },
@@ -7785,15 +7930,16 @@ if (!window.DevExpress) {
                 _postprocessRenderItem: $.noop,
                 _renderEmptyMessage: function() {
                     var noDataText = this.option("noDataText"),
-                        noDataTextElement = this._element().find(".dx-empty-message"),
                         items = this.option("items"),
-                        itemExists = items && items.length;
-                    if (!noDataText || itemExists || this._dataSource && this._dataSource.isLoading())
-                        noDataTextElement.remove();
-                    else {
-                        if (!noDataTextElement.length)
-                            noDataTextElement = $("<div />").addClass("dx-empty-message").appendTo(this._itemContainer());
-                        noDataTextElement.text(noDataText)
+                        dataSourceLoading = this._dataSource && this._dataSource.isLoading(),
+                        hideNoData = !noDataText || items && items.length || dataSourceLoading;
+                    if (hideNoData && this._$nodata) {
+                        this._$nodata.remove();
+                        this._$nodata = null
+                    }
+                    if (!hideNoData) {
+                        this._$nodata = this._$nodata || $("<div />").addClass("dx-empty-message");
+                        this._$nodata.appendTo(this._itemContainer()).text(noDataText)
                     }
                 },
                 _handleItemJQueryEvent: function(jQueryEvent, handlerOptionName, actionArgs, actionConfig) {
@@ -7853,7 +7999,7 @@ if (!window.DevExpress) {
                 _optionChanged: function(name, value, prevValue) {
                     if (name === "selectedIndex") {
                         this._renderSelectedIndex(value, prevValue);
-                        this._handleItemEvent(this._selectedItemElement(value), "itemSelectAction", null)
+                        this._handleItemEvent(this._selectedItemElement(value), "itemSelectAction", null, {excludeValidators: ["gesture"]})
                     }
                     else
                         this.callBase.apply(this, arguments)
@@ -7878,6 +8024,7 @@ if (!window.DevExpress) {
                     isSimulator = window.top !== window.self && window.top["dx-force-device"];
                 return isOldAndroid || isTizen || isRippleEmulator || isSimulator || isPlatformForced && !isForcedGeneric && !(isGeneric && isForcedDesktop)
             };
+        var isChromeBrowser = /chrome/i.test(navigator.userAgent);
         var optionConfigurator = {};
         optionConfigurator.dxActionSheet = function(device) {
             if (device.platform === "ios" && device.tablet)
@@ -7889,7 +8036,7 @@ if (!window.DevExpress) {
                         useNative: false,
                         useSimulatedScrollBar: true
                     };
-            else if (device.platform === "android" || device.platform === "win8" && device.phone)
+            else if (device.platform === "android" && !isChromeBrowser || device.platform === "win8" && device.phone)
                 return {useSimulatedScrollBar: true}
         };
         optionConfigurator.dxScrollView = function(device) {
@@ -7908,15 +8055,19 @@ if (!window.DevExpress) {
         };
         optionConfigurator.dxList = function(device) {
             var result = optionConfigurator.dxScrollable(device) || {};
+            if ("useNative" in result) {
+                result.useNativeScrolling = result.useNative;
+                delete result.useNative
+            }
+            delete result.useSimulatedScrollBar;
             if (device.platform === "desktop")
                 $.extend(result, {
-                    showScrollbar: false,
                     showNextButton: true,
                     autoPagingEnabled: false,
                     editConfig: {selectionMode: "control"}
                 });
             if (device.platform === "ios")
-                $.extend(result, {editConfig: {deleteMode: device.version == 7 ? "slideItem" : "slideButton"}});
+                $.extend(result, {editConfig: {deleteMode: device.version === 7 ? "slideItem" : "slideButton"}});
             if (device.platform === "android")
                 $.extend(result, {editConfig: {deleteMode: "swipe"}});
             if (device.platform === "win8")
@@ -7936,7 +8087,7 @@ if (!window.DevExpress) {
                             my: "top center",
                             at: "top center",
                             of: window,
-                            offset: "0 20"
+                            offset: "0 0"
                         }};
             if (device.platform === "ios")
                 return {animation: {
@@ -7971,6 +8122,18 @@ if (!window.DevExpress) {
                 return {width: 276};
             if (device.platform === "win8" && !device.phone)
                 return {width: "60%"};
+            if (device.platform === "win8")
+                return {
+                        width: function() {
+                            return $(window).width()
+                        },
+                        position: {
+                            my: "top center",
+                            at: "top center",
+                            of: window,
+                            offset: "0 0"
+                        }
+                    };
             if (device.platform === "android")
                 return {
                         lWidth: "60%",

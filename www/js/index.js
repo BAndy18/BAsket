@@ -94,6 +94,7 @@ var P = (function ($, window) {
     root.curCategoryId = 0;
     root.curCategoryName = '';
     root.curModeChoice = true;
+    root.modeProdView = true;
     root.currentNms = []
     root.arrayBAsket = [];
     // root.getBAsketArray = function(){
@@ -179,14 +180,14 @@ var P = (function ($, window) {
     root.ReadFirstCategory = function () {
         DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
             if (result.length > 0) {
-                root.curCategoryId = result[0].id;
-                root.curCategoryName = result[0].name;
+                root.curCategoryId = result[0].Id;
+                root.curCategoryName = result[0].Name;
             }
             else {
                 DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
                     if (result.length > 0) {
-                        root.curCategoryId = result[0].id;
-                        root.curCategoryName = result[0].name;
+                        root.curCategoryId = result[0].Id;
+                        root.curCategoryName = result[0].Name;
                     }
                 })
             }

@@ -1,7 +1,7 @@
 /*! 
 * DevExpress Mobile Widgets (part of PhoneJS)
-* Version: 13.2.5
-* Build date: Dec 3, 2013
+* Version: 13.2.6
+* Build date: Dec 26, 2013
 *
 * Copyright (c) 2012 - 2013 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -79,7 +79,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._element().removeClass("dx-scrollable-" + HORIZONTAL).removeClass("dx-scrollable-" + VERTICAL).removeClass("dx-scrollable-" + BOTH).addClass("dx-scrollable-" + this.option("direction"))
             },
             _createStrategy: function() {
-                this._strategy = this.option("useNative") ? new ui.NativeScrollableStrategy(this) : new ui.SimulatedScrollableStrategy(this);
+                this._strategy = this.option("useNative") || DX.designMode ? new ui.NativeScrollableStrategy(this) : new ui.SimulatedScrollableStrategy(this);
                 this._strategy.render()
             },
             _createActions: function() {
@@ -295,7 +295,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$element.addClass(SCROLLABLE_SCROLLBAR_SIMULATED)
             },
             createActions: function() {
-                var actionConfig = {excludeValidators: ["gesture", "designMode"]};
+                var actionConfig = {excludeValidators: ["gesture"]};
                 this._scrollAction = this._createActionByOption("scrollAction", actionConfig);
                 this._updateAction = this._createActionByOption("updateAction", actionConfig)
             },
@@ -846,7 +846,7 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _createActionHandler: function(optionName) {
                 var self = this,
-                    actionHandler = self._createActionByOption(optionName, {excludeValidators: ["gesture", "designMode"]});
+                    actionHandler = self._createActionByOption(optionName, {excludeValidators: ["gesture"]});
                 return function() {
                         actionHandler($.extend(self._createActionArgs(), arguments))
                     }
@@ -985,11 +985,6 @@ if (!DevExpress.MOD_WIDGETS) {
                     return;
                 activeScrollable = closestScrollable(e.target);
                 if (activeScrollable && activeScrollable._validateTarget($(e.target))) {
-                    if (events.isMouseEvent(e)) {
-                        if ($(":focus", activeScrollable._$element).length)
-                            preventHangingCursorAndHideKeyboard();
-                        preventSelectStartEvent(e)
-                    }
                     parentsLength = activeScrollable._$element.parents().length;
                     eventForUserAction = e;
                     startEventData = prevEventData = savedEventData = events.eventData(e);
@@ -1023,6 +1018,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     resetStage();
                     return
                 }
+                if ($(":focus", activeScrollable._$element).length)
+                    preventHangingCursorAndHideKeyboard();
                 activeScrollable._handleFirstMove();
                 scrollStage = STAGE_SCROLLING
             };
@@ -1087,7 +1084,7 @@ if (!DevExpress.MOD_WIDGETS) {
         $(function() {
             var actionArguments = {
                     context: ui.dxScrollable,
-                    excludeValidators: ["gesture", "designMode"]
+                    excludeValidators: ["gesture"]
                 },
                 startAction = new DX.Action(handleStart, actionArguments),
                 scrollAction = new DX.Action(handleScroll, actionArguments),
@@ -1104,10 +1101,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 endAction.execute(e)
             });
             if ("mousewheel" in $.event.special) {
-                var wheelAction = new DX.Action(handleWheel, {
-                        context: ui.dxScrollable,
-                        excludeValidators: ["gesture"]
-                    });
+                var wheelAction = new DX.Action(handleWheel, actionArguments);
                 $(document).on(events.addNamespace("mousewheel", SCROLLABLE_SIMULATED), function(e, delta) {
                     wheelAction.execute(e, delta)
                 })
@@ -1137,7 +1131,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         reachBottomText: Globalize.localize("dxScrollView-reachBottomText"),
                         pullDownAction: null,
                         reachBottomAction: null,
-                        refreshStrategy: null
+                        refreshStrategy: "pullDown"
                     })
             },
             _initMarkup: function() {
@@ -1168,7 +1162,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$content.append($bottomPocket)
             },
             _createStrategy: function() {
-                var strategyName = this.option("useNative") ? this.option("refreshStrategy") : "simulated";
+                var strategyName = this.option("useNative") || DX.designMode ? this.option("refreshStrategy") : "simulated";
                 var strategyClass = ui.scrollViewRefreshStrategies[strategyName];
                 if (!strategyClass)
                     throw Error("Unknown dxScrollView refresh strategy " + this.option("refreshStrategy"));
@@ -1180,10 +1174,10 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _createActions: function() {
                 this.callBase();
-                this._pullDownAction = this._createActionByOption("pullDownAction", {excludeValidators: ["gesture", "designMode"]});
-                this._reachBottomAction = this._createActionByOption("reachBottomAction", {excludeValidators: ["gesture", "designMode"]});
-                this._pullDownEnable(!!this.option("pullDownAction"));
-                this._reachBottomEnable(!!this.option("reachBottomAction"))
+                this._pullDownAction = this._createActionByOption("pullDownAction", {excludeValidators: ["gesture"]});
+                this._reachBottomAction = this._createActionByOption("reachBottomAction", {excludeValidators: ["gesture"]});
+                this._pullDownEnable(!!this.option("pullDownAction") && !DX.designMode);
+                this._reachBottomEnable(!!this.option("reachBottomAction") && !DX.designMode)
             },
             _pullDownEnable: function(enabled) {
                 this._$pullDown.toggle(enabled);
@@ -1309,8 +1303,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     }
                 },
                 _setPullDownOffset: function(offset) {
-                    DX.translator.move(this._$topPocket, {top: offset});
-                    DX.translator.move(this._$scrollViewContent, {top: offset})
+                    DX.translator.move(this._$topPocket, {top: offset}, {cssTransform: true});
+                    DX.translator.move(this._$scrollViewContent, {top: offset}, {cssTransform: true})
                 },
                 _handleScroll: function(e) {
                     this.callBase(e);
@@ -1415,7 +1409,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 _releaseState: function() {
                     this._state = STATE_RELEASED;
                     this._$pullDown.css({
-                        transform: "scaleX(0)",
+                        width: "0%",
                         opacity: 0
                     });
                     this._updateDimensions()
@@ -1451,7 +1445,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         }
                         this._$pullDown.css({
                             opacity: 1,
-                            transform: "scaleX(" + this._deltaY / PULLDOWN_HEIGHT + ")"
+                            width: math.min(math.abs(this._deltaY * 100 / PULLDOWN_HEIGHT), 100) + "%"
                         });
                         if (this._isPullDown())
                             this._pullDownRefreshing()
@@ -1493,10 +1487,14 @@ if (!DevExpress.MOD_WIDGETS) {
                     if (this._state === STATE_REFRESHING)
                         return;
                     this._state = STATE_REFRESHING;
-                    this._$pullDown.addClass(SCROLLVIEW_PULLDOWN_REFRESHING_CLASS);
-                    this.pullDownCallbacks.fire()
+                    var self = this;
+                    setTimeout(function() {
+                        self._$pullDown.addClass(SCROLLVIEW_PULLDOWN_REFRESHING_CLASS);
+                        self.pullDownCallbacks.fire()
+                    }, 400)
                 },
                 pullDownEnable: function(enabled) {
+                    this._$topPocket.toggle(enabled);
                     this._pullDownEnabled = enabled
                 },
                 reachBottomEnable: function(enabled) {
@@ -1630,7 +1628,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     this._refreshPullDownText()
                 },
                 _hidePullDown: function() {
-                    this._$content.scrollTop(this._topPocketSize)
+                    if (this._$content.scrollTop() < this._topPocketSize)
+                        this._$content.scrollTop(this._topPocketSize)
                 },
                 _refreshPullDownText: function() {
                     this._$pullingDownText.css("opacity", this._state === STATE_RELEASED ? 1 : 0);
@@ -1640,6 +1639,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 update: function() {
                     this.callBase();
                     this._updateDimensions();
+                    this._hidePullDown();
                     this._updateScrollbars()
                 },
                 _updateDimensions: function() {
@@ -1955,6 +1955,1051 @@ if (!DevExpress.MOD_WIDGETS) {
             });
         ui.scrollViewRefreshStrategies.simulated = SimulatedScrollViewStrategy
     })(jQuery, DevExpress);
+    /*! Module widgets, file ui.map.js */
+    (function($, DX, undefined) {
+        var ui = DX.ui,
+            events = ui.events,
+            utils = DX.utils,
+            winJS = DX.support.winJS;
+        ui.MapProvider = DX.Class.inherit({
+            _defaultRouteWeight: function() {
+                return 5
+            },
+            _defaultRouteOpacity: function() {
+                return .5
+            },
+            _defaultRouteColor: function() {
+                return "#0000FF"
+            },
+            ctor: function(map, $container) {
+                this._mapInstance = map;
+                this._$container = $container
+            },
+            load: $.noop,
+            render: DX.abstract,
+            updateDimensions: DX.abstract,
+            updateMapType: DX.abstract,
+            updateLocation: DX.abstract,
+            updateZoom: DX.abstract,
+            updateControls: DX.abstract,
+            updateMarkers: DX.abstract,
+            addMarkers: DX.abstract,
+            updateRoutes: DX.abstract,
+            addRoutes: DX.abstract,
+            clean: DX.abstract,
+            cancelEvents: false,
+            map: function() {
+                return this._map
+            },
+            mapRendered: function() {
+                return !!this._map
+            },
+            _option: function(name, value) {
+                if (value === undefined)
+                    return this._mapInstance.option(name);
+                this._mapInstance.setOptionSilent(name, value)
+            },
+            _key: function(providerName) {
+                var key = this._option("key");
+                return key[providerName] === undefined ? key : key[providerName]
+            },
+            _parseTooltipOptions: function(option) {
+                return {
+                        text: option.text || option,
+                        visible: option.isShown || false
+                    }
+            },
+            _createAction: function() {
+                return this._mapInstance._createAction.apply(this._mapInstance, $.makeArray(arguments))
+            },
+            _handleClickAction: function() {
+                var clickAction = this._createAction(this._option("clickAction") || $.noop);
+                clickAction()
+            }
+        });
+        var providers = {};
+        ui.registerMapProvider = function(name, provider) {
+            providers[name] = provider
+        };
+        var MAP_CLASS = "dx-map",
+            MAP_CONTAINER_CLASS = "dx-map-container",
+            MAP_SHIELD_CLASS = "dx-map-shield";
+        var wrapToArray = function(entity) {
+                return $.isArray(entity) ? entity : [entity]
+            };
+        ui.registerComponent("dxMap", ui.Widget.inherit({
+            _defaultOptions: function() {
+                return $.extend(this.callBase(), {
+                        location: {
+                            lat: 0,
+                            lng: 0
+                        },
+                        width: 300,
+                        height: 300,
+                        zoom: 1,
+                        type: "roadmap",
+                        provider: "google",
+                        markers: [],
+                        routes: [],
+                        key: {
+                            bing: "",
+                            google: "",
+                            googleStatic: ""
+                        },
+                        controls: false,
+                        readyAction: null,
+                        updateAction: null
+                    })
+            },
+            _init: function() {
+                this.callBase();
+                this._initContainer();
+                this._grabEvents();
+                this._initProvider()
+            },
+            _initContainer: function() {
+                this._$container = $("<div />").addClass(MAP_CONTAINER_CLASS);
+                this._element().append(this._$container)
+            },
+            _grabEvents: function() {
+                var eventName = events.addNamespace("dxpointerdown", this.NAME);
+                this._element().on(eventName, $.proxy(this._cancelEvent, this))
+            },
+            _cancelEvent: function(e) {
+                var cancelByProvider = this._provider.cancelEvents && !this.option("disabled");
+                if (!DX.designMode && cancelByProvider)
+                    e.stopPropagation()
+            },
+            _initProvider: function() {
+                var provider = this.option("provider");
+                if (winJS && this.option("provider") === "google")
+                    throw new Error("Google provider cannot be used in winJS application");
+                if (this._provider)
+                    this._provider.clean();
+                this._provider = new providers[provider](this, this._$container);
+                this._mapLoader = this._provider.load()
+            },
+            _render: function() {
+                this.callBase();
+                this._element().addClass(MAP_CLASS);
+                this._renderShield();
+                this._execAsyncProviderAction("render")
+            },
+            _renderShield: function() {
+                if (DX.designMode || this.option("disabled")) {
+                    var $shield = $("<div/>").addClass(MAP_SHIELD_CLASS);
+                    this._element().append($shield)
+                }
+                else {
+                    var $shield = this._element().find("." + MAP_SHIELD_CLASS);
+                    $shield.remove()
+                }
+            },
+            _clean: function() {
+                this._provider.clean()
+            },
+            _optionChanged: function(name, value, prevValue) {
+                if (this._cancelOptionChange)
+                    return;
+                switch (name) {
+                    case"disabled":
+                        this._renderShield();
+                        this.callBase.apply(this, arguments);
+                        break;
+                    case"width":
+                    case"height":
+                        this.callBase.apply(this, arguments);
+                        this._execAsyncProviderAction("updateDimensions");
+                        break;
+                    case"type":
+                        this._execAsyncProviderAction("updateMapType");
+                        break;
+                    case"location":
+                        this._execAsyncProviderAction("updateLocation");
+                        break;
+                    case"zoom":
+                        this._execAsyncProviderAction("updateZoom");
+                        break;
+                    case"controls":
+                        this._execAsyncProviderAction("updateControls");
+                        break;
+                    case"markers":
+                        this._execAsyncProviderAction("updateMarkers");
+                        break;
+                    case"routes":
+                        this._execAsyncProviderAction("updateRoutes");
+                        break;
+                    case"key":
+                        throw new Error("Key option can not be modified after initialisation");
+                    case"provider":
+                        this._initProvider();
+                        this._invalidate();
+                        break;
+                    case"readyAction":
+                    case"updateAction":
+                        break;
+                    default:
+                        this.callBase.apply(this, arguments)
+                }
+            },
+            _execAsyncProviderAction: function(name) {
+                if (!this._provider.mapRendered() && !(name === "render"))
+                    return;
+                var deferred = $.Deferred(),
+                    self = this,
+                    options = $.makeArray(arguments).slice(1);
+                $.when(this._mapLoader).done(function() {
+                    var provider = self._provider;
+                    provider[name].apply(provider, options).done(function(mapRefreshed) {
+                        self._triggerUpdateAction();
+                        if (mapRefreshed)
+                            self._triggerReadyAction();
+                        deferred.resolve.apply(deferred, $.makeArray(arguments).slice(1))
+                    })
+                });
+                return deferred.promise()
+            },
+            _triggerReadyAction: function() {
+                this._createActionByOption("readyAction")({originalMap: this._provider.map()})
+            },
+            _triggerUpdateAction: function() {
+                this._createActionByOption("updateAction")()
+            },
+            setOptionSilent: function(name, value) {
+                this._cancelOptionChange = true;
+                this.option(name, value);
+                this._cancelOptionChange = false
+            },
+            addMarker: function(markerOptions) {
+                var d = $.Deferred(),
+                    self = this,
+                    markersOption = this._options.markers,
+                    markers = wrapToArray(markerOptions);
+                markersOption.push.apply(markersOption, markers);
+                this._execAsyncProviderAction("addMarkers", markers).done(function(instance) {
+                    d.resolveWith(self, markers.length > 1 ? [instance] : instance)
+                });
+                return d.promise()
+            },
+            removeMarker: function(marker) {
+                var d = $.Deferred(),
+                    self = this,
+                    markersOption = this._options.markers,
+                    markers = wrapToArray(marker);
+                $.each(markers, function(_, marker) {
+                    var index = $.isNumeric(marker) ? marker : $.inArray(marker, markersOption);
+                    if (index !== -1)
+                        markersOption.splice(index, 1);
+                    else
+                        throw new Error("Marker '" + marker + "' you are trying to remove does not exist");
+                });
+                this._execAsyncProviderAction("updateMarkers").done(function() {
+                    d.resolveWith(self)
+                });
+                return d.promise()
+            },
+            addRoute: function(routeOptions) {
+                var d = $.Deferred(),
+                    self = this,
+                    routesOption = this._options.routes,
+                    routes = wrapToArray(routeOptions);
+                routesOption.push.apply(routesOption, routes);
+                this._execAsyncProviderAction("addRoutes", routes).done(function(instance) {
+                    d.resolveWith(self, routes.length > 1 ? [instance] : instance)
+                });
+                return d.promise()
+            },
+            removeRoute: function(route) {
+                var d = $.Deferred(),
+                    self = this,
+                    routesOption = this._options.routes,
+                    routes = wrapToArray(route);
+                $.each(routes, function(_, route) {
+                    var index = $.isNumeric(route) ? route : $.inArray(route, routesOption);
+                    if (index !== -1)
+                        routesOption.splice(index, 1);
+                    else
+                        throw new Error("Route '" + route + "' you are trying to remove does not exist");
+                });
+                this._execAsyncProviderAction("updateRoutes").done(function() {
+                    d.resolveWith(self)
+                });
+                return d.promise()
+            }
+        }))
+    })(jQuery, DevExpress);
+    /*! Module widgets, file ui.map.bing.js */
+    (function($, DX, undefined) {
+        var ui = DX.ui,
+            winJS = DX.support.winJS;
+        var BING_MAP_READY = "_bingScriptReady",
+            BING_URL = "https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1&onScriptLoad=" + BING_MAP_READY,
+            BING_LOCAL_FILES1 = "ms-appx:///Bing.Maps.JavaScript/js/veapicore.js",
+            BING_LOCAL_FILES2 = "ms-appx:///Bing.Maps.JavaScript/js/veapiModules.js",
+            BING_CREDENTIALS = "AhuxC0dQ1DBTNo8L-H9ToVMQStmizZzBJdraTSgCzDSWPsA1Qd8uIvFSflzxdaLH",
+            MIN_LOCATION_RECT_LENGTH = 0.0000000000000001;
+        var msMapsLoader;
+        ui.registerMapProvider("bing", ui.MapProvider.inherit({
+            _mapType: function(type) {
+                var mapTypes = {
+                        roadmap: Microsoft.Maps.MapTypeId.road,
+                        hybrid: Microsoft.Maps.MapTypeId.aerial
+                    };
+                return mapTypes[type] || mapTypes.roadmap
+            },
+            _movementMode: function(type) {
+                var movementTypes = {
+                        driving: Microsoft.Maps.Directions.RouteMode.driving,
+                        walking: Microsoft.Maps.Directions.RouteMode.walking
+                    };
+                return movementTypes[type] || movementTypes.driving
+            },
+            _resolveLocation: function(location) {
+                var d = $.Deferred();
+                if (typeof location === "string") {
+                    var searchManager = new Microsoft.Maps.Search.SearchManager(this._map);
+                    var searchRequest = {
+                            where: location,
+                            count: 1,
+                            callback: function(searchResponse) {
+                                var boundsBox = searchResponse.results[0].location;
+                                d.resolve(new Microsoft.Maps.Location(boundsBox.latitude, boundsBox.longitude))
+                            }
+                        };
+                    searchManager.geocode(searchRequest)
+                }
+                else if ($.isPlainObject(location) && $.isNumeric(location.lat) && $.isNumeric(location.lng))
+                    d.resolve(new Microsoft.Maps.Location(location.lat, location.lng));
+                else if ($.isArray(location))
+                    d.resolve(new Microsoft.Maps.Location(location[0], location[1]));
+                return d.promise()
+            },
+            _normalizeLocation: function(location) {
+                return {
+                        lat: location.latitude,
+                        lng: location.longitude
+                    }
+            },
+            load: function() {
+                if (!msMapsLoader) {
+                    msMapsLoader = $.Deferred();
+                    window[BING_MAP_READY] = $.proxy(this._mapReady, this);
+                    if (winJS)
+                        $.when($.getScript(BING_LOCAL_FILES1), $.getScript(BING_LOCAL_FILES2)).done(function() {
+                            Microsoft.Maps.loadModule("Microsoft.Maps.Map", {callback: window[BING_MAP_READY]})
+                        });
+                    else
+                        $.getScript(BING_URL)
+                }
+                this._markers = [];
+                this._routes = [];
+                return msMapsLoader
+            },
+            _mapReady: function() {
+                try {
+                    delete window[BING_MAP_READY]
+                }
+                catch(e) {
+                    window[BING_MAP_READY] = undefined
+                }
+                var searchModulePromise = $.Deferred();
+                var directionsModulePromise = $.Deferred();
+                Microsoft.Maps.loadModule('Microsoft.Maps.Search', {callback: $.proxy(searchModulePromise.resolve, searchModulePromise)});
+                Microsoft.Maps.loadModule('Microsoft.Maps.Directions', {callback: $.proxy(directionsModulePromise.resolve, directionsModulePromise)});
+                $.when(searchModulePromise, directionsModulePromise).done(function() {
+                    msMapsLoader.resolve()
+                })
+            },
+            render: function() {
+                var deferred = $.Deferred(),
+                    initPromise = $.Deferred(),
+                    controls = this._option("controls");
+                var options = {
+                        credentials: this._key("bing") || BING_CREDENTIALS,
+                        mapTypeId: this._mapType(this._option("type")),
+                        zoom: this._option("zoom"),
+                        showDashboard: controls,
+                        showMapTypeSelector: controls,
+                        showScalebar: controls
+                    };
+                this._map = new Microsoft.Maps.Map(this._$container[0], options);
+                var handler = Microsoft.Maps.Events.addHandler(this._map, 'tiledownloadcomplete', $.proxy(initPromise.resolve, initPromise));
+                this._viewChangeHandler = Microsoft.Maps.Events.addHandler(this._map, 'viewchange', $.proxy(this._handleViewChange, this));
+                this._clickHandler = Microsoft.Maps.Events.addHandler(this._map, 'click', $.proxy(this._handleClickAction, this));
+                var locationPromise = this._renderLocation();
+                var markersPromise = this._refreshMarkers();
+                var routesPromise = this._renderRoutes();
+                $.when(initPromise, locationPromise, markersPromise, routesPromise).done(function() {
+                    Microsoft.Maps.Events.removeHandler(handler);
+                    deferred.resolve(true)
+                });
+                return deferred.promise()
+            },
+            _handleViewChange: function() {
+                var center = this._map.getCenter();
+                this._option("location", this._normalizeLocation(center));
+                this._option("zoom", this._map.getZoom())
+            },
+            updateDimensions: function() {
+                return $.Deferred().resolve().promise()
+            },
+            updateMapType: function() {
+                this._map.setView({mapTypeId: this._mapType(this._option("type"))});
+                return $.Deferred().resolve().promise()
+            },
+            updateLocation: function() {
+                return this._renderLocation()
+            },
+            _renderLocation: function() {
+                var deferred = $.Deferred(),
+                    self = this;
+                this._resolveLocation(this._option("location")).done(function(location) {
+                    self._map.setView({
+                        animate: false,
+                        center: location
+                    });
+                    deferred.resolve()
+                });
+                return deferred.promise()
+            },
+            updateZoom: function() {
+                this._map.setView({
+                    animate: false,
+                    zoom: this._option("zoom")
+                });
+                return $.Deferred().resolve().promise()
+            },
+            updateControls: function() {
+                this.clean();
+                return this.render()
+            },
+            _clearBounds: function() {
+                this._bounds = null
+            },
+            _extendBounds: function(location) {
+                if (this._bounds)
+                    this._bounds = new Microsoft.Maps.LocationRect.fromLocations(this._bounds.getNorthwest(), this._bounds.getSoutheast(), location);
+                else
+                    this._bounds = new Microsoft.Maps.LocationRect(location, MIN_LOCATION_RECT_LENGTH, MIN_LOCATION_RECT_LENGTH)
+            },
+            _fitBounds: function() {
+                if (!this._bounds)
+                    return;
+                this._bounds.height = this._bounds.height * 1.1;
+                this._bounds.width = this._bounds.width * 1.1;
+                this._map.setView({
+                    animate: false,
+                    bounds: this._bounds
+                })
+            },
+            updateMarkers: function() {
+                return this._refreshMarkers()
+            },
+            _refreshMarkers: function() {
+                this._clearMarkers();
+                return this._renderMarkers()
+            },
+            _clearMarkers: function() {
+                var self = this;
+                this._clearBounds();
+                $.each(this._markers, function(_, marker) {
+                    self._map.entities.remove(marker.pushpin);
+                    if (marker.infobox)
+                        self._map.entities.remove(marker.infobox);
+                    if (marker.handler)
+                        Microsoft.Maps.Events.removeHandler(marker.handler)
+                });
+                this._markers = []
+            },
+            addMarkers: function(options) {
+                return this._renderMarkers(options)
+            },
+            _renderMarkers: function(options) {
+                options = options || this._option("markers");
+                var deferred = $.Deferred(),
+                    self = this;
+                var markerPromises = $.map(options, function(markerOptions) {
+                        return self._addMarker(markerOptions)
+                    });
+                $.when.apply($, markerPromises).done(function() {
+                    var instances = $.map($.makeArray(arguments), function(marker) {
+                            return marker.pushpin
+                        });
+                    deferred.resolve(false, instances)
+                });
+                deferred.done(function() {
+                    self._fitBounds()
+                });
+                return deferred.promise()
+            },
+            _addMarker: function(options) {
+                var self = this;
+                return this._renderMarker(options).done(function(marker) {
+                        self._markers.push(marker)
+                    })
+            },
+            _renderMarker: function(options) {
+                var d = $.Deferred(),
+                    self = this;
+                this._resolveLocation(options.location).done(function(location) {
+                    var pushpin = new Microsoft.Maps.Pushpin(location, null);
+                    self._map.entities.push(pushpin, null);
+                    var infobox = self._renderTooltip(location, options.tooltip);
+                    var handler;
+                    if (options.clickAction || options.tooltip) {
+                        var markerClickAction = self._createAction(options.clickAction || $.noop);
+                        handler = Microsoft.Maps.Events.addHandler(pushpin, "click", function() {
+                            markerClickAction({location: self._normalizeLocation(location)});
+                            if (infobox)
+                                infobox.setOptions({visible: true})
+                        })
+                    }
+                    self._extendBounds(location);
+                    d.resolve({
+                        pushpin: pushpin,
+                        infobox: infobox,
+                        handler: handler
+                    })
+                });
+                return d.promise()
+            },
+            _renderTooltip: function(location, options) {
+                if (!options)
+                    return;
+                options = this._parseTooltipOptions(options);
+                var infobox = new Microsoft.Maps.Infobox(location, {
+                        description: options.text,
+                        offset: new Microsoft.Maps.Point(0, 33),
+                        visible: options.visible
+                    });
+                this._map.entities.push(infobox, null);
+                return infobox
+            },
+            updateRoutes: function() {
+                return this._refreshRoutes()
+            },
+            addRoutes: function(options) {
+                return this._renderRoutes(options)
+            },
+            _refreshRoutes: function() {
+                this._clearRoutes();
+                return this._renderRoutes()
+            },
+            _renderRoutes: function(options) {
+                options = options || this._option("routes");
+                var deferred = $.Deferred(),
+                    self = this;
+                var routePromises = $.map(options, function(routeOptions) {
+                        return self._addRoute(routeOptions)
+                    });
+                $.when.apply($, routePromises).done(function() {
+                    deferred.resolve(false, $.makeArray(arguments))
+                });
+                return deferred.promise()
+            },
+            _clearRoutes: function() {
+                var self = this;
+                $.each(this._routes, function(_, route) {
+                    route.dispose()
+                });
+                this._routes = []
+            },
+            _addRoute: function(routeOptions) {
+                var self = this;
+                return this._renderRoute(routeOptions).done(function(route) {
+                        self._routes.push(route)
+                    })
+            },
+            _renderRoute: function(options) {
+                var d = $.Deferred(),
+                    self = this;
+                var points = $.map(options.locations, function(point) {
+                        return self._resolveLocation(point)
+                    });
+                $.when.apply($, points).done(function() {
+                    var locations = $.makeArray(arguments),
+                        direction = new Microsoft.Maps.Directions.DirectionsManager(self._map),
+                        color = new DX.Color(options.color || self._defaultRouteColor()).toHex(),
+                        routeColor = new Microsoft.Maps.Color.fromHex(color);
+                    routeColor.a = (options.opacity || self._defaultRouteOpacity()) * 255;
+                    direction.setRenderOptions({
+                        autoUpdateMapView: false,
+                        displayRouteSelector: false,
+                        waypointPushpinOptions: {visible: false},
+                        drivingPolylineOptions: {
+                            strokeColor: routeColor,
+                            strokeThickness: options.weight || self._defaultRouteWeight()
+                        },
+                        walkingPolylineOptions: {
+                            strokeColor: routeColor,
+                            strokeThickness: options.weight || self._defaultRouteWeight()
+                        }
+                    });
+                    direction.setRequestOptions({
+                        routeMode: self._movementMode(options.mode),
+                        routeDraggable: false
+                    });
+                    $.each(locations, function(_, location) {
+                        var waypoint = new Microsoft.Maps.Directions.Waypoint({location: location});
+                        direction.addWaypoint(waypoint)
+                    });
+                    var handler = Microsoft.Maps.Events.addHandler(direction, 'directionsUpdated', function() {
+                            Microsoft.Maps.Events.removeHandler(handler);
+                            d.resolve(direction)
+                        });
+                    direction.calculateDirections()
+                });
+                return d.promise()
+            },
+            clean: function() {
+                if (this._map) {
+                    Microsoft.Maps.Events.removeHandler(this._viewChangeHandler);
+                    Microsoft.Maps.Events.removeHandler(this._clickHandler);
+                    this._clearMarkers();
+                    this._clearRoutes();
+                    this._map.dispose()
+                }
+            },
+            cancelEvents: true
+        }));
+        if (!ui.dxMap.__internals)
+            ui.dxMap.__internals = {};
+        var prevRemapConstant = ui.dxMap.__internals.remapConstant || $.noop;
+        ui.dxMap.__internals.remapConstant = function(variable, newValue) {
+            switch (variable) {
+                case"BING_URL":
+                    BING_URL = newValue;
+                    break;
+                default:
+                    prevRemapConstant.apply(this, arguments)
+            }
+        }
+    })(jQuery, DevExpress);
+    /*! Module widgets, file ui.map.google.js */
+    (function($, DX, undefined) {
+        var ui = DX.ui;
+        var GOOGLE_MAP_READY = "_googleScriptReady",
+            GOOGLE_URL = "https://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=" + GOOGLE_MAP_READY;
+        var googleMapsLoader;
+        ui.registerMapProvider("google", ui.MapProvider.inherit({
+            _mapType: function(type) {
+                var mapTypes = {
+                        hybrid: google.maps.MapTypeId.HYBRID,
+                        roadmap: google.maps.MapTypeId.ROADMAP
+                    };
+                return mapTypes[type] || mapTypes.hybrid
+            },
+            _movementMode: function(type) {
+                var movementTypes = {
+                        driving: google.maps.TravelMode.DRIVING,
+                        walking: google.maps.TravelMode.WALKING
+                    };
+                return movementTypes[type] || movementTypes.driving
+            },
+            _resolveLocation: function(location) {
+                var d = $.Deferred();
+                if (typeof location === "string") {
+                    var geocoder = new google.maps.Geocoder;
+                    geocoder.geocode({address: location}, function(results, status) {
+                        if (status === google.maps.GeocoderStatus.OK)
+                            d.resolve(results[0].geometry.location)
+                    })
+                }
+                else if ($.isArray(location))
+                    d.resolve(new google.maps.LatLng(location[0], location[1]));
+                else if ($.isPlainObject(location) && $.isNumeric(location.lat) && $.isNumeric(location.lng))
+                    d.resolve(new google.maps.LatLng(location.lat, location.lng));
+                return d.promise()
+            },
+            _normalizeLocation: function(location) {
+                return {
+                        lat: location.lat(),
+                        lng: location.lng()
+                    }
+            },
+            load: function() {
+                if (!googleMapsLoader) {
+                    googleMapsLoader = $.Deferred();
+                    var key = this._key("google");
+                    window[GOOGLE_MAP_READY] = $.proxy(this._mapReady, this);
+                    $.getScript(GOOGLE_URL + (key ? "&key=" + key : ""))
+                }
+                this._markers = [];
+                this._routes = [];
+                return googleMapsLoader.promise()
+            },
+            _mapReady: function() {
+                try {
+                    delete window[GOOGLE_MAP_READY]
+                }
+                catch(e) {
+                    window[GOOGLE_MAP_READY] = undefined
+                }
+                googleMapsLoader.resolve()
+            },
+            render: function() {
+                var deferred = $.Deferred(),
+                    initPromise = $.Deferred(),
+                    controls = this._option("controls");
+                var options = {
+                        zoom: this._option("zoom"),
+                        center: new google.maps.LatLng(0, 0),
+                        mapTypeId: this._mapType(this._option("type")),
+                        panControl: controls,
+                        zoomControl: controls,
+                        mapTypeControl: controls,
+                        streetViewControl: controls
+                    };
+                this._map = new google.maps.Map(this._$container[0], options);
+                var listner = google.maps.event.addListener(this._map, 'idle', $.proxy(initPromise.resolve, initPromise));
+                this._zoomChangeListener = google.maps.event.addListener(this._map, 'zoom_changed', $.proxy(this._handleZoomChange, this));
+                this._centerChangeListener = google.maps.event.addListener(this._map, 'center_changed', $.proxy(this._handleCenterChange, this));
+                this._clickListener = google.maps.event.addListener(this._map, 'click', $.proxy(this._handleClickAction, this));
+                var locationPromise = this._renderLocation();
+                var markersPromise = this._refreshMarkers();
+                var routesPromise = this._renderRoutes();
+                $.when(initPromise, locationPromise, markersPromise, routesPromise).done(function() {
+                    google.maps.event.removeListener(listner);
+                    deferred.resolve(true)
+                });
+                return deferred.promise()
+            },
+            updateDimensions: function() {
+                google.maps.event.trigger(this._map, 'resize');
+                return $.Deferred().resolve().promise()
+            },
+            updateMapType: function() {
+                this._map.setMapTypeId(this._mapType(this._option("type")));
+                return $.Deferred().resolve().promise()
+            },
+            updateLocation: function() {
+                return this._renderLocation()
+            },
+            _handleCenterChange: function() {
+                var center = this._map.getCenter();
+                this._option("location", this._normalizeLocation(center))
+            },
+            _renderLocation: function() {
+                var deferred = $.Deferred(),
+                    self = this;
+                this._resolveLocation(this._option("location")).done(function(location) {
+                    self._map.setCenter(location);
+                    deferred.resolve()
+                });
+                return deferred.promise()
+            },
+            _handleZoomChange: function() {
+                this._option("zoom", this._map.getZoom())
+            },
+            updateZoom: function() {
+                this._map.setZoom(this._option("zoom"));
+                return $.Deferred().resolve().promise()
+            },
+            updateControls: function() {
+                var controls = this._option("controls");
+                this._map.setOptions({
+                    panControl: controls,
+                    zoomControl: controls,
+                    mapTypeControl: controls,
+                    streetViewControl: controls
+                });
+                return $.Deferred().resolve().promise()
+            },
+            _clearBounds: function() {
+                this._bounds = null
+            },
+            _extendBounds: function(location) {
+                if (this._bounds)
+                    this._bounds.extend(location);
+                else {
+                    this._bounds = new google.maps.LatLngBounds;
+                    this._bounds.extend(location)
+                }
+            },
+            _fitBounds: function() {
+                if (!this._bounds)
+                    return;
+                this._map.fitBounds(this._bounds)
+            },
+            updateMarkers: function() {
+                return this._refreshMarkers()
+            },
+            _refreshMarkers: function() {
+                this._clearMarkers();
+                return this._renderMarkers()
+            },
+            _clearMarkers: function() {
+                var self = this;
+                this._clearBounds();
+                $.each(this._markers, function(_, marker) {
+                    marker.instance.setMap(null);
+                    if (marker.listner)
+                        google.maps.event.removeListener(marker.listner)
+                });
+                this._markers = []
+            },
+            addMarkers: function(options) {
+                return this._renderMarkers(options)
+            },
+            _renderMarkers: function(options) {
+                options = options || this._option("markers");
+                var deferred = $.Deferred(),
+                    self = this;
+                var markerPromises = $.map(options, function(markerOptions) {
+                        return self._addMarker(markerOptions)
+                    });
+                $.when.apply($, markerPromises).done(function() {
+                    var instances = $.map($.makeArray(arguments), function(marker) {
+                            return marker.instance
+                        });
+                    deferred.resolve(false, instances)
+                });
+                deferred.done(function() {
+                    self._fitBounds()
+                });
+                return deferred.promise()
+            },
+            _addMarker: function(options) {
+                var self = this;
+                return this._renderMarker(options).done(function(marker) {
+                        self._markers.push(marker)
+                    })
+            },
+            _renderMarker: function(options) {
+                var d = $.Deferred(),
+                    self = this;
+                this._resolveLocation(options.location).done(function(location) {
+                    var marker = new google.maps.Marker({
+                            position: location,
+                            map: self._map
+                        }),
+                        listner;
+                    var infoWindow = self._renderTooltip(marker, options.tooltip);
+                    if (options.clickAction || options.tooltip) {
+                        var markerClickAction = self._createAction(options.clickAction || $.noop);
+                        listner = google.maps.event.addListener(marker, "click", function() {
+                            markerClickAction({location: self._normalizeLocation(location)});
+                            if (infoWindow)
+                                infoWindow.open(self._map, marker)
+                        })
+                    }
+                    self._extendBounds(location);
+                    d.resolve({
+                        instance: marker,
+                        listner: listner
+                    })
+                });
+                return d.promise()
+            },
+            _renderTooltip: function(marker, options) {
+                if (!options)
+                    return;
+                options = this._parseTooltipOptions(options);
+                var infoWindow = new google.maps.InfoWindow({content: options.text});
+                if (options.visible)
+                    infoWindow.open(this._map, marker);
+                return infoWindow
+            },
+            updateRoutes: function() {
+                return this._refreshRoutes()
+            },
+            addRoutes: function(options) {
+                return this._renderRoutes()
+            },
+            _refreshRoutes: function() {
+                this._clearRoutes();
+                return this._renderRoutes()
+            },
+            _clearRoutes: function() {
+                var self = this;
+                $.each(this._routes, function(_, route) {
+                    route.setMap(null)
+                });
+                this._routes = []
+            },
+            _renderRoutes: function(options) {
+                options = options || this._option("routes");
+                var deferred = $.Deferred(),
+                    self = this;
+                var routePromises = $.map(options, function(routeOptions) {
+                        return self._addRoute(routeOptions)
+                    });
+                $.when.apply($, routePromises).done(function() {
+                    deferred.resolve(false, $.makeArray(arguments))
+                });
+                return deferred.promise()
+            },
+            _addRoute: function(options) {
+                var self = this;
+                return this._renderRoute(options).done(function(route) {
+                        self._routes.push(route)
+                    })
+            },
+            _renderRoute: function(options) {
+                var d = $.Deferred(),
+                    self = this,
+                    directionsService = new google.maps.DirectionsService;
+                var points = $.map(options.locations, function(point) {
+                        return self._resolveLocation(point)
+                    });
+                $.when.apply($, points).done(function() {
+                    var locations = $.makeArray(arguments),
+                        origin = locations.shift(),
+                        destination = locations.pop(),
+                        waypoints = $.map(locations, function(location) {
+                            return {
+                                    location: location,
+                                    stopover: true
+                                }
+                        });
+                    var request = {
+                            origin: origin,
+                            destination: destination,
+                            waypoints: waypoints,
+                            optimizeWaypoints: true,
+                            travelMode: self._movementMode(options.mode)
+                        };
+                    directionsService.route(request, function(response, status) {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            var color = new DX.Color(options.color || self._defaultRouteColor()).toHex(),
+                                directionOptions = {
+                                    directions: response,
+                                    map: self._map,
+                                    suppressMarkers: true,
+                                    preserveViewport: true,
+                                    polylineOptions: {
+                                        strokeWeight: options.weight || self._defaultRouteWeight(),
+                                        strokeOpacity: options.opacity || self._defaultRouteOpacity(),
+                                        strokeColor: color
+                                    }
+                                };
+                            var route = new google.maps.DirectionsRenderer(directionOptions);
+                            d.resolve(route)
+                        }
+                    })
+                });
+                return d.promise()
+            },
+            clean: function() {
+                if (this._map) {
+                    google.maps.event.removeListener(this._zoomChangeListener);
+                    google.maps.event.removeListener(this._centerChangeListener);
+                    google.maps.event.removeListener(this._clickListener);
+                    this._clearMarkers();
+                    this._clearRoutes();
+                    delete this._map;
+                    this._$container.empty()
+                }
+            },
+            cancelEvents: true
+        }));
+        if (!ui.dxMap.__internals)
+            ui.dxMap.__internals = {};
+        var prevRemapConstant = ui.dxMap.__internals.remapConstant || $.noop;
+        ui.dxMap.__internals.remapConstant = function(variable, newValue) {
+            switch (variable) {
+                case"GOOGLE_URL":
+                    GOOGLE_URL = newValue;
+                    break;
+                default:
+                    prevRemapConstant.apply(this, arguments)
+            }
+        }
+    })(jQuery, DevExpress);
+    /*! Module widgets, file ui.map.googleStatic.js */
+    (function($, DX, undefined) {
+        var ui = DX.ui;
+        var GOOGLE_STATIC_URL = "https://maps.google.com/maps/api/staticmap?";
+        ui.registerMapProvider("googleStatic", ui.MapProvider.inherit({
+            _locationToString: function(location) {
+                return !$.isPlainObject(location) ? location.toString().replace(/ /g, "+") : location.lat + "," + location.lng
+            },
+            render: function() {
+                return this._updateMap()
+            },
+            updateDimensions: function() {
+                return this._updateMap()
+            },
+            updateMapType: function() {
+                return this._updateMap()
+            },
+            updateLocation: function() {
+                return this._updateMap()
+            },
+            updateZoom: function() {
+                return this._updateMap()
+            },
+            updateControls: function() {
+                return $.Deferred().resolve().promise()
+            },
+            updateMarkers: function() {
+                return this._updateMap()
+            },
+            addMarkers: function() {
+                return this._updateMap()
+            },
+            updateRoutes: function() {
+                return this._updateMap()
+            },
+            addRoutes: function() {
+                return this._updateMap()
+            },
+            clean: function() {
+                this._$container.css("background-image", "none")
+            },
+            mapRendered: function() {
+                return true
+            },
+            _updateMap: function() {
+                var key = this._key("googleStatic");
+                var requestOptions = ["sensor=false", "size=" + this._option("width") + "x" + this._option("height"), "maptype=" + this._option("type"), "center=" + this._locationToString(this._option("location")), "zoom=" + this._option("zoom"), this._markersSubstring()];
+                requestOptions.push.apply(requestOptions, this._routeSubstrings());
+                if (key)
+                    requestOptions.push("key=" + this._key("googleStatic"));
+                var request = GOOGLE_STATIC_URL + requestOptions.join("&");
+                this._$container.css("background", "url(\"" + request + "\") no-repeat 0 0");
+                return $.Deferred().resolve(true).promise()
+            },
+            _markersSubstring: function() {
+                var self = this,
+                    markers = [];
+                $.each(this._option("markers"), function(_, marker) {
+                    markers.push(self._locationToString(marker.location))
+                });
+                return "markers=" + markers.join("|")
+            },
+            _routeSubstrings: function() {
+                var self = this,
+                    routes = [];
+                $.each(this._option("routes"), function(_, route) {
+                    var color = new DX.Color(route.color || ROUTE_COLOR_DEFAULT).toHex().replace('#', '0x'),
+                        opacity = Math.round((route.opacity || ROUTE_OPACITY_DEFAULT) * 255).toString(16),
+                        width = route.weight || ROUTE_WEIGHT_DEFAULT,
+                        locations = [];
+                    $.each(route.locations, function(_, routePoint) {
+                        locations.push(self._locationToString(routePoint))
+                    });
+                    routes.push("path=color:" + color + opacity + "|weight:" + width + "|" + locations.join("|"))
+                });
+                return routes
+            }
+        }));
+        if (!ui.dxMap.__internals)
+            ui.dxMap.__internals = {};
+        var prevRemapConstant = ui.dxMap.__internals.remapConstant || $.noop;
+        ui.dxMap.__internals.remapConstant = function(variable, newValue) {
+            switch (variable) {
+                case"GOOGLE_STATIC_URL":
+                    GOOGLE_STATIC_URL = newValue;
+                    break;
+                case"GOOGLE_DIRECTIONS_URL":
+                    GOOGLE_DIRECTIONS_URL = newValue;
+                    break;
+                default:
+                    prevRemapConstant.apply(this, arguments)
+            }
+        }
+    })(jQuery, DevExpress);
     /*! Module widgets, file ui.swipeable.js */
     (function($, DX, undefined) {
         var ui = DX.ui,
@@ -2064,7 +3109,12 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _clean: function() {
                 this.callBase();
-                this._element().removeClass()
+                this._removeTypesCss()
+            },
+            _removeTypesCss: function() {
+                var css = this._element().attr("class");
+                css = css.replace(/\bdx-button-[-a-z0-9]+\b/gi, "");
+                this._element().attr("class", css)
             },
             _renderIcon: function() {
                 var contentElement = this._element().find(BUTTON_CONTENT_SELECTOR),
@@ -2370,9 +3420,12 @@ if (!DevExpress.MOD_WIDGETS) {
             _renderProps: function() {
                 this._input().prop({
                     placeholder: this.option("placeholder"),
-                    readOnly: this.option("readOnly"),
+                    readOnly: this._readOnlyPropValue(),
                     disabled: this.option("disabled")
                 })
+            },
+            _readOnlyPropValue: function() {
+                return this.option("readOnly")
             },
             _renderPlaceholder: function() {
                 if (nativePlaceholderSupport)
@@ -2784,6 +3837,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     elastic: false,
                     startAction: $.proxy(this._handleSwipeStart, this),
                     updateAction: $.proxy(this._handleSwipeUpdate, this),
+                    cancelAction: $.proxy(this._handleSwipeCancel, this),
                     itemWidthFunc: $.proxy(this._itemWidthFunc, this)
                 });
                 this._renderValue();
@@ -2791,7 +3845,7 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _renderStartHandler: function() {
                 var eventName = events.addNamespace("dxpointerdown", this.NAME),
-                    startAction = this._createAction($.proxy(this._handleStart, this));
+                    startAction = this._createAction($.proxy(this._handleStart, this), {excludeValidators: ["gesture"]});
                 this._element().off(eventName).on(eventName, function(e) {
                     startAction({jQueryEvent: e})
                 })
@@ -2806,6 +3860,9 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _handleSwipeUpdate: function(e) {
                 this._handleValueChange(this._startOffset + e.jQueryEvent.offset)
+            },
+            _handleSwipeCancel: function(e) {
+                this._feedbackOff()
             },
             _handleValueChange: function(ratio) {
                 var min = this.option("min"),
@@ -2987,16 +4044,13 @@ if (!DevExpress.MOD_WIDGETS) {
             RADIO_GROUP_VERTICAL_CLASS = "dx-radio-group-vertical",
             RADIO_GROUP_HORIZONTAL_CLASS = "dx-radio-group-horizontal",
             RADIO_BUTTON_CLASS = "dx-radio-button",
-            RADIO_BUTTON_INPUT_CLASS = "dx-radio-button-input",
+            RADIO_BUTTON_SELECTOR = "." + RADIO_BUTTON_CLASS,
             RADIO_BUTTON_VALUE_CLASS = "dx-radio-button-value",
             RADIO_VALUE_CONTAINER_CLASS = "dx-radio-value-container",
             RADIO_BUTTON_ACTIVE_STATE = "dx-state-active",
-            RADIO_BUTTON_DATA_KEY = "dxRadioButtonData",
-            RADIO_BUTTON_SELECTOR = "input[type='radio']",
-            RADIO_BUTTON_TAG = "<input type='radio' />",
-            RADIO_GROUP_INSTANCE_INDEX = 0;
+            RADIO_BUTTON_DATA_KEY = "dxRadioButtonData";
         ui.registerComponent("dxRadioGroup", ui.SelectableCollectionWidget.inherit({
-            _activeStateUnit: "label",
+            _activeStateUnit: RADIO_BUTTON_SELECTOR,
             _defaultOptions: function() {
                 return $.extend(this.callBase(), {
                         layout: "vertical",
@@ -3016,9 +4070,11 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _init: function() {
                 this.callBase();
-                this._name = "dxRadioGroup" + RADIO_GROUP_INSTANCE_INDEX++;
                 if (!this._dataSource)
                     this._itemsToDataSource()
+            },
+            _itemsToDataSource: function() {
+                this._dataSource = new DevExpress.data.DataSource(this.option("items"))
             },
             _render: function() {
                 this._element().addClass(RADIO_GROUP_CLASS);
@@ -3027,33 +4083,75 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderLayout();
                 this._renderValue()
             },
-            _renderValue: function() {
-                var index = this.option("selectedIndex"),
-                    value = this.option("value");
-                if (value)
-                    this._changeValue(value);
-                else
-                    this.option("value", this._getValueByIndex(index))
+            _compileValueGetter: function() {
+                this._valueGetter = DX.data.utils.compileGetter(this._valueGetterExpr())
+            },
+            _valueGetterExpr: function() {
+                return this.option("valueExpr") || this._dataSource && this._dataSource._store._key || "this"
             },
             _renderLayout: function() {
                 var layout = this.option("layout");
                 this._element().toggleClass(RADIO_GROUP_VERTICAL_CLASS, layout === "vertical");
                 this._element().toggleClass(RADIO_GROUP_HORIZONTAL_CLASS, layout === "horizontal")
             },
+            _renderValue: function() {
+                this.option("value") ? this._setIndexByValue() : this._setValueByIndex()
+            },
+            _setIndexByValue: function(value) {
+                var self = this;
+                value = value === undefined ? self.option("value") : value;
+                self._searchValue(value).done(function(item) {
+                    if (self._dataSource.isLoaded())
+                        self._setIndexByItem(item);
+                    else
+                        self._dataSource.load().done(function() {
+                            self._setIndexByItem(item)
+                        })
+                })
+            },
+            _setIndexByItem: function(item) {
+                this.option("selectedIndex", $.inArray(item, this._dataSource.items()))
+            },
+            _searchValue: function(value) {
+                var self = this,
+                    store = self._dataSource.store(),
+                    valueExpr = self._valueGetterExpr();
+                var deffered = $.Deferred();
+                if (valueExpr === store.key() || store instanceof DX.data.CustomStore)
+                    store.byKey(value).done(function(result) {
+                        deffered.resolveWith(self, [result])
+                    });
+                else
+                    store.load({filter: [valueExpr, value]}).done(function(result) {
+                        deffered.resolveWith(self, result)
+                    });
+                return deffered.promise()
+            },
+            _setValueByIndex: function() {
+                var index = this.option("selectedIndex"),
+                    $items = this._itemElements();
+                if (index < 0 || index >= $items.length)
+                    return undefined;
+                var itemElement = this._selectedItemElement(index),
+                    itemData = this._getItemData(itemElement);
+                this.option("value", this._getItemValue(itemData))
+            },
+            _getItemValue: function(item) {
+                return this._valueGetter(item) || item.text
+            },
             _attachSelectedEvent: function() {
                 var itemSelectAction = this._createAction(this._handleItemSelect);
-                this._element().off("." + this.NAME, RADIO_BUTTON_SELECTOR).on(events.addNamespace("dxclick", this.NAME), "label", function(e) {
+                this._element().off("." + this.NAME, RADIO_BUTTON_SELECTOR).on(events.addNamespace("dxclick", this.NAME), RADIO_BUTTON_SELECTOR, function(e) {
                     itemSelectAction({jQueryEvent: e})
                 })
             },
             _renderSelectedIndex: function(index) {
-                var $inputs = this._itemContainer().find(RADIO_BUTTON_SELECTOR);
-                if (index >= 0 && index < $inputs.length) {
-                    var $currentInput = $inputs.eq(index),
-                        $currentRadioGroup = $currentInput.closest("." + RADIO_GROUP_CLASS);
-                    $currentInput.prop("checked", true);
-                    $currentRadioGroup.find("." + RADIO_BUTTON_CLASS).removeClass("checked");
-                    $currentInput.closest("." + RADIO_BUTTON_CLASS).addClass("checked")
+                var $items = this._itemElements();
+                if (index >= 0 && index < $items.length) {
+                    var $selectedItem = $items.eq(index),
+                        $radioGroup = $selectedItem.closest("." + RADIO_GROUP_CLASS);
+                    $radioGroup.find(RADIO_BUTTON_SELECTOR).removeClass("checked");
+                    $selectedItem.closest(RADIO_BUTTON_SELECTOR).addClass("checked")
                 }
             },
             _createItemByRenderer: function(itemRenderer, renderArgs) {
@@ -3069,75 +4167,26 @@ if (!DevExpress.MOD_WIDGETS) {
             _renderInput: function($element, item) {
                 if (item.html)
                     return;
-                var $inputRadio = $(RADIO_BUTTON_TAG).addClass(RADIO_BUTTON_INPUT_CLASS),
-                    $radioSpan = $("<div>").addClass(RADIO_BUTTON_VALUE_CLASS),
-                    $radioSpanContainer = $("<div>").append($radioSpan).addClass(RADIO_VALUE_CONTAINER_CLASS);
-                $inputRadio.prop("value", this._getItemValue(item));
-                $element.prepend($radioSpanContainer).prepend($inputRadio).wrapInner($("<label>"))
+                var $radio = $("<div>").addClass(RADIO_BUTTON_VALUE_CLASS),
+                    $radioContainer = $("<div>").append($radio).addClass(RADIO_VALUE_CONTAINER_CLASS);
+                $element.prepend($radioContainer)
             },
-            _postprocessRenderItem: function(args) {
-                $(args.itemElement).find(RADIO_BUTTON_SELECTOR).prop("name", this._name)
-            },
-            _itemsToDataSource: function() {
-                this._dataSource = new DevExpress.data.DataSource(this.option("items"))
-            },
-            _compileValueGetter: function() {
-                this._valueGetter = DX.data.utils.compileGetter(this._valueGetterExpr())
-            },
-            _valueGetterExpr: function() {
-                return this.option("valueExpr") || this._dataSource && this._dataSource._store._key || "this"
-            },
-            _getItemValue: function(item) {
-                return this._valueGetter(item) || item.text
-            },
-            _getValueByIndex: function(index) {
-                var $inputs = this._itemContainer().find(RADIO_BUTTON_SELECTOR);
-                if (index < 0 || index >= $inputs.length)
-                    return undefined;
-                var itemElement = this._selectedItemElement(index),
-                    itemData = this._getItemData(itemElement);
-                return this._getItemValue(itemData)
-            },
-            _searchValue: function(value) {
-                var self = this,
-                    store = this._dataSource.store(),
-                    valueExpr = this._valueGetterExpr();
-                var deffered = $.Deferred();
-                if (valueExpr === store.key() || store instanceof DX.data.CustomStore)
-                    store.byKey(value).done(function(result) {
-                        deffered.resolveWith(self, [result])
-                    });
-                else
-                    store.load({filter: [valueExpr, value]}).done(function(result) {
-                        deffered.resolveWith(self, result)
-                    });
-                return deffered.promise()
-            },
-            _changeValue: function(value) {
-                var self = this,
-                    ds = this._dataSource;
-                this._searchValue(value).done(function(result) {
-                    if (ds.isLoaded())
-                        self.option("selectedIndex", $.inArray(result, ds.items()));
-                    else
-                        ds.load().done(function() {
-                            self.option("selectedIndex", $.inArray(result, ds.items()))
-                        })
-                })
-            },
-            _optionChanged: function(name, value, prevValue) {
+            _optionChanged: function(name, value) {
                 switch (name) {
                     case"value":
-                        this._changeValue(value);
+                        this._setIndexByValue(value);
                         break;
                     case"selectedIndex":
                         this.callBase.apply(this, arguments);
-                        this.option("value", this._getValueByIndex(value));
+                        this._setValueByIndex();
                         break;
                     case"layout":
                         this._renderLayout();
                         break;
                     case"valueExpr":
+                        this._compileValueGetter();
+                        this._setValueByIndex();
+                        break;
                     case"itemRender":
                         this._invalidate();
                     default:
@@ -3157,11 +4206,16 @@ if (!DevExpress.MOD_WIDGETS) {
             TABS_ITEM_SELECTED_CLASS = "dx-tab-selected",
             TABS_ITEM_TEXT_CLASS = "dx-tab-text",
             ICON_CLASS = "dx-icon",
-            TABS_ITEM_DATA_KEY = "dxTabData";
+            TABS_ITEM_DATA_KEY = "dxTabData",
+            FEEDBACK_HIDE_TIMEOUT = 100;
         ui.registerComponent("dxTabs", ui.SelectableCollectionWidget.inherit({
             _activeStateUnit: TABS_ITEM_SELECTOR,
             _defaultOptions: function() {
                 return $.extend(this.callBase(), {})
+            },
+            _init: function() {
+                this.callBase();
+                this._feedbackHideTimeout = FEEDBACK_HIDE_TIMEOUT
             },
             _itemClass: function() {
                 return TABS_ITEM_CLASS
@@ -3791,6 +4845,7 @@ if (!DevExpress.MOD_WIDGETS) {
             utils = DX.utils,
             translator = DX.translator;
         var TOOLBAR_CLASS = "dx-toolbar",
+            TOOLBAR_BOTTOM_CLASS = "dx-toolbar-bottom",
             TOOLBAR_MINI_CLASS = "dx-toolbar-mini",
             TOOLBAR_ITEM_CLASS = "dx-toolbar-item",
             TOOLBAR_LABEL_CLASS = "dx-toolbar-label",
@@ -3815,7 +4870,8 @@ if (!DevExpress.MOD_WIDGETS) {
                 return $.extend(this.callBase(), {
                         menuItemRender: null,
                         menuItemTemplate: "item",
-                        submenuType: "dxDropDownMenu"
+                        submenuType: "dxDropDownMenu",
+                        renderAs: "topToolbar"
                     })
             },
             _itemContainer: function() {
@@ -3844,7 +4900,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderMenu()
             },
             _renderToolbar: function() {
-                this._element().addClass(TOOLBAR_CLASS);
+                this._element().addClass(TOOLBAR_CLASS).toggleClass(TOOLBAR_BOTTOM_CLASS, this.option("renderAs") === "bottomToolbar");
                 this._$toolbarItemsContainer = $("<div />").appendTo(this._element());
                 this._$toolbarItemsContainer.addClass(TOOLBAR_ITEMS_CONTAINER_CLASS)
             },
@@ -3866,8 +4922,16 @@ if (!DevExpress.MOD_WIDGETS) {
                     itemElement.addClass(TOOLBAR_LABEL_CLASS).removeClass(TOOLBAR_BUTTON_CLASS);
                 return itemElement
             },
-            _hasMenuItems: function() {
-                return this._getMenuItems().length > 0
+            _hasVisibleMenuItems: function() {
+                var menuItems = this._getMenuItems(),
+                    result = false;
+                var optionGetter = DevExpress.data.utils.compileGetter("visible");
+                $.each(menuItems, function(index, item) {
+                    var itemVisible = optionGetter(item, {functionsAsIs: true});
+                    if (itemVisible !== false)
+                        result = true
+                });
+                return result
             },
             _getToolbarItems: function() {
                 return $.grep(this.option("items") || [], function(item) {
@@ -3881,21 +4945,27 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _renderContentImpl: function() {
                 var items = this._getToolbarItems();
-                this._$toolbarItemsContainer.toggleClass(TOOLBAR_MINI_CLASS, items.length === 0);
+                this._element().toggleClass(TOOLBAR_MINI_CLASS, items.length === 0);
                 if (this._renderedItemsCount)
                     this._renderItems(items.slice(this._renderedItemsCount));
                 else
                     this._renderItems(items)
             },
             _renderMenu: function() {
-                if (!this._hasMenuItems())
-                    return;
+                var self = this,
+                    itemClickAction = this._createActionByOption("itemClickAction");
                 var options = {
                         itemRender: this.option("menuItemRender"),
                         itemTemplate: this.option("menuItemTemplate"),
-                        itemClickAction: this.option("itemClickAction")
+                        itemClickAction: function(e) {
+                            self._toggleMenuVisibility(false, true);
+                            itemClickAction(e)
+                        }
                     };
-                switch (this.option("submenuType")) {
+                this._menuType = this.option("submenuType");
+                if (this._menuType === "dxList" && this.option("renderAs") === "topToolbar")
+                    this._menuType = "dxDropDownMenu";
+                switch (this._menuType) {
                     case"dxActionSheet":
                         this._renderActionSheet(options);
                         break;
@@ -3917,11 +4987,15 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$menuButtonContainer = $("<div />").appendTo($container).addClass(TOOLBAR_BUTTON_CLASS).addClass(TOOLBAR_MENU_CONTAINER_CLASS)
             },
             _renderDropDown: function(options) {
+                if (!this._hasVisibleMenuItems())
+                    return;
                 this._renderMenuButtonContainer();
                 this._menu = $("<div />").appendTo(this._$menuButtonContainer).dxDropDownMenu(options).dxDropDownMenu("instance");
                 this._renderMenuItems()
             },
             _renderActionSheet: function(options) {
+                if (!this._hasVisibleMenuItems())
+                    return;
                 this._renderMenuButton({icon: "overflow"});
                 var actionSheetOptions = $.extend({
                         target: this._$button,
@@ -3938,18 +5012,22 @@ if (!DevExpress.MOD_WIDGETS) {
                 var listOptions = $.extend({width: "100%"}, options);
                 this._renderListOverlay();
                 this._renderContainerSwipe();
-                this._menu = $("<div />").appendTo(this._listOverlay.content()).dxList(listOptions).dxList("instance");
-                this._renderMenuItems();
+                if (this._hasVisibleMenuItems()) {
+                    this._menu = $("<div />").appendTo(this._listOverlay.content()).dxList(listOptions).dxList("instance");
+                    this._renderMenuItems()
+                }
                 this._changeListVisible(this.option("visible"));
                 this._windowResizeCallback = $.proxy(this._toggleMenuVisibility, this);
                 utils.windowResizeCallbacks.add(this._windowResizeCallback)
             },
             _renderMenuItems: function() {
-                this._menu.addTemplate(this._templates);
+                this._menu.addExternalTemplate(this._templates);
                 this._menu.option("items", this._getMenuItems())
             },
             _getListHeight: function() {
-                return this._listOverlay.content().find(".dx-list").height()
+                var listHeight = this._listOverlay.content().find(".dx-list").height(),
+                    semiHiddenHeight = this._$toolbarItemsContainer.height() - this._element().height();
+                return listHeight + semiHiddenHeight
             },
             _renderListOverlay: function() {
                 var element = this._element();
@@ -3965,6 +5043,17 @@ if (!DevExpress.MOD_WIDGETS) {
                     animation: null,
                     backButtonHandler: null
                 }).dxOverlay("instance")
+            },
+            _backButtonHandler: function() {
+                this._toggleMenuVisibility(false, true)
+            },
+            _toggleBackButtonCallback: function() {
+                if (this._closeCallback)
+                    DX.backButtonCallback.remove(this._closeCallback);
+                if (this._menuShown) {
+                    this._closeCallback = $.proxy(this._backButtonHandler, this);
+                    DX.backButtonCallback.add(this._closeCallback)
+                }
             },
             _renderContainerSwipe: function() {
                 this._$toolbarItemsContainer.appendTo(this._listOverlay.content()).dxSwipeable({
@@ -4011,12 +5100,14 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _toggleMenuVisibility: function(visible, animate) {
                 this._menuShown = visible;
-                switch (this.option("submenuType")) {
+                switch (this._menuType) {
                     case"dxList":
+                        this._toggleBackButtonCallback();
                         this._renderMenuPosition(this._menuShown ? 0 : 1, animate);
                         break;
                     case"dxActionSheet":
-                        this._menu.show();
+                        this._menu.toggle(this._menuShown);
+                        this._menuShown = false;
                         break
                 }
             },
@@ -4037,9 +5128,10 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _optionChanged: function(name, value) {
                 switch (name) {
+                    case"renderAs":
                     case"submenuType":
-                        this._clean();
-                        this._render();
+                        this._invalidate();
+                        this.callBase.apply(this, arguments);
                         break;
                     case"visible":
                         this._changeListVisible(value);
@@ -4150,26 +5242,20 @@ if (!DevExpress.MOD_WIDGETS) {
                     $itemElement.wrapInner($contentContainer)
                 },
                 _prependLeftBags: function($itemElement, config) {
-                    var $leftParts = this._collectDecoratorsMarkup(DECORATOR_LEFT_BAG_CREATE_METHOD, config);
-                    if ($leftParts.length) {
-                        var $leftBagContainer = $("<div />").addClass(LIST_ITEM_LEFT_BAG_CLASS),
-                            $leftBags = $leftParts.wrap($leftBagContainer).parent();
-                        $itemElement.prepend($leftBags)
-                    }
+                    var $leftBags = this._collectDecoratorsMarkup(DECORATOR_LEFT_BAG_CREATE_METHOD, config, LIST_ITEM_LEFT_BAG_CLASS);
+                    $itemElement.prepend($leftBags)
                 },
                 _appendRightBags: function($itemElement, config) {
-                    var $rightParts = this._collectDecoratorsMarkup(DECORATOR_RIGHT_BAG_CREATE_METHOD, config);
-                    if ($rightParts.length) {
-                        var $rightBagContainer = $("<div />").addClass(LIST_ITEM_RIGHT_BAG_CLASS),
-                            $rightBags = $rightParts.wrap($rightBagContainer).parent();
-                        $itemElement.append($rightBags)
-                    }
+                    var $rightBags = this._collectDecoratorsMarkup(DECORATOR_RIGHT_BAG_CREATE_METHOD, config, LIST_ITEM_RIGHT_BAG_CLASS);
+                    $itemElement.append($rightBags)
                 },
-                _collectDecoratorsMarkup: function(method, config) {
+                _collectDecoratorsMarkup: function(method, config, containerClass) {
                     var $collector = $("<div />");
                     $.each(this._decorators, function() {
-                        var markup = this[method](config);
-                        $collector.append(markup)
+                        var $container = $("<div />").addClass(containerClass);
+                        this[method]($.extend(config, {$container: $container}));
+                        if ($container.children().length)
+                            $collector.append($container)
                     });
                     return $collector.children()
                 },
@@ -4261,26 +5347,28 @@ if (!DevExpress.MOD_WIDGETS) {
                     $buttonContainer.append($buttonWrapper);
                     $buttonWrapper.append($buttonInnerWrapper);
                     $buttonInnerWrapper.append($button);
-                    $itemElement.append($buttonContainer)
+                    $itemElement.append($buttonContainer);
+                    $buttonContainer.css("right", -$buttonContainer.width())
                 },
                 _cancelDelete: function($itemElement) {
                     $itemElement.removeClass(SWITCHABLE_DELETE_READY_CLASS)
                 }
             });
-        var TOGGLE_DELETE_SWITCH_CLASS = "dx-toggle-delete-switch",
+        var TOGGLE_DELETE_SWITCH_CONTAINER_CLASS = "dx-toggle-delete-switch-container",
+            TOGGLE_DELETE_SWITCH_CLASS = "dx-toggle-delete-switch",
             TOGGLE_DELETE_SWITCH_ICON_CLASS = "dx-toggle-delete-switch-icon";
         registerDecorator("delete", "toggle", SwitchableButtonDeleteDecorator.inherit({leftBag: function(config) {
-                var $itemElement = config.$itemElement;
+                var $itemElement = config.$itemElement,
+                    $container = config.$container;
                 var $toggle = $("<div />").addClass(TOGGLE_DELETE_SWITCH_CLASS),
                     $toggleIcon = $("<div />").addClass(TOGGLE_DELETE_SWITCH_ICON_CLASS);
                 $toggle.append($toggleIcon);
-                $toggle.on(events.addNamespace("dxpointerup dxpointercancel dxpointerdown", DX_LIST_EDIT_DECORATOR), function(e) {
-                    e.stopPropagation()
-                }).on(events.addNamespace("dxclick", DX_LIST_EDIT_DECORATOR), function(e) {
+                $toggle.on(events.addNamespace("dxclick", DX_LIST_EDIT_DECORATOR), function(e) {
                     $itemElement.toggleClass(SWITCHABLE_DELETE_READY_CLASS);
                     e.stopPropagation()
                 });
-                return $toggle
+                $container.addClass(TOGGLE_DELETE_SWITCH_CONTAINER_CLASS);
+                $container.append($toggle)
             }}));
         registerDecorator("delete", "slideButton", SwitchableButtonDeleteDecorator.inherit({modifyElement: function(config) {
                 this.callBase.apply(this, arguments);
@@ -4292,9 +5380,11 @@ if (!DevExpress.MOD_WIDGETS) {
                     }
                 })
             }}));
-        var SLIDE_ITEM_CONTENT_CLASS = "dx-slide-item-content",
+        var SLIDE_ITEM_WRAPPER_CLASS = "dx-slide-item-wrapper",
+            SLIDE_ITEM_CONTENT_CLASS = "dx-slide-item-content",
             SLIDE_ITEM_DELETE_BUTTON_CONTAINER_CLASS = "dx-slide-item-delete-button-container",
             SLIDE_ITEM_DELETE_BUTTON_CLASS = "dx-slide-item-delete-button",
+            SLIDE_ITEM_DELETE_BUTTON_HIDDEN_CLASS = "dx-slide-item-delete-button-hidden",
             SLIDE_ITEM_DELETE_BUTTON_CONTENT_CLASS = "dx-slide-item-delete-button-content";
         registerDecorator("delete", "slideItem", SwitchableDeleteDecorator.inherit({
             modifyElement: function(config) {
@@ -4305,6 +5395,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     $buttonContainer = $("<div/>").addClass(SLIDE_ITEM_DELETE_BUTTON_CONTAINER_CLASS).append($button);
                 $itemElement.wrapInner($("<div/>").addClass(SLIDE_ITEM_CONTENT_CLASS));
                 $itemElement.append($buttonContainer);
+                $itemElement.addClass(SLIDE_ITEM_WRAPPER_CLASS).addClass(SLIDE_ITEM_DELETE_BUTTON_HIDDEN_CLASS);
                 $button.on(events.addNamespace("dxclick", DX_LIST_EDIT_DECORATOR), function() {
                     self._list.deleteItem($itemElement)
                 });
@@ -4316,6 +5407,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     readyToDelete = $itemElement.hasClass(SWITCHABLE_DELETE_READY_CLASS),
                     startOffset = readyToDelete ? -$itemElement.find("." + SLIDE_ITEM_DELETE_BUTTON_CLASS).outerWidth() : 0,
                     position = offset + startOffset < 0 ? offset + startOffset : 0;
+                if (position !== 0)
+                    $itemElement.removeClass(SLIDE_ITEM_DELETE_BUTTON_HIDDEN_CLASS);
                 translator.move($itemElement.find("." + SLIDE_ITEM_CONTENT_CLASS), {left: position});
                 $itemElement.data(DX_PREVENT_ITEM_CLICK_ACTION, true)
             },
@@ -4343,7 +5436,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     type: "slide",
                     duration: 200,
                     complete: function() {
-                        $itemElement.removeClass(SWITCHABLE_DELETE_READY_CLASS)
+                        $itemElement.removeClass(SWITCHABLE_DELETE_READY_CLASS);
+                        $itemElement.addClass(SLIDE_ITEM_DELETE_BUTTON_HIDDEN_CLASS)
                     }
                 })
             }
@@ -4431,7 +5525,10 @@ if (!DevExpress.MOD_WIDGETS) {
                             },
                             height: "auto"
                         },
-                        contentReadyAction: $.proxy(this._renderMenu, this)
+                        contentReadyAction: $.proxy(this._renderMenu, this),
+                        height: function() {
+                            return self._$itemWithMenu
+                        }
                     }).dxOverlay("instance")
             },
             _renderMenu: function(e) {
@@ -4457,7 +5554,9 @@ if (!DevExpress.MOD_WIDGETS) {
                     of: $itemElement,
                     collision: "flip"
                 });
-                overlay.option("width", $itemElement.width());
+                overlay.option("width", function() {
+                    return $itemElement.width()
+                });
                 overlay.endUpdate();
                 overlay.show();
                 this._$itemWithMenu = $itemElement;
@@ -4465,11 +5564,13 @@ if (!DevExpress.MOD_WIDGETS) {
             }
         }));
         var LIST_ITEM_SELECTED_CLASS = "dx-list-item-selected",
+            SELECT_CHECKBOX_CONTAINER_CLASS = "dx-select-checkbox-container",
             SELECT_CHECKBOX_CLASS = "dx-select-checkbox";
         registerDecorator("selection", "control", ListEditDecorator.inherit({
             leftBag: function(config) {
                 var self = this,
-                    $itemElement = config.$itemElement;
+                    $itemElement = config.$itemElement,
+                    $container = config.$container;
                 var $checkBox = $("<div />").addClass(SELECT_CHECKBOX_CLASS);
                 $checkBox.dxCheckBox({
                     checked: this._isSelected($itemElement),
@@ -4479,7 +5580,8 @@ if (!DevExpress.MOD_WIDGETS) {
                         e.jQueryEvent.stopPropagation()
                     }
                 });
-                return $checkBox
+                $container.addClass(SELECT_CHECKBOX_CONTAINER_CLASS);
+                $container.append($checkBox)
             },
             modifyElement: function(config) {
                 var self = this,
@@ -4714,7 +5816,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         autoPagingEnabled: true,
                         scrollingEnabled: true,
                         showScrollbar: true,
-                        useNative: true,
+                        useNativeScrolling: true,
                         pullingDownText: Globalize.localize("dxList-pullingDownText"),
                         pulledDownText: Globalize.localize("dxList-pulledDownText"),
                         refreshingText: Globalize.localize("dxList-refreshingText"),
@@ -4783,7 +5885,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         pullDownAction: this.option("scrollingEnabled") && this.option("pullRefreshEnabled") ? $.proxy(this._handlePullDown, this) : null,
                         reachBottomAction: this.option("scrollingEnabled") && pagingEnabled ? $.proxy(this._handleScrollBottom, this) : null,
                         showScrollbar: this.option("showScrollbar"),
-                        useNative: this.option("useNative"),
+                        useNative: this.option("useNativeScrolling"),
                         pullingDownText: this.option("pullingDownText"),
                         pulledDownText: this.option("pulledDownText"),
                         refreshingText: this.option("refreshingText"),
@@ -4809,7 +5911,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     this._infiniteDataLoading();
                 else {
                     this._scrollView.release(!canLoadNext);
-                    if (this._shouldRenderNextButton())
+                    if (this._shouldRenderNextButton() && this._dataSource.isLoaded())
                         this._toggleNextButton(!allDataLoaded)
                 }
             },
@@ -4860,9 +5962,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderEditing();
                 this.callBase();
                 this._renderItemHold();
-                this._attachSwipeEvent();
-                if (this._shouldRenderNextButton())
-                    this._getNextButton()
+                this._attachSwipeEvent()
             },
             _renderItemHold: function() {
                 var eventName = events.addNamespace("dxhold", this.NAME);
@@ -4870,7 +5970,7 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _attachClickEvent: function() {
                 var itemSelector = this._itemSelector(),
-                    eventName = events.addNamespace("click", this.NAME);
+                    eventName = events.addNamespace("dxclick", this.NAME);
                 this._itemContainer().off(eventName, itemSelector).on(eventName, itemSelector, $.proxy(this._handleItemClick, this))
             },
             _attachSwipeEvent: function() {
@@ -4896,11 +5996,13 @@ if (!DevExpress.MOD_WIDGETS) {
                 return $("<div/>").addClass(LIST_NEXT_BUTTON_CLASS).toggle(showButton).append($("<div/>").dxButton({
                         text: "More",
                         clickAction: $.proxy(this._handleNextButton, this)
-                    })).appendTo(this._element())
+                    }))
             },
             _renderItems: function(items) {
-                if (this.option("grouped"))
+                if (this.option("grouped")) {
                     $.each(items, $.proxy(this._renderGroup, this));
+                    this._renderEmptyMessage()
+                }
                 else
                     this.callBase.apply(this, arguments);
                 this._afterItemsRendered(true)
@@ -4948,13 +6050,9 @@ if (!DevExpress.MOD_WIDGETS) {
                     this._scrollView.toggleLoading(true);
                     this._expectNextPageLoading();
                     source.pageIndex(1 + source.pageIndex());
-                    source.load()
+                    source.load();
+                    this._nextButton.detach()
                 }
-            },
-            _toggleNextButton: function(showButton) {
-                var nextButton = this._getNextButton();
-                nextButton.toggle(showButton);
-                this._element().toggleClass(LIST_HAS_NEXT_CLASS, showButton)
             },
             _groupRenderDefault: function(group) {
                 return String(group.key || group)
@@ -4997,18 +6095,19 @@ if (!DevExpress.MOD_WIDGETS) {
                 clearTimeout(this._holdTimer);
                 this.callBase()
             },
-            _toggleNextButtonVisibility: function(value) {
+            _toggleNextButton: function(value) {
+                var dataSource = this._dataSource,
+                    nextButton = this._getNextButton();
                 this._element().toggleClass(LIST_HAS_NEXT_CLASS, value);
-                var nextButton = this._getNextButton();
-                if (value)
-                    nextButton.appendTo(this._element());
-                else
+                if (value && dataSource && dataSource.isLoaded())
+                    nextButton.appendTo(this._itemContainer());
+                if (!value)
                     nextButton.detach()
             },
             _optionChanged: function(name, value, prevValue) {
                 switch (name) {
                     case"showNextButton":
-                        this._toggleNextButtonVisibility(value);
+                        this._toggleNextButton(value);
                         break;
                     case"itemHoldTimeout":
                         this._renderItemHold();
@@ -5111,6 +6210,27 @@ if (!DevExpress.MOD_WIDGETS) {
                     self._selectItem($itemElement)
                 })
             },
+            _deleteItemFromDS: function($item) {
+                var self = this,
+                    deferred = $.Deferred(),
+                    disabledState = this.option("disabled"),
+                    dataStore = this._dataSource.store();
+                this.option("disabled", true);
+                if (!dataStore.remove)
+                    throw new Error("You have to implement 'remove' method in dataStore used by dxList to be able to delete items");
+                dataStore.remove(dataStore.keyOf(this._getItemData($item))).done(function(key) {
+                    if (key !== undefined)
+                        deferred.resolveWith(self);
+                    else
+                        deferred.rejectWith(self)
+                }).fail(function() {
+                    deferred.rejectWith(self)
+                });
+                deferred.always(function() {
+                    self.option("disabled", disabledState)
+                });
+                return deferred
+            },
             deleteItem: function(itemElement) {
                 var self = this,
                     deferred = $.Deferred(),
@@ -5121,20 +6241,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     $item.addClass(LIST_ITEM_RESPONSE_WAIT_CLASS);
                     if (this._dataSource) {
                         changingOption = "dataSource";
-                        var disabledState = this.option("disabled"),
-                            dataStore = this._dataSource.store();
-                        this.option("disabled", true);
-                        dataStore.remove(dataStore.keyOf(this._getItemData($item))).done(function(key) {
-                            if (key !== undefined)
-                                deferred.resolveWith(this);
-                            else
-                                deferred.rejectWith(this)
-                        }).fail(function() {
-                            deferred.rejectWith(this)
-                        });
-                        deferred.always(function() {
-                            self.option("disabled", disabledState)
-                        })
+                        deferred = this._deleteItemFromDS($item)
                     }
                     else {
                         changingOption = "items";
@@ -5205,7 +6312,6 @@ if (!DevExpress.MOD_WIDGETS) {
             _defaultOptions: function() {
                 return $.extend(this.callBase(), {
                         items: null,
-                        bounceEnabled: true,
                         showScrollbar: false,
                         listHeight: 500,
                         baseItemWidth: 100,
@@ -5258,7 +6364,6 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._scrollView = this._element().dxScrollable({
                     direction: "horizontal",
                     showScrollbar: this.option("showScrollbar"),
-                    bounceEnabled: this.option("bounceEnabled"),
                     disabled: this.option("disabled")
                 }).data("dxScrollable")
             },
@@ -5341,7 +6446,6 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _optionChanged: function(name, value) {
                 switch (name) {
-                    case"bounceEnabled":
                     case"showScrollbar":
                         this._initScrollable();
                         break;
@@ -5370,8 +6474,10 @@ if (!DevExpress.MOD_WIDGETS) {
             fx = DX.fx,
             translator = DX.translator,
             GALLERY_CLASS = "dx-gallery",
+            GALLERY_LOOP_CLASS = "dx-gallery-loop",
             GALLERY_ITEM_CONTAINER_CLASS = GALLERY_CLASS + "-wrapper",
             GALLERY_ITEM_CLASS = GALLERY_CLASS + "-item",
+            GALLERY_LOOP_ITEM_CLASS = GALLERY_ITEM_CLASS + "-loop",
             GALLERY_ITEM_SELECTOR = "." + GALLERY_ITEM_CLASS,
             GALLERY_ITEM_SELECTED_CLASS = GALLERY_ITEM_CLASS + "-selected",
             GALLERY_INDICATOR_CLASS = GALLERY_CLASS + "-indicator",
@@ -5427,6 +6533,7 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _render: function() {
                 this._element().addClass(GALLERY_CLASS);
+                this._element().toggleClass(GALLERY_LOOP_CLASS, this.option("loop"));
                 this._renderDragHandler();
                 this._renderItemContainer();
                 this.callBase();
@@ -5447,6 +6554,13 @@ if (!DevExpress.MOD_WIDGETS) {
                     return false
                 })
             },
+            _renderItems: function(items) {
+                if (!items.length)
+                    return;
+                this.callBase(items);
+                this._renderItem(0, items[0]).addClass(GALLERY_LOOP_ITEM_CLASS);
+                this._renderItem(0, items[this._itemsCount() - 1]).addClass(GALLERY_LOOP_ITEM_CLASS)
+            },
             _renderItemContainer: function() {
                 if (this._$container)
                     return;
@@ -5457,9 +6571,14 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderContainerPosition()
             },
             _renderItemPositions: function() {
-                var self = this;
+                var self = this,
+                    itemWidth = this._itemWidth(),
+                    itemsCount = this._itemsCount();
                 this._itemElements().each(function(index) {
-                    translator.move($(this), {left: index * self._itemWidth()})
+                    var realIndex = index;
+                    if (index === itemsCount + 1)
+                        realIndex = -1;
+                    translator.move($(this), {left: realIndex * itemWidth})
                 })
             },
             _renderContainerPosition: function(offset, animate) {
@@ -5516,7 +6635,7 @@ if (!DevExpress.MOD_WIDGETS) {
             _renderUserInteraction: function() {
                 var self = this,
                     rootElement = self._element(),
-                    swipeEnabled = self.option("swipeEnabled"),
+                    swipeEnabled = self.option("swipeEnabled") && this._itemsCount() > 1,
                     cursor = swipeEnabled ? "pointer" : "default";
                 rootElement.dxSwipeable({
                     startAction: swipeEnabled ? $.proxy(self._handleSwipeStart, self) : function(e) {
@@ -5580,6 +6699,10 @@ if (!DevExpress.MOD_WIDGETS) {
                 if (selectedIndex < itemsCount && selectedIndex > 0 || loop) {
                     this._prevNavButton.show();
                     this._nextNavButton.show()
+                }
+                if (this._itemsCount() < 2) {
+                    this._prevNavButton.hide();
+                    this._nextNavButton.hide()
                 }
                 if (!loop) {
                     if (selectedIndex < 1)
@@ -5674,7 +6797,10 @@ if (!DevExpress.MOD_WIDGETS) {
             _optionChanged: function(name, value, prevValue) {
                 switch (name) {
                     case"animationDuration":
+                        this._renderNavButtonsVisibility();
+                        break;
                     case"loop":
+                        this._element().toggleClass(GALLERY_LOOP_CLASS, value);
                         this._renderNavButtonsVisibility();
                         return;
                     case"selectedIndex":
@@ -5730,7 +6856,7 @@ if (!DevExpress.MOD_WIDGETS) {
             OVERLAY_SHADER_CLASS = OVERLAY_CLASS + "-shader",
             OVERLAY_MODAL_CLASS = OVERLAY_CLASS + "-modal",
             OVERLAY_SHOW_EVENT_TOLERANCE = 500,
-            ACTIONS = ["showingAction", "shownAction", "hidingAction", "hiddenAction"],
+            ACTIONS = ["showingAction", "shownAction", "hidingAction", "hiddenAction", "positioningAction", "positionedAction"],
             LAST_Z_INDEX = 1000;
         ui.registerComponent("dxOverlay", ui.ContainerWidget.inherit({
             _defaultOptions: function() {
@@ -5775,7 +6901,9 @@ if (!DevExpress.MOD_WIDGETS) {
                         },
                         deferRendering: true,
                         disabled: false,
-                        targetContainer: undefined
+                        targetContainer: undefined,
+                        positioningAction: null,
+                        positionedAction: null
                     })
             },
             _wrapper: function() {
@@ -5843,10 +6971,10 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$container = $("<div>").addClass(OVERLAY_CONTENT_CLASS);
                 this._needRenderOnShow = this.option("visible") || !deferRendering;
                 this.callBase();
+                this._renderActions();
                 this._renderStyles();
                 this._needRenderOnShow = deferRendering;
-                this._element().addClass(OVERLAY_CLASS);
-                this._renderActions()
+                this._element().addClass(OVERLAY_CLASS)
             },
             _renderStyles: function() {
                 this._renderShader();
@@ -5906,7 +7034,8 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$container.appendTo(this._$wrapper)
             },
             _renderPosition: function() {
-                var $wrapper = this._$wrapper.show();
+                var $wrapper = this._$wrapper.show(),
+                    containerPosition;
                 if (this.option("shading")) {
                     DX.position($wrapper, {
                         my: "top left",
@@ -5919,7 +7048,9 @@ if (!DevExpress.MOD_WIDGETS) {
                     })
                 }
                 this._$container.css("transform", "none");
-                DX.position(this._$container, this.option("position"))
+                containerPosition = DX.calculatePosition(this._$container, this.option("position"));
+                this._actions.positioningAction({position: containerPosition});
+                this._actions.positionedAction({position: DX.position(this._$container, containerPosition)})
             },
             _subscribeParentScroll: function() {
                 if (!this.option("position"))
@@ -6044,7 +7175,8 @@ if (!DevExpress.MOD_WIDGETS) {
                 }
                 switch (name) {
                     case"position":
-                        this._renderPosition();
+                        if (this.option("visible"))
+                            this._renderPosition();
                         break;
                     case"visible":
                         this._toggleBackButtonCallback();
@@ -6252,11 +7384,16 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._wrapper().addClass(POPUP_WRAPPER_CLASS)
             },
             _renderDimensions: function() {
-                if (this.option("fullScreen"))
-                    this._$container.css({
+                if (this.option("fullScreen")) {
+                    this._wrapper().css({
                         width: "100%",
                         height: "100%"
                     });
+                    this._$container.css({
+                        width: "100%",
+                        height: "100%"
+                    })
+                }
                 else
                     this.callBase()
             },
@@ -6276,9 +7413,24 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderClearButton();
                 this._renderDoneButton()
             },
+            _renderContent: function() {
+                this.callBase();
+                this._setContentHeight()
+            },
+            _setContentHeight: function() {
+                var contentHeight = this._$container.height();
+                if (!this._$content)
+                    return;
+                if (this._$title)
+                    contentHeight -= this._$title.outerHeight(true) || 0;
+                if (this.option("height") === "auto")
+                    this._$content.css("height", "auto");
+                else if (contentHeight > 0)
+                    this._$content.css("height", contentHeight)
+            },
             _renderTitle: function() {
                 if (this.option("showTitle")) {
-                    this._$title = $("<div />").addClass(POPUP_TITLE_CLASS);
+                    this._$title = this._$title || $("<div />").addClass(POPUP_TITLE_CLASS);
                     this._element().append(this._$title);
                     var titleTemplate = this._templates.title;
                     if (titleTemplate)
@@ -6288,7 +7440,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     this._$title.prependTo(this._$container)
                 }
                 else if (this._$title)
-                    this._$title.remove()
+                    this._$title.detach()
             },
             _defaultTitleRender: function() {
                 this._$title.text(this.option("title"))
@@ -6359,6 +7511,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     case"showTitle":
                     case"title":
                         this._renderTitle();
+                        this._renderCloseButton();
+                        this._setContentHeight();
                         break;
                     case"cancelButton":
                         this._renderCancelButton();
@@ -6371,6 +7525,10 @@ if (!DevExpress.MOD_WIDGETS) {
                         break;
                     case"closeButton":
                         this._renderCloseButton();
+                        break;
+                    case"height":
+                        this.callBase.apply(this, arguments);
+                        this._setContentHeight();
                         break;
                     case"fullScreen":
                         this._$container.toggleClass(POPUP_FULL_SCREEN_CLASS, value);
@@ -6464,6 +7622,14 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._setPositionOf(this.option("target"))
             },
             _renderPosition: function() {
+                DX.translator.move(this._$arrow, {
+                    left: 0,
+                    top: 0
+                });
+                DX.translator.move(this._$container, {
+                    left: 0,
+                    top: 0
+                });
                 this._updateContentSize();
                 var arrowPosition = $.extend({}, this.option("position"));
                 var containerPosition = $.extend({}, arrowPosition, {offset: "0 " + this._$arrow.height()}),
@@ -6541,7 +7707,7 @@ if (!DevExpress.MOD_WIDGETS) {
             MINUTES = "minutes",
             SECONDS = "seconds",
             MILLISECONDS = "milliseconds",
-            TEN_YEARS = 86400 * 365 * 10;
+            TEN_YEARS = 1000 * 60 * 60 * 24 * 365 * 10;
         var DATE_COMPONENTS_INFO = {};
         DATE_COMPONENTS_INFO[YEAR] = {
             getter: "getFullYear",
@@ -6579,7 +7745,7 @@ if (!DevExpress.MOD_WIDGETS) {
         DATE_COMPONENTS_INFO[HOURS] = {
             getter: "getHours",
             setter: "setHours",
-            possibleFormats: ["h", "hh"],
+            possibleFormats: ["H", "HH", "h", "hh"],
             formatter: function(value) {
                 return globalize.format(new Date(0, 0, 0, value), "HH")
             },
@@ -6783,6 +7949,9 @@ if (!DevExpress.MOD_WIDGETS) {
             }
         }));
         ui.registerComponent("dxDatePicker", ui.dxPopup.inherit({
+            _valueOption: function() {
+                return new Date(this.option("value")) == "Invalid Date" ? new Date : new Date(this.option("value"))
+            },
             _defaultOptions: function() {
                 return $.extend(this.callBase(), {
                         minDate: new Date(1990, 1, 1),
@@ -6795,7 +7964,7 @@ if (!DevExpress.MOD_WIDGETS) {
                             text: "Cancel",
                             icon: "close",
                             clickAction: $.proxy(function() {
-                                this._value = new Date(this.option("value"))
+                                this._value = this._valueOption()
                             }, this)
                         },
                         doneButton: {
@@ -6812,11 +7981,11 @@ if (!DevExpress.MOD_WIDGETS) {
                 this.callBase();
                 this._element().addClass(DATEPICKER_CLASS);
                 this._wrapper().addClass(DATEPICKER_WRAPPER_CLASS);
-                this._value = new Date(this.option("value"))
+                this._value = this._valueOption()
             },
             _renderContentImpl: function() {
                 this.callBase();
-                this._value = new Date(this.option("value"));
+                this._value = this._valueOption();
                 this._renderRollers()
             },
             _renderRollers: function() {
@@ -6972,7 +8141,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderDatePicker()
             },
             _renderDatePicker: function() {
-                if (support.inputType(this.option("format")) || this.option("useNativePicker"))
+                if (this._usingNativeDatePicker() || this.option("readOnly"))
                     return;
                 var datePickerOptions = {
                         value: this.option("value"),
@@ -6991,6 +8160,14 @@ if (!DevExpress.MOD_WIDGETS) {
                         return inputClickAction({jQuery: e})
                     })
                 }
+            },
+            _usingNativeDatePicker: function() {
+                return support.inputType(this.option("format")) || this.option("useNativePicker")
+            },
+            _readOnlyPropValue: function() {
+                if (this._usingNativeDatePicker())
+                    return this.callBase();
+                return true
             },
             _handleValueChange: function() {
                 var value = fromStandardDateFormat(this._input().val()),
@@ -7015,6 +8192,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         this._renderValue();
                         this._renderDatePicker();
                         break;
+                    case"readOnly":
                     case"useNativePicker":
                         this._invalidate();
                     default:
@@ -7158,7 +8336,8 @@ if (!DevExpress.MOD_WIDGETS) {
                     default:
                         this.callBase.apply(this, arguments)
                 }
-            }
+            },
+            _defaultBackButtonHandler: $.noop
         }));
         ui.dxLoadPanel.__internals = {
             LOADPANEL_CLASS: LOADPANEL_CLASS,
@@ -7258,7 +8437,8 @@ if (!DevExpress.MOD_WIDGETS) {
                 self._setListDataSource();
                 self._refreshSelected();
                 self._popup.show();
-                self._popup.content().on("MSPointerDown", function(e){})
+                self._popup.content().on("MSPointerDown", function(e){});
+                self._lastSelectedItem = self._selectedItem
             },
             _renderContentIfNeed: function() {
                 if (this._needRenderContent) {
@@ -7288,6 +8468,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 return $element.dxPopup({
                         title: this.option("title"),
                         fullScreen: this.option("fullScreen"),
+                        shading: !this.option("fullScreen"),
                         contentReadyAction: $.proxy(this._popupContentReadyAction, this),
                         cancelButton: this._getCancelButtonConfig(),
                         doneButton: this._getDoneButtonConfig(),
@@ -7330,7 +8511,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$search = $("<div/>").addClass(LOOKUP_SEARCH_CLASS).dxTextBox({
                     mode: "search",
                     placeholder: this._getSearchPlaceholder(),
-                    valueUpdateEvent: "change keypress paste focus textInput input",
+                    valueUpdateEvent: "change keypress paste textInput input",
                     valueUpdateAction: $.proxy(this._searchChangedHandler, this)
                 }).toggle(this.option("searchEnabled")).appendTo(this._popup.content());
                 this._search = this._$search.dxTextBox("instance")
@@ -7356,7 +8537,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     itemRender: this._getItemRender(),
                     itemTemplate: this.option("itemTemplate")
                 }).data("dxList");
-                this._list.addTemplate(this._templates);
+                this._list.addExternalTemplate(this._templates);
                 if (this._needSetItemRenderToList) {
                     this._updateListItemRender();
                     this._needSetItemRenderToList = false
@@ -7771,988 +8952,6 @@ if (!DevExpress.MOD_WIDGETS) {
             }
         }))
     })(jQuery, DevExpress);
-    /*! Module widgets, file ui.map.js */
-    (function($, DX, undefined) {
-        var ui = DX.ui,
-            events = ui.events,
-            utils = DX.utils,
-            winJS = DX.support.winJS;
-        var ROUTE_WEIGHT_DEFAULT = 5,
-            ROUTE_OPACITY_DEFAULT = .5,
-            ROUTE_COLOR_DEFAULT = "#0000FF";
-        var providers = {};
-        var registerProvider = function(name, provider) {
-                providers[name] = provider
-            };
-        var Provider = DX.Class.inherit({
-                ctor: function(map, $container) {
-                    this._mapInstance = map;
-                    this._$container = $container
-                },
-                load: $.noop,
-                render: DX.abstract,
-                updateDimensions: DX.abstract,
-                updateMapType: DX.abstract,
-                updateLocation: DX.abstract,
-                updateZoom: DX.abstract,
-                updateControls: DX.abstract,
-                updateMarkers: DX.abstract,
-                addMarkers: DX.abstract,
-                updateRoutes: DX.abstract,
-                addRoutes: DX.abstract,
-                clean: DX.abstract,
-                cancelEvents: false,
-                map: function() {
-                    return this._map
-                },
-                mapRendered: function() {
-                    return !!this._map
-                },
-                _option: function(name, value) {
-                    if (value === undefined)
-                        return this._mapInstance.option(name);
-                    this._mapInstance.setOptionSilent(name, value)
-                },
-                _key: function(providerName) {
-                    var key = this._option("key");
-                    return key[providerName] === undefined ? key : key[providerName]
-                },
-                _createAction: function() {
-                    return this._mapInstance._createAction.apply(this._mapInstance, $.makeArray(arguments))
-                },
-                _handleClickAction: function() {
-                    var clickAction = this._createAction(this._option("clickAction") || $.noop);
-                    clickAction()
-                }
-            });
-        var BING_MAP_READY = "_bingScriptReady",
-            BING_URL = "https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1&onScriptLoad=" + BING_MAP_READY,
-            BING_LOCAL_FILES1 = "ms-appx:///Bing.Maps.JavaScript/js/veapicore.js",
-            BING_LOCAL_FILES2 = "ms-appx:///Bing.Maps.JavaScript/js/veapiModules.js",
-            BING_CREDENTIALS = "AhuxC0dQ1DBTNo8L-H9ToVMQStmizZzBJdraTSgCzDSWPsA1Qd8uIvFSflzxdaLH";
-        var msMapsLoader;
-        registerProvider("bing", Provider.inherit({
-            _mapType: function(type) {
-                var mapTypes = {
-                        roadmap: Microsoft.Maps.MapTypeId.road,
-                        hybrid: Microsoft.Maps.MapTypeId.aerial
-                    };
-                return mapTypes[type] || mapTypes.roadmap
-            },
-            _movementMode: function(type) {
-                var movementTypes = {
-                        driving: Microsoft.Maps.Directions.RouteMode.driving,
-                        walking: Microsoft.Maps.Directions.RouteMode.walking
-                    };
-                return movementTypes[type] || movementTypes.driving
-            },
-            _resolveLocation: function(location) {
-                var d = $.Deferred();
-                if (typeof location === "string") {
-                    var searchManager = new Microsoft.Maps.Search.SearchManager(this._map);
-                    var searchRequest = {
-                            where: location,
-                            count: 1,
-                            callback: function(searchResponse) {
-                                var boundsBox = searchResponse.results[0].location;
-                                d.resolve(new Microsoft.Maps.Location(boundsBox.latitude, boundsBox.longitude))
-                            }
-                        };
-                    searchManager.geocode(searchRequest)
-                }
-                else if ($.isPlainObject(location) && $.isNumeric(location.lat) && $.isNumeric(location.lng))
-                    d.resolve(new Microsoft.Maps.Location(location.lat, location.lng));
-                else if ($.isArray(location))
-                    d.resolve(new Microsoft.Maps.Location(location[0], location[1]));
-                return d.promise()
-            },
-            _normalizeLocation: function(location) {
-                return {
-                        lat: location.latitude,
-                        lng: location.longitude
-                    }
-            },
-            load: function() {
-                if (!msMapsLoader) {
-                    msMapsLoader = $.Deferred();
-                    window[BING_MAP_READY] = $.proxy(this._mapReady, this);
-                    if (winJS)
-                        $.when($.getScript(BING_LOCAL_FILES1), $.getScript(BING_LOCAL_FILES2)).done(function() {
-                            Microsoft.Maps.loadModule("Microsoft.Maps.Map", {callback: window[BING_MAP_READY]})
-                        });
-                    else
-                        $.getScript(BING_URL)
-                }
-                this._markers = [];
-                this._routes = [];
-                return msMapsLoader
-            },
-            _mapReady: function() {
-                try {
-                    delete window[BING_MAP_READY]
-                }
-                catch(e) {
-                    window[BING_MAP_READY] = undefined
-                }
-                var searchModulePromise = $.Deferred();
-                var directionsModulePromise = $.Deferred();
-                Microsoft.Maps.loadModule('Microsoft.Maps.Search', {callback: $.proxy(searchModulePromise.resolve, searchModulePromise)});
-                Microsoft.Maps.loadModule('Microsoft.Maps.Directions', {callback: $.proxy(directionsModulePromise.resolve, directionsModulePromise)});
-                $.when(searchModulePromise, directionsModulePromise).done(function() {
-                    msMapsLoader.resolve()
-                })
-            },
-            render: function() {
-                var deferred = $.Deferred(),
-                    initPromise = $.Deferred(),
-                    controls = this._option("controls");
-                var options = {
-                        credentials: this._key("bing") || BING_CREDENTIALS,
-                        mapTypeId: this._mapType(this._option("type")),
-                        zoom: this._option("zoom"),
-                        showDashboard: controls,
-                        showMapTypeSelector: controls,
-                        showScalebar: controls
-                    };
-                this._map = new Microsoft.Maps.Map(this._$container[0], options);
-                var handler = Microsoft.Maps.Events.addHandler(this._map, 'tiledownloadcomplete', $.proxy(initPromise.resolve, initPromise));
-                this._viewChangeHandler = Microsoft.Maps.Events.addHandler(this._map, 'viewchange', $.proxy(this._handleViewChange, this));
-                this._clickHandler = Microsoft.Maps.Events.addHandler(this._map, 'click', $.proxy(this._handleClickAction, this));
-                var locationPromise = this._renderLocation();
-                var markersPromise = this._renderMarkers();
-                var routesPromise = this._renderRoutes();
-                $.when(initPromise, locationPromise, markersPromise, routesPromise).done(function() {
-                    Microsoft.Maps.Events.removeHandler(handler);
-                    deferred.resolve(true)
-                });
-                return deferred.promise()
-            },
-            _handleViewChange: function() {
-                var center = this._map.getCenter();
-                this._option("location", this._normalizeLocation(center));
-                this._option("zoom", this._map.getZoom())
-            },
-            updateDimensions: function() {
-                return $.Deferred().resolve().promise()
-            },
-            updateMapType: function() {
-                this._map.setView({mapTypeId: this._mapType(this._option("type"))});
-                return $.Deferred().resolve().promise()
-            },
-            updateLocation: function() {
-                return this._renderLocation()
-            },
-            _renderLocation: function() {
-                var deferred = $.Deferred(),
-                    self = this;
-                this._resolveLocation(this._option("location")).done(function(location) {
-                    self._map.setView({
-                        animate: false,
-                        center: location
-                    });
-                    deferred.resolve()
-                });
-                return deferred.promise()
-            },
-            updateZoom: function() {
-                this._map.setView({
-                    animate: false,
-                    zoom: this._option("zoom")
-                });
-                return $.Deferred().resolve().promise()
-            },
-            updateControls: function() {
-                this.clean();
-                return this.render()
-            },
-            updateMarkers: function() {
-                return this._refreshMarkers()
-            },
-            addMarkers: function(options) {
-                return this._renderMarkers(options)
-            },
-            _refreshMarkers: function() {
-                this._clearMarkers();
-                return this._renderMarkers()
-            },
-            _renderMarkers: function(options) {
-                options = options || this._option("markers");
-                var deferred = $.Deferred(),
-                    self = this;
-                var markerPromises = $.map(options, function(markerOptions) {
-                        return self._addMarker(markerOptions)
-                    });
-                $.when.apply($, markerPromises).done(function() {
-                    var instances = $.map($.makeArray(arguments), function(marker) {
-                            return marker.pushpin
-                        });
-                    deferred.resolve(false, instances)
-                });
-                return deferred.promise()
-            },
-            _clearMarkers: function() {
-                var self = this;
-                $.each(this._markers, function(_, marker) {
-                    self._map.entities.remove(marker.pushpin);
-                    if (marker.infobox)
-                        self._map.entities.remove(marker.infobox);
-                    if (marker.handler)
-                        Microsoft.Maps.Events.removeHandler(marker.handler)
-                });
-                this._markers = []
-            },
-            _addMarker: function(options) {
-                var self = this;
-                return this._renderMarker(options).done(function(marker) {
-                        self._markers.push(marker)
-                    })
-            },
-            _renderMarker: function(options) {
-                var d = $.Deferred(),
-                    self = this;
-                this._resolveLocation(options.location).done(function(location) {
-                    var pushpin = new Microsoft.Maps.Pushpin(location, null);
-                    self._map.entities.push(pushpin, null);
-                    var infobox;
-                    if (options.tooltip) {
-                        infobox = new Microsoft.Maps.Infobox(location, {
-                            description: options.tooltip,
-                            offset: new Microsoft.Maps.Point(0, 33)
-                        });
-                        self._map.entities.push(infobox, null)
-                    }
-                    var handler;
-                    if (options.clickAction || options.tooltip) {
-                        var markerClickAction = self._createAction(options.clickAction || $.noop);
-                        handler = Microsoft.Maps.Events.addHandler(pushpin, "click", function() {
-                            markerClickAction({location: self._normalizeLocation(location)});
-                            if (infobox)
-                                infobox.setOptions({visible: true})
-                        })
-                    }
-                    d.resolve({
-                        pushpin: pushpin,
-                        infobox: infobox,
-                        handler: handler
-                    })
-                });
-                return d.promise()
-            },
-            updateRoutes: function() {
-                return this._refreshRoutes()
-            },
-            addRoutes: function(options) {
-                return this._renderRoutes(options)
-            },
-            _refreshRoutes: function() {
-                this._clearRoutes();
-                return this._renderRoutes()
-            },
-            _renderRoutes: function(options) {
-                options = options || this._option("routes");
-                var deferred = $.Deferred(),
-                    self = this;
-                var routePromises = $.map(options, function(routeOptions) {
-                        return self._addRoute(routeOptions)
-                    });
-                $.when.apply($, routePromises).done(function() {
-                    deferred.resolve(false, $.makeArray(arguments))
-                });
-                return deferred.promise()
-            },
-            _clearRoutes: function() {
-                var self = this;
-                $.each(this._routes, function(_, route) {
-                    route.dispose()
-                });
-                this._routes = []
-            },
-            _addRoute: function(routeOptions) {
-                var self = this;
-                return this._renderRoute(routeOptions).done(function(route) {
-                        self._routes.push(route)
-                    })
-            },
-            _renderRoute: function(options) {
-                var d = $.Deferred(),
-                    self = this;
-                var points = $.map(options.locations, function(point) {
-                        return self._resolveLocation(point)
-                    });
-                $.when.apply($, points).done(function() {
-                    var locations = $.makeArray(arguments),
-                        direction = new Microsoft.Maps.Directions.DirectionsManager(self._map),
-                        color = new DX.Color(options.color || ROUTE_COLOR_DEFAULT).toHex(),
-                        routeColor = new Microsoft.Maps.Color.fromHex(color);
-                    routeColor.a = (options.opacity || ROUTE_OPACITY_DEFAULT) * 255;
-                    direction.setRenderOptions({
-                        autoUpdateMapView: false,
-                        displayRouteSelector: false,
-                        waypointPushpinOptions: {visible: false},
-                        drivingPolylineOptions: {
-                            strokeColor: routeColor,
-                            strokeThickness: options.weight || ROUTE_WEIGHT_DEFAULT
-                        },
-                        walkingPolylineOptions: {
-                            strokeColor: routeColor,
-                            strokeThickness: options.weight || ROUTE_WEIGHT_DEFAULT
-                        }
-                    });
-                    direction.setRequestOptions({
-                        routeMode: self._movementMode(options.mode),
-                        routeDraggable: false
-                    });
-                    $.each(locations, function(_, location) {
-                        var waypoint = new Microsoft.Maps.Directions.Waypoint({location: location});
-                        direction.addWaypoint(waypoint)
-                    });
-                    var handler = Microsoft.Maps.Events.addHandler(direction, 'directionsUpdated', function() {
-                            Microsoft.Maps.Events.removeHandler(handler);
-                            d.resolve(direction)
-                        });
-                    direction.calculateDirections()
-                });
-                return d.promise()
-            },
-            clean: function() {
-                if (this._map) {
-                    Microsoft.Maps.Events.removeHandler(this._viewChangeHandler);
-                    Microsoft.Maps.Events.removeHandler(this._clickHandler);
-                    this._clearMarkers();
-                    this._clearRoutes();
-                    this._map.dispose()
-                }
-            },
-            cancelEvents: true
-        }));
-        var GOOGLE_MAP_READY = "_googleScriptReady",
-            GOOGLE_URL = "https://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=" + GOOGLE_MAP_READY;
-        var googleMapsLoader;
-        registerProvider("google", Provider.inherit({
-            _mapType: function(type) {
-                var mapTypes = {
-                        hybrid: google.maps.MapTypeId.HYBRID,
-                        roadmap: google.maps.MapTypeId.ROADMAP
-                    };
-                return mapTypes[type] || mapTypes.hybrid
-            },
-            _movementMode: function(type) {
-                var movementTypes = {
-                        driving: google.maps.TravelMode.DRIVING,
-                        walking: google.maps.TravelMode.WALKING
-                    };
-                return movementTypes[type] || movementTypes.driving
-            },
-            _resolveLocation: function(location) {
-                var d = $.Deferred();
-                if (typeof location === "string") {
-                    var geocoder = new google.maps.Geocoder;
-                    geocoder.geocode({address: location}, function(results, status) {
-                        if (status === google.maps.GeocoderStatus.OK)
-                            d.resolve(results[0].geometry.location)
-                    })
-                }
-                else if ($.isArray(location))
-                    d.resolve(new google.maps.LatLng(location[0], location[1]));
-                else if ($.isPlainObject(location) && $.isNumeric(location.lat) && $.isNumeric(location.lng))
-                    d.resolve(new google.maps.LatLng(location.lat, location.lng));
-                return d.promise()
-            },
-            _normalizeLocation: function(location) {
-                return {
-                        lat: location.lat(),
-                        lng: location.lng()
-                    }
-            },
-            load: function() {
-                if (!googleMapsLoader) {
-                    googleMapsLoader = $.Deferred();
-                    var key = this._key("google");
-                    window[GOOGLE_MAP_READY] = $.proxy(this._mapReady, this);
-                    $.getScript(GOOGLE_URL + (key ? "&key=" + key : ""))
-                }
-                this._markers = [];
-                this._routes = [];
-                return googleMapsLoader.promise()
-            },
-            _mapReady: function() {
-                try {
-                    delete window[GOOGLE_MAP_READY]
-                }
-                catch(e) {
-                    window[GOOGLE_MAP_READY] = undefined
-                }
-                googleMapsLoader.resolve()
-            },
-            render: function() {
-                var deferred = $.Deferred(),
-                    initPromise = $.Deferred(),
-                    controls = this._option("controls");
-                var options = {
-                        zoom: this._option("zoom"),
-                        center: new google.maps.LatLng(0, 0),
-                        mapTypeId: this._mapType(this._option("type")),
-                        panControl: controls,
-                        zoomControl: controls,
-                        mapTypeControl: controls,
-                        streetViewControl: controls
-                    };
-                this._map = new google.maps.Map(this._$container[0], options);
-                var listner = google.maps.event.addListener(this._map, 'idle', $.proxy(initPromise.resolve, initPromise));
-                this._zoomChangeListener = google.maps.event.addListener(this._map, 'zoom_changed', $.proxy(this._handleZoomChange, this));
-                this._centerChangeListener = google.maps.event.addListener(this._map, 'center_changed', $.proxy(this._handleCenterChange, this));
-                this._clickListener = google.maps.event.addListener(this._map, 'click', $.proxy(this._handleClickAction, this));
-                var locationPromise = this._renderLocation();
-                var markersPromise = this._renderMarkers();
-                var routesPromise = this._renderRoutes();
-                $.when(initPromise, locationPromise, markersPromise, routesPromise).done(function() {
-                    google.maps.event.removeListener(listner);
-                    deferred.resolve(true)
-                });
-                return deferred.promise()
-            },
-            updateDimensions: function() {
-                google.maps.event.trigger(this._map, 'resize');
-                return $.Deferred().resolve().promise()
-            },
-            updateMapType: function() {
-                this._map.setMapTypeId(this._mapType(this._option("type")));
-                return $.Deferred().resolve().promise()
-            },
-            updateLocation: function() {
-                return this._renderLocation()
-            },
-            _handleCenterChange: function() {
-                var center = this._map.getCenter();
-                this._option("location", this._normalizeLocation(center))
-            },
-            _renderLocation: function() {
-                var deferred = $.Deferred(),
-                    self = this;
-                this._resolveLocation(this._option("location")).done(function(location) {
-                    self._map.setCenter(location);
-                    deferred.resolve()
-                });
-                return deferred.promise()
-            },
-            _handleZoomChange: function() {
-                this._option("zoom", this._map.getZoom())
-            },
-            updateZoom: function() {
-                this._map.setZoom(this._option("zoom"));
-                return $.Deferred().resolve().promise()
-            },
-            updateControls: function() {
-                var controls = this._option("controls");
-                this._map.setOptions({
-                    panControl: controls,
-                    zoomControl: controls,
-                    mapTypeControl: controls,
-                    streetViewControl: controls
-                });
-                return $.Deferred().resolve().promise()
-            },
-            updateMarkers: function() {
-                return this._refreshMarkers()
-            },
-            _refreshMarkers: function() {
-                this._clearMarkers();
-                return this._renderMarkers()
-            },
-            _clearMarkers: function() {
-                var self = this;
-                $.each(this._markers, function(_, marker) {
-                    marker.instance.setMap(null);
-                    if (marker.listner)
-                        google.maps.event.removeListener(marker.listner)
-                });
-                this._markers = []
-            },
-            addMarkers: function(options) {
-                return this._renderMarkers(options)
-            },
-            _renderMarkers: function(options) {
-                options = options || this._option("markers");
-                var deferred = $.Deferred(),
-                    self = this;
-                var markerPromises = $.map(options, function(markerOptions) {
-                        return self._addMarker(markerOptions)
-                    });
-                $.when.apply($, markerPromises).done(function() {
-                    var instances = $.map($.makeArray(arguments), function(marker) {
-                            return marker.instance
-                        });
-                    deferred.resolve(false, instances)
-                });
-                return deferred.promise()
-            },
-            _addMarker: function(options) {
-                var self = this;
-                return this._renderMarker(options).done(function(marker) {
-                        self._markers.push(marker)
-                    })
-            },
-            _renderMarker: function(options) {
-                var d = $.Deferred(),
-                    self = this;
-                this._resolveLocation(options.location).done(function(location) {
-                    var marker = new google.maps.Marker({
-                            position: location,
-                            map: self._map
-                        }),
-                        listner;
-                    var infoWindow;
-                    if (options.tooltip) {
-                        infoWindow = new google.maps.InfoWindow({content: options.tooltip});
-                        infoWindow.open(self._map, marker)
-                    }
-                    if (options.clickAction || options.tooltip) {
-                        var markerClickAction = self._createAction(options.clickAction || $.noop);
-                        listner = google.maps.event.addListener(marker, "click", function() {
-                            markerClickAction({location: self._normalizeLocation(location)});
-                            if (infoWindow)
-                                infoWindow.open(self._map, marker)
-                        })
-                    }
-                    d.resolve({
-                        instance: marker,
-                        listner: listner
-                    })
-                });
-                return d.promise()
-            },
-            updateRoutes: function() {
-                return this._refreshRoutes()
-            },
-            addRoutes: function(options) {
-                return this._renderRoutes()
-            },
-            _refreshRoutes: function() {
-                this._clearRoutes();
-                return this._renderRoutes()
-            },
-            _clearRoutes: function() {
-                var self = this;
-                $.each(this._routes, function(_, route) {
-                    route.setMap(null)
-                });
-                this._routes = []
-            },
-            _renderRoutes: function(options) {
-                options = options || this._option("routes");
-                var deferred = $.Deferred(),
-                    self = this;
-                var routePromises = $.map(options, function(routeOptions) {
-                        return self._addRoute(routeOptions)
-                    });
-                $.when.apply($, routePromises).done(function() {
-                    deferred.resolve(false, $.makeArray(arguments))
-                });
-                return deferred.promise()
-            },
-            _addRoute: function(options) {
-                var self = this;
-                return this._renderRoute(options).done(function(route) {
-                        self._routes.push(route)
-                    })
-            },
-            _renderRoute: function(options) {
-                var d = $.Deferred(),
-                    self = this,
-                    directionsService = new google.maps.DirectionsService;
-                var points = $.map(options.locations, function(point) {
-                        return self._resolveLocation(point)
-                    });
-                $.when.apply($, points).done(function() {
-                    var locations = $.makeArray(arguments),
-                        origin = locations.shift(),
-                        destination = locations.pop(),
-                        waypoints = $.map(locations, function(location) {
-                            return {
-                                    location: location,
-                                    stopover: true
-                                }
-                        });
-                    var request = {
-                            origin: origin,
-                            destination: destination,
-                            waypoints: waypoints,
-                            optimizeWaypoints: true,
-                            travelMode: self._movementMode(options.mode)
-                        };
-                    directionsService.route(request, function(response, status) {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                            var color = new DX.Color(options.color || ROUTE_COLOR_DEFAULT).toHex(),
-                                directionOptions = {
-                                    directions: response,
-                                    map: self._map,
-                                    suppressMarkers: true,
-                                    preserveViewport: true,
-                                    polylineOptions: {
-                                        strokeWeight: options.weight || ROUTE_WEIGHT_DEFAULT,
-                                        strokeOpacity: options.opacity || ROUTE_OPACITY_DEFAULT,
-                                        strokeColor: color
-                                    }
-                                };
-                            var route = new google.maps.DirectionsRenderer(directionOptions);
-                            d.resolve(route)
-                        }
-                    })
-                });
-                return d.promise()
-            },
-            clean: function() {
-                if (this._map) {
-                    google.maps.event.removeListener(this._zoomChangeListener);
-                    google.maps.event.removeListener(this._centerChangeListener);
-                    google.maps.event.removeListener(this._clickListener);
-                    this._clearMarkers();
-                    this._clearRoutes();
-                    delete this._map;
-                    this._$container.empty()
-                }
-            },
-            cancelEvents: true
-        }));
-        var GOOGLE_STATIC_URL = "https://maps.google.com/maps/api/staticmap?",
-            GOOGLE_DIRECTIONS_URL = "https://maps.googleapis.com/maps/api/directions/json?";
-        registerProvider("googleStatic", Provider.inherit({
-            _locationToString: function(location) {
-                return !$.isPlainObject(location) ? location.toString().replace(/ /g, "+") : location.lat + "," + location.lng
-            },
-            render: function() {
-                return this._updateMap()
-            },
-            updateDimensions: function() {
-                return this._updateMap()
-            },
-            updateMapType: function() {
-                return this._updateMap()
-            },
-            updateLocation: function() {
-                return this._updateMap()
-            },
-            updateZoom: function() {
-                return this._updateMap()
-            },
-            updateControls: function() {
-                return $.Deferred().resolve().promise()
-            },
-            updateMarkers: function() {
-                return this._updateMap()
-            },
-            addMarkers: function() {
-                return this._updateMap()
-            },
-            updateRoutes: function() {
-                return this._updateMap()
-            },
-            addRoutes: function() {
-                return this._updateMap()
-            },
-            clean: function() {
-                this._$container.css("background-image", "none")
-            },
-            mapRendered: function() {
-                return true
-            },
-            _updateMap: function() {
-                var deferred = $.Deferred(),
-                    self = this,
-                    routePromise = this._resolveRoutes();
-                routePromise.done(function() {
-                    var key = self._key("googleStatic");
-                    var requestOptions = ["sensor=false", "size=" + self._option("width") + "x" + self._option("height"), "maptype=" + self._option("type"), "center=" + self._locationToString(self._option("location")), "zoom=" + self._option("zoom"), self._markersSubstring()];
-                    requestOptions.push.apply(requestOptions, self._routeSubstrings.apply(self, arguments));
-                    if (key)
-                        requestOptions.push("key=" + self._key("googleStatic"));
-                    var request = GOOGLE_STATIC_URL + requestOptions.join("&");
-                    self._$container.css("background", "url(\"" + request + "\") no-repeat 0 0");
-                    deferred.resolve(true)
-                });
-                return deferred.promise()
-            },
-            _markersSubstring: function() {
-                var self = this,
-                    markers = [];
-                $.each(this._option("markers"), function(_, marker) {
-                    markers.push(self._locationToString(marker.location))
-                });
-                return "markers=" + markers.join("|")
-            },
-            _resolveRoutes: function() {
-                var self = this,
-                    routesResponse = [];
-                $.each(this._option("routes"), function(_, route) {
-                    var locations = $.map(route.locations, function(location) {
-                            return self._locationToString(location)
-                        });
-                    var requestOptions = ["sensor=false", "alternatives=false", "mode=" + (route.mode || "driving"), "origin=" + locations.shift(), "destination=" + locations.pop(), "waypoints=" + locations.join("|")];
-                    var request = GOOGLE_DIRECTIONS_URL + requestOptions.join("&");
-                    var response = $.Deferred();
-                    $.getJSON(request).done(function(data) {
-                        response.resolve(self._parseRoute(route, data))
-                    });
-                    routesResponse.push(response)
-                });
-                return $.when.apply($, routesResponse)
-            },
-            _parseRoute: function(routeOptions, directionsResponse) {
-                var locations = [];
-                var directionLegs = directionsResponse.routes[0].legs;
-                locations.push(directionLegs[0].start_location);
-                $.each(directionLegs, function(_, leg) {
-                    $.each(leg.steps, function(_, step) {
-                        locations.push(step.end_location)
-                    })
-                });
-                return {
-                        weight: routeOptions.weight,
-                        color: routeOptions.color,
-                        opacity: routeOptions.opacity,
-                        locations: locations
-                    }
-            },
-            _routeSubstrings: function() {
-                var self = this,
-                    routesString = [],
-                    routes = $.makeArray(arguments);
-                $.each(routes, function(_, route) {
-                    var color = new DX.Color(route.color || ROUTE_COLOR_DEFAULT).toHex().replace('#', '0x'),
-                        opacity = Math.round((route.opacity || ROUTE_OPACITY_DEFAULT) * 255).toString(16),
-                        width = route.weight || ROUTE_WEIGHT_DEFAULT,
-                        locations = [];
-                    $.each(route.locations, function(_, routePoint) {
-                        locations.push(self._locationToString(routePoint))
-                    });
-                    routesString.push("path=color:" + color + opacity + "|weight:" + width + "|" + locations.join("|"))
-                });
-                return routesString
-            }
-        }));
-        var MAP_CLASS = "dx-map",
-            MAP_CONTAINER_CLASS = "dx-map-container",
-            MAP_SHIELD_CLASS = "dx-map-shield";
-        var wrapToArray = function(entity) {
-                return $.isArray(entity) ? entity : [entity]
-            };
-        ui.registerComponent("dxMap", ui.Widget.inherit({
-            _defaultOptions: function() {
-                return $.extend(this.callBase(), {
-                        location: {
-                            lat: 0,
-                            lng: 0
-                        },
-                        width: 300,
-                        height: 300,
-                        zoom: 1,
-                        type: "roadmap",
-                        provider: "google",
-                        markers: [],
-                        routes: [],
-                        key: {
-                            bing: "",
-                            google: "",
-                            googleStatic: ""
-                        },
-                        controls: false,
-                        readyAction: null,
-                        updateAction: null
-                    })
-            },
-            _init: function() {
-                this.callBase();
-                this._initContainer();
-                this._grabEvents();
-                this._initProvider()
-            },
-            _initContainer: function() {
-                this._$container = $("<div />").addClass(MAP_CONTAINER_CLASS);
-                this._element().append(this._$container)
-            },
-            _grabEvents: function() {
-                var eventName = events.addNamespace("dxpointerdown", this.NAME);
-                this._element().on(eventName, $.proxy(this._cancelEvent, this))
-            },
-            _cancelEvent: function(e) {
-                var cancelByProvider = this._provider.cancelEvents && !this.option("disabled");
-                if (!DX.designMode && cancelByProvider)
-                    e.stopPropagation()
-            },
-            _initProvider: function() {
-                var provider = this.option("provider");
-                if (winJS && this.option("provider") === "google")
-                    throw new Error("Google provider cannot be used in winJS application");
-                if (this._provider)
-                    this._provider.clean();
-                this._provider = new providers[provider](this, this._$container);
-                this._mapLoader = this._provider.load()
-            },
-            _render: function() {
-                this.callBase();
-                this._element().addClass(MAP_CLASS);
-                this._renderShield();
-                this._execAsyncProviderAction("render")
-            },
-            _renderShield: function() {
-                if (DX.designMode || this.option("disabled")) {
-                    var $shield = $("<div/>").addClass(MAP_SHIELD_CLASS);
-                    this._element().append($shield)
-                }
-                else {
-                    var $shield = this._element().find("." + MAP_SHIELD_CLASS);
-                    $shield.remove()
-                }
-            },
-            _clean: function() {
-                this._provider.clean()
-            },
-            _optionChanged: function(name, value, prevValue) {
-                if (this._cancelOptionChange)
-                    return;
-                switch (name) {
-                    case"disabled":
-                        this._renderShield();
-                        this.callBase.apply(this, arguments);
-                        break;
-                    case"width":
-                    case"height":
-                        this.callBase.apply(this, arguments);
-                        this._execAsyncProviderAction("updateDimensions");
-                        break;
-                    case"type":
-                        this._execAsyncProviderAction("updateMapType");
-                        break;
-                    case"location":
-                        this._execAsyncProviderAction("updateLocation");
-                        break;
-                    case"zoom":
-                        this._execAsyncProviderAction("updateZoom");
-                        break;
-                    case"controls":
-                        this._execAsyncProviderAction("updateControls");
-                        break;
-                    case"markers":
-                        this._execAsyncProviderAction("updateMarkers");
-                        break;
-                    case"routes":
-                        this._execAsyncProviderAction("updateRoutes");
-                        break;
-                    case"key":
-                        throw new Error("Key option can not be modified after initialisation");
-                    case"provider":
-                        this._initProvider();
-                        this.callBase.apply(this, arguments);
-                        break;
-                    case"readyAction":
-                    case"updateAction":
-                        break;
-                    default:
-                        this.callBase.apply(this, arguments)
-                }
-            },
-            _execAsyncProviderAction: function(name) {
-                if (!this._provider.mapRendered() && !(name === "render"))
-                    return;
-                var deferred = $.Deferred(),
-                    self = this,
-                    options = $.makeArray(arguments).slice(1);
-                $.when(this._mapLoader).done(function() {
-                    var provider = self._provider;
-                    provider[name].apply(provider, options).done(function(mapRefreshed) {
-                        self._triggerUpdateAction();
-                        if (mapRefreshed)
-                            self._triggerReadyAction();
-                        deferred.resolve.apply(deferred, $.makeArray(arguments).slice(1))
-                    })
-                });
-                return deferred.promise()
-            },
-            _triggerReadyAction: function() {
-                this._createActionByOption("readyAction")({originalMap: this._provider.map()})
-            },
-            _triggerUpdateAction: function() {
-                this._createActionByOption("updateAction")()
-            },
-            setOptionSilent: function(name, value) {
-                this._cancelOptionChange = true;
-                this.option(name, value);
-                this._cancelOptionChange = false
-            },
-            addMarker: function(markerOptions) {
-                var d = $.Deferred(),
-                    self = this,
-                    markersOption = this._options.markers,
-                    markers = wrapToArray(markerOptions);
-                markersOption.push.apply(markersOption, markers);
-                this._execAsyncProviderAction("addMarkers", markers).done(function(instance) {
-                    d.resolveWith(self, markers.length > 1 ? [instance] : instance)
-                });
-                return d.promise()
-            },
-            removeMarker: function(marker) {
-                var d = $.Deferred(),
-                    self = this,
-                    markersOption = this._options.markers,
-                    markers = wrapToArray(marker);
-                $.each(markers, function(_, marker) {
-                    var index = $.isNumeric(marker) ? marker : $.inArray(marker, markersOption);
-                    if (index !== -1)
-                        markersOption.splice(index, 1);
-                    else
-                        throw new Error("Marker '" + marker + "' you are trying to remove does not exist");
-                });
-                this._execAsyncProviderAction("updateMarkers").done(function() {
-                    d.resolveWith(self)
-                });
-                return d.promise()
-            },
-            addRoute: function(routeOptions) {
-                var d = $.Deferred(),
-                    self = this,
-                    routesOption = this._options.routes,
-                    routes = wrapToArray(routeOptions);
-                routesOption.push.apply(routesOption, routes);
-                this._execAsyncProviderAction("addRoutes", routes).done(function(instance) {
-                    d.resolveWith(self, routes.length > 1 ? [instance] : instance)
-                });
-                return d.promise()
-            },
-            removeRoute: function(route) {
-                var d = $.Deferred(),
-                    self = this,
-                    routesOption = this._options.routes,
-                    routes = wrapToArray(route);
-                $.each(routes, function(_, route) {
-                    var index = $.isNumeric(route) ? route : $.inArray(route, routesOption);
-                    if (index !== -1)
-                        routesOption.splice(index, 1);
-                    else
-                        throw new Error("Route '" + route + "' you are trying to remove does not exist");
-                });
-                this._execAsyncProviderAction("updateRoutes").done(function() {
-                    d.resolveWith(self)
-                });
-                return d.promise()
-            }
-        }));
-        ui.dxMap.__internals = {remapConstant: function(variable, newValue) {
-                switch (variable) {
-                    case"GOOGLE_STATIC_URL":
-                        GOOGLE_STATIC_URL = newValue;
-                        break;
-                    case"GOOGLE_DIRECTIONS_URL":
-                        GOOGLE_DIRECTIONS_URL = newValue;
-                        break;
-                    case"GOOGLE_URL":
-                        GOOGLE_URL = newValue;
-                        break;
-                    case"BING_URL":
-                        BING_URL = newValue;
-                        break
-                }
-            }}
-    })(jQuery, DevExpress);
     /*! Module widgets, file ui.autocomplete.js */
     (function($, DX, undefined) {
         var ui = DX.ui,
@@ -8846,7 +9045,11 @@ if (!DevExpress.MOD_WIDGETS) {
                     focusOutAction: $.proxy(function() {
                         this._popup.hide()
                     }, this)
-                }).appendTo(this._element()).data("dxTextBox")
+                }).appendTo(this._element()).data("dxTextBox");
+                this._caretPosition = {
+                    start: 0,
+                    end: 0
+                }
             },
             _renderValueUpdateEvent: function() {
                 this._changeAction = this._createActionByOption("valueUpdateAction");
@@ -8875,15 +9078,18 @@ if (!DevExpress.MOD_WIDGETS) {
             _updateValue: function(e) {
                 var inputElement = this._inputElement();
                 this.option("value", this._textbox.option("value"));
-                inputElement.prop("selectionStart", this._caretPosition);
-                inputElement.prop("selectionEnd", this._caretPosition);
+                inputElement.prop("selectionStart", this._caretPosition.start);
+                inputElement.prop("selectionEnd", this._caretPosition.end);
                 var hasUpdateEvent = e.jQueryEvent && this._hasUpdateEvent(e.jQueryEvent.type);
                 if (!e.jQueryEvent || hasUpdateEvent)
                     this._changeAction(this.option("value"))
             },
             _handleTextboxKeyUp: function(e) {
                 var key = e.jQueryEvent.which;
-                this._caretPosition = this._inputElement().prop("selectionStart");
+                this._caretPosition = {
+                    start: this._inputElement().prop("selectionStart"),
+                    end: this._inputElement().prop("selectionEnd")
+                };
                 switch (key) {
                     case KEY_DOWN:
                         this._handleTextboxDownKey();
@@ -8939,7 +9145,10 @@ if (!DevExpress.MOD_WIDGETS) {
                     return
                 }
                 receivedValue = this._selectedItemDataGetter();
-                this._caretPosition = receivedValue.length;
+                this._caretPosition = {
+                    start: receivedValue.length,
+                    end: receivedValue.length
+                };
                 this.option("value", receivedValue);
                 this._popup.hide();
                 this._inputElement().blur()
@@ -8952,7 +9161,10 @@ if (!DevExpress.MOD_WIDGETS) {
                     return;
                 receivedValue = this._selectedItemDataGetter();
                 newValue = receivedValue.length ? receivedValue : this._dataSource.items()[0];
-                this._caretPosition = newValue.length;
+                this._caretPosition = {
+                    start: newValue.length,
+                    end: newValue.length
+                };
                 newValue = this._displayGetter(newValue);
                 this.option("value", newValue);
                 this._popup.hide()
@@ -9041,7 +9253,7 @@ if (!DevExpress.MOD_WIDGETS) {
                     autoPagingEnabled: false,
                     dataSource: this._dataSource
                 }).data("dxList");
-                this._list._templates = this._templates
+                this._list.addExternalTemplate(this._templates)
             },
             _getItemRender: function() {
                 if (!this.option("itemTemplate"))
@@ -9049,7 +9261,10 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _handleListItemClick: function(e) {
                 var value = this._displayGetter(e.itemData);
-                this._caretPosition = value.length;
+                this._caretPosition = {
+                    start: value.length,
+                    end: value.length
+                };
                 this.option("value", value);
                 this._popup.hide();
                 this._inputElement().blur()
@@ -9250,7 +9465,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         self._itemClickAction(e)
                     }
                 }).data("dxList");
-                self._list._templates = self._templates;
+                self._list.addExternalTemplate(self._templates);
                 self._setListDataSource();
                 self._attachListClick();
                 var listMaxHeight = $(window).height() * 0.5;
@@ -9337,6 +9552,7 @@ if (!DevExpress.MOD_WIDGETS) {
                         break;
                     case"itemClickAction":
                         this._initItemClickAction();
+                        break;
                     default:
                         this.callBase.apply(this, arguments)
                 }
@@ -9394,6 +9610,20 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._setTooltip(this.option("value"));
                 this._setWidgetClasses();
                 this._renderArrowDown()
+            },
+            _renderPopup: function() {
+                this.callBase();
+                if (DX.devices.current().win8) {
+                    var popupPosition = this._popup.option("position");
+                    $.extend(popupPosition, {
+                        at: "left top",
+                        offset: {
+                            h: 0,
+                            v: 2
+                        }
+                    });
+                    this._popup.option("position", popupPosition)
+                }
             },
             _renderValueUpdateEvent: function() {
                 this._changeAction = this._createActionByOption("valueChangeAction")
@@ -10082,6 +10312,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._deferredAnimate = undefined
             },
             _render: function() {
+                this._$shield = $("<div />").addClass("dx-slideout-shield");
                 this._renderItemsContainer();
                 this._renderList();
                 this._initSwipeHandlers();
@@ -10111,7 +10342,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._$list = $("<div />").addClass(SLIDEOUT_MENU).prependTo(this._element());
                 this._renderItemClickAction();
                 var list = this._$list.dxList().dxList("instance");
-                list.addTemplate(this._templates);
+                list.addExternalTemplate(this._templates);
                 this._$list.dxList({
                     height: "100%",
                     itemClickAction: $.proxy(this._handleListItemClick, this),
@@ -10137,28 +10368,27 @@ if (!DevExpress.MOD_WIDGETS) {
                 this._renderContent()
             },
             _initSwipeHandlers: function() {
-                var swipeStartEvent = events.addNamespace("dxswipestart", this.NAME),
-                    swipeEvent = events.addNamespace("dxswipe", this.NAME),
-                    swipeEndEvent = events.addNamespace("dxswipeend", this.NAME);
-                this._$container.off(swipeStartEvent).off(swipeEvent).off(swipeEndEvent);
-                if (!this.option("swipeEnabled"))
-                    return;
-                var eventData = {
-                        elastic: false,
-                        itemSizeFunc: $.proxy(this._getListWidth, this)
-                    };
-                this._$container.on(swipeStartEvent, $.proxy(this._handleSwipeStart, this)).on(swipeEvent, eventData, $.proxy(this._handleSwipeUpdate, this)).on(swipeEndEvent, $.proxy(this._handleSwipeEnd, this))
+                this._$container.dxSwipeable({
+                    elastic: false,
+                    itemSizeFunc: $.proxy(this._getListWidth, this),
+                    startAction: $.proxy(this.option("swipeEnabled") ? this._handleSwipeStart : function(e) {
+                        e.jQueryEvent.cancel = true
+                    }, this),
+                    updateAction: $.proxy(this._handleSwipeUpdate, this),
+                    endAction: $.proxy(this._handleSwipeEnd, this)
+                })
             },
             _handleSwipeStart: function(e) {
-                e.maxLeftOffset = this.option("menuVisible") ? 1 : 0;
-                e.maxRightOffset = this.option("menuVisible") ? 0 : 1
+                this._$shield.detach();
+                e.jQueryEvent.maxLeftOffset = this.option("menuVisible") ? 1 : 0;
+                e.jQueryEvent.maxRightOffset = this.option("menuVisible") ? 0 : 1
             },
             _handleSwipeUpdate: function(e) {
-                var offset = this.option("menuVisible") ? e.offset + 1 : e.offset;
+                var offset = this.option("menuVisible") ? e.jQueryEvent.offset + 1 : e.jQueryEvent.offset;
                 this._renderPosition(offset, false)
             },
             _handleSwipeEnd: function(e) {
-                var targetOffset = e.targetOffset + this.option("menuVisible"),
+                var targetOffset = e.jQueryEvent.targetOffset + this.option("menuVisible"),
                     menuVisible = targetOffset !== 0;
                 if (this.option("menuVisible") === menuVisible)
                     this._renderPosition(this.option("menuVisible") ? 1 : 0, true);
@@ -10173,13 +10403,15 @@ if (!DevExpress.MOD_WIDGETS) {
             },
             _renderPosition: function(offset, animate) {
                 var pos = this._calculatePixelOffset(offset);
-                if (animate)
+                if (animate) {
+                    this._$shield.detach();
                     fx.animate(this._$container, {
                         type: "slide",
                         to: {left: pos},
                         duration: ANIMATION_DURATION,
                         complete: $.proxy(this._handleAnimationComplete, this)
-                    });
+                    })
+                }
                 else
                     translator.move(this._$container, {left: pos})
             },
@@ -10210,6 +10442,10 @@ if (!DevExpress.MOD_WIDGETS) {
                     case"menuItemTemplate":
                         this._changeMenuOption("itemTemplate", value);
                         break;
+                    case"items":
+                    case"dataSource":
+                        this._changeMenuOption(name, value);
+                        break;
                     case"itemClickAction":
                         this._renderItemClickAction();
                         break;
@@ -10218,6 +10454,7 @@ if (!DevExpress.MOD_WIDGETS) {
                 }
             },
             _handleAnimationComplete: function() {
+                this._$shield.appendTo(this._$container);
                 if (this._deferredAnimate)
                     this._deferredAnimate.resolveWith(this)
             },

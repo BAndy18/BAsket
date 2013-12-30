@@ -20,7 +20,7 @@ BAsket.products = function (params) {
         dataSourceBasket: P.arrayBAsket,
 
         //categoryId: categoryId,
-        categoryName: P.curCategoryName,
+        //categoryName: P.curCategoryName,
 
         bChoice: bChoice,
         lbltitle: lbltitle,
@@ -36,7 +36,6 @@ BAsket.products = function (params) {
     });
 
     Products_swichClicked  = function () {
-        //BAsket.notify("swichClicked", "info");
         P.curModeChoice = !P.curModeChoice;
         if (!P.curModeChoice){
             bChoice(P.curModeChoice);

@@ -8,35 +8,46 @@ var DAL_local = (function ($, window) {
     var dbSize = 50000000;
 
     root.Categories = function (params){
-        return root.ExecDataSource("SELECT * FROM CAT");  
+        return root.ExecDataSource({query: "SELECT * FROM CAT"});
     };
-
-    root.NMS = function (params){
-        return root.ExecDataSource("SELECT * FROM NMS Where IdRoot='" + params + "'");
-    };
-
-    // root.ClientsRoot = function (params){
-    //     return root.ExecDataSource("SELECT * FROM CLI Where IdPar='0'");  
-    // };    
-    root.Clients = function (params){
-        // var cliPar = 0;
-        // if (params)
-        //     cliPar = params;
-        return root.ExecDataSource("SELECT * FROM CLI Where IdPar='0'");  
-    };    
-    root.ClientsPar = function (params){
-        return root.ExecDataSource("SELECT * FROM CLI Where IdPar='" + params + "'");  
+    root.Products = function (params){
+        return root.ExecDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
+            paging: true,
+            searchString: params.search
+            }, function(data){
+                for (var i in P.arrayBAsket) {
+                    if (P.arrayBAsket[i].Id == data.Id) {
+                        data.Quant = P.arrayBAsket[i].Quant;
+                    }
+                }
+                return data;    
+        });
     }
 
+    root.Clients = function (params){
+        var param = {query: "SELECT * FROM CLI Where IdPar='0'", paging: true};
+        if (params && params.search)
+            param.searchString = params.search;
+
+        return root.ExecDataSource(param);  
+    };    
+    root.ClientsPar = function (params){
+        return root.ExecDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
+    }
+
+    root.NMS = function (params){
+        return root.ExecDataSource({query: "SELECT * FROM NMS Where IdRoot='" + params + "'"});
+    };
+
     root.RoadMap = function (params){
-        return root.ExecDataSource("SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id");  
+        return root.ExecDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id"});
     };    
 
     root.BilM = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id");
+        return root.ExecDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
     };
     root.BilMById = function (params){
-        return root.ExecDataSource("SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'");
+        return root.ExecDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
     };
 
     root.DeleteBil = function (params){
@@ -56,11 +67,37 @@ var DAL_local = (function ($, window) {
         return root.ExecQuery(query);
     }
 
-    root.ExecDataSource = function(query, setQ){
+    root.ExecDataSource = function(params, mapCallback){
         var dataSource = new DevExpress.data.DataSource({
+            pageSize: P.pageSize, 
             load: function (loadOptions) {
-                if (loadOptions.refresh) 
-                    return root.ExecQuery(query, setQ);
+                if (params.paging) {
+                    params['skip'] = loadOptions.skip;
+                    params['take'] = loadOptions.take;
+                }
+                var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+                var deferred = new $.Deferred();
+                db.transaction(function(tx) {
+                    dbLastQ = params.query;
+                    if (params.searchString && params.searchString())
+                         dbLastQ += " and (Name LIKE '%" + params.searchString() + "%')";
+                    if (params.paging)
+                        dbLastQ += " LIMIT " + params['skip'] + ", " +  params['take'];
+
+                    tx.executeSql(dbLastQ, [], function(tx, results) {
+                        var res = [];
+                        for (var i=0; i<results.rows.length; i++) {
+                            var resrow = results.rows.item(i);
+                            if (mapCallback)
+                                resrow = mapCallback(resrow)
+                            res.push(resrow);
+                        }
+                        deferred.resolve(res);
+                    }, function(err, err2){errorCB("*ExecQuery sql*", err, err2);}
+                    );
+                }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
+                );
+                return deferred;
             },
             lookup: function(key){
                 return 'lookup';
@@ -68,7 +105,8 @@ var DAL_local = (function ($, window) {
         });
         return dataSource;
     }
-    root.ExecQuery = function(query, setQ, tryExist){
+
+    root.ExecQuery = function(query, mapCallback, tryExist){
         var skip = 0;
         var PAGE_SIZE = 30;
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -79,8 +117,8 @@ var DAL_local = (function ($, window) {
                 var res = [];
                 for (var i=0; i<results.rows.length; i++) {
                     var resrow = results.rows.item(i);
-                    if (setQ)
-                        resrow = setQuant(resrow);
+                    if (mapCallback)
+                        resrow = mapCallback(resrow);
                     res.push(resrow);
                 }
                 deferred.resolve(res);
@@ -99,8 +137,8 @@ var DAL_local = (function ($, window) {
 
     function setQuant(resrow){
         for (var i in P.arrayBAsket) {
-            if (P.arrayBAsket[i].id == resrow.id) {
-                resrow.quant = P.arrayBAsket[i].quant;
+            if (P.arrayBAsket[i].Id == resrow.Id) {
+                resrow.Quant = P.arrayBAsket[i].Quant;
                 return resrow;
             }
         }
@@ -138,55 +176,48 @@ var DAL_local = (function ($, window) {
     //     return dataSource;  
     // };
 
-    root.Products = function (params){
-        var skip = 0;
-        var PAGE_SIZE = 30;
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        var dataSource = new DevExpress.data.DataSource({
-            pageSize: PAGE_SIZE, 
-            load: function (loadOptions) {
-                if (loadOptions.refresh) {
-                    skip = 0;
-                }
-                var deferred = new $.Deferred();
-                db.transaction(function(tx) {
-                    var srch = "";
-                    if (params.search())
-                         srch = " and (Name LIKE '%" + params.search() + "%')";
-                    dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + PAGE_SIZE;
-                    if (skip)
-                        //dbLastQ += ", " + skip;
-                        dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + skip + ", " +  PAGE_SIZE;
-                    tx.executeSql(dbLastQ, [], function(tx, results) {
-                        skip += PAGE_SIZE;                    
-                        var res = [];
-                        for (var ir=0; ir<results.rows.length; ir++) {
-                            var resrow = setQuant(results.rows.item(ir));
-                            res.push(resrow);
-                        }
-                        deferred.resolve(res);
-                    }, function(err, err2){errorCB("*readProducts sql*", err, err2);}
-                    );
-                }, function(err, err2){errorCB("*readProducts*", err, err2);}
-                );
-                return deferred;
-            }
-        });
-        return dataSource;  
-    }
+    // root.Products = function (params){
+    //     var skip = 0;
+    //     var PAGE_SIZE = 30;
+    //     var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+    //     var dataSource = new DevExpress.data.DataSource({
+    //         pageSize: PAGE_SIZE, 
+    //         load: function (loadOptions) {
+    //             if (loadOptions.refresh) {
+    //                 skip = 0;
+    //             }
+    //             var deferred = new $.Deferred();
+    //             db.transaction(function(tx) {
+    //                 var srch = "";
+    //                 if (params.search())
+    //                      srch = " and (Name LIKE '%" + params.search() + "%')";
+    //                 dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + PAGE_SIZE;
+    //                 if (skip)
+    //                     //dbLastQ += ", " + skip;
+    //                     dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + skip + ", " +  PAGE_SIZE;
+    //                 tx.executeSql(dbLastQ, [], function(tx, results) {
+    //                     skip += PAGE_SIZE;                    
+    //                     var res = [];
+    //                     for (var ir=0; ir<results.rows.length; ir++) {
+    //                         var resrow = setQuant(results.rows.item(ir));
+    //                         res.push(resrow);
+    //                     }
+    //                     deferred.resolve(res);
+    //                 }, function(err, err2){errorCB("*readProducts sql*", err, err2);}
+    //                 );
+    //             }, function(err, err2){errorCB("*readProducts*", err, err2);}
+    //             );
+    //             return deferred;
+    //         }
+    //     });
+    //     return dataSource;  
+    // }
 
     root.ProductDetails = function (params){
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
         db.transaction(function(tx) {
-            dbLastQ = "SELECT * FROM WAR WHERE id='" + params.id + "'";
+            dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
             tx.executeSql(dbLastQ, [], function(tx, results) {
-                // var quant = '0';
-                // for (var i in P.arrayBAsket) {
-                //     if (P.arrayBAsket[i].id == params.id) {
-                //         quant = P.arrayBAsket[i].quant;
-                //         break;
-                //     }
-                // }
                 params.Quant = '0';
                 params = setQuant(params);
                 if (results.rows.length > 0) {
@@ -318,7 +349,7 @@ var DAL_local = (function ($, window) {
             //tx.executeSql("BEGIN TRANSACTION");
             for (i = 0; i < len; i++) { 
                 dbLastQ = "INSERT INTO WAR (Id, IdGr, Name, Price, NameArt, NameManuf, UrlPict, Upak, Ostat) VALUES('" 
-                    + arr[i].Id + "','"  + arr[i].IdGr + "','" + arr[i].Name + "','" + arr[i].Price + "','" 
+                    + arr[i].Id + "','"  + arr[i].GrId + "','" + arr[i].Name + "','" + arr[i].Price + "','" 
                     + arr[i].NameArt + "','" + arr[i].NameManuf + "','" + arr[i].UrlPict + "','" + arr[i].Upak + "','" + arr[i].Ostat
                     + "')"
 

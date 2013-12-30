@@ -7,7 +7,7 @@
                     valueUpdateEvent: 'search change keyup' }"/>
             </div>
         </div>
-    	<div data-bind="dxList: { dataSource: dataSource }">
+    	<div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{Id}'">
                 <div class="dx-table">
                     <div class="cell10" data-bind="text: $data.Id"></div>

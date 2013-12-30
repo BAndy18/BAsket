@@ -31,6 +31,16 @@ BAsket.Order = function (params) {
         //arrayNms: arrayNms,       
 		//nmsId: P.currentNms[0]['id'],
         //nmsName: P.currentNms[0]['Name'],
+
+        viewShown: function() {
+			for (var i=0; i<P.currentNms[0].length; i++) {
+				var setNms = $("#idNms" + (i+1));
+				if (setNms.length == 1){
+					setNms.parent().show();
+					setNms[0].parentNode.children[0].innerText = P.currentNms[0][i].Name;
+				}
+			}
+        }
 	};
 
 	P.arrayBAsket = [];
@@ -70,25 +80,25 @@ BAsket.Order = function (params) {
 		});
 	}
 
-	DAL.NMS(0).load().done(function (result) {
-		for (var i=0; i<result.length; i++) {
-			var setNms = $("#idNms" + (i+1));
-			if (setNms.length == 1){
-				setNms.parent().show();
-				setNms[0].parentNode.children[0].innerText = result[i].Name;
+	// DAL.NMS(0).load().done(function (result) {
+	// 	for (var i=0; i<result.length; i++) {
+	// 		var setNms = $("#idNms" + (i+1));
+	// 		if (setNms.length == 1){
+	// 			setNms.parent().show();
+	// 			setNms[0].parentNode.children[0].innerText = result[i].Name;
 
-				//var lookNms = setNms.data("dxSelectBox");
-				//lookNms.option().placeholder = 'dddd' + i;
-				//lookNms._dataSource._items = P.currentNms[0];
-				//lookNms.dataSource.reload();
+	// 			//var lookNms = setNms.data("dxSelectBox");
+	// 			//lookNms.option().placeholder = 'dddd' + i;
+	// 			//lookNms._dataSource._items = P.currentNms[0];
+	// 			//lookNms.dataSource.reload();
 
-				//setNms.data("dxSelectBox").datasource.load();
-				//setNms.data("dxSelectBox")._refreshDataSource();
-				//viewModel.dsNms1=DAL.NMS(1);
-				//viewModel.dsNms1.load();
-			}
-		}
-	})
+	// 			//setNms.data("dxSelectBox").datasource.load();
+	// 			//setNms.data("dxSelectBox")._refreshDataSource();
+	// 			//viewModel.dsNms1=DAL.NMS(1);
+	// 			//viewModel.dsNms1.load();
+	// 		}
+	// 	}
+	// })
 
 	Order_clientChanged = function(arg){
 		var value = "";

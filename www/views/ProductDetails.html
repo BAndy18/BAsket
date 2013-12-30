@@ -1,11 +1,12 @@
 ﻿<div data-options="dxView : { name: 'product-details', layout: 'empty' } " >
-    <div class="product-details" data-options="dxContent : { targetPlaceholder: 'content' } " >
-        <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
-          {  align: 'center', text: _.Products.TitleDetails },
-        ]}">
-    </div>
+  <div class="product-details" data-options="dxContent : { targetPlaceholder: 'content' } " >
+      <div data-bind="dxToolbar: { items: [
+        {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+        {  align: 'center', text: _.Products.TitleDetails },
+      ]}">
+  </div>
 
+  <div id="scrollViewContainer" data-bind="dxScrollView: { }">
     <div class="dx-fieldset">
       <div class="dx-field">
           <div class="dx-field-label" data-bind="text: _.Products.FldName" />
@@ -18,7 +19,7 @@
       <div class="dx-field">
         <div class="dx-field-label" data-bind="text: _.Products.FldQuantity"/>
         <div class="dx-field-value">
-          <div style="width: 20%" data-bind="dxNumberBox: {
+          <div id="idQuant" style="width: 20%" data-bind="dxNumberBox: {
               min: 0,
               value: Quant,
               placeholder: _.Products.ErrQuantity                     
@@ -27,7 +28,7 @@
         </div>
       </div>
     </div>
-    <div class="dx-fieldset" data-bind="visible: NameArt">
+    <div class="dx-fieldset">
       <div class="dx-field">
             <div class="dx-field-label" data-bind="text: _.Products.FldUpak" />
             <div class="dx-field-value" data-bind="text: Upak" />
@@ -36,7 +37,7 @@
             <div class="dx-field-label" data-bind="text: _.Products.FldOstat" />
             <div class="dx-field-value" data-bind="text: Ostat" />
       </div>
-      <div class="dx-field">
+      <div class="dx-field" data-bind="visible: NameArt">
             <div class="dx-field-label" data-bind="text: _.Products.FldNameArt" />
             <div class="dx-field-value" data-bind="text: NameArt" />
       </div>
@@ -61,5 +62,5 @@
         <img class = "image" data-bind="attr: { src: UrlPict }" />
       </div>
     </center>
-  
+  </div>
 </div>
