@@ -1,5 +1,5 @@
 /// *** local Web Data Base Access *** ///
-var DAL_local = (function ($, window) {
+var DAL = (function ($, window) {
     var root = {};
 
     var dbParam = null;    
@@ -8,10 +8,10 @@ var DAL_local = (function ($, window) {
     var dbSize = 50000000;
 
     root.Categories = function (params){
-        return root.ExecDataSource({query: "SELECT * FROM CAT"});
+        return execDataSource({query: "SELECT * FROM CAT"});
     };
     root.Products = function (params){
-        return root.ExecDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
+        return execDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
             paging: true,
             searchString: params.search
             }, function(data){
@@ -23,39 +23,59 @@ var DAL_local = (function ($, window) {
                 return data;    
         });
     }
+    root.ProductDetails = function (params){
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+        db.transaction(function(tx) {
+            dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
+            tx.executeSql(dbLastQ, [], function(tx, results) {
+                params.Quant = '0';
+                params = setQuant(params);
+                if (results.rows.length > 0) {
+                    params.model.Name(results.rows.item(0).Name),
+                    params.model.Price(results.rows.item(0).Price.toFixed(2))
+                    params.model.NameArt(results.rows.item(0).NameArt),
+                    params.model.NameManuf(results.rows.item(0).NameManuf),
+                    params.model.UrlPict(results.rows.item(0).UrlPict),
+                    params.model.Upak(results.rows.item(0).Upak),
+                    params.model.Ostat(results.rows.item(0).Ostat),
+                    params.model.Quant(params.Quant)
+                }
+            }, function(err, err2){errorCB("*readProductDetail sql*", err, err2);}
+            );
+        }, function(err, err2){errorCB("*readProductDetail*", err, err2);}
+        );
+    }
+
 
     root.Clients = function (params){
         var param = {query: "SELECT * FROM CLI Where IdPar='0'", paging: true};
         if (params && params.search)
             param.searchString = params.search;
 
-        return root.ExecDataSource(param);  
+        return execDataSource(param);  
     };    
     root.ClientsPar = function (params){
-        return root.ExecDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
+        return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
     }
 
-    root.NMS = function (params){
-        return root.ExecDataSource({query: "SELECT * FROM NMS Where IdRoot='" + params + "'"});
-    };
-
     root.RoadMap = function (params){
-        return root.ExecDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id"});
+        return execDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id"});
     };    
 
     root.BilM = function (params){
-        return root.ExecDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
+        return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
     };
     root.BilMById = function (params){
-        return root.ExecDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
+        return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
     };
 
+
     root.DeleteBil = function (params){
-        return root.ExecQuery("DELETE FROM BILM Where Id='" + params + "'");
+        return execQuery("DELETE FROM BILM Where Id='" + params + "'");
     };
     root.SaveBil = function(params){
         var query = "";
-        if (params['Id']) {
+        if (params['id']) {
             query = "UPDATE BILM set DateDoc='"+ params['date'] +"', IdCli='"+ params['idCli'] +"', IdTp='"+ params['idTp'] +
                 "', sNote='"+ params['Note'] + "', sOther='"+ params['sOther'] + "', sWars='"+ params['sWars'] +
                 "' WHERE Id='" + params['id'] + "'"
@@ -64,10 +84,59 @@ var DAL_local = (function ($, window) {
                 "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['Note'] + "', '"+ params['sOther'] + 
                 "', '" + params['sWars'] + "')"
         };
-        return root.ExecQuery(query);
+        return execQuery(query);
     }
 
-    root.ExecDataSource = function(params, mapCallback){
+    root.NMS = function (params){
+        return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
+    };
+
+    root.CatFirst = function (params){
+        return execQuery('SELECT * FROM CAT LIMIT 1');
+    }
+
+    root.CountTable = function (params){
+        return execQuery("SELECT count(Id) as cnt FROM " + params);
+    };
+
+    root.ProductsByWars = function (params){
+        var ids = '';
+        P.arrayBAsket = [];
+        var w = params.split(';');
+        for (var i in w) {
+            var v = w[i].split(':');
+            if (v[0]){
+                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
+                ids += "'" + v[0] + "',";
+            }
+        }
+        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")", true);
+    };
+
+
+    root.ReadNews = function(){
+        P.loadPanelVisible(true);
+
+        RecreateLocalDB();
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+
+        var source1 = DAL_web.Categories();
+        if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
+        else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
+
+        var source2 = DAL_web.Products({Id:'all'});
+        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
+        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+
+        var source3 = DAL_web.Clients({IdAll:'all'});
+        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
+        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+
+        P.itemCount['ReadNews'] = new Date().toLocaleDateString().substring(0,5);
+    };
+
+
+    function execDataSource(params, mapCallback){
         var dataSource = new DevExpress.data.DataSource({
             pageSize: P.pageSize, 
             load: function (loadOptions) {
@@ -93,9 +162,9 @@ var DAL_local = (function ($, window) {
                             res.push(resrow);
                         }
                         deferred.resolve(res);
-                    }, function(err, err2){errorCB("*ExecQuery sql*", err, err2);}
+                    }, function(err, err2){errorCB("*execDataSource sql*", err, err2);}
                     );
-                }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
+                }, function(err, err2){errorCB("*execDataSource*", err, err2);}
                 );
                 return deferred;
             },
@@ -106,7 +175,7 @@ var DAL_local = (function ($, window) {
         return dataSource;
     }
 
-    root.ExecQuery = function(query, mapCallback, tryExist){
+    function execQuery(query, mapCallback, tryExist){
         var skip = 0;
         var PAGE_SIZE = 30;
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -127,10 +196,10 @@ var DAL_local = (function ($, window) {
                     root.RecreateLocalDB();
                 }
                 else
-                    errorCB("*ExecQuery sql*", err, err2);
+                    errorCB("*execQuery sql*", err, err2);
             }
             );
-        }, function(err, err2){errorCB("*ExecQuery*", err, err2);}
+        }, function(err, err2){errorCB("*execQuery*", err, err2);}
         );
         return deferred;
     }
@@ -145,133 +214,8 @@ var DAL_local = (function ($, window) {
         return resrow;
     }
 
-    // root.Categories = function (params){
-    //     var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-    //     var dataSource = new DevExpress.data.DataSource({
-    //         load: function (loadOptions) {
-    //             if (loadOptions.refresh) {
-    //                 var deferred = new $.Deferred();
-    //                 db.transaction(function(tx) {
-    //                     dbLastQ = "SELECT * FROM CAT";
-    //                     //console.log("getWarByGrId: "+dbLastQ);
-    //                     tx.executeSql(dbLastQ, [], function(tx, results) {
-    //                         //console.log('getWarByGrId: прочитано ' + results.rows.length);
-    //                         var res = [];
-    //                         for (var i=0; i<results.rows.length; i++) {
-    //                             res.push(results.rows.item(i));
-    //                         }
-    //                         deferred.resolve(res);
-    //                     }, function(err, err2){errorCB("*readCat sql*", err, err2);}
-    //                     );
-    //                 }, function(err, err2){errorCB("*readCat*", err, err2);}
-    //                 );
-    //                 return deferred;
-    //             }
-    //         },
-    //         lookup: function(key){
-    //             return 'lookup';
-    //         }
 
-    //     });
-    //     return dataSource;  
-    // };
-
-    // root.Products = function (params){
-    //     var skip = 0;
-    //     var PAGE_SIZE = 30;
-    //     var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-    //     var dataSource = new DevExpress.data.DataSource({
-    //         pageSize: PAGE_SIZE, 
-    //         load: function (loadOptions) {
-    //             if (loadOptions.refresh) {
-    //                 skip = 0;
-    //             }
-    //             var deferred = new $.Deferred();
-    //             db.transaction(function(tx) {
-    //                 var srch = "";
-    //                 if (params.search())
-    //                      srch = " and (Name LIKE '%" + params.search() + "%')";
-    //                 dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + PAGE_SIZE;
-    //                 if (skip)
-    //                     //dbLastQ += ", " + skip;
-    //                     dbLastQ = "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'" + srch + " LIMIT " + skip + ", " +  PAGE_SIZE;
-    //                 tx.executeSql(dbLastQ, [], function(tx, results) {
-    //                     skip += PAGE_SIZE;                    
-    //                     var res = [];
-    //                     for (var ir=0; ir<results.rows.length; ir++) {
-    //                         var resrow = setQuant(results.rows.item(ir));
-    //                         res.push(resrow);
-    //                     }
-    //                     deferred.resolve(res);
-    //                 }, function(err, err2){errorCB("*readProducts sql*", err, err2);}
-    //                 );
-    //             }, function(err, err2){errorCB("*readProducts*", err, err2);}
-    //             );
-    //             return deferred;
-    //         }
-    //     });
-    //     return dataSource;  
-    // }
-
-    root.ProductDetails = function (params){
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-        db.transaction(function(tx) {
-            dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
-            tx.executeSql(dbLastQ, [], function(tx, results) {
-                params.Quant = '0';
-                params = setQuant(params);
-                if (results.rows.length > 0) {
-                    params.model.Name(results.rows.item(0).Name),
-                    params.model.Price(results.rows.item(0).Price.toFixed(2))
-                    params.model.NameArt(results.rows.item(0).NameArt),
-                    params.model.NameManuf(results.rows.item(0).NameManuf),
-                    params.model.UrlPict(results.rows.item(0).UrlPict),
-                    params.model.Upak(results.rows.item(0).Upak),
-                    params.model.Ostat(results.rows.item(0).Ostat),
-                    params.model.Quant(params.Quant)
-                }
-            }, function(err, err2){errorCB("*readProductDetail sql*", err, err2);}
-            );
-        }, function(err, err2){errorCB("*readProductDetail*", err, err2);}
-        );
-    }
-
-
-    root.ProductsByWars = function (params){
-        var ids = '';
-        P.arrayBAsket = [];
-        var w = params.split(';');
-        for (var i in w) {
-            var v = w[i].split(':');
-            if (v[0]){
-                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
-                ids += "'" + v[0] + "',";
-            }
-        }
-        return root.ExecDataSource("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")", true);
-    };
-
-
-    root.ReadNews = function(){
-        P.loadPanelVisible(true);
-
-        root.RecreateLocalDB();
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-
-        var source1 = DAL_web.Categories();
-        if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
-        else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
-
-        var source2 = DAL_web.Products({Id:'all'});
-        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
-        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
-
-        var source3 = DAL_web.Clients({IdAll:'all'});
-        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
-        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
-
-    };
-    root.RecreateLocalDB = function(){
+    function RecreateLocalDB(){
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
 
         db.transaction(function(tx){
@@ -280,25 +224,11 @@ var DAL_local = (function ($, window) {
             for (i = 0; i < P.LocalScript.length; i++){
                 // dbLastQ = P.LocalScript[i];
                 // tx.executeSql(dbLastQ);
-                root.ExecQuery(P.LocalScript[i], true);
+                execQuery(P.LocalScript[i], true);
             }
             //P.loadPanelVisible(false);
         })
     };
-
-    // root.ExecDataSource2 = function(query){
-    //     debugger;
-    //     var dataSource = DevExpress.data.createDataSource({
-    //         load: function (loadOptions) {
-    //             if (loadOptions.refresh) 
-    //                 return root.ExecQuery(query);
-    //         },
-    //         lookup: function(key){
-    //             return 'lookup';
-    //         }
-    //     });
-    //     return dataSource;
-    // }
 
 
     var arrWAR;
@@ -374,14 +304,15 @@ var DAL_local = (function ($, window) {
             }
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
             console.log('Прочитано записей: ' + i);
+            P.itemCount['Clients'] = i;
     }
 
 
     // Transaction error callback
     //
     function errorCB(src, err, err2) {
-        var message = (err) ? ((err.message) ? err.message : err2.message) : src;
-        var code =  (err) ? ((err.code || (err && err.code == 0)) ? err.code : err2.code) :"";
+        var message = (err) ? ((err.message) ? err2.message : err2.message) : src;
+        var code =  (err) ? ((err.code || (err && err.code == 0)) ? err2.code : err2.code) :"";
         console.log(src + " SQLError: " + message + '('+ code +') dbLastQ=' + dbLastQ);
         return false;
     }

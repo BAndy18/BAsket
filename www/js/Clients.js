@@ -25,7 +25,7 @@ BAsket.Clients = function (params) {
 BAsket.Client = function (params) {
     P.getGeo();
     clickSaveGeo = function(arg) {
-        DAL_local.ExecQuery("UPDATE CLI set geoLoc='" + P.geoCurrent() + "' WHERE id='" + params.id + "'");
+        //DAL.ExecQuery("UPDATE CLI set geoLoc='" + P.geoCurrent() + "' WHERE id='" + params.id + "'");
     }    
     var viewModel = {
         //dataSource: DAL.Clients(),

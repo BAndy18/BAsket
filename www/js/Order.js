@@ -53,7 +53,7 @@ BAsket.Order = function (params) {
 			cliId(result[0].IdCli);
 			cliName(result[0].cName);
 			tpId(result[0].IdTp);
-			DAL.ProductsByWars(result[0].sWars).load().done(function (result) {
+			DAL.ProductsByWars(result[0].sWars).done(function (result) {
 				P.arrayBAsket = result;
 			})
 
@@ -161,13 +161,17 @@ BAsket.Order = function (params) {
 		params['Note'] = $("#txtNote").data("dxTextArea").option("value");
 		var sWars = '';
 		for (var i in P.arrayBAsket) {
-        	sWars += P.arrayBAsket[i].Id + ':' + P.arrayBAsket[i].quant + ';';
+        	sWars += P.arrayBAsket[i].Id + ':' + P.arrayBAsket[i].Quant + ';';
         }
     	params['sWars'] = sWars.substring(0, sWars.length - 1);
 
 		DAL.SaveBil(params);
 		
 		Order_clickBack();
+
+		DAL.CountTable('BILM').done(function (result) {
+			P.itemCount['OrderList'] = result[0].cnt;	
+		});
 	};
 
 	Order_clickProduct = function(){

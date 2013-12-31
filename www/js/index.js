@@ -49,36 +49,36 @@ var P = (function ($, window) {
 
     root.navigation = [
             {
-                "id": "Home",   "action": "#home", "heightRatio": 4, "widthRatio": 5,    "icon": "home",
-                "title": "BAsket",                
+                "id": "Home",   "action": "#home", "heightRatio": 4, "widthRatio": 4,    "icon": "home",
+                "title": "BAsket",   "backcolor": "black",
             },
             {
                 "id": "Order",  "action": "#Order", "heightRatio": 4, "widthRatio": 8,   "icon": "cart",
-                "title": "NewOrder",
+                "title": "NewOrder",    "backcolor": "#FF981D",
             },
             {
-                "id": "OrderList",  "action": "#OrderList", "heightRatio": 4, "widthRatio": 5,  "icon": "favorites",
-                "title": "Order List",
+                "id": "OrderList",  "action": "#OrderList", "heightRatio": 4, "widthRatio": 4,  "icon": "favorites",
+                "title": "Order List",  "backcolor": "#15992A",
             },
             {
                 "id": "RoadMap",    "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8,    "icon": "map",
-                "title": "RoadMap",
+                "title": "RoadMap",     "backcolor": "#006AC1",
             },
             {
                 "id": "Clients",    "action": "#Clients", "heightRatio": 4, "widthRatio": 8,    "icon": "globe",
-                "title": "Clients",
+                "title": "Clients",     "backcolor": "#7200AC",
             },
             {
-                "id": "ReadNews",   "action": "#ReadNews", "heightRatio": 4, "widthRatio": 5,   "icon": "download",
-                "title": "ReadNews",
+                "id": "ReadNews",   "action": "#ReadNews", "heightRatio": 4, "widthRatio": 4,   "icon": "download",
+                "title": "ReadNews",    "backcolor": "red",
             },
             {
-                "id": "Preferences",    "action": "#Preferences", "heightRatio": 4, "widthRatio": 5,    "icon": "preferences",
-                "title": "Preferences",
+                "id": "Preferences",    "action": "#Preferences", "heightRatio": 4, "widthRatio": 4,    "icon": "preferences",
+                "title": "Preferences","backcolor": "red",
             },
             {
                 "id": "Info",   "action": "#Info",  "heightRatio": 4, "widthRatio": 2,  "icon": "info",
-                "title": "Info",
+                "title": "Info","backcolor": "#7200AC",
             },
         ];
 
@@ -106,8 +106,8 @@ var P = (function ($, window) {
     // }
 
 
-    //root.dataSouce = "http://sampleservices.devexpress.com/api/";
-    root.dataSouce = "http://192.168.1.146//BAsketWS/api/";
+    //root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
+    root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
     
     root.dataSouceType = "DAL_local";
     //root.dataSouceType = "DAL_web";
@@ -178,13 +178,13 @@ var P = (function ($, window) {
         root.ReadFirstNms();
     };
     root.ReadFirstCategory = function () {
-        DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
+        DAL.CatFirst().done(function (result) {
             if (result.length > 0) {
                 root.curCategoryId = result[0].Id;
                 root.curCategoryName = result[0].Name;
             }
             else {
-                DAL_local.ExecQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
+                DAL.CatFirst().done(function (result) {
                     if (result.length > 0) {
                         root.curCategoryId = result[0].Id;
                         root.curCategoryName = result[0].Name;
@@ -194,12 +194,10 @@ var P = (function ($, window) {
         })
     };
     root.ReadFirstNms = function () {
-//        DAL_local.ExecQuery("SELECT * FROM NMS Where idRoot='0'").done(function (result) {
-        DAL.NMS(0).load().done(function (result) {
+        DAL.NMS(0).done(function (result) {
             root.currentNms.push(result);
             for (var i=0; i<result.length; i++) {
-//                DAL_local.ExecQuery("SELECT id,Name FROM NMS Where idRoot='" + result[i].id + "'").done(function (result) {
-                DAL.NMS(result[i].Id).load().done(function (result) {
+                DAL.NMS(result[i].Id).done(function (result) {
                     root.currentNms.push(result);
                     //root.currentNms.push({id:result[0].id, Name:result[0].Name});
                 })
@@ -226,9 +224,15 @@ var P = (function ($, window) {
     root.itemClick = function (e) {
             BAsket.app.navigate(e.itemData.action.substring(1), { direction: 'none'});
         }
-        root.itemIcon = function (icon) {
-            return 'tileicon dx-icon-' + icon.toLowerCase();
-        }
+    root.itemIcon = function (icon) {
+        return 'tileicon dx-icon-' + icon.toLowerCase();
+    }
+    root.itemCount = {
+        'OrderList' : '3',
+        'RoadMap' : '2.01 (2)',
+        'Clients' : '2134',
+        'ReadNews' : '13.12',
+    }
 
     root.LocalScript = [
         'DROP TABLE IF EXISTS CAT',
@@ -243,7 +247,6 @@ var P = (function ($, window) {
         'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
-        "INSERT INTO RMAP (DateDoc, IdCli, IdTp, sNote) VALUES('12.11.2013', '10','','Note')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
@@ -251,6 +254,7 @@ var P = (function ($, window) {
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
     ];
+        // "INSERT INTO RMAP (DateDoc, IdCli, IdTp, sNote) VALUES('12.11.2013', '10','','Note')",
         // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
         // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
         // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",

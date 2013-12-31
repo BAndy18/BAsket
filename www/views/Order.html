@@ -68,7 +68,7 @@
             editConfig: {selectionMode: 'item', selectionEnabled: true, deleteEnabled: true, deleteMode: 'toggle'},
             itemSelectAction: Order_itemSelectAction, 
  -->
-            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{id}'">
+            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
                 <div class="dx-table">
                     <div class="cell10" data-bind="text: $data.DateDoc"></div>
                     <div class="cell30" data-bind="text: $data.cName"></div>
@@ -84,11 +84,12 @@
     </div>
 
 
-    <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
-
 <!--     <div data-bind="dxPopover: { width: 200, height: 'auto', visible: popVisible }">
         <div data-bind="dxList: { items: popActions, itemClickAction: Order_processClick }" />
     </div> -->
 <!--     <div data-bind="dxDropDownMenu: { buttonText: 'Show menu', items: popActions, itemClickAction: Order_processClick }"></div> -->
 
 </div>
+
+
+    <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>

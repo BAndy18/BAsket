@@ -86,12 +86,15 @@
 
       <div class="tileView" data-bind="dxTileView: {
           dataSource: P.navigation.splice(1), 
-          itemMargin: 20, baseItemHeight: 13, baseItemWidth: 18,
+          itemMargin: 5, baseItemHeight: 25, baseItemWidth: 25, height: '400', 
           itemClickAction: P.itemClick
         }">
-        <div class="tile" data-options="dxTemplate:{name:'item'}, ">
-            <br/><p style="font-size:larger;"><span data-bind="text: title"></span></p>
-            <span data-bind="attr: { 'class': P.itemIcon(icon) }"></span>
+        <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="style: {background: backcolor}" >
+            <span class="center" data-bind="attr: { 'class': P.itemIcon(icon) }"></span>
+            <p class="tiletext">
+                <span data-bind="text: title"></span>
+                <span class="fl-right" data-bind="text: P.itemCount[id]"></span>
+            </p>
         </div>
       </div>
 

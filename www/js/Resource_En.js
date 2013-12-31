@@ -78,10 +78,10 @@ var RU_RU = (function (window) {
 
 	root.Navigation = {
 		Order : "Новый Заказ",
-		OrderList : "Список Заказов",
+		OrderList : "Заказы",
 		RoadMap : "Дорожная Карта",
 		Clients : "Клиенты",
-		ReadNews : "Чтение Данных",
+		ReadNews : "Новости",
 		Preferences : "Параметры",
 		Info : "Инфо",
     };  
@@ -129,6 +129,7 @@ var RU_RU = (function (window) {
     	Title2 : 'Состав корзины',
     	btnSwText1 : 'корзина',
     	btnSwText2 : 'выбор товаров',
+    	TitleCat : 'Выбери категорию',
     	ColName : 'наименование',
     	ColPack : 'упаковка',
     	ColCount : 'количество',

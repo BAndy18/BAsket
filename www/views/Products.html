@@ -8,10 +8,11 @@
     
         <div class="dx-fieldset" data-bind="visible: bChoice()">
             <div class="dx-field">
-                <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', value: searchString, visible: true, 
+                <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', value: searchString, 
+                    visible: true, 
 		        	valueUpdateEvent: 'search change keyup' }"/>
                 <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { 
-                    title: 'Select Category', 
+                    title: _.Products.TitleCat, 
                     dataSource: dataSourceCat, 
                     displayExpr: 'Name', 
                     valueExpr: 'Id', 
@@ -35,7 +36,7 @@
                 <div class="dx-table">
                     <div class="cell70" data-bind="text: $data.Name"></div>
                     <div class="cell10 alignright" data-bind="text: Globalize.format($data.Upak, 'n0')"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.Quant, 'n0')"></div>
+                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Quant, 'n0')"></strong></div>
                     <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Price, 'n2')"></strong></div>
                 </div>
             </div>
@@ -61,7 +62,7 @@
                 <div class="dx-table">
                     <div class="cell70" data-bind="text: $data.Name"></div>
                     <div class="cell10 alignright" data-bind="text: Globalize.format($data.Upak, 'n0')"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.Quant, 'n0')"></div>
+                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Quant, 'n0')"></strong></div>
                     <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Price, 'n2')"></strong></div>
                 </div>
             </div>

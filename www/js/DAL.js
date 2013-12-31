@@ -1,4 +1,4 @@
-var DAL = (function ($, window) {
+var DAL__ = (function ($, window) {
     var root = {};
 
 	root.Categories = function (params) { return loadFunction(params, "Categories"); };
