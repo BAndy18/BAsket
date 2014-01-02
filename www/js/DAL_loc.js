@@ -220,11 +220,14 @@ var DAL = (function ($, window) {
 
         db.transaction(function(tx){
             //P.loadPanelVisible(true);
-            console.log('Local DB SCRIPT');
+            trace('Local DB SCRIPT');
             for (i = 0; i < P.LocalScript.length; i++){
                 // dbLastQ = P.LocalScript[i];
                 // tx.executeSql(dbLastQ);
-                execQuery(P.LocalScript[i], true);
+                //execQuery(P.LocalScript[i], null, true);
+                tx.executeSql(P.LocalScript[i], [], function(tx, results) {}, 
+                    function(err, err2){errorCB("*RecreateLocalDB*", err, err2);}
+                );
             }
             //P.loadPanelVisible(false);
         })
@@ -240,25 +243,26 @@ var DAL = (function ($, window) {
             arrCAT = dataArray;
             db.transaction(writeToCAT, 
                 function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
-                function() {console.log("write " + table + ": success");});
+                function() {trace("write " + table + ": success");});
         } 
         if (table == 'WAR') {
             arrWAR = dataArray;
             db.transaction(writeToWAR, 
                 function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
-                function() {console.log("write " + table + ": success");});
+                function() {trace("write " + table + ": success");});
         }
         if (table == 'CLI') {
             arrCLI = dataArray;
             db.transaction(writeToCLI, 
                 function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
-                function() {console.log("write " + table + ": success");});
+                function() {trace("write " + table + ": success");});
         }
 
         //db.transaction(writeToDB, function(err, err2) {errorCB("*writeWars ***", err, err2);}, successCB1);
     }
 
     function writeToCAT(tx) {
+        P.loadPanelVisible(true);
             var arr = arrCAT;
             var i, maxlen = 50000;
             //tx.executeSql("BEGIN TRANSACTION");
@@ -266,12 +270,16 @@ var DAL = (function ($, window) {
             //console.log('writeWars: writing=' + len);
                 for (i = 0; i < len; i++) { 
                 dbLastQ = "INSERT INTO CAT (Id, Name) VALUES('" + arr[i].Id + "','" + arr[i].Name + "')"
-                tx.executeSql(dbLastQ);
+                tx.executeSql(dbLastQ, [], function(tx, results) {}, 
+                    function(err, err2){errorCB("*writeToCAT sql*", err, err2);}
+                );
             }
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
-            console.log('Прочитано записей: ' + i);
+            trace('Прочитано записей: ' + i);
+        P.loadPanelVisible(false);            
     }
     function writeToWAR(tx, arr) {
+        P.loadPanelVisible(true);
             var arr = arrWAR;
             var i, maxlen = 50000;
             var len = arr.length;   // < maxlen? arr.length:maxlen;
@@ -283,13 +291,16 @@ var DAL = (function ($, window) {
                     + arr[i].NameArt + "','" + arr[i].NameManuf + "','" + arr[i].UrlPict + "','" + arr[i].Upak + "','" + arr[i].Ostat
                     + "')"
 
-                tx.executeSql(dbLastQ);
+                tx.executeSql(dbLastQ, [], function(tx, results) {}, 
+                    function(err, err2){errorCB("*writeToWAR sql*", err, err2);}
+                );
             }
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
-            console.log('Прочитано записей: ' + i);
+            trace('Прочитано записей: ' + i);
         P.loadPanelVisible(false);            
     }
     function writeToCLI(tx) {
+        P.loadPanelVisible(true);
             var arr = arrCLI;
             var i, maxlen = 50000;
             //tx.executeSql("BEGIN TRANSACTION");
@@ -300,11 +311,16 @@ var DAL = (function ($, window) {
                     + arr[i].Id + "','" + arr[i].IdPar + "','" + arr[i].Name + "','" + arr[i].Adres + 
                     //"','" + arr[i].geoLoc + 
                     "')"
-                tx.executeSql(dbLastQ);
+//                tx.executeSql(dbLastQ);
+                tx.executeSql(dbLastQ, [], function(tx, results) {}, 
+                    function(err, err2){errorCB("*writeToCLI sql*", err, err2);}
+                );
             }
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
-            console.log('Прочитано записей: ' + i);
+            trace('Прочитано записей: ' + i);
             P.itemCount['Clients'] = i;
+
+        P.loadPanelVisible(false);            
     }
 
 
@@ -313,7 +329,7 @@ var DAL = (function ($, window) {
     function errorCB(src, err, err2) {
         var message = (err) ? ((err.message) ? err2.message : err2.message) : src;
         var code =  (err) ? ((err.code || (err && err.code == 0)) ? err2.code : err2.code) :"";
-        console.log(src + " SQLError: " + message + '('+ code +') dbLastQ=' + dbLastQ);
+        trace(src + " SQLError: " + message + '('+ code +') dbLastQ=' + dbLastQ);
         return false;
     }
     // Transaction success callback
@@ -352,6 +368,16 @@ var DAL = (function ($, window) {
         for (var i=0; i<len; i++){
            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Name =  " + results.rows.item(i).name);
         }
+    }
+    function consoleOut(str) {
+        var element = document.getElementById('consoleOut');
+        element.innerHTML += str + '<br />';
+    }
+    function trace(str) {
+        if (P.debugMode)
+            consoleOut(str);
+        else
+            console.log(str);
     }
 
     return root;

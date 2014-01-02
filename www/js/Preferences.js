@@ -13,6 +13,8 @@ BAsket.Preferences = function (params) {
 	popupTitle = "Login";
 	buttonVisible = ko.observable(true);
 	popupVisible = ko.observable(false);
+	debugMode = ko.observable(P.debugMode);
+
 	showPopup = function () {
 	  popupVisible(true);
 	};
@@ -56,6 +58,11 @@ BAsket.Preferences = function (params) {
             value: ko.observable(P.languageUI)
 		}
 	};
+
+	Preferences_debugMode = function(arg){
+		P.debugMode = debugMode();
+		window.localStorage.setItem("debugMode", P.debugMode);
+	}
 
 	Preferences_changePlatform = function(arg){
 		if (arg.element.length > 0) {

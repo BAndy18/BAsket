@@ -105,7 +105,7 @@ var P = (function ($, window) {
     //     });
     // }
 
-
+    root.debugMode = false;
     //root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
     root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
     
@@ -158,6 +158,7 @@ var P = (function ($, window) {
     }
 
     root.Init = function(){
+        root.debugMode = iniLocalStor("debugMode", "false");
 
         root.mapProvider = iniLocalStor("MapProvider", "google");
         root.languageUI = '-';

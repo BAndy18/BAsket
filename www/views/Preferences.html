@@ -16,6 +16,14 @@
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
 					</div>
+	                <div class="dx-field">
+	                    <div class="dx-field-label">Debug mode</div>
+	                    <div class="dx-field-value">
+	                        <div data-bind="dxSwitch: { value: debugMode,
+	                        valueChangeAction: Preferences_debugMode}"></div>
+	                    </div>
+	                </div>
+
 				</div>
             <!-- /ko -->
             <!-- ko if: selectedTab() == 1 -->
@@ -101,10 +109,10 @@
 
 <div data-options="dxView : { name: 'ReadNews', title: 'Read News' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " style="text-align:center" >
-
 		<div class="startstop" data-bind="dxButton: { text: 'Load Data', clickAction: DAL.ReadNews, width:'300px' }"></div>
 
-		<div data-bind="dxLoadPanel:{message: 'Loading...', visible: P.loadPanelVisible }"></
+		<div data-bind="dxLoadPanel:{message: 'Loading...', visible: P.loadPanelVisible }"/>
 
+        <p id="consoleOut"></p>
     </div>
 </div>
