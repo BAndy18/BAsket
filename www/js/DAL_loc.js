@@ -124,15 +124,15 @@ var DAL = (function ($, window) {
         if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
         else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
 
-        var source2 = DAL_web.Products({Id:'all'});
-        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
-        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+        // var source2 = DAL_web.Products({Id:'all'});
+        // if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
+        // else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
 
-        var source3 = DAL_web.Clients({IdAll:'all'});
-        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
-        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+        // var source3 = DAL_web.Clients({IdAll:'all'});
+        // if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
+        // else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
 
-        P.itemCount['ReadNews'] = new Date().toLocaleDateString().substring(0,5);
+        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', new Date().toLocaleDateString().substring(0,5));
     };
 
 
@@ -318,7 +318,7 @@ var DAL = (function ($, window) {
             }
             //tx.executeSql("COMMIT TRANSACTION", errorCB);
             trace('Прочитано записей: ' + i);
-            P.itemCount['Clients'] = i;
+            P.itemCount['Clients'] = P.ChangeValue('Clients', i);
 
         P.loadPanelVisible(false);            
     }

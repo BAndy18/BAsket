@@ -60,8 +60,7 @@ BAsket.Preferences = function (params) {
 	};
 
 	Preferences_debugMode = function(arg){
-		P.debugMode = debugMode();
-		window.localStorage.setItem("debugMode", P.debugMode);
+		P.debugMode = P.ChangeValue("debugMode", debugMode());
 	}
 
 	Preferences_changePlatform = function(arg){

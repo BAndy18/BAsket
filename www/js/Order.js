@@ -170,7 +170,7 @@ BAsket.Order = function (params) {
 		Order_clickBack();
 
 		DAL.CountTable('BILM').done(function (result) {
-			P.itemCount['OrderList'] = result[0].cnt;	
+			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
 	};
 

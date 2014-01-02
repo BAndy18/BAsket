@@ -130,6 +130,10 @@ var P = (function ($, window) {
         window.localStorage.setItem(key, value);
         return value;
     }
+    root.ChangeValue = function (key, value){
+        window.localStorage.setItem(key, value);
+        return value;
+    }
 
     var languageMap = {
         'English' : EN_US,
@@ -229,10 +233,10 @@ var P = (function ($, window) {
         return 'tileicon dx-icon-' + icon.toLowerCase();
     }
     root.itemCount = {
-        'OrderList' : '3',
-        'RoadMap' : '2.01 (2)',
-        'Clients' : '2134',
-        'ReadNews' : '13.12',
+        'OrderList' : iniLocalStor("OrderList", '0'),
+        'RoadMap' : iniLocalStor("RoadMap", ''),  //'2.01 (2)',
+        'Clients' : iniLocalStor("Clients", ''), //'2134',
+        'ReadNews' : iniLocalStor("ReadNews", ''), //'13.12',
     }
 
     root.LocalScript = [
