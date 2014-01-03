@@ -13,12 +13,27 @@
             </div>
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Client" />
-	            <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectClient, dataSource: clients, displayExpr: 'Name', valueExpr: 'Id', searchEnabled: false, value: cliId, placeholder: cliName, valueChangeAction: Order_clientChanged}"/>
+	            <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { 
+                    title: _.Order.SelectClient, 
+                    dataSource: clients, 
+                    displayExpr: 'Name', 
+                    valueExpr: 'Id', 
+                    value: cliId, 
+                    placeholder: cliName, 
+                    searchEnabled: true, searchPlaceholder: _.Common.Search,
+                    fullScreen: true,
+                    valueChangeAction: Order_clientChanged}"/>
             </div>
             <!-- <div class="dx-button" data-bind="text: 'arrayTP.length = ' + arrayTP.length + ' ; showTP='+ showTP()"></div> -->
             <div class="dx-field" data-bind="visible: showTP()">
                 <div class="dx-field-label" data-bind="text: _.Order.Point" />
-                <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectPoint, dataSource: arrayTP, displayExpr: 'Name', valueExpr: 'Id',searchEnabled: true, placeholder: tpName }"/>
+                <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { 
+                    title: _.Order.SelectPoint, 
+                    dataSource: arrayTP, 
+                    displayExpr: 'Name', 
+                    valueExpr: 'Id',
+                    searchEnabled: false, 
+                    placeholder: tpName }"/>
             </div>
         </div>
         <div class="dx-fieldset">

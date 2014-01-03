@@ -107,7 +107,7 @@ var P = (function ($, window) {
 
     root.debugMode = false;
     //root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
-    root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
+    root.dataSouceUrl = "http://192.168.1.146//BAsketWS/api/";
     
     root.dataSouceType = "DAL_local";
     //root.dataSouceType = "DAL_web";
@@ -162,7 +162,7 @@ var P = (function ($, window) {
     }
 
     root.Init = function(){
-        root.debugMode = iniLocalStor("debugMode", "false");
+        root.debugMode = iniLocalStor("debugMode", "true");
 
         root.mapProvider = iniLocalStor("MapProvider", "google");
         root.languageUI = '-';

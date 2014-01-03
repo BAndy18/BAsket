@@ -124,13 +124,13 @@ var DAL = (function ($, window) {
         if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
         else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
 
-        // var source2 = DAL_web.Products({Id:'all'});
-        // if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
-        // else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+        var source2 = DAL_web.Products({Id:'all'});
+        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
+        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
 
-        // var source3 = DAL_web.Clients({IdAll:'all'});
-        // if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
-        // else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+        var source3 = DAL_web.Clients({IdAll:'all'});
+        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
+        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
 
         P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', new Date().toLocaleDateString().substring(0,5));
     };
@@ -144,12 +144,22 @@ var DAL = (function ($, window) {
                     params['skip'] = loadOptions.skip;
                     params['take'] = loadOptions.take;
                 }
+                if (loadOptions.searchExpr && loadOptions.searchValue)
+                    params['searchValue'] = loadOptions.searchValue;
+                else
+                    params['searchValue'] = null;
                 var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
                 var deferred = new $.Deferred();
                 db.transaction(function(tx) {
                     dbLastQ = params.query;
+                    var searchValue = '';
                     if (params.searchString && params.searchString())
-                         dbLastQ += " and (Name LIKE '%" + params.searchString() + "%')";
+                        searchValue = params.searchString();
+                    else if (params['searchValue'])
+                        searchValue = params['searchValue'];
+                    if (searchValue)
+                         dbLastQ += " and (Name LIKE '%" + searchValue + "%')";
+
                     if (params.paging)
                         dbLastQ += " LIMIT " + params['skip'] + ", " +  params['take'];
 
