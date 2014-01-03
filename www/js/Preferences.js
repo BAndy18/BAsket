@@ -45,7 +45,8 @@ BAsket.Preferences = function (params) {
 	//	dataSource: dataSource,
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {
-            data: ['-', "generic", "ios", "android", "win8", "tizen"],
+            data: ['-', "generic", "ios", "android", "tizen"],
+//            data: ['-', "generic", "ios", "android", "win8", "tizen"],
 //            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
             value: ko.observable(P.platformDevice)
 		},

@@ -18,14 +18,20 @@
     };
 	DAL.ProductDetails({Id: params.Id, model: viewModel});
 
+    DAL.NMS(0).done(function (result) {
+            var quant = $("#idQuant").data("dxNumberBox");
+            quant.focus();
+    })
+
     Product_Details_saveClicked = function(arg) {
         var bFound = false;
+        var quant = parseInt(this.Quant());
         for (var i in P.arrayBAsket) {
             //if (!P.arrayBAsket.hasOwnProperty(i)) continue;
             //if (i == key && P.arrayBAsket[i].id == this.id()) {
             if (P.arrayBAsket[i].Id == this.Id) {
-                if (this.Quant())
-                    P.arrayBAsket[i].Quant = this.Quant();
+                if (quant)
+                    P.arrayBAsket[i].Quant = quant;
                 else
                     P.arrayBAsket.splice(i, 1);
                 bFound = true;
@@ -33,7 +39,7 @@
             }
         }
         if (!bFound){
-            P.arrayBAsket.push({'Id':this.Id, 'Name':this.Name(),'Upak':this.Upak(),'Quant':this.Quant(),'Price':this.Price()});
+            P.arrayBAsket.push({'Id':this.Id, 'Name':this.Name(),'Upak':this.Upak(),'Quant':quant,'Price':this.Price()});
         }
 
         BAsket.app.navigate('products/' + P.curCategoryId);

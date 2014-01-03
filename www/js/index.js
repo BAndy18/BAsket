@@ -89,7 +89,7 @@ var P = (function ($, window) {
     //root.layout = "simple";
     //root.layout = "pivot";
 
-    root.deviceClass = 'androidTablet';
+    root.deviceClass = 'android';
 
     root.curCategoryId = 0;
     root.curCategoryName = '';
@@ -104,6 +104,7 @@ var P = (function ($, window) {
     //         basket.push(b);
     //     });
     // }
+    root.copyright = '';
 
     root.debugMode = false;
     //root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
@@ -111,7 +112,6 @@ var P = (function ($, window) {
     
     root.dataSouceType = "DAL_local";
     //root.dataSouceType = "DAL_web";
-    //root.dataSouceType = "dataTest";
 
     root.pageSize = 30;
     
@@ -169,15 +169,12 @@ var P = (function ($, window) {
         root.languageUI = iniLocalStor("LanguageUI", '-');
         root.ChangeLanguageUI();
 
-        root.platformDevice = root.deviceClass = 'ios';
-//        root.platformDevice = root.deviceClass = 'iPhone';
-        root.platformDevice = root.deviceClass = iniLocalStor("Platform", '-');
+        root.platformDevice = root.deviceClass = 'android';
+        root.platformDevice = root.deviceClass = iniLocalStor("Platform", 'android');
         if (root.deviceClass == '-')
             root.deviceClass = root.deviceInfo.platform;
-        //if (root.navAgent.indexOf(' MSIE ') > 0) root.deviceClass = 'win8Phone';
-        //if (root.deviceClass == 'desktop') root.deviceClass = 'iPhone';
-        // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 
+        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass + '; ver. 2.0)';
 
         root.ReadFirstCategory();
         root.ReadFirstNms();

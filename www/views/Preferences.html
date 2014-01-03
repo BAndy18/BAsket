@@ -101,8 +101,9 @@
     	<span data-bind="text: P.navAgent"></span>
 
 		<div class="copyright">
-	      <p>BAsket &copy; 2014 BAndy soft. All rights reserved (<span data-bind="text: P.deviceClass"></span>; ver. 1.0.0)</p>
-	     <!--  <p>BAsket is an application to help people make the yoga exercises individually</p> -->
+	      <p><span data-bind="text: P.copyright"></span></p>
+<!-- 	      <p>BAsket &copy; 2014 BAndy soft. All rights reserved (<span data-bind="text: P.deviceClass"></span>; ver. 1.0.0)</p>
+ -->	     <!--  <p>BAsket is an application to help people make the yoga exercises individually</p> -->
 		</div>
     </div>
 </div>
@@ -114,5 +115,9 @@
 		<div data-bind="dxLoadPanel:{message: 'Loading...', visible: P.loadPanelVisible }"/>
 
         <p id="consoleOut"></p>
+
+		<div class="copyright">
+	      <p><span data-bind="text: P.copyright"></span></p>
+	    </div>
     </div>
 </div>

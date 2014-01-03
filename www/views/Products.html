@@ -43,7 +43,7 @@
         </div>
 
 
-        <div class="tileView" data-bind="dxTileView: {
+ <!--        <div class="tileView" data-bind="dxTileView: {
                 dataSource: dataSourceProd, 
                 itemMargin: 3, baseItemHeight: 120, baseItemWidth: 160, 
                 listHeight: '90%', height: '80%', 
@@ -51,11 +51,10 @@
                 noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#product-details/{Id}'">
-                <!-- <span data-bind="attr: { 'class': 'tileicon dx-icon-cart' }"></span> -->
                 <img class="tile-image" data-bind="attr: { src: UrlPict }"/>
                 <span class="tile-text" data-bind="text: Name"></span>
             </div>
-        </div>
+        </div> -->
 
         <div id="listBAsket" data-bind="dxList: { dataSource: dataSourceBasket, noDataText: _.Common.NoDataText }, visible: !bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">

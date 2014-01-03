@@ -8,9 +8,15 @@ var DAL = (function ($, window) {
     var dbSize = 50000000;
 
     root.Categories = function (params){
+        if (P.dataSouceType == "DAL_web")
+            return DAL_web.Categories(params);
+        
         return execDataSource({query: "SELECT * FROM CAT"});
     };
     root.Products = function (params){
+        if (P.dataSouceType == "DAL_web")
+            return DAL_web.Products(params);
+        
         return execDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
             paging: true,
             searchString: params.search
@@ -24,6 +30,9 @@ var DAL = (function ($, window) {
         });
     }
     root.ProductDetails = function (params){
+        if (P.dataSouceType == "DAL_web")
+            return DAL_web.ProductDetails(params);
+        
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
         db.transaction(function(tx) {
             dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
@@ -48,6 +57,9 @@ var DAL = (function ($, window) {
 
 
     root.Clients = function (params){
+        if (P.dataSouceType == "DAL_web")
+            return DAL_web.Clients(params);
+        
         var param = {query: "SELECT * FROM CLI Where IdPar='0'", paging: true};
         if (params && params.search)
             param.searchString = params.search;
@@ -55,6 +67,9 @@ var DAL = (function ($, window) {
         return execDataSource(param);  
     };    
     root.ClientsPar = function (params){
+        if (P.dataSouceType == "DAL_web")
+            return DAL_web.ClientsPar(params);
+        
         return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
     }
 
@@ -132,7 +147,8 @@ var DAL = (function ($, window) {
         if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
         else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
 
-        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', new Date().toLocaleDateString().substring(0,5));
+        var date = new Date()
+        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth()+1);
     };
 
 
@@ -296,6 +312,9 @@ var DAL = (function ($, window) {
             //console.log('writeWars: writing=' + len);
             //tx.executeSql("BEGIN TRANSACTION");
             for (i = 0; i < len; i++) { 
+                arr[i].NameArt = (arr[i].NameArt) ? arr[i].NameArt:'';
+                arr[i].NameManuf = (arr[i].NameManuf) ? arr[i].NameManuf:'';
+                arr[i].UrlPict = (arr[i].UrlPict) ? arr[i].UrlPict:'';
                 dbLastQ = "INSERT INTO WAR (Id, IdGr, Name, Price, NameArt, NameManuf, UrlPict, Upak, Ostat) VALUES('" 
                     + arr[i].Id + "','"  + arr[i].GrId + "','" + arr[i].Name + "','" + arr[i].Price + "','" 
                     + arr[i].NameArt + "','" + arr[i].NameManuf + "','" + arr[i].UrlPict + "','" + arr[i].Upak + "','" + arr[i].Ostat

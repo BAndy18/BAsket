@@ -71,6 +71,7 @@ var RU_RU = (function (window) {
     	Default : "по умолчанию",
     	Back: "назад",
     	Save: 'Сохранить',
+    	Search: 'Поиск',
     	Select : 'Выбор ...',
     	Confirm: 'Подтвердите',
     	NoDataText: "Нет данных",
