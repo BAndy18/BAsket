@@ -39,7 +39,7 @@
             }
         }
         if (!bFound){
-            P.arrayBAsket.push({'Id':this.Id, 'Name':this.Name(),'Upak':this.Upak(),'Quant':quant,'Price':this.Price()});
+            P.arrayBAsket.push({'Id':this.Id, 'Name':this.Name(),'Upak':this.Upak(),'Ostat':this.Ostat(),'Quant':quant,'Price':this.Price()});
         }
 
         BAsket.app.navigate('products/' + P.curCategoryId);

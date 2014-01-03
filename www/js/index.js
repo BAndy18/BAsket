@@ -4,13 +4,14 @@ window.BAsket = {};
 $(function() {
     P.Init();
 
-    DevExpress.devices.current({platform: P.deviceClass, version: '6'});
+    DevExpress.devices.current({platform: P.deviceClass, version: '6', deviceType: "tablet"});
     //DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform);
     BAsket.app = new DevExpress.framework.html.HtmlApplication({
         namespace: BAsket,
         navigationType: P.layout,
         navigation: P.navigation,
-        navigateToRootViewMode: true
+        navigateToRootViewMode: true,
+        disableViewCache: true
     });
     //Globalize.culture = Globalize.culture["ru-RU"];
     //$.preferCulture("ru-RU");
@@ -162,6 +163,7 @@ var P = (function ($, window) {
     }
 
     root.Init = function(){
+        root.modeProdView = iniLocalStor("modeProdView", "true");
         root.debugMode = iniLocalStor("debugMode", "true");
 
         root.mapProvider = iniLocalStor("MapProvider", "google");

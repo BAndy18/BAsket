@@ -95,6 +95,8 @@ var RU_RU = (function (window) {
         Layout: 'Стиль Устройства',
         MapProvider: "Поставщик Карт",
         Language: "Язык интерфейса",
+        TableMode: "Табличный выбор товаров",
+        DebugMode: "Режим отладки",
 
         Incorrect_password: "Не правильный пароль",
     };  
@@ -127,15 +129,15 @@ var RU_RU = (function (window) {
 
     root.Products = {
     	Title1 : 'Выбор товаров',
-    	Title2 : 'Состав корзины',
+    	Title2 : 'Корзина',
     	btnSwText1 : 'корзина',
-    	btnSwText2 : 'выбор товаров',
+    	btnSwText2 : 'товары',
     	TitleCat : 'Выбери категорию',
     	ColName : 'наименование',
     	ColPack : 'упаковка',
     	ColCount : 'количество',
     	ColPrice : 'цена',
-    	TitleDetails: 'установи количество для товара',
+    	TitleDetails: 'количество товара',
     	ErrQuantity : 'Введите число больше либо равно 0',
     	FldQuantity : 'Количество:',
     	FldName : 'Наименование:',

@@ -17,11 +17,14 @@
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
 					</div>
 	                <div class="dx-field">
-	                    <div class="dx-field-label">Debug mode</div>
-	                    <div class="dx-field-value">
-	                        <div data-bind="dxSwitch: { value: debugMode,
-	                        valueChangeAction: Preferences_debugMode}"></div>
-	                    </div>
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.TableMode "/>
+	                    <div class="dx-field-value" data-bind="dxSwitch: { value: P.modeProdView,
+	                        valueChangeAction: Preferences_TableMode}"></div>	                    
+	                </div>
+	                <div class="dx-field">
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.DebugMode "/>
+	                    <div class="dx-field-value" data-bind="dxSwitch: { value: debugMode,
+	                        valueChangeAction: Preferences_debugMode}"/>	                    
 	                </div>
 
 				</div>
@@ -96,6 +99,8 @@
 	    win8  : <span data-bind="text: P.deviceInfo.win8  "></span> 
 	    tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> <br/>
 	    platform  : <span data-bind="text: P.deviceInfo.platform  "></span> 
+	    <br/>
+	    size : <span data-bind="text: screen.height + '-' + screen.width  "></span> 
 
 	    <br/><br/>
     	<span data-bind="text: P.navAgent"></span>

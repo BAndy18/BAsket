@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="net.bandy18.basket" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="net.bandy18.basket" 
+	version="0.0.2" 
+	xmlns="http://www.w3.org/ns/widgets" 
+	xmlns:cdv="http://cordova.apache.org/ns/1.0">
+
     <name>BAsket</name>
     <description>
         A BAsket for trading
@@ -11,4 +15,7 @@
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />
     <content src="index.html" />
+
+    <icon src="img/logo.png" />
+    <gap:splash src="img/logo.png" />
 </widget>

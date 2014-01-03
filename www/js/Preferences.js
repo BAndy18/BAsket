@@ -13,6 +13,8 @@ BAsket.Preferences = function (params) {
 	popupTitle = "Login";
 	buttonVisible = ko.observable(true);
 	popupVisible = ko.observable(false);
+
+	modeProdView = ko.observable(P.modeProdView);
 	debugMode = ko.observable(P.debugMode);
 
 	showPopup = function () {
@@ -57,9 +59,15 @@ BAsket.Preferences = function (params) {
 		dsLanguage: {
             data: ['-', "English", "Русский"],
             value: ko.observable(P.languageUI)
-		}
+		},
+
+		// modeProdView: modeProdView,
+		// debugMode: debugMode,
 	};
 
+	Preferences_TableMode = function(arg){
+		P.modeProdView = P.ChangeValue("modeProdView", modeProdView());
+	}
 	Preferences_debugMode = function(arg){
 		P.debugMode = P.ChangeValue("debugMode", debugMode());
 	}

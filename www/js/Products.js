@@ -17,6 +17,7 @@ BAsket.products = function (params) {
 
         dataSourceCat: DAL.Categories(),
         dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
+        dataSourceProd2: DAL.Products({Id:P.curCategoryId, search:searchStr}),
         dataSourceBasket: P.arrayBAsket,
 
         //categoryId: categoryId,
@@ -34,6 +35,14 @@ BAsket.products = function (params) {
         //viewModel.dataSourceProd.pageIndex(0);        
         viewModel.dataSourceProd.load();
     });
+
+    Products_calcSum = function () {
+        var sum = 0.0;
+        for (var i in P.arrayBAsket) {
+            sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
+        }
+        return sum.toFixed(2);
+    };
 
     Products_swichClicked  = function () {
         P.curModeChoice = !P.curModeChoice;
