@@ -1,4 +1,4 @@
-<div data-options="dxView : { name: 'Clients', title: 'Clients' } " >
+<div data-options="dxView : { name: 'Clients', title: _.Navigation.Clients } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div class="dx-fieldset" >
             <div class="dx-field">
@@ -18,29 +18,59 @@
             </div>
         </div>
 
-        <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
-        <div class="map">
-            <div data-bind="dxMap: options"></div>
-        </div> -->
-
     </div>
 </div>
 
-<div data-options="dxView : { name: 'Client', title: 'Client' } " >
+<div data-options="dxView : { name: 'Client', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxToolbar: { items: [
+          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          {  align: 'center', text: _.Clients.Title},
+          {  align: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
+        ]}"></div>
+
+        <!-- <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " > -->
         <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
         <div class="dx-fieldset">
             <div class="dx-field">
-                <div class="dx-field-label">Current Position</div>
-                <div class="dx-field-value" >
+                <div data-bind="text: cliName()" />
+<!--                 <div class="dx-field-value" >
                  	<div style="width: 20%" data-bind="dxTextBox: {value: P.geoCurrent}" />
-					<div class="dx-button but20 fl-right" data-bind="dxButton:{text:'Save', clickAction: clickSaveGeo}"/>
                 </div>
-			</div>
+ -->			</div>
 		</div>
-       <!--  <div class="map"> -->
-            <div data-bind="dxMap: options"></div>
-        <!-- </div> -->
+       
+
+        <div id="idClientMap" data-bind="dxMap: {provider: P.mapProvider,
+            mapType: 'roadmap',            
+            width: '100%', height: '100%',
+            zoom: 15,
+            readyAction: mapReadyAction }">
+        </div>
+       
+
+        <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
+
+        <div data-bind="dxPopover: { width: 200, height: 'auto', visible: visibleMenu, target: '.dx-icon-menu'}">
+            <div data-bind="dxList: { items: menuItems, itemClickAction: Client_ClickMenuAction }"></div>
+        </div>
+
+        <div data-bind="dxPopup:{visible:popupVisible}">
+            <div data-options="dxTemplate:{name: 'title'}">
+               <!--  <p><b data-bind="text: 'popupTitle'"></b></p> -->
+               <div data-bind="dxToolbar: { items: [
+                  {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: Client_clickCancel}},
+                  {  align: 'center', text: _.Clients.Title},          
+                ]}"></div>
+            </div>
+
+            <div data-options="dxTemplate:{name: 'content'}">
+                <div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: Client_clickCancel}"/>
+                <div data-bind="dxScrollView: {}">
+                    <div id="textContainer"></div>
+                </div>
+            </div>
+        </div>        
     </div>
 </div>
 

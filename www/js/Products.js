@@ -1,4 +1,5 @@
 BAsket.products = function (params) {   
+    P.fromProducts = true;
     var searchStr = ko.observable('');
     P.curCategoryId = (params.Id == 'undefined') ? P.curCategoryId : params.Id;
     var arrayBAsket = ko.observable([]);

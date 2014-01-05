@@ -40,24 +40,21 @@
             <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
                 <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" ></div>
-<!-- 
-                <div id="idNms1" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select}"/> -->
  
              </div>
             <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
                 <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
 
-<!--                 <div id="idNms2" class="dx-field-value" data-bind="dxLookup: { title: _.Order.SelectParam, dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'id', searchEnabled: false, placeholder: _.Common.Select}"/>
- -->             </div>
 
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Note" />
                 <div id="txtNote" class="dx-field-value" data-bind="dxTextArea: { placeholder: _.Order.NotePrompt, value: noteVal }"/>
             </div>
+
         </div>
 
-		<div class="dx-button but20 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/>
+		<div class="dx-button but50 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/>
 		
     </div>
 </div>
@@ -66,16 +63,17 @@
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
 		<div class="dx-table">
-            <div class="cell10 dx-button" data-bind="text: _.Order.ColDate"></div>
-            <div class="cell30 dx-button" data-bind="text: _.Order.ColName"></div>
-            <div class="cell30 dx-button" data-bind="text: _.Order.ColTpName"></div>
-            <div class="cell10 dx-button" data-bind="text: _.Order.ColNote"></div>
-            <div class="cell10 dx-button" data-bind="text: _.Order.ColWars"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColDate"></div>
+            <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColName"></div>
+            <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColTpName"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColNote"></div>
+            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColWars"></div>
         </div>
 		<div id="idOrderList" data-bind="dxList: { 
             dataSource: dataSource, 
             itemHoldAction: Order_processItemHold, 
             itemHoldTimeout: holdTimeout, 
+            noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
 <!-- 
@@ -96,15 +94,15 @@
  -->                </div>
             </div>
         </div>
-    </div>
 
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
 
 <!--     <div data-bind="dxPopover: { width: 200, height: 'auto', visible: popVisible }">
         <div data-bind="dxList: { items: popActions, itemClickAction: Order_processClick }" />
     </div> -->
 <!--     <div data-bind="dxDropDownMenu: { buttonText: 'Show menu', items: popActions, itemClickAction: Order_processClick }"></div> -->
 
+    </div>
 </div>
 
 
-    <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>

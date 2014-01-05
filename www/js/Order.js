@@ -43,19 +43,31 @@ BAsket.Order = function (params) {
         }
 	};
 
-	P.arrayBAsket = [];
-	if (location.hash.indexOf('/') > 0) {
-		var bil = DAL.BilMById(location.hash.split('/')[1]);
+	if (!P.fromProducts)
+		P.arrayBAsket = [];
+
+	if (params.Id) {
+		var bil = DAL.BilMById(params.Id);
 		bil.load().done(function (result) {
 			var dateParts = result[0].DateDoc.split(".");
-			dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
+			if (dateParts.length == 1)
+				dateParts = result[0].DateDoc.split("-");
+			console.log('Order id=' + params.Id + ' date=' + dateParts);
+			console.log('row=' + result[0]);
+			if (dateParts[0].length > 2)
+				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
+			else
+				dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
 			noteVal(result[0].sNote);
 			cliId(result[0].IdCli);
 			cliName(result[0].cName);
 			tpId(result[0].IdTp);
-			DAL.ProductsByWars(result[0].sWars).done(function (result) {
-				P.arrayBAsket = result;
-			})
+		
+			if (!P.fromProducts) {
+				DAL.ProductsByWars(result[0].sWars).done(function (result) {
+					P.arrayBAsket = result;
+				})
+			}
 
 			var arr = nmsNames();
 			var sOther = result[0].sOther.split(';');
@@ -73,7 +85,7 @@ BAsket.Order = function (params) {
 			nmsNames(arr);
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
-    		DAL.Clients(result[0].IdCli).load().done(function (result) {
+    		DAL.ClientsPar(result[0].IdCli).load().done(function (result) {
 		    	arrayTP(result);
 		    	showTP(result.length > 0);
 			})
@@ -119,7 +131,8 @@ BAsket.Order = function (params) {
 	};
 	
 	Order_clickBack = function(arg){
-		if (location.hash.indexOf('/') > 0)
+		P.fromProducts = false;
+		if (params.Id)
 			BAsket.app.navigate('OrderList', { root: true });
 		else
 			//BAsket.app.navigate('home');
@@ -127,9 +140,10 @@ BAsket.Order = function (params) {
 	};
 
 	Order_btnSaveClicked  = function () {
+		//var valueQuant = $("#idQuant").data("dxNumberBox").option("value");
 		if (P.arrayBAsket.length == 0){
 			BAsket.notify(_.Order.ErrNoWars, "error");
-		//	return;
+			return;
 		}
 		var valueDate = $("#idDate").data("dxDateBox").option("value");
 		if (!valueDate) {
@@ -143,29 +157,31 @@ BAsket.Order = function (params) {
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
 
-		var params = {};
-		var hash = location.hash.split('/');
-		if (hash.length > 1)
-			params['id'] = hash[1];
-		params['date'] = valueDate.toLocaleString().split(' ')[0];
-		params['idCli'] = valueCli;
-		params['idTp'] = (valueTP ? valueTP:0);
+		var prms = {};
+		//var hash = location.hash.split('/');
+		if (params.Id)
+			prms['id'] = params.Id;
+		prms['date'] = valueDate.getDate() + '.' + (valueDate.getMonth()+1) + '.' + valueDate.getFullYear();
+		console.log('Order save date=' + dataVal());
+		console.log('Order save datetoLocaleString=' + prms['date']);
+		prms['idCli'] = valueCli;
+		prms['idTp'] = (valueTP ? valueTP:0);
 		
-		params['sOther'] = '';
+		prms['sOther'] = '';
 		for (var i=0; i<P.currentNms[1].length; i++) {
 			var setNms = $("#idNms" + (i+1)).data("dxSelectBox");
 			if (setNms && setNms.option().value){
-				params['sOther'] += (i+1) + ':' + setNms.option().value + ';';
+				prms['sOther'] += (i+1) + ':' + setNms.option().value + ';';
 			}
 		}
-		params['Note'] = $("#txtNote").data("dxTextArea").option("value");
+		prms['Note'] = $("#txtNote").data("dxTextArea").option("value");
 		var sWars = '';
 		for (var i in P.arrayBAsket) {
         	sWars += P.arrayBAsket[i].Id + ':' + P.arrayBAsket[i].Quant + ';';
         }
-    	params['sWars'] = sWars.substring(0, sWars.length - 1);
+    	prms['sWars'] = sWars.substring(0, sWars.length - 1);
 
-		DAL.SaveBil(params);
+		DAL.SaveBil(prms);
 		
 		Order_clickBack();
 
@@ -193,50 +209,36 @@ BAsket.OrderList = function (params) {
 
 		popVisible: popVisible,
 		holdTimeout: holdTimeout,
-		//popActions:  ["Red", "Green", "Black"],
 		popActions: [
 		    {text: _.Order.ActionDelete, clickAction: function(){ Order_DeleteClick()}},
-		    // {text:"Delete", clickAction: function(){ Order_processClick("Delete")}}
 		],
 	};
 
 	Order_DeleteClick = function(){
-		//popVisible(false);
-		//DevExpress.ui.dialog.alert("The item is being held during " + holdTimeout() / 1000 + "sec", "Action executed");
-		//DevExpress.ui.notify( name + " clicked", "success", 3000 );
-
      //    var result = DevExpress.ui.dialog.confirm(_.Order.ActionDelete + ' ?', _.Common.Confirm);
      //    result.done(function (dialogResult) {
      //    	alert(dialogResult ? "Confirmed" : "Canceled");
     	// });
 
-        //var result = 
         DevExpress.ui.dialog.custom({message: _.Order.ActionDelete + ' '+ idSelected() +' ?', title: _.Common.Confirm, 
         	buttons: [
             { text: _.Common.Yes, clickAction: Order_Delete },
             { text: _.Common.Cancel } 
         ]}).show();
-     //    result.show().done(function (dialogResult) {
-     //    	DevExpress.ui.notify(dialogResult, "info", 1000);
-    	// });
-	}
-	Order_Delete = function(arg){
-		DAL.DeleteBil(idSelected());
-		viewModel.dataSource.load();
-		//DevExpress.ui.notify( "Yes clicked", "success", 3000 );
 	}
 
-	// Order_processClick = function(name){
-	// 	//popVisible(false);
-	// 	//DevExpress.ui.dialog.alert("The item is being held during " + holdTimeout() / 1000 + "sec", "Action executed");
-	// 	//DevExpress.ui.notify( name + " clicked", "success", 3000 );
-	// 	DevExpress.ui.notify( name.itemData + " item clicked", "success", 2000 );
-	// }
+	Order_Delete = function(arg){
+		DAL.DeleteBil(idSelected());
+		DAL.CountTable('BILM').done(function (result) {
+			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
+		});
+		viewModel.dataSource.load();
+	}
+
 	Order_processItemHold = function (arg) {
 		idSelected(arg.itemData.Id);
 		popVisible(true);
 	};
 
-	//viewModel.dataSource.load();
 	return viewModel;
 };

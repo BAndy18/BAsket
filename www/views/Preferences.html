@@ -63,27 +63,28 @@
 	            </div>
             <!-- /ko -->
 		</div>
-    </div>
+    
+		<div data-bind="dxPopup:{visible:popupVisible}">
+		    <div data-options="dxTemplate:{name: 'title'}">
+		        <p><b data-bind="text: popupTitle"></b></p>
+		    </div>
+		    <div data-options="dxTemplate:{name: 'content'}">
+	            <div class="dx-fieldset">
+	                <div class="dx-field">
+	                    <div class="dx-field-label">Password</div>
+	                    <div class="dx-field-value">
+	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div>
+					<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: clickLogin}"></div>
+					<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: clickCancel}"></div>
+				</div>
+		    </div>
+		</div>
 
-	<!-- <div data-bind="dxPopup:{visible:popupVisible}">
-	    <div data-options="dxTemplate:{name: 'title'}">
-	        <p><b data-bind="text: popupTitle"></b></p>
-	    </div>
-	    <div data-options="dxTemplate:{name: 'content'}">
-            <div class="dx-fieldset">
-                <div class="dx-field">
-                    <div class="dx-field-label">Password</div>
-                    <div class="dx-field-value">
-                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
-                    </div>
-                </div>
-            </div>
-            <div>
-				<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: clickLogin}"></div>
-				<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: clickCancel}"></div>
-			</div>
-	    </div>
-	</div> -->
+	</div>
 </div>
 
 
@@ -107,8 +108,6 @@
 
 		<div class="copyright">
 	      <p><span data-bind="text: P.copyright"></span></p>
-<!-- 	      <p>BAsket &copy; 2014 BAndy soft. All rights reserved (<span data-bind="text: P.deviceClass"></span>; ver. 1.0.0)</p>
- -->	     <!--  <p>BAsket is an application to help people make the yoga exercises individually</p> -->
 		</div>
     </div>
 </div>
@@ -117,12 +116,9 @@
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " style="text-align:center" >
 		<div class="startstop" data-bind="dxButton: { text: 'Load Data', clickAction: DAL.ReadNews, width:'300px' }"></div>
 
-		<div data-bind="dxLoadPanel:{message: 'Loading...', visible: P.loadPanelVisible }"/>
+		<div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
 
         <p id="consoleOut"></p>
 
-		<div class="copyright">
-	      <p><span data-bind="text: P.copyright"></span></p>
-	    </div>
     </div>
 </div>

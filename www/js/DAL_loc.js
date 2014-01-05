@@ -7,6 +7,14 @@ var DAL = (function ($, window) {
     var dbName = 'BAsketDB';
     var dbSize = 50000000;
 
+
+    root.getMapDirections = function (params){
+        //var deferred = new $.Deferred();
+        return $.get(P.geoDirectionsUrl, params);
+
+        //return deferred;
+    }
+
     root.Categories = function (params){
         if (P.dataSouceType == "DAL_web")
             return DAL_web.Categories(params);
@@ -27,7 +35,7 @@ var DAL = (function ($, window) {
                     }
                 }
                 return data;    
-        });
+            });
     }
     root.ProductDetails = function (params){
         if (P.dataSouceType == "DAL_web")
@@ -71,6 +79,9 @@ var DAL = (function ($, window) {
             return DAL_web.ClientsPar(params);
         
         return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
+    }
+    root.ClientById = function (params){
+        return execQuery("SELECT * FROM CLI Where Id='" + params + "'");
     }
 
     root.RoadMap = function (params){
@@ -125,7 +136,15 @@ var DAL = (function ($, window) {
                 ids += "'" + v[0] + "',";
             }
         }
-        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")", true);
+        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
+            function(data){
+                for (var i in P.arrayBAsket) {
+                    if (P.arrayBAsket[i].Id == data.Id) {
+                        data.Quant = P.arrayBAsket[i].Quant;
+                    }
+                }
+                return data;    
+            });
     };
 
 
@@ -149,6 +168,7 @@ var DAL = (function ($, window) {
 
         var date = new Date()
         P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth()+1);
+        P.Init();
     };
 
 
@@ -356,8 +376,8 @@ var DAL = (function ($, window) {
     // Transaction error callback
     //
     function errorCB(src, err, err2) {
-        var message = (err) ? ((err.message) ? err2.message : err2.message) : src;
-        var code =  (err) ? ((err.code || (err && err.code == 0)) ? err2.code : err2.code) :"";
+        var message = (err) ? ((err.message) ? err.message : err2.message) : src;
+        var code =  (err) ? ((err.code || (err && err.code == 0)) ? err.code : err2.code) :"";
         trace(src + " SQLError: " + message + '('+ code +') dbLastQ=' + dbLastQ);
         return false;
     }
@@ -400,7 +420,8 @@ var DAL = (function ($, window) {
     }
     function consoleOut(str) {
         var element = document.getElementById('consoleOut');
-        element.innerHTML += str + '<br />';
+        if (element)
+            element.innerHTML += str + '<br />';
     }
     function trace(str) {
         if (P.debugMode)

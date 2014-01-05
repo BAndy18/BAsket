@@ -1,4 +1,5 @@
 BAsket.RoadMapList = function (params) {
+  P.getGeo();
 	var viewModel = {
 		dataSource: DAL.RoadMap(),
     }

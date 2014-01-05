@@ -74,7 +74,9 @@ var RU_RU = (function (window) {
     	Search: 'Поиск',
     	Select : 'Выбор ...',
     	Confirm: 'Подтвердите',
+        Loading: 'Загружается ...',
     	NoDataText: "Нет данных",
+        CurrentLocation: 'Текущее положение',
     };
 
 	root.Navigation = {
@@ -83,7 +85,7 @@ var RU_RU = (function (window) {
 		RoadMap : "Дорожная Карта",
 		Clients : "Клиенты",
 		ReadNews : "Новости",
-		Preferences : "Параметры",
+		Preferences : "Настройка",
 		Info : "Инфо",
     };  
 
@@ -149,13 +151,21 @@ var RU_RU = (function (window) {
     	FldUrlPict : 'картинка:',
     };
 
-    root.getObj = function(obj){
-    	var objValue = eval('root.' + obj);
-    	if (objValue)
-    		return objValue;
-    	else {
-    		return obj;
-    	}
-    }    
+    root.Clients = {
+        Title : 'Клиент',
+    };
+
+    root.RoadMap = {
+        Title : 'Дорожная Карта'
+    };
+
+    // root.getObj = function(obj){
+    // 	var objValue = eval('root.' + obj);
+    // 	if (objValue)
+    // 		return objValue;
+    // 	else {
+    // 		return obj;
+    // 	}
+    // }    
     return root;
 })(window);

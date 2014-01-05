@@ -51,7 +51,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 5501,
+				"buffer_size": 5571,
 				"line_ending": "Windows"
 			}
 		},
@@ -59,33 +59,15 @@
 			"file": "js/index.js",
 			"settings":
 			{
-				"buffer_size": 10151,
+				"buffer_size": 11412,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "Searching 15 files for \"localStorage\"\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\Order.js:\n  177  	Order_clickProduct = function(){\n  178  	    BAsket.app.navigate('products/' +  P.curCategoryId);\n  179: //	    BAsket.app.navigationManager.saveState(window.localStorage);\n  180  	}\n  181  	\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\Preferences.js:\n   62  	Preferences_debugMode = function(arg){\n   63  		P.debugMode = debugMode();\n   64: 		window.localStorage.setItem(\"debugMode\", P.debugMode);\n   65  	}\n   66  \n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\Products.js:\n   66      Products_clickBack = function(arg) {\n   67          //BAsket.app.navigate('Order/' + P.curCategoryId);\n   68:         //BAsket.app.navigationManager.restoreState(window.localStorage);\n   69          var cur = 0;\n   70          for (var i = BAsket.app.navigationManager.currentStack.items.length - 1; i > 0; i--){\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\index.js:\n  118      root.loadPanelVisible = ko.observable(false);\n  119      function iniLocalStor(key, defval) {\n  120:         var vari = window.localStorage.getItem(key);\n  121          if (!vari){\n  122              vari = defval;\n  123:             window.localStorage.setItem(key, vari);\n  124          }\n  125          return vari;\n  ...\n  128          var lookup = $(id).data(\"dxLookup\");\n  129          var value = lookup.option(\"value\");      \n  130:         window.localStorage.setItem(key, value);\n  131          return value;\n  132      }\n  133      root.ChangeValue = function (key, value){\n  134:         window.localStorage.setItem(key, value);\n  135          return value;\n  136      }\n\n7 matches across 4 files\n\n\nSearching 15 files for \"itemCount\"\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\index.html:\n   94              <p class=\"tiletext\">\n   95                  <span data-bind=\"text: title\"></span>\n   96:                 <span class=\"fl-right\" data-bind=\"text: P.itemCount[id]\"></span>\n   97              </p>\n   98          </div>\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\DAL_loc.js:\n  133          else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });\n  134  \n  135:         P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', new Date().toLocaleDateString().substring(0,5));\n  136      };\n  137  \n  ...\n  319              //tx.executeSql(\"COMMIT TRANSACTION\", errorCB);\n  320              trace('Прочитано записей: ' + i);\n  321:             P.itemCount['Clients'] = P.ChangeValue('Clients', i);\n  322  \n  323          P.loadPanelVisible(false);            \n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\Order.js:\n  171  \n  172  		DAL.CountTable('BILM').done(function (result) {\n  173: 			P.itemCount['OrderList'] = result[0].cnt;	\n  174  		});\n  175  	};\n\nD:\\P\\BAsketPG\\PhoneJS\\public\\js\\index.js:\n  233          return 'tileicon dx-icon-' + icon.toLowerCase();\n  234      }\n  235:     root.itemCount = {\n  236          'OrderList' : iniLocalStor(\"OrderList\", '0'),\n  237          'RoadMap' : iniLocalStor(\"RoadMap\", ''),  //'2.01 (2)',\n\n5 matches across 4 files\n",
+			"file": "css/index.css",
 			"settings":
 			{
-				"buffer_size": 3012,
-				"line_ending": "Windows",
-				"name": "Find Results",
-				"scratch": true
-			}
-		},
-		{
-			"file": "views/Preferences.html",
-			"settings":
-			{
-				"buffer_size": 5757,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/Preferences.js",
-			"settings":
-			{
-				"buffer_size": 2980,
+				"buffer_size": 2203,
 				"line_ending": "Windows"
 			}
 		},
@@ -93,15 +75,39 @@
 			"file": "js/Resource_En.js",
 			"settings":
 			{
-				"buffer_size": 3634,
+				"buffer_size": 3788,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/Preferences.html",
+			"settings":
+			{
+				"buffer_size": 6355,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/Preferences.js",
+			"settings":
+			{
+				"buffer_size": 3264,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/DAL_loc.js",
+			"settings":
+			{
+				"buffer_size": 16983,
+				"line_ending": "Unix"
 			}
 		},
 		{
 			"file": "js/Clients.js",
 			"settings":
 			{
-				"buffer_size": 2704,
+				"buffer_size": 3206,
 				"line_ending": "Windows"
 			}
 		},
@@ -109,15 +115,15 @@
 			"file": "views/Clients.html",
 			"settings":
 			{
-				"buffer_size": 2092,
+				"buffer_size": 2469,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "js/Order.js",
+			"file": "js/RoadMap.js",
 			"settings":
 			{
-				"buffer_size": 7424,
+				"buffer_size": 1253,
 				"line_ending": "Windows"
 			}
 		},
@@ -125,56 +131,16 @@
 			"file": "views/Order.html",
 			"settings":
 			{
-				"buffer_size": 5826,
+				"buffer_size": 6194,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "js/Products.js",
+			"file": "js/Order.js",
 			"settings":
 			{
-				"buffer_size": 2925,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/Products.html",
-			"settings":
-			{
-				"buffer_size": 4190,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "js/DAL_loc.js",
-			"settings":
-			{
-				"buffer_size": 15373,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "js/DAL_web.js",
-			"settings":
-			{
-				"buffer_size": 4104,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "js/DAL_tst.js",
-			"settings":
-			{
-				"buffer_size": 1240668,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "js/ProductDetails.js",
-			"settings":
-			{
-				"buffer_size": 1391,
-				"line_ending": "Unix"
+				"buffer_size": 7945,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -205,27 +171,28 @@
 	},
 	"file_history":
 	[
+		"/D/P/BAsketPG/PhoneJS/public/views/ProductDetails.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/ProductDetails.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/Products.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/Products.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/Order.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/Order.js",
+		"/D/P/BAsketPG/PhoneJS/public/js/DAL_tst.js",
+		"/D/P/BAsketPG/PhoneJS/public/js/DAL_web.js",
+		"/D/P/BAsketPG/PhoneJS/public/js/Clients.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/Clients.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/Resource_En.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/Preferences.js",
 		"/D/P/BAsketPG/PhoneJS/public/css/index.css",
 		"/D/P/BAsketPG/PhoneJS/public/js/DAL.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/Preferences.html",
-		"/D/P/BAsketPG/PhoneJS/public/views/ProductDetails.html",
-		"/D/P/BAsketPG/PhoneJS/public/js/ProductDetails.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/DAL_tst.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/RoadMap.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/RoadMap.html",
-		"/D/P/BAsketPG/PhoneJS/public/views/Order.html",
-		"/D/P/BAsketPG/PhoneJS/public/js/Order.js",
-		"/D/P/BAsketPG/PhoneJS/public/views/Clients.html",
-		"/D/P/BAsketPG/PhoneJS/public/js/Clients.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/DAL_web.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/Products.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/DAL_loc.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/DataBoundApp.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/DataBoundApp.html",
 		"/D/P/BAsketPG/PhoneJS/public/js/NewBil.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/NewBil.html",
-		"/D/P/BAsketPG/PhoneJS/public/views/Products.html",
 		"/D/P/BAsketPG/PhoneJS/public/js/index.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/bilHeader.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/home.html",
@@ -280,6 +247,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"clickAction",
+			"CatFirst",
+			"BilMById",
+			"hash",
+			"tofix",
+			"debugMode",
+			"dal.nms",
+			"parseInt",
 			"itemCount",
 			"localStorage",
 			"192.168.1.146",
@@ -373,7 +348,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -382,15 +357,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5501,
+						"buffer_size": 5571,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5250,
-								5250
+								5280,
+								5280
 							]
 						],
 						"settings":
@@ -411,15 +386,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10151,
+						"buffer_size": 11412,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8474,
-								8474
+								8957,
+								8957
 							]
 						],
 						"settings":
@@ -429,202 +404,31 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4862.0,
+						"translation.y": 4184.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
+					"file": "css/index.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3012,
-						"regions":
-						{
-							"match":
-							{
-								"flags": 112,
-								"regions":
-								[
-									[
-										247,
-										259
-									],
-									[
-										429,
-										441
-									],
-									[
-										721,
-										733
-									],
-									[
-										1046,
-										1058
-									],
-									[
-										1160,
-										1172
-									],
-									[
-										1375,
-										1387
-									],
-									[
-										1526,
-										1538
-									],
-									[
-										1873,
-										1882
-									],
-									[
-										2137,
-										2146
-									],
-									[
-										2405,
-										2414
-									],
-									[
-										2639,
-										2648
-									],
-									[
-										2840,
-										2849
-									]
-								],
-								"scope": ""
-							}
-						},
-						"selection":
-						[
-							[
-								2669,
-								2669
-							]
-						],
-						"settings":
-						{
-							"detect_indentation": false,
-							"line_numbers": false,
-							"output_tag": 2,
-							"result_base_dir": "",
-							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
-							"result_line_regex": "^ +([0-9]+):",
-							"scroll_past_end": true,
-							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 858.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "views/Preferences.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5757,
+						"buffer_size": 2203,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5086,
-								5086
+								1367,
+								1376
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1193.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "js/Preferences.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2980,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1776,
-								1790
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1002.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "js/Resource_En.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3634,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2778,
-								2786
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1084.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "js/Clients.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2704,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								723,
-								723
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"syntax": "Packages/CSS/CSS.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
@@ -635,49 +439,76 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "views/Clients.html",
+					"buffer": 3,
+					"file": "js/Resource_En.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2092,
+						"buffer_size": 3788,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								558,
-								558
+								3563,
+								3563
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 132.0,
+						"translation.y": 2866.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "js/Order.js",
+					"buffer": 4,
+					"file": "views/Preferences.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7424,
+						"buffer_size": 6355,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5192,
-								5192
+								6238,
+								6334
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "js/Preferences.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3264,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								456,
+								465
 							]
 						],
 						"settings":
@@ -686,84 +517,142 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3379.0,
+						"translation.y": 22.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "js/DAL_loc.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16983,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4597,
+								4605
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1716.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "js/Clients.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3206,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1922,
+								1922
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 396.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "views/Clients.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2033,
+								2033
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 9,
-					"file": "views/Order.html",
+					"file": "js/RoadMap.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5826,
+						"buffer_size": 1253,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4475,
-								4475
+								695,
+								718
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1452.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 10,
-					"file": "js/Products.js",
+					"file": "views/Order.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2925,
+						"buffer_size": 6194,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1221,
-								1221
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 264.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "views/Products.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4190,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1818,
-								1818
+								296,
+								307
 							]
 						],
 						"settings":
@@ -773,123 +662,35 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 132.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "js/DAL_loc.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15373,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5105,
-								5689
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 13,
-					"file": "js/DAL_web.js",
+					"buffer": 11,
+					"file": "js/Order.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4104,
+						"buffer_size": 7945,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1869,
-								1881
+								4368,
+								4368
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 14,
-					"file": "js/DAL_tst.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1240668,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								928707,
-								928707
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 15,
-					"file": "js/ProductDetails.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1391,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								572,
-								572
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 202.0,
+						"translation.y": 3027.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
