@@ -1,16 +1,34 @@
 <div data-options="dxView : { name: 'RoadMapList', title: _.Navigation.RoadMap } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
-		<div class="but20 fl-right" data-bind="dxButton:{text:'Показать на карте', clickAction: clickShowRoadMap}"></div>
 
-		<div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{id}'">
+        <div class="dx-fieldset">
+            <div class="dx-field" >
+                <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, changeAction: RoadMap_ChangeDate }"/>
+
+                <div class="but20" data-bind="dxButton:{text:_.RoadMap.AddToTheMap, clickAction: RoadMap_AddToTheMap}"/>
+                <div class="but20" data-bind="dxButton:{text:_.RoadMap.ShowOnTheMap, clickAction: RoadMap_ClickShow}"/>                    
+            </div>
+        </div>
+
+		<div data-bind="dxList: { 
+            dataSource: dataSource, 
+            itemHoldAction: RoadMap_processItemHold, 
+            itemHoldTimeout: holdTimeout,
+            noDataText: _.Common.NoDataText,
+            pullRefreshEnabled: true 
+            }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{IdDost}'">
                 <div class="dx-table">
-                    <div class="cell10" data-bind="text: $data.DateDoc"></div>
-                    <div class="cell50" data-bind="text: $data.Name"></div>
-                    <div class="cell10" data-bind="text: $data.sNote"></div>
+                    <div class="cell10" data-bind="text: $data.Npp"></div>
+                    <div class="cell10" data-bind="text: $data.IdBil"></div>
+                    <div class="cell30" data-bind="text: $data.cName"></div>
+                    <div class="cell30" data-bind="text: $data.tName"></div>
+                    <div class="cell20" data-bind="text: $data.AdresDost"></div>
                 </div>
             </div>
         </div>
+
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible,cancelText: _.Common.Cancel }"/>        
     </div>
 </div>
 
@@ -21,8 +39,8 @@
           {  align: 'center', text: _.RoadMap.Title},
         ]}"></div>
 
-        <!--  <div class="map"> -->
-            <div data-bind="dxMap: options"></div>
-        <!-- </div> -->
+        <div data-bind="dxMap: options"></div>
+        
+        <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
     </div>
 </div>

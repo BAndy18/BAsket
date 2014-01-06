@@ -11,6 +11,8 @@ BAsket.Order = function (params) {
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
 	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
+	if (!P.currentNms)
+		DAL.ReadNms();
 
 	var viewModel = {
 		clients: DAL.Clients(),
@@ -53,7 +55,6 @@ BAsket.Order = function (params) {
 			if (dateParts.length == 1)
 				dateParts = result[0].DateDoc.split("-");
 			console.log('Order id=' + params.Id + ' date=' + dateParts);
-			console.log('row=' + result[0]);
 			if (dateParts[0].length > 2)
 				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
 			else
@@ -132,8 +133,9 @@ BAsket.Order = function (params) {
 	
 	Order_clickBack = function(arg){
 		P.fromProducts = false;
-		if (params.Id)
+		if (params.Id){
 			BAsket.app.navigate('OrderList', { root: true });
+		}
 		else
 			//BAsket.app.navigate('home');
 			BAsket.app.navigate('home', { root: true });
@@ -161,8 +163,9 @@ BAsket.Order = function (params) {
 		//var hash = location.hash.split('/');
 		if (params.Id)
 			prms['id'] = params.Id;
-		prms['date'] = valueDate.getDate() + '.' + (valueDate.getMonth()+1) + '.' + valueDate.getFullYear();
-		console.log('Order save date=' + dataVal());
+		//prms['date'] = valueDate.getDate() + '.' + (valueDate.getMonth()+1) + '.' + valueDate.getFullYear();
+		prms['date'] = U.DateFormat(valueDate);
+		//console.log('Order save date=' + dataVal());
 		console.log('Order save datetoLocaleString=' + prms['date']);
 		prms['idCli'] = valueCli;
 		prms['idTp'] = (valueTP ? valueTP:0);
@@ -174,7 +177,7 @@ BAsket.Order = function (params) {
 				prms['sOther'] += (i+1) + ':' + setNms.option().value + ';';
 			}
 		}
-		prms['Note'] = $("#txtNote").data("dxTextArea").option("value");
+		prms['sNote'] = $("#txtNote").data("dxTextArea").option("value");
 		var sWars = '';
 		for (var i in P.arrayBAsket) {
         	sWars += P.arrayBAsket[i].Id + ':' + P.arrayBAsket[i].Quant + ';';

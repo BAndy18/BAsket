@@ -55,20 +55,21 @@
             </div>
         </div>
  -->
-<!-- 
+
         <div class="tileView" data-bind="dxTileView: {
-                dataSource: dataSourceProd2, 
+                dataSource: dataSourceProd, 
                 itemMargin: 3, baseItemHeight: 120, baseItemWidth: 160, 
-                listHeight: '90%', height: '80%', 
+                listHeight: '80%', 
                 showScrollbar: true,
                 noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#product-details/{Id}'">
                 <img class="tile-image" data-bind="attr: { src: UrlPict }"/>
                 <span class="tile-text" data-bind="text: Name"></span>
+                <span class="tile-text-top" data-bind="text: Quant"></span>
             </div>
         </div>
- -->
+
         <div class="dx-fieldset" data-bind="visible: !bChoice()">
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: 'выбрано: ' + P.arrayBAsket.length"/>

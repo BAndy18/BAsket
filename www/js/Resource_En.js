@@ -153,10 +153,17 @@ var RU_RU = (function (window) {
 
     root.Clients = {
         Title : 'Клиент',
+        RoutDetail: "Маршрут подробно",
     };
 
     root.RoadMap = {
-        Title : 'Дорожная Карта'
+        Title : 'Дорожная Карта',
+        AddToTheMap: 'Добавить в карту',
+        ShowOnTheMap: 'Показать на карте',
+        OpenBil: 'Открыть Заказ',
+        ActionDelete : 'Удалить клиента',
+        MoveDown: 'Переместить вниз',
+        MoveUp: 'Переместить вверх',
     };
 
     // root.getObj = function(obj){

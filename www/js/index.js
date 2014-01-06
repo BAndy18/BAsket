@@ -11,7 +11,7 @@ $(function() {
         navigationType: P.layout,
         navigation: P.navigation,
         navigateToRootViewMode: true,
-        disableViewCache: true
+    //    disableViewCache: true
     });
     //Globalize.culture = Globalize.culture["ru-RU"];
     //$.preferCulture("ru-RU");
@@ -100,6 +100,7 @@ var P = (function ($, window) {
     root.fromProducts = false;
     root.currentNms = []
     root.arrayBAsket = [];
+    root.arrayBAsketL = [];
     root.copyright = '';
     root.debugMode = false;
     root.geoDirectionsUrl = 'http://maps.googleapis.com/maps/api/directions/json';
@@ -158,53 +159,6 @@ var P = (function ($, window) {
                 entry.title = nav;
         })
     }
-
-    root.Init = function(){
-        root.modeProdView = iniLocalStor("modeProdView", "true");
-        root.debugMode = iniLocalStor("debugMode", "true");
-
-        root.mapProvider = iniLocalStor("MapProvider", "google");
-        root.languageUI = '-';
-        root.languageUI = iniLocalStor("LanguageUI", '-');
-        root.ChangeLanguageUI();
-
-        root.platformDevice = root.deviceClass = 'android';
-        root.platformDevice = root.deviceClass = iniLocalStor("Platform", 'android');
-        if (root.deviceClass == '-')
-            root.deviceClass = root.deviceInfo.platform;
-
-        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass + '; ver. 2.0)';
-
-        root.ReadFirstCategory();
-        root.ReadFirstNms();
-    };
-    root.ReadFirstCategory = function () {
-        DAL.CatFirst().done(function (result) {
-            if (result.length > 0) {
-                root.curCategoryId = result[0].Id;
-                root.curCategoryName = result[0].Name;
-            }
-            else {
-                DAL.CatFirst().done(function (result) {
-                    if (result.length > 0) {
-                        root.curCategoryId = result[0].Id;
-                        root.curCategoryName = result[0].Name;
-                    }
-                })
-            }
-        })
-    };
-    root.ReadFirstNms = function () {
-        DAL.NMS(0).done(function (result) {
-            root.currentNms.push(result);
-            for (var i=0; i<result.length; i++) {
-                DAL.NMS(result[i].Id).done(function (result) {
-                    root.currentNms.push(result);
-                    //root.currentNms.push({id:result[0].id, Name:result[0].Name});
-                })
-            }
-        })            
-    };
 
     root.geoCurrent = ko.observable("");
     root.getGeo = function(){
@@ -272,29 +226,30 @@ var P = (function ($, window) {
         'ReadNews' : iniLocalStor("ReadNews", ''), //'13.12',
     }
 
-    root.LocalScript = [
-        'DROP TABLE IF EXISTS CAT',
-        'DROP TABLE IF EXISTS WAR',
-        'DROP TABLE IF EXISTS CLI',
-        'DROP TABLE IF EXISTS BILM',
-        'DROP TABLE IF EXISTS RMAP',
-        'DROP TABLE IF EXISTS NMS',
-        'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
-        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
-        'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
-        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
-        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
-    ];
-        // "INSERT INTO RMAP (DateDoc, IdCli, IdTp, sNote) VALUES('12.11.2013', '10','','Note')",
-        // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
-        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
-        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
+    root.Init = function(){
+        DAL.TableCount();
+        root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
+        root.debugMode = iniLocalStor("debugMode", "true") == "true";
+
+        root.mapProvider = iniLocalStor("MapProvider", "google");
+        root.languageUI = '-';
+        root.languageUI = iniLocalStor("LanguageUI", '-');
+        root.ChangeLanguageUI();
+
+        root.platformDevice = root.deviceClass = 'android';
+        root.platformDevice = root.deviceClass = iniLocalStor("Platform", 'android');
+        if (root.deviceClass == '-')
+            root.deviceClass = root.deviceInfo.platform;
+
+        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass + '; ver. 2.0)';
+
+        DAL.ReadFirstCategory();
+        DAL.ReadNms();
+
+        var view = $("#idMainTileView").data("dxTileView");
+        if (view)
+            view.repaint();
+    };
+    
     return root;
 })(jQuery, window);

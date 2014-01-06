@@ -48,6 +48,7 @@
     <link rel="stylesheet" type="text/css" href="css/index.css" />
 
     <script type="text/javascript" src="js/Resource_En.js"></script>    
+    <script type="text/javascript" src="js/Utils.js"></script>    
     <script type="text/javascript" src="js/index.js"></script>    
     <!--script type="text/javascript" src="js/DAL.js"></script-->
     <script type="text/javascript" src="js/DAL_tst.js"></script>    
@@ -88,7 +89,7 @@
     <div class="center" data-options="dxContent : { targetPlaceholder: 'content'}">
       <div><b class="basket-header">BAsket</b></div>
 
-      <div class="tileView" data-bind="dxTileView: {
+      <div id='idMainTileView' class="tileView" data-bind="dxTileView: {
           dataSource: P.navigation.splice(1), 
           itemMargin: 5, baseItemHeight: 25, baseItemWidth: 25, height: '400', 
           itemClickAction: P.itemClick

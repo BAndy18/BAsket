@@ -8,32 +8,29 @@ var DAL = (function ($, window) {
     var dbSize = 50000000;
 
 
-    root.getMapDirections = function (params){
-        //var deferred = new $.Deferred();
-        return $.get(P.geoDirectionsUrl, params);
-
-        //return deferred;
-    }
-
     root.Categories = function (params){
         if (P.dataSouceType == "DAL_web")
             return DAL_web.Categories(params);
         
         return execDataSource({query: "SELECT * FROM CAT"});
     };
-    root.Products = function (params){
+    root.Products = function (params, nopaging){
         if (P.dataSouceType == "DAL_web")
             return DAL_web.Products(params);
-        
+        var paging = !nopaging;
         return execDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
-            paging: true,
+            paging: paging,
             searchString: params.search
             }, function(data){
+                var bFound = false;
                 for (var i in P.arrayBAsket) {
                     if (P.arrayBAsket[i].Id == data.Id) {
                         data.Quant = P.arrayBAsket[i].Quant;
+                        bFound = true;
                     }
                 }
+                if (!bFound)
+                    data.Quant = '';
                 return data;    
             });
     }
@@ -81,12 +78,31 @@ var DAL = (function ($, window) {
         return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
     }
     root.ClientById = function (params){
-        return execQuery("SELECT * FROM CLI Where Id='" + params + "'");
+        return execQuery("SELECT c.*, par.Name as ParName, IFNULL(par.Name || ' - ' || c.Name, c.Name) as FullName " +
+            "FROM CLI c Left Join CLI par On c.IdPar=par.Id Where c.Id='" + params + "'");
     }
 
     root.RoadMap = function (params){
-        return execDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id"});
-    };    
+        var date = U.DateFormat(params);   //yyyy-mm-dd
+        //.getFullYear() + (params.getMonth()+1) + params.getDate();
+        return execDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName, " +
+            "IFNULL(t.Adres, c.Adres) as AdresDost, IFNULL(t.Id, c.Id) as IdDost  " +
+            "FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id " +
+            "Where DateDoc='" + date + "' Order by Npp"});
+    }; 
+    root.SwapRmap = function (i1,n1, i2,n2, callback){
+        execQuery('UPDATE RMAP set Npp=' + n1 + ' Where Id=' + i1).done(function(){
+            execQuery('UPDATE RMAP set Npp=' + n2 + ' Where Id=' + i2).done(function(){
+                callback;
+            })
+        });        
+    };
+    root.DeleteRMap = function (params){
+        return execQuery("DELETE FROM RMAP Where Id='" + params + "'");
+    };
+    root.SaveRMBil = function (id, idb){
+        return execQuery("UPDATE RMAP set IdBil=" + idb + " Where Id=" + id);
+    }
 
     root.BilM = function (params){
         return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
@@ -95,20 +111,27 @@ var DAL = (function ($, window) {
         return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
     };
 
+    root.SelectLastId = function(params){                
+        return execQuery("SELECT last_insert_rowid() as Id");
+//        return execQuery("SELECT Id FROM " + params + " WHERE rowid=last_insert_rowid()");
+    }
 
     root.DeleteBil = function (params){
         return execQuery("DELETE FROM BILM Where Id='" + params + "'");
     };
     root.SaveBil = function(params){
         var query = "";
+        if (!params['sOther']) params['sOther'] = '';
+        if (!params['sNote']) params['sNote'] = '';
+        if (!params['sWars']) params['sWars'] = '';
         if (params['id']) {
             query = "UPDATE BILM set DateDoc='"+ params['date'] +"', IdCli='"+ params['idCli'] +"', IdTp='"+ params['idTp'] +
-                "', sNote='"+ params['Note'] + "', sOther='"+ params['sOther'] + "', sWars='"+ params['sWars'] +
-                "' WHERE Id='" + params['id'] + "'"
+                "', sNote='"+ params['sNote'] + "', sOther='"+ params['sOther'] + "', sWars='"+ params['sWars'] +
+                "' WHERE Id='" + params['id'] + "'";            
         } else {
             query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('"+ params['date'] +
-                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['Note'] + "', '"+ params['sOther'] + 
-                "', '" + params['sWars'] + "')"
+                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['sNote'] + "', '"+ params['sOther'] + 
+                "', '" + params['sWars'] + "')";
         };
         return execQuery(query);
     }
@@ -117,12 +140,89 @@ var DAL = (function ($, window) {
         return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
     };
 
-    root.CatFirst = function (params){
-        return execQuery('SELECT * FROM CAT LIMIT 1');
-    }
-
     root.CountTable = function (params){
         return execQuery("SELECT count(Id) as cnt FROM " + params);
+    };
+    root.TableCount = function (params){
+        DAL.CountTable('BILM').done(function (result) {
+            P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
+        });
+        DAL.CountTable('CLI').done(function (result) {
+            P.itemCount['Clients'] = P.ChangeValue('Clients', result[0].cnt);
+        });
+
+        DAL.CountTable('RMAP').done(function (result) {
+            var date = new Date();
+            var datestr = date.getDate() + '.' + (date.getMonth()+1);
+            P.itemCount['RoadMap'] = P.ChangeValue('RoadMap', datestr  + ' (' + result[0].cnt + ')');
+        });
+    }
+
+    root.ReadNms = function () {
+        root.NMS(0).done(function (result) {
+            P.currentNms.push(result);
+            for (var i=0; i<result.length; i++) {
+                root.NMS(result[i].Id).done(function (result) {
+                    P.currentNms.push(result);
+                    //root.currentNms.push({id:result[0].id, Name:result[0].Name});
+                })
+            }
+        })            
+    };
+
+    root.ReadFirstCategory = function () {
+        execQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
+            if (result.length > 0) {
+                P.curCategoryId = result[0].Id;
+                P.curCategoryName = result[0].Name;
+            }
+            else {
+                DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
+                    if (dialogResult){
+                        root.ReadNews();
+                    }
+                });
+            }
+        })
+    };
+
+
+    root.ReadNews = function(){
+        P.loadPanelVisible(true);
+
+        root.RecreateLocalDB();
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+
+        var source1 = DAL_web.Categories();
+        if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
+        else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
+
+        var source2 = DAL_web.Products({Id:'all'});
+        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
+        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+
+        var source3 = DAL_web.Clients({IdAll:'all'});
+        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
+        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+
+        var date = new Date();
+        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth()+1);
+        P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
+        P.itemCount['RoadMap'] = P.ChangeValue('RoadMap', 0);
+
+        P.Init();
+    };
+
+    root.RecreateLocalDB = function(){
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+        db.transaction(function(tx){
+            trace('Local DB SCRIPT');
+            for (i = 0; i < LocalScript.length; i++){
+                tx.executeSql(LocalScript[i], [], function(tx, results) {}, 
+                    function(err, err2){errorCB("*RecreateLocalDB*", err, err2);}
+                );
+            }
+        })
     };
 
     root.ProductsByWars = function (params){
@@ -145,30 +245,6 @@ var DAL = (function ($, window) {
                 }
                 return data;    
             });
-    };
-
-
-    root.ReadNews = function(){
-        P.loadPanelVisible(true);
-
-        RecreateLocalDB();
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-
-        var source1 = DAL_web.Categories();
-        if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
-        else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
-
-        var source2 = DAL_web.Products({Id:'all'});
-        if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
-        else                         source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
-
-        var source3 = DAL_web.Clients({IdAll:'all'});
-        if (Object.prototype.toString.call(source3) == '[object Array]')     writeToLocalData(db, source3, 'CLI');
-        else                         source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
-
-        var date = new Date()
-        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth()+1);
-        P.Init();
     };
 
 
@@ -221,7 +297,7 @@ var DAL = (function ($, window) {
         return dataSource;
     }
 
-    function execQuery(query, mapCallback, tryExist){
+    function execQuery(query, mapCallback){
         var skip = 0;
         var PAGE_SIZE = 30;
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -229,6 +305,11 @@ var DAL = (function ($, window) {
         db.transaction(function(tx) {
             dbLastQ = query;
             tx.executeSql(dbLastQ, [], function(tx, results) {
+                if (dbLastQ.toUpperCase().substring(0,7) == 'INSERT '){
+                //if (results.insertId) {
+                    deferred.resolve(results);
+                    return;
+                }
                 var res = [];
                 for (var i=0; i<results.rows.length; i++) {
                     var resrow = results.rows.item(i);
@@ -238,10 +319,10 @@ var DAL = (function ($, window) {
                 }
                 deferred.resolve(res);
             }, function(err, err2){
-                if (tryExist && err2.message && err2.message.indexOf('1 no such table:') > 0){
-                    root.RecreateLocalDB();
-                }
-                else
+                // if (tryExist && err2.message && err2.message.indexOf('1 no such table:') > 0){
+                //     root.RecreateLocalDB();
+                // }
+                // else
                     errorCB("*execQuery sql*", err, err2);
             }
             );
@@ -260,24 +341,6 @@ var DAL = (function ($, window) {
         return resrow;
     }
 
-
-    function RecreateLocalDB(){
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-
-        db.transaction(function(tx){
-            //P.loadPanelVisible(true);
-            trace('Local DB SCRIPT');
-            for (i = 0; i < P.LocalScript.length; i++){
-                // dbLastQ = P.LocalScript[i];
-                // tx.executeSql(dbLastQ);
-                //execQuery(P.LocalScript[i], null, true);
-                tx.executeSql(P.LocalScript[i], [], function(tx, results) {}, 
-                    function(err, err2){errorCB("*RecreateLocalDB*", err, err2);}
-                );
-            }
-            //P.loadPanelVisible(false);
-        })
-    };
 
 
     var arrWAR;
@@ -426,9 +489,37 @@ var DAL = (function ($, window) {
     function trace(str) {
         if (P.debugMode)
             consoleOut(str);
-        else
-            console.log(str);
+        
+        console.log(str);
     }
+
+    var LocalScript = [
+        'DROP TABLE IF EXISTS CAT',
+        'DROP TABLE IF EXISTS WAR',
+        'DROP TABLE IF EXISTS CLI',
+        'DROP TABLE IF EXISTS BILM',
+        'DROP TABLE IF EXISTS RMAP',
+        'DROP TABLE IF EXISTS NMS',
+        'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
+        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
+        'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
+        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
+        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
+
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 1, '4422','4423','Note')",
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 2, '4422','6473','Note2')",
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 3, '4191','','Note3')",
+];
+        // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
+        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
+        // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
 
     return root;
 })(jQuery, window);

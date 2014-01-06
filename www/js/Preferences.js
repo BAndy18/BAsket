@@ -33,7 +33,11 @@ BAsket.Preferences = function (params) {
 		popupVisible(false);
 	};
 	clickRecreateLocal = function () {
-		DAL.RecreateLocalDB();
+		 DevExpress.ui.dialog.confirm("Вы уверены?", "Пересоздание локальной базы данных").done(function (dialogResult) {
+            if (dialogResult){
+				DAL.RecreateLocalDB();
+            }
+        });
 	};
 
 	ko.computed(function() {
@@ -44,6 +48,7 @@ BAsket.Preferences = function (params) {
 	});
 
 	var viewModel = {
+	//	modeProdView: modeProdView,
 	//	dataSource: dataSource,
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {

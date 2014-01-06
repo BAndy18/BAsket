@@ -16,7 +16,7 @@ BAsket.Clients = function (params) {
     }).extend({
         throttle: 500
     }).subscribe(function () {
-        viewModel.dataSource.pageIndex(0);
+        //viewModel.dataSource.pageIndex(0);
         viewModel.dataSource.load();
     });
 
@@ -29,125 +29,28 @@ BAsket.Client = function (params) {
     var cliName = ko.observable('cliName');
     var location = ko.observable(P.geoCurrent());
     var visibleMenu = ko.observable(false);
+    var popupVisible = ko.observable(false);
     var geoDirections = ko.observable('');
 
     var viewModel = {
-        mapReadyAction: function (s) {
-            P.loadPanelVisible(false);
-            var map = s.component;
-            map.addMarker({tooltip: _.Common.CurrentLocation, location: P.geoCurrent()});
-
-            DAL.ClientById(params.Id).done(function(result){
-                cliName(result[0].Name + ' (' + result[0].Adres + ')');
-  //              location(P.geoCurrent());
-    //            if (location()){
-//                    var map = $("#idClientMap").data("dxMap");
-                    //map.addMarker({tooltip: 'Current Location2', location: '56.843214,53.225489'});
-         
-                    var locCli = result[0].geoLoc;
-                    locCli = result[0].Adres;
-                    if (locCli) {
-                        map.addMarker({tooltip: result[0].Name + ', ' + result[0].Adres, location: locCli});
-                    } else {
-                        P.geoCoder(result[0].Adres).done(function(geores){
-                            map.addMarker({tooltip: result[0].Name + ', ' + result[0].Adres, location: geores});
-                        });
-                    
-                        var p1 = map._options.markers[0].location.split(',');
-                        var p2 = map._options.markers[1].location.split(',');
-                        if (p1 && p2 && p1.length == 2 && p2.length == 2) {
-                            var res1 = P.getDistance(p1,p2);
-                            var res2 = P.geoBearing(p1,p2);
-                            cliName(cliName() + ' dist=' + res1 + ' dir=' + res2);
-                        }
-                    }
-
-                    var routeOptions = {weight: 5,
-                        color: "blue",
-                        locations: [ map._options.markers[0].location, map._options.markers[1].location]};
-                    map.addRoute(routeOptions);
-
-                    var directionsDisplay = new google.maps.DirectionsRenderer();
-                    //directionsDisplay.setMap(map._map);
-
-                    var directionsService = new google.maps.DirectionsService();
-                    var request = {
-                        origin: map._options.markers[0].location,
-                        destination: map._options.markers[1].location,
-                        travelMode: google.maps.TravelMode.DRIVING
-                    };
-                    directionsService.route(request, function(result, status) {
-                        if (status == google.maps.DirectionsStatus.OK) {
-                            geoDirections(result.routes[0]);
-                            //directionsDisplay.setDirections(result);
-                        }
-                      });
-                    // var geo = P.geoCoder(locCli).done(function(res){
-                    //     geoDirections(res);
-                    // });
-
-                    ////    http://maps.googleapis.com/maps/api/directions/json?origin=56.853213999999994,53.215489&destination=%D0%98%D0%B6%D0%B5%D0%B2%D1%81%D0%BA%20%D0%B3.,%20%D0%9C%D0%BE%D0%BB%D0%BE%D0%B4%D0%B5%D0%B6%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB.,%2069&sensor=false
-
-                    // $.ajax({
-                    //         url: P.geoDirectionsUrl,
-                    //         data: { sensor: false, 
-                    //             origin:  map._options.markers[0].location, 
-                    //             destination: map._options.markers[1].location},
-                    //         type: 'GET',
-                    //         dataType: 'json',
-                    //         crossDomain: true, 
-                    //         headers: { 
-                    //             Accept : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",                                
-                                
-                    //         },
-                    //         success: function(data) {
-                    //             geoDirections(data);
-                    //         }
-                    // })
-
-                    // $.get(P.geoDirectionsUrl, { sensor: false, callback: '_googleScriptReady',
-                    //     origin:  map._options.markers[0].location, 
-                    //     destination: map._options.markers[1].location})
-                    // .done(function(data){
-                    //     geoDirections(data);
-                    // });
-
-                    // map.gmap('microdata', 'http://data-vocabulary.org/Event', function(result, item, index) {
-                    //     var lat = result.location[0].geo[0].latitude;
-                    //     var lng = result.location[0].geo[0].longitude;
-                    //     var latlng = new google.maps.LatLng(lat, lng);
-                    // })
-                  //  var m = map._options.markers;
-        //            map.addMarker({label: "A1", tooltip: result[0].Name + ', ' + result[0].Adres, location: [56.853213999999994,53.206272]});
-               // }
-                //thisCli.options.markers[0] = { label: "A", tooltip: "sd asd asd ", location: P.geoCurrent() };
-            })
-        },
-
         visibleMenu: visibleMenu,
-        menuItems: [_.Common.Save, "Маршрут подробно"],
-        popupVisible: ko.observable(false),
-
+        popupVisible: popupVisible,
+        menuItems: [_.Common.Save, _.Clients.RoutDetail],
         cliName: cliName,
-        //dataSource: DAL.Clients(),
-        // tabs: [
-        //     { text: "Bing map" },
-        //     { text: "Google map" },
-        // ],
-        //selectedTab: ko.observable(0),
+
         options: //mapOptions
         {
             provider: P.mapProvider,
-            mapType: "roadmap",
-            location: location,
-            //P.geoCurrent(),
-            //"56.853213999999994,53.215489",
-            //"56.844278,53.206272",
-            controls: true,
-            width: "100%",
-            height: "100%",
+            mapType: 'roadmap',            
+            width: '100%', height: '100%',
             zoom: 15,
-            //readyAction: mapReadyAction,
+            readyAction: function(){ Client_MapReadyAction() }
+
+            // location: location,
+            // //P.geoCurrent(),
+            // //"56.853213999999994,53.215489",
+            // //"56.844278,53.206272",
+            // controls: true,
 
             // markers: [
             //   { label: "A", tooltip: "sd asd asd ", location: P.geoCurrent() },
@@ -197,11 +100,102 @@ BAsket.Client = function (params) {
         BAsket.notify('Client_menuSaveGeo');
         //DAL.ExecQuery("UPDATE CLI set geoLoc='" + P.geoCurrent() + "' WHERE id='" + params.id + "'");
     };    
-    Client_clickCancel = function () {
-        this.popupVisible(false);
+    Client_clickCancel = function (arg) {
+        popupVisible(false);
     };
 
-    //thisCli = this;
+    Client_MapReadyAction = function (s) {
+        P.loadPanelVisible(false);
+        //var map = s.component;
+        var map = $("#idClientMap").data("dxMap");
+        map.addMarker({tooltip: _.Common.CurrentLocation, location: P.geoCurrent()});
+
+        DAL.ClientById(params.Id).done(function(result){
+            cliName(result[0].FullName + ' (' + result[0].Adres + ')');
+        //              location(P.geoCurrent());
+        //            if (location()){
+                //map.addMarker({tooltip: 'Current Location2', location: '56.843214,53.225489'});
+
+                var locCli = result[0].geoLoc;
+                locCli = result[0].Adres;
+                if (locCli) {
+                    map.addMarker({tooltip: result[0].Name + ', ' + result[0].Adres, location: locCli});
+                } else {
+                    P.geoCoder(result[0].Adres).done(function(geores){
+                        map.addMarker({tooltip: result[0].Name + ', ' + result[0].Adres, location: geores});
+                    });
+                
+                    var p1 = map._options.markers[0].location.split(',');
+                    var p2 = map._options.markers[1].location.split(',');
+                    if (p1 && p2 && p1.length == 2 && p2.length == 2) {
+                        var res1 = P.getDistance(p1,p2);
+                        var res2 = P.geoBearing(p1,p2);
+                        cliName(cliName() + ' dist=' + res1 + ' dir=' + res2);
+                    }
+                }
+
+                var routeOptions = {weight: 5,
+                    color: "blue",
+                    locations: [ map._options.markers[0].location, map._options.markers[1].location]};
+                map.addRoute(routeOptions);
+
+                var directionsDisplay = new google.maps.DirectionsRenderer();
+                //directionsDisplay.setMap(map._map);
+
+                var directionsService = new google.maps.DirectionsService();
+                var request = {
+                    origin: map._options.markers[0].location,
+                    destination: map._options.markers[1].location,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+                directionsService.route(request, function(result, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        geoDirections(result.routes[0]);
+                        //directionsDisplay.setDirections(result);
+                    }
+                  });
+                // var geo = P.geoCoder(locCli).done(function(res){
+                //     geoDirections(res);
+                // });
+
+                ////    http://maps.googleapis.com/maps/api/directions/json?origin=56.853213999999994,53.215489&destination=%D0%98%D0%B6%D0%B5%D0%B2%D1%81%D0%BA%20%D0%B3.,%20%D0%9C%D0%BE%D0%BB%D0%BE%D0%B4%D0%B5%D0%B6%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB.,%2069&sensor=false
+
+                // $.ajax({
+                //         url: P.geoDirectionsUrl,
+                //         data: { sensor: false, 
+                //             origin:  map._options.markers[0].location, 
+                //             destination: map._options.markers[1].location},
+                //         type: 'GET',
+                //         dataType: 'json',
+                //         crossDomain: true, 
+                //         headers: { 
+                //             Accept : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",                                
+                            
+                //         },
+                //         success: function(data) {
+                //             geoDirections(data);
+                //         }
+                // })
+
+                // $.get(P.geoDirectionsUrl, { sensor: false, callback: '_googleScriptReady',
+                //     origin:  map._options.markers[0].location, 
+                //     destination: map._options.markers[1].location})
+                // .done(function(data){
+                //     geoDirections(data);
+                // });
+
+                // map.gmap('microdata', 'http://data-vocabulary.org/Event', function(result, item, index) {
+                //     var lat = result.location[0].geo[0].latitude;
+                //     var lng = result.location[0].geo[0].longitude;
+                //     var latlng = new google.maps.LatLng(lat, lng);
+                // })
+              //  var m = map._options.markers;
+        //            map.addMarker({label: "A1", tooltip: result[0].Name + ', ' + result[0].Adres, location: [56.853213999999994,53.206272]});
+           // }
+            //thisCli.options.markers[0] = { label: "A", tooltip: "sd asd asd ", location: P.geoCurrent() };
+        })
+    };
+
 
     return viewModel;
 };

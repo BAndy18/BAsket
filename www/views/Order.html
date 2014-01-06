@@ -39,14 +39,12 @@
         <div class="dx-fieldset">
             <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
-                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" ></div>
- 
-             </div>
+                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
+            </div>
             <div class="dx-field" data-bind="visible: true">
                 <div class="dx-field-label"></div>
                 <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
-
-
+            </div>
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Note" />
                 <div id="txtNote" class="dx-field-value" data-bind="dxTextArea: { placeholder: _.Order.NotePrompt, value: noteVal }"/>
