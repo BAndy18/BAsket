@@ -3,11 +3,19 @@
 
         <div class="dx-fieldset">
             <div class="dx-field" >
-                <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, changeAction: RoadMap_ChangeDate }"/>
+                <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, valueUpdateAction: RoadMap_ChangeDate }"/>
 
                 <div class="but20" data-bind="dxButton:{text:_.RoadMap.AddToTheMap, clickAction: RoadMap_AddToTheMap}"/>
                 <div class="but20" data-bind="dxButton:{text:_.RoadMap.ShowOnTheMap, clickAction: RoadMap_ClickShow}"/>                    
             </div>
+        </div>
+
+        <div class="dx-table" data-bind="visible: true">
+            <div class="cell5 dx-button tbhead" data-bind="text: _.RoadMap.ColNpp"></div>
+            <div class="cell5 dx-button tbhead" data-bind="text: _.RoadMap.ColNBil"></div>
+            <div class="cell30 dx-button tbhead" data-bind="text: _.RoadMap.ColCliName"></div>
+            <div class="cell30 dx-button tbhead" data-bind="text: _.RoadMap.ColTpName"></div>
+            <div class="cell30 dx-button tbhead" data-bind="text: _.RoadMap.ColAdres"></div>
         </div>
 
 		<div data-bind="dxList: { 
@@ -19,16 +27,56 @@
             }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{IdDost}'">
                 <div class="dx-table">
-                    <div class="cell10" data-bind="text: $data.Npp"></div>
-                    <div class="cell10" data-bind="text: $data.IdBil"></div>
+                    <div class="cell5" data-bind="text: $data.Npp"></div>
+                    <div class="cell5" data-bind="text: $data.IdBil"></div>
                     <div class="cell30" data-bind="text: $data.cName"></div>
                     <div class="cell30" data-bind="text: $data.tName"></div>
-                    <div class="cell20" data-bind="text: $data.AdresDost"></div>
+                    <div class="cell30" data-bind="text: $data.AdresDost"></div>
                 </div>
             </div>
         </div>
 
-        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible,cancelText: _.Common.Cancel }"/>        
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible,cancelText: _.Common.Cancel }"/>  
+
+        <div data-bind="dxPopup:{visible:popupVisible}">
+            <div data-options="dxTemplate:{name: 'title'}">
+               <!--  <p><b data-bind="text: 'popupTitle'"></b></p> -->
+               <div data-bind="dxToolbar: { items: [
+                  {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: RoadMap_clickCancel}},
+                  {  align: 'center', text: _.RoadMap.AddToTheMap},          
+                  {  align: 'right', widget: 'button', options: { icon: 'save', text: _.Common.Save, clickAction: RoadMap_ClientSave}},
+                ]}"></div>
+            </div>
+
+            <div data-options="dxTemplate:{name: 'content'}">
+                <div class="dx-fieldset">
+                    <div class="dx-field">
+                        <div class="dx-field-label" data-bind="text: _.Order.Client" />
+                        <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { 
+                            title: _.Order.SelectClient, 
+                            dataSource: clients, 
+                            displayExpr: 'Name', 
+                            valueExpr: 'Id', 
+                            value: cliId, 
+                            placeholder: cliName, 
+                            searchEnabled: true, searchPlaceholder: _.Common.Search,
+                            fullScreen: true,
+                            valueChangeAction: RoadMap_clientChanged}"/>
+                    </div>
+                    <!-- <div class="dx-button" data-bind="text: 'arrayTP.length = ' + arrayTP.length + ' ; showTP='+ showTP()"></div> -->
+                    <div class="dx-field" data-bind="visible: showTP()">
+                        <div class="dx-field-label" data-bind="text: _.Order.Point" />
+                        <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { 
+                            title: _.Order.SelectPoint, 
+                            dataSource: arrayTP, 
+                            displayExpr: 'Name', 
+                            valueExpr: 'Id',
+                            searchEnabled: false, 
+                            placeholder: tpName }"/>
+                    </div>
+                </div>
+            </div>
+        </div>              
     </div>
 </div>
 

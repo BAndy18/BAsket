@@ -131,16 +131,6 @@ BAsket.Order = function (params) {
 	    }
 	};
 	
-	Order_clickBack = function(arg){
-		P.fromProducts = false;
-		if (params.Id){
-			BAsket.app.navigate('OrderList', { root: true });
-		}
-		else
-			//BAsket.app.navigate('home');
-			BAsket.app.navigate('home', { root: true });
-	};
-
 	Order_btnSaveClicked  = function () {
 		//var valueQuant = $("#idQuant").data("dxNumberBox").option("value");
 		if (P.arrayBAsket.length == 0){
@@ -155,7 +145,7 @@ BAsket.Order = function (params) {
 		var valueCli = $("#lookupClient").data("dxLookup").option("value");
 		if (!valueCli) {
 			BAsket.notify(_.Order.ErrNoCli, "error");
-		//	return;
+			return;
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
 
@@ -191,6 +181,21 @@ BAsket.Order = function (params) {
 		DAL.CountTable('BILM').done(function (result) {
 			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
+	};
+
+	Order_clickBack = function(arg){
+		P.fromProducts = false;
+		if (params.Id){
+			var icur = BAsket.app.navigationManager.currentStack.currentIndex;
+			var backUri = BAsket.app.navigationManager.currentStack.items[icur - 1].uri;
+			if (backUri && backUri == 'RoadMapList')
+				BAsket.app.navigate('RoadMapList', { root: true });
+			else
+				BAsket.app.navigate('OrderList', { root: true });
+		}
+		else
+			//BAsket.app.navigate('home');
+			BAsket.app.navigate('home', { root: true });
 	};
 
 	Order_clickProduct = function(){

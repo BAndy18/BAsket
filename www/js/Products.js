@@ -51,12 +51,10 @@ BAsket.products = function (params) {
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title2);
             btnSwText(_.Products.btnSwText2);
-            //viewModel.dataSourceBasket.load();
         } else {
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title1);
             btnSwText(_.Products.btnSwText1);
-            //viewModel.dataSourceProd.load();
         }
         //var list = $("#listProducts").data("dxList");
         //list.repaint();
@@ -66,9 +64,7 @@ BAsket.products = function (params) {
         if (arg.element.length <= 0) return;
      
         var lookup = $("#CategoryLookup").data("dxLookup");
-        var value = lookup.option("value");
-        //categoryId = value;
-        P.curCategoryId = value;
+        P.curCategoryId = lookup.option("value");
         P.curCategoryName = $(".dx-state-active").html();
         BAsket.app.navigate('products/' + P.curCategoryId, { direction: 'none'});
     }

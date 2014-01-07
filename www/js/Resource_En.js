@@ -107,8 +107,8 @@ var RU_RU = (function (window) {
 		Title: "Заказ", 
 		Products: "Товары",
 		Date : 'Дата', 
-		Client : 'Покупатель', 
-		SelectClient : 'Выбор покупателя ',
+		Client : 'Клиент', 
+		SelectClient : 'Выбор клиента ',
 		Point : 'Торговая точка',
 		SelectPoint : 'Выбор точки ',
 		SelectDop: 'Выбор типа параметра ',
@@ -116,7 +116,7 @@ var RU_RU = (function (window) {
 		Note: 'Примечания',
 		NotePrompt: 'комментарии если есть',
     	ColDate : 'дата',
-    	ColName : 'имя покупателя',
+    	ColName : 'имя клиента',
     	ColTpName : 'точка',
     	ColNote : 'примечание',
     	ColOther : 'Other',
@@ -158,12 +158,17 @@ var RU_RU = (function (window) {
 
     root.RoadMap = {
         Title : 'Дорожная Карта',
-        AddToTheMap: 'Добавить в карту',
+        AddToTheMap: 'Добавить клиента',
         ShowOnTheMap: 'Показать на карте',
         OpenBil: 'Открыть Заказ',
         ActionDelete : 'Удалить клиента',
         MoveDown: 'Переместить вниз',
         MoveUp: 'Переместить вверх',
+        ColNpp : '№',
+        ColNBil : '№ з',
+        ColCliName : 'имя клиента',
+        ColTpName : 'точка',
+        ColAdres : 'адрес',
     };
 
     // root.getObj = function(obj){

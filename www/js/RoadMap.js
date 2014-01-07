@@ -1,14 +1,25 @@
 BAsket.RoadMapList = function (params) {
   P.getGeo();
-  var dataVal = ko.observable(new Date());
+  var date = params.Id ? new Date(params.Id) : new Date();
+  var dataVal = ko.observable(date);
   var itemSelected = ko.observable(0);
   var popVisible = ko.observable(false);
   var holdTimeout = ko.observable(750);
+  var popupVisible = ko.observable(false);
+
+  var showTP = ko.observable(false);
+  var arrayTP = ko.observable([{"Id":"", "Name":""}]);
+  var cliId = ko.observable(0);
+  var cliName = ko.observable(_.Order.SelectClient + '...'); 
+  var tpId = ko.observable(0);
+  var tpName = ko.observable(_.Order.SelectPoint + '...'); 
+
 
   var viewModel = {
     dataVal: dataVal,
     holdTimeout: holdTimeout,
     popVisible: popVisible,
+    popupVisible: popupVisible,
     popActions: [
         {text: _.RoadMap.OpenBil, clickAction: function(){ RoadMap_Action('OpenBil')} },
         {text: _.RoadMap.MoveUp, clickAction: function(){ RoadMap_Move('MoveUp')} },
@@ -17,15 +28,64 @@ BAsket.RoadMapList = function (params) {
     ],
 
     dataSource: DAL.RoadMap(dataVal()),
+    clients: DAL.Clients(),
+    arrayTP:  arrayTP,
+    showTP: showTP,
+    cliId: cliId,
+    cliName: cliName,
+    tpId: tpId,
+    tpName: tpName,
   }
 
   RoadMap_ChangeDate = function(arg) {
-    viewModel.dataSource.load();
+    BAsket.app.navigate('RoadMapList/' + dataVal(), { direction: 'none'});
   }
 
   RoadMap_AddToTheMap = function(arg) {
-    BAsket.notify('RoadMap_AddToTheMap');
+    //BAsket.notify('RoadMap_AddToTheMap');
+    popupVisible(true);
   }
+  RoadMap_clickCancel = function (arg) {
+    popupVisible(false);
+  };
+  RoadMap_clientChanged = function(arg){
+    var value = "";
+    if (arg && arg.element.length > 0) {
+      var lookupCli = $("#lookupClient").data("dxLookup");
+        value = lookupCli.option().value; //("value");
+      }
+
+      if (value) {
+        var self = this;
+        self.tpId(0);
+        self.tpName(_.Order.SelectPoint + '...'); 
+        DAL.ClientsPar(value).load().done(function (result) {
+          self.arrayTP(result);
+          self.showTP(result.length > 0);
+      })
+      }
+  };
+  RoadMap_ClientSave = function(arg) {
+    var valueCli = $("#lookupClient").data("dxLookup").option("value");
+    if (!valueCli) {
+      BAsket.notify(_.Order.ErrNoCli, "error");
+      return;
+    }
+    var valueTP = $("#lookupTP").data("dxLookup").option("value");
+    var prms = {};
+    prms['date'] = U.DateFormat(dataVal());
+    prms['idCli'] = valueCli;
+    prms['idTp'] = (valueTP ? valueTP:0);
+    prms['Npp'] = viewModel.dataSource.items().length > 0 ?
+      parseInt(viewModel.dataSource.items()[viewModel.dataSource.items().length - 1].Npp) + 1 : 1;
+
+    DAL.AddCliRMap(prms, RoadMap_Reload);
+
+    popupVisible(false);
+    cliName(_.Order.SelectClient + '...'); 
+    tpName(_.Order.SelectPoint + '...'); 
+  }
+
 
   RoadMap_ClickShow = function(arg) {
     var arr = arg.model.dataSource._items;
@@ -61,8 +121,6 @@ BAsket.RoadMapList = function (params) {
     var p = action == 'MoveDown' ? 1:-1;
     DAL.SwapRmap(itemSelected().Id, viewModel.dataSource._items[icur + p].Npp, 
       viewModel.dataSource._items[icur + p].Id, itemSelected().Npp, RoadMap_Reload);
-
-    //viewModel.dataSource.load();    
   }    
 
   RoadMap_Action = function(action){

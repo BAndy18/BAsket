@@ -36,7 +36,7 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 
 .dx-table {  width: 100%;  display: table; }
 .tbhead {border: 1px solid black}
-.cell70, .cell50, .cell35, .cell30, .cell20, .cell10 {
+.cell70, .cell50, .cell35, .cell30, .cell20, .cell10, .cell5 {
   display: table-cell !important;
   display: inline; /* для IE */
 }
@@ -46,6 +46,7 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 .cell30 {  width:30%; }
 .cell20 {  width:20%; }
 .cell10 {  width:10%; }
+.cell5 {  width:5%; }
 .cell100px {  width:100px }
 
 

@@ -84,7 +84,6 @@ var DAL = (function ($, window) {
 
     root.RoadMap = function (params){
         var date = U.DateFormat(params);   //yyyy-mm-dd
-        //.getFullYear() + (params.getMonth()+1) + params.getDate();
         return execDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName, " +
             "IFNULL(t.Adres, c.Adres) as AdresDost, IFNULL(t.Id, c.Id) as IdDost  " +
             "FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id " +
@@ -93,7 +92,7 @@ var DAL = (function ($, window) {
     root.SwapRmap = function (i1,n1, i2,n2, callback){
         execQuery('UPDATE RMAP set Npp=' + n1 + ' Where Id=' + i1).done(function(){
             execQuery('UPDATE RMAP set Npp=' + n2 + ' Where Id=' + i2).done(function(){
-                callback;
+                callback();
             })
         });        
     };
@@ -102,6 +101,11 @@ var DAL = (function ($, window) {
     };
     root.SaveRMBil = function (id, idb){
         return execQuery("UPDATE RMAP set IdBil=" + idb + " Where Id=" + id);
+    };
+    root.AddCliRMap = function (prm, callback){
+        execQuery("INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp) VALUES('" + prm['date'] + "'," + prm['Npp'] + ",'" 
+            + prm['idCli'] + "','" + prm['idTp'] + "')")
+        .done(function(){ callback(); })
     }
 
     root.BilM = function (params){
@@ -513,9 +517,9 @@ var DAL = (function ($, window) {
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
 
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 1, '4422','4423','Note')",
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 2, '4422','6473','Note2')",
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('06-01-2014', 3, '4191','','Note3')",
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
+        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
 ];
         // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
         // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
