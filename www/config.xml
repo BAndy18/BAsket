@@ -17,6 +17,6 @@
     <preference name="webviewbounce" value="true" />
     <content src="index.html" />
 
-    <icon src="img/logo.png" />
-    <gap:splash src="img/logo.png" />
+    <icon src="img/logo1.png" />
+    <gap:splash src="img/logo1.png" />
 </widget>
