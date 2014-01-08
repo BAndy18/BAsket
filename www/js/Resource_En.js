@@ -94,10 +94,11 @@ var RU_RU = (function (window) {
         Main : "Основные свойства",
         Functions : "Функции",
         Admin : "Админ",
-        Layout: 'Стиль Устройства',
+        Layout: 'Стиль Интерфейса',
         MapProvider: "Поставщик Карт",
         Language: "Язык интерфейса",
         TableMode: "Табличный выбор товаров",
+        UseWebDb: "Использовать Web Db",
         DebugMode: "Режим отладки",
 
         Incorrect_password: "Не правильный пароль",

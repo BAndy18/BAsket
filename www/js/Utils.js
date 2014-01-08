@@ -173,36 +173,6 @@ var P = (function ($, window) {
             },
         ];
 
-    root.navAgent = navigator.userAgent;
-    root.deviceInfo = DevExpress.devices.current();
-    root.layout = "slideout";
-    //root.layout = "navbar";
-    //root.layout = "simple";
-    //root.layout = "pivot";
-
-    root.deviceClass = 'android';
-
-    root.curCategoryId = 0;
-    root.curCategoryName = '';
-    root.curModeChoice = true;
-    root.modeProdView = true;
-    root.fromProducts = false;
-    root.currentNms = []
-    root.arrayBAsket = [];
-    root.arrayBAsketL = [];
-    root.copyright = '';
-    root.debugMode = false;
-    root.geoDirectionsUrl = 'http://maps.googleapis.com/maps/api/directions/json';
-
-
-    //root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
-    root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
-    
-    root.dataSouceType = "DAL_local";
-    //root.dataSouceType = "DAL_web";
-
-    root.pageSize = 30;
-    
     root.loadPanelVisible = ko.observable(false);
     function iniLocalStor(key, defval) {
         var vari = window.localStorage.getItem(key);
@@ -315,8 +285,47 @@ var P = (function ($, window) {
         'ReadNews' : iniLocalStor("ReadNews", ''), //'13.12',
     }
 
+    root.navAgent = navigator.userAgent;
+    root.deviceInfo = DevExpress.devices.current();
+    root.layout = "slideout";
+    //root.layout = "navbar";
+    //root.layout = "simple";
+    //root.layout = "pivot";
+
+    root.deviceClass = 'android';
+
+    root.curCategoryId = 0;
+    root.curCategoryName = '';
+    root.curModeChoice = true;
+    root.modeProdView = true;
+    root.fromProducts = false;
+    root.currentNms = []
+    root.arrayBAsket = [];
+    root.arrayBAsketL = [];
+    root.copyright = '';
+    root.debugMode = false;
+    root.useWebDb = true;
+    //root.geoDirectionsUrl = 'http://maps.googleapis.com/maps/api/directions/json';
+
+
+    // root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
+    root.dataSouceUrl = "http://192.168.1.146//BAsketWS/api/";
+    // root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
+    
+    // root.dataSouceType = "DAL_local";
+    root.dataSouceType = "DAL_web";
+
+    root.pageSize = 30;
+    
+
+
     root.Init = function(){
+        root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
+        if (!window.openDatabase)
+            root.useWebDb = false;
+
         DAL.TableCount();
+
         root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
         root.debugMode = iniLocalStor("debugMode", "true") == "true";
 

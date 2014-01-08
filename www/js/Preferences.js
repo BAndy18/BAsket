@@ -5,17 +5,18 @@ BAsket.Preferences = function (params) {
 	  { text: _.Preferences.Admin, icon: "user" },
 	];
 	 
-	tabContent = ko.observable();
+	var tabContent = ko.observable();
 	  
-	selectedTab = ko.observable(0);
+	var selectedTab = ko.observable(0);
 	
-	adminpass = ko.observable();
-	popupTitle = "Login";
-	buttonVisible = ko.observable(true);
-	popupVisible = ko.observable(false);
+	var adminpass = ko.observable();
+	var popupTitle = "Login";
+	var buttonVisible = ko.observable(true);
+	var popupVisible = ko.observable(false);
 
-	modeProdView = ko.observable(P.modeProdView);
-	debugMode = ko.observable(P.debugMode);
+	var modeProdView = ko.observable(P.modeProdView);
+	var debugMode = ko.observable(P.debugMode);
+	var useWebDb = ko.observable(P.useWebDb);
 
 	showPopup = function () {
 	  popupVisible(true);
@@ -48,12 +49,13 @@ BAsket.Preferences = function (params) {
 	});
 
 	var viewModel = {
-	//	modeProdView: modeProdView,
-	//	dataSource: dataSource,
+		selectedTab: selectedTab,
+		popupVisible: popupVisible,
+
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {
             data: ['-', "generic", "ios", "android", "tizen"],
-//            data: ['-', "generic", "ios", "android", "win8", "tizen"],
+            // data: ['-', "generic", "ios", "android", "win8", "tizen"],
 //            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
             value: ko.observable(P.platformDevice)
 		},
@@ -66,12 +68,16 @@ BAsket.Preferences = function (params) {
             value: ko.observable(P.languageUI)
 		},
 
-		// modeProdView: modeProdView,
-		// debugMode: debugMode,
+		modeProdView: modeProdView,
+		debugMode: debugMode,
+		useWebDb: useWebDb,
 	};
 
 	Preferences_TableMode = function(arg){
 		P.modeProdView = P.ChangeValue("modeProdView", modeProdView());
+	}
+	Preferences_useWebDb = function(arg){
+		P.useWebDb = P.ChangeValue("useWebDb", useWebDb());
 	}
 	Preferences_debugMode = function(arg){
 		P.debugMode = P.ChangeValue("debugMode", debugMode());
@@ -107,7 +113,7 @@ BAsket.Preferences = function (params) {
 	return viewModel;
 };
 
-BAsket.ReadNews = function (params) {
+	BAsket.ReadNews = function (params) {
 	var viewModel = {
 		//dataSource: DAL.Categories(),
 	};

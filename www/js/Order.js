@@ -43,7 +43,7 @@ BAsket.Order = function (params) {
         //nmsName: P.currentNms[0]['Name'],
 
         viewShown: function() {
-        	//if (P.currentNms.length)
+        	if (P.currentNms.length)
 			for (var i=0; i<P.currentNms[0].length; i++) {
 				var setNms = $("#idNms" + (i+1));
 				if (setNms.length == 1){

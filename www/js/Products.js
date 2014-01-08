@@ -37,6 +37,12 @@ BAsket.products = function (params) {
         viewModel.dataSourceProd.load();
     });
 
+    // onClick: function () {
+    //    var list = $("#listBAsket").dxList("instance");
+    //    list.option('width', 200);            
+    //    list.repaint();
+    // }
+
     Products_calcSum = function () {
         var sum = 0.0;
         for (var i in P.arrayBAsket) {

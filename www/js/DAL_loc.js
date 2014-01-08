@@ -153,6 +153,9 @@ var DAL = (function ($, window) {
         return execQuery("SELECT count(Id) as cnt FROM " + params);
     };
     root.TableCount = function (params){
+        if (!P.useWebDb)
+            return;
+        
         DAL.CountTable('BILM').done(function (result) {
             P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
         });
@@ -168,6 +171,9 @@ var DAL = (function ($, window) {
     }
 
     root.ReadNms = function () {
+        if (!P.useWebDb)
+            return;
+        
         root.NMS(0).done(function (result) {
             P.currentNms.push(result);
             for (var i=0; i<result.length; i++) {
@@ -180,6 +186,9 @@ var DAL = (function ($, window) {
     };
 
     root.ReadFirstCategory = function () {
+        if (!P.useWebDb)
+            return;
+        
         execQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
             if (result.length > 0) {
                 P.curCategoryId = result[0].Id;
@@ -309,7 +318,7 @@ var DAL = (function ($, window) {
     function execQuery(query, mapCallback){
         var skip = 0;
         var PAGE_SIZE = 30;
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+        var db = window.openDatabase1(dbName, "1.0", dbName, dbSize);
         var deferred = new $.Deferred();
         db.transaction(function(tx) {
             dbLastQ = query;

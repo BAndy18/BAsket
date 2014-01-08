@@ -12,14 +12,20 @@
 		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
 	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: Preferences_changeMapProvider}"></div>
 					</div>
-	                <div class="dx-field">
+<!-- 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
 					</div>
-	                <div class="dx-field">
+ -->
+ 	                <div class="dx-field">
 	                    <div class="dx-field-label"data-bind="text: _.Preferences.TableMode "/>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: modeProdView,
 	                        valueChangeAction: Preferences_TableMode}"></div>	                    
+	                </div>
+	                <div class="dx-field">
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.UseWebDb "/>
+	                    <div class="dx-field-value" data-bind="dxSwitch: { value: useWebDb,
+	                        valueChangeAction: Preferences_useWebDb}"/>	                    
 	                </div>
 	                <div class="dx-field">
 	                    <div class="dx-field-label"data-bind="text: _.Preferences.DebugMode "/>
