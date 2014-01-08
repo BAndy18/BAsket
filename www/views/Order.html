@@ -6,6 +6,7 @@
           {  align: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: Order_clickProduct}},
         ]}"></div>
 
+        <div id="scrollViewContainer" data-bind="dxScrollView: { }">
         <div class="dx-fieldset">
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Date" />
@@ -48,11 +49,15 @@
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Note" />
                 <div id="txtNote" class="dx-field-value" data-bind="dxTextArea: { placeholder: _.Order.NotePrompt, value: noteVal }"/>
+            </div>            
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: Order_calcSum()"/>
             </div>
 
         </div>
 
 		<div class="dx-button but50 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/>
+        </div>
 		
     </div>
 </div>
@@ -60,13 +65,13 @@
 <div data-options="dxView : { name: 'OrderList', title: _.Navigation.OrderList } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
-		<div class="dx-table">
+		<!-- <div class="dx-table">
             <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColDate"></div>
             <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColName"></div>
             <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColTpName"></div>
             <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColNote"></div>
             <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColWars"></div>
-        </div>
+        </div> -->
 		<div id="idOrderList" data-bind="dxList: { 
             dataSource: dataSource, 
             itemHoldAction: Order_processItemHold, 
@@ -74,22 +79,24 @@
             noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
-<!-- 
-            editEnabled: true,
-            editConfig: {selectionMode: 'item', selectionEnabled: true, deleteEnabled: true, deleteMode: 'toggle'},
-            itemSelectAction: Order_itemSelectAction, 
- -->
             <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
-                <div class="dx-table">
+                <!-- <div class="dx-table">
                     <div class="cell10" data-bind="text: $data.DateDoc"></div>
                     <div class="cell30" data-bind="text: $data.cName"></div>
                     <div class="cell30" data-bind="text: $data.tName"></div>
                     <div class="cell10" data-bind="text: $data.sNote"></div>
                     <div class="cell10" data-bind="text: $data.sWars"></div>
-<!--                     <div class="cell10 alignright" data-bind="text: Globalize.format($data.upak, 'c2')"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.ostat, 'c2')"></div>
-                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.price, 'n2')"></strong></div>
- -->                </div>
+                </div> -->
+                <div>
+                    <span class='textSmall' data-bind="text: $data.ShortDate"/>  
+                    <span data-bind="text: $data.FullName"/>
+                    <span class='textSmall' data-bind="text: ($data.AdresDost)"/>
+                </div>
+                <div class='marginleft'>
+                    <span data-bind="text: $data.SumDoc"/>
+                    <span class='textSmall' data-bind="text: $data.sNote"/>
+                    (<span class='textSmall' data-bind="text: $data.sWars"/>) 
+                </div>
             </div>
         </div>
 

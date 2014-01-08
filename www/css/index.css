@@ -26,9 +26,12 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 .center {text-align: center}
 .image { width: 50%}
 .but20 {  width:20%; margin: 10px; }
+.but30 {  width:30%; margin: 10px; }
 .but50 {  width:50%; margin: 10px; }
 
 .prodtext {float:left; margin:30px;}
+.textSmall {font-size:smaller; opacity: 0.8;}
+.marginleft {margin-left: 40px}
 
 .fl-left {  float:left}
 .fl-right {  float:right}

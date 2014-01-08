@@ -37,13 +37,11 @@
             pullRefreshEnabled: true
             }, visible: bChoice() && P.modeProdView">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
-                <div class="dx-table">
-                    <div class='cell10'><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
-                    <div data-bind="text: $data.Name"></div>
-                    <div ><strong data-bind="text: Globalize.format($data.Price, 'n2')"></strong>
-                        (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
-                        ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
-                    </div>
+                <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
+                <div class='marginleft' data-bind="text: $data.Name"/>
+                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
+                    (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
+                    ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
                 </div>
             </div>
         </div>
@@ -76,20 +74,17 @@
 
         <div class="dx-fieldset" data-bind="visible: !bChoice()">
             <div class="dx-field">
-                <div class="dx-field-label" data-bind="text: 'выбрано: ' + P.arrayBAsket.length"/>
-                <div class="dx-field-value" data-bind="text: 'на сумму: ' + Products_calcSum()"/> 
+                <div class="dx-field-label" data-bind="text: Products_calcSum()"/>
             </div>
-        </div>    
+        </div>
         
         <div id="listBAsket" data-bind="dxList: { dataSource: dataSourceBasket, noDataText: _.Common.NoDataText }, visible: !bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
-                <div class="dx-table">
-                    <div class='cell10'><strong data-bind="text: Globalize.format($data.Quant, 'n0')"></strong></div>
-                    <div data-bind="text: $data.Name"></div>
-                    <div ><strong data-bind="text: Globalize.format($data.Price, 'n2')"></strong>
-                        (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
-                        ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
-                    </div>
+                <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
+                <div class='marginleft' data-bind="text: $data.Name"/>
+                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
+                    (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
+                    ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
                 </div>
             </div>
         </div>

@@ -26,7 +26,7 @@ BAsket.Clients = function (params) {
 BAsket.Client = function (params) {
     //P.loadPanelVisible(true);
     P.getGeo();
-    var cliName = ko.observable('cliName');
+    var cliName = ko.observable('');
     var location = ko.observable(P.geoCurrent());
     var visibleMenu = ko.observable(false);
     var popupVisible = ko.observable(false);

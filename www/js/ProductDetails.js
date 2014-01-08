@@ -30,9 +30,9 @@
         //var valueQuant = $("#idQuant").data("dxNumberBox").option("value");
         // for (var prop in valueQuant)
         //     console.log(prop + ': ' + valueQuant[prop])
-        console.log('Product_Details_saveClicked <' + this.Quant());
+        //console.log('Product_Details_saveClicked <' + this.Quant());
         var quant = parseInt(this.Quant());
-        console.log('Product_Details_saveClicked quant<' + quant + '>');
+        //console.log('Product_Details_saveClicked quant<' + quant + '>');
         for (var i in P.arrayBAsket) {
             //if (!P.arrayBAsket.hasOwnProperty(i)) continue;
             //if (i == key && P.arrayBAsket[i].id == this.id()) {

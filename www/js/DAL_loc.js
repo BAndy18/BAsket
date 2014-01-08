@@ -85,6 +85,7 @@ var DAL = (function ($, window) {
     root.RoadMap = function (params){
         var date = U.DateFormat(params);   //yyyy-mm-dd
         return execDataSource({query: "SELECT r.*, c.Name as cName, t.Name as tName, " +
+            "IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
             "IFNULL(t.Adres, c.Adres) as AdresDost, IFNULL(t.Id, c.Id) as IdDost  " +
             "FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id " +
             "Where DateDoc='" + date + "' Order by Npp"});
@@ -109,7 +110,10 @@ var DAL = (function ($, window) {
     }
 
     root.BilM = function (params){
-        return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
+        return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName, substr(b.DateDoc,1,5) as ShortDate, " +
+            "IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
+            "IFNULL(t.Adres, c.Adres) as AdresDost " +
+            "FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
     };
     root.BilMById = function (params){
         return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
@@ -130,12 +134,13 @@ var DAL = (function ($, window) {
         if (!params['sWars']) params['sWars'] = '';
         if (params['id']) {
             query = "UPDATE BILM set DateDoc='"+ params['date'] +"', IdCli='"+ params['idCli'] +"', IdTp='"+ params['idTp'] +
-                "', sNote='"+ params['sNote'] + "', sOther='"+ params['sOther'] + "', sWars='"+ params['sWars'] +
+                "', SumDoc='"+ params['sumDoc'] + "', sNote='"+ params['sNote'] + "', sOther='"+ params['sOther'] + 
+                "', sWars='"+ params['sWars'] + 
                 "' WHERE Id='" + params['id'] + "'";            
         } else {
-            query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('"+ params['date'] +
-                "', '"+ params['idCli'] +"','"+ params['idTp'] +"','"+ params['sNote'] + "', '"+ params['sOther'] + 
-                "', '" + params['sWars'] + "')";
+            query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, SumDoc, sNote, sOther, sWars) VALUES('"+ params['date'] +
+                "', '" + params['idCli'] + "','"+ params['idTp'] + "','"+ params['sumDoc'] + "','"+ params['sNote'] + 
+                "', '"+ params['sOther'] + "', '" + params['sWars'] + "')";
         };
         return execQuery(query);
     }
@@ -508,7 +513,7 @@ var DAL = (function ($, window) {
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
         'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
-        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",

@@ -149,6 +149,7 @@ var RU_RU = (function (window) {
     	FldUpak : 'Количество в упаковке:',
     	FldOstat : 'Остаток:',
     	FldUrlPict : 'картинка:',
+        SelSum : 'выбрано: #; на сумму: ',
     };
 
     root.Clients = {

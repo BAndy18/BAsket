@@ -1,4 +1,11 @@
 BAsket.Order = function (params) {	
+ 	Order_showSum = function () {
+        var sum = 0.0;
+        for (var i in P.arrayBAsket) {
+            sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
+        }
+        return _.Products.SelSum.replace('#', P.arrayBAsket.length) + sum.toFixed(2);
+    };
 
 	var arrayTP = ko.observable([{"Id":"", "Name":""}]);
 	var arrayNms = ko.observable([{"Id":"", "Name":""}]);
@@ -11,6 +18,7 @@ BAsket.Order = function (params) {
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
 	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
+
 	if (!P.currentNms)
 		DAL.ReadNms();
 
@@ -35,6 +43,7 @@ BAsket.Order = function (params) {
         //nmsName: P.currentNms[0]['Name'],
 
         viewShown: function() {
+        	//if (P.currentNms.length)
 			for (var i=0; i<P.currentNms[0].length; i++) {
 				var setNms = $("#idNms" + (i+1));
 				if (setNms.length == 1){
@@ -42,10 +51,12 @@ BAsket.Order = function (params) {
 					setNms[0].parentNode.children[0].innerText = P.currentNms[0][i].Name;
 				}
 			}
-        }
+        },
 	};
 
-	if (!P.fromProducts)
+	if (P.fromProducts)
+		Order_showSum();
+	else
 		P.arrayBAsket = [];
 
 	if (params.Id) {
@@ -131,6 +142,18 @@ BAsket.Order = function (params) {
 	    }
 	};
 	
+	Order_calcSum = function (mask) {
+		if (mask)
+			mask = mask.replace('-', '');
+		else
+			mask = _.Products.SelSum.replace('#', P.arrayBAsket.length);
+	    var sum = 0.0;
+	    for (var i in P.arrayBAsket) {
+	        sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
+	    }
+	    return mask + sum.toFixed(2);
+	};
+
 	Order_btnSaveClicked  = function () {
 		//var valueQuant = $("#idQuant").data("dxNumberBox").option("value");
 		if (P.arrayBAsket.length == 0){
@@ -159,6 +182,7 @@ BAsket.Order = function (params) {
 		console.log('Order save datetoLocaleString=' + prms['date']);
 		prms['idCli'] = valueCli;
 		prms['idTp'] = (valueTP ? valueTP:0);
+		prms['sumDoc'] =Order_calcSum('-');
 		
 		prms['sOther'] = '';
 		for (var i=0; i<P.currentNms[1].length; i++) {
@@ -187,6 +211,10 @@ BAsket.Order = function (params) {
 		P.fromProducts = false;
 		if (params.Id){
 			var icur = BAsket.app.navigationManager.currentStack.currentIndex;
+			if (icur < 1) {
+				BAsket.app.navigate('home', { root: true });
+				return;
+			}
 			var backUri = BAsket.app.navigationManager.currentStack.items[icur - 1].uri;
 			if (backUri && backUri == 'RoadMapList')
 				BAsket.app.navigate('RoadMapList', { root: true });

@@ -42,7 +42,7 @@ BAsket.products = function (params) {
         for (var i in P.arrayBAsket) {
             sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
         }
-        return sum.toFixed(2);
+        return _.Products.SelSum.replace('#', P.arrayBAsket.length) + sum.toFixed(2);
     };
 
     Products_swichClicked  = function () {

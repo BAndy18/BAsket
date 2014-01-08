@@ -7,13 +7,22 @@
                     valueUpdateEvent: 'search change keyup' }"/>
             </div>
         </div>
-    	<div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
+<!--     	<div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{Id}'">
                 <div class="dx-table">
                     <div class="cell10" data-bind="text: $data.Id"></div>
                     <div class="cell30" data-bind="text: $data.Name"></div>
                     <div class="cell30" data-bind="text: $data.Adres"></div>
                     <div class="cell10" data-bind="text: $data.GeoLoc"></div>
+                </div>
+            </div>
+        </div> -->
+        <div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{Id}'">
+                <div data-bind="text: $data.Name"></div>
+                <div class='textSmall marginleft'><span data-bind="text: $data.Adres"/>
+                    (<span data-bind="text: $data.GeoLoc"/> 
+                     Id=<strong data-bind="text: $data.Id"/>)
                 </div>
             </div>
         </div>
