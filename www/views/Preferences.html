@@ -37,7 +37,13 @@
             <!-- /ko -->
             <!-- ko if: selectedTab() == 1 -->
 				<div class="dx-fieldset">
-					Tab2					
+	                <div class="dx-field">
+	                    <div class="dx-field-label">User Name</div>
+	                    <div class="dx-field-value">
+	                        <div data-bind="dxTextBox: { value: userName, valueUpdateAction: Preferences_userName }"></div>
+	                    </div>
+	                </div>
+										
 				</div>
 				<div class="but50" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: clickRecreateLocal}"></div>
 

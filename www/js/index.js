@@ -1,21 +1,21 @@
 ﻿"use strict";
 window.BAsket = {};
 
-window.onerror = function(msg, url, line) {
-   // You can view the information in an alert to see things working
-   // like so:
-   var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line;
-   alert(str);
-   console.log(str);
-   return true;
-};
+// window.onerror = function(msg, url, line) {
+//    // You can view the information in an alert to see things working
+//    // like so:
+//    var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line;
+//    alert(str);
+//    console.log(str);
+//    return true;
+// };
 
 $(function() {
     //var db = window.indexedDB.open('FriendDB', 'My Friends!');
     P.Init();
 
-    //DevExpress.devices.current({platform: P.deviceClass});
-     DevExpress.devices.current({platform: P.deviceClass, version: '6', deviceType: "tablet"});
+    DevExpress.devices.current(P.deviceClass);
+    // DevExpress.devices.current({platform: P.deviceClass, version: '6', deviceType: "tablet"});
     // DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform);
     BAsket.app = new DevExpress.framework.html.HtmlApplication({
         namespace: BAsket,

@@ -16,12 +16,16 @@ var DAL_web = (function ($, window) {
             prm: {grId: params.Id,
                 searchString: params.search}
             }, function(data){
+                var bFound = false;
                 for (var i in P.arrayBAsket) {
                     if (P.arrayBAsket[i].Id == data.Id) {
                         data.Quant = P.arrayBAsket[i].Quant;
+                        bFound = true;
                     }
                 }
-                return data;            
+                if (!bFound)
+                    data.Quant = '';
+                return data;
             });
     };
     root.ProductDetails = function (params){
@@ -69,8 +73,9 @@ var DAL_web = (function ($, window) {
         return execDataSource({control: 'Nms', prm: {Id:params}});
     };
 
+   function execDataSource (params, mapCallback){
+        document.cookie = ".ASPXAUTH=Basic " + P.UserName + ":" + P.UserPassword;
 
-    function execDataSource (params, mapCallback){
         if (params.lookup)
             return new DevExpress.data.DataSource({
                 pageSize: P.pageSize, 
@@ -79,7 +84,14 @@ var DAL_web = (function ($, window) {
                         params.prm['skip'] = loadOptions.skip;
                         params.prm['take'] = loadOptions.take;
                     }
-                    return $.get(P.dataSouceUrl + params.control, params.prm)
+                    // return $.get(P.dataSouceUrl + params.control, params.prm)
+                    return $.ajax({
+                        url: P.dataSouceUrl + params.control, 
+                        data: params.prm,
+                        xhrFields: {
+                           withCredentials: true
+                       }
+                    })
                     .done(function (result) {
                          var mapped = $.map(result, function (item) {
                             if (mapCallback)
@@ -101,7 +113,19 @@ var DAL_web = (function ($, window) {
                         params.prm['skip'] = loadOptions.skip;
                         params.prm['take'] = loadOptions.take;
                     }
-                    return $.get(P.dataSouceUrl + params.control, params.prm);
+//                    return $.get(P.dataSouceUrl + params.control, params.prm);
+                    return $.ajax({
+                        type: "GET",
+                        url: P.dataSouceUrl + params.control, 
+                        data: params.prm,
+                        headers: {
+                            //'Access-Control-Allow-Origin': true,
+                            //'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
+                        },
+                        xhrFields: {
+                           withCredentials: true
+                        },
+                    });
                 },
                 map: function(item) {
                     if (mapCallback)
@@ -111,6 +135,54 @@ var DAL_web = (function ($, window) {
                 },
             });
     }
+
+    function execDataSource1 (params, mapCallback){
+         var   dataSource = new DevExpress.data.ODataContext({
+                    url: P.dataSouceUrl + params.control,
+                    errorHandler: function (error) {
+                        // if (error.httpStatus == 401)
+                        //     app.navigate('Login');
+                        // else
+                        // alert(error.message);
+                    },
+                    entities: {
+                        Clients: {
+                             key: "CategoryID",
+                             name: "Categories"
+                         }
+                    },
+                    beforeSend: function (request) {
+                        request.headers["Authorization"] = "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
+                        request.headers['Access-Control-Allow-Origin'] = true
+                    }        
+                });
+        return dataSource.Clients.toDataSource();
+    };
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    xhr.open(method, url, true);
+
+  } else if (typeof XDomainRequest != "undefined") {
+
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+
+  } else {
+
+    // Otherwise, CORS is not supported by the browser.
+    xhr = null;
+
+  }
+  return xhr;
+}
+
 
     return root;
 })(jQuery, window);

@@ -219,6 +219,22 @@ var P = (function ($, window) {
         })
     }
 
+    function loadjscssfile(filename, filetype){
+        if (filetype=="js"){ //if filename is a external JavaScript file
+            var fileref=document.createElement('script')
+            fileref.setAttribute("type","text/javascript")
+            fileref.setAttribute("src", filename)
+        }
+        else if (filetype=="css"){ //if filename is an external CSS file
+            var fileref=document.createElement("link")
+            fileref.setAttribute("rel", "stylesheet")
+            fileref.setAttribute("type", "text/css")
+            fileref.setAttribute("href", filename)
+        }
+        if (typeof fileref!="undefined")
+            document.getElementsByTagName("head")[0].appendChild(fileref)
+    }
+
     root.geoCurrent = ko.observable("");
     root.getGeo = function(){
         if (navigator.geolocation)
@@ -285,6 +301,15 @@ var P = (function ($, window) {
         'ReadNews' : iniLocalStor("ReadNews", ''), //'13.12',
     }
 
+    function getDeviceId(){
+        var deviceId = '';
+        if (window.device)
+            deviceId = window.device.uuid;
+        if (!deviceId)
+            deviceId = iniLocalStor("userPassword", "-");
+        return deviceId;
+    }
+
     root.navAgent = navigator.userAgent;
     root.deviceInfo = DevExpress.devices.current();
     root.layout = "slideout";
@@ -305,7 +330,6 @@ var P = (function ($, window) {
     root.copyright = '';
     root.debugMode = false;
     root.useWebDb = true;
-    //root.geoDirectionsUrl = 'http://maps.googleapis.com/maps/api/directions/json';
 
 
     // root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
@@ -313,12 +337,10 @@ var P = (function ($, window) {
     // root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
     
     // root.dataSouceType = "DAL_local";
-    root.dataSouceType = "DAL_web";
+    // root.dataSouceType = "DAL_web";
 
     root.pageSize = 30;
     
-
-
     root.Init = function(){
         root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
         if (!window.openDatabase)
@@ -334,11 +356,28 @@ var P = (function ($, window) {
         root.languageUI = iniLocalStor("LanguageUI", '-');
         root.ChangeLanguageUI();
 
-        root.platformDevice = root.deviceClass = 'android';
-        root.platformDevice = root.deviceClass = iniLocalStor("Platform", 'android');
-        if (root.deviceClass == '-')
-            root.deviceClass = root.deviceInfo.platform;
+        root.platformDevice = 'android';
+        root.platformDevice = iniLocalStor("Platform", 'android');
+        if (root.platformDevice == '-')
+            root.platformDevice = root.deviceInfo.platform;
 
+        root.deviceClass = {};
+        root.deviceClass['platform'] = root.platformDevice;
+        var pdArr = root.platformDevice.split(' ');
+        if (pdArr.length > 1) {
+            root.deviceClass['platform'] = pdArr[0];
+            if (pdArr[0] == 'ios' && pdArr[1] == 'v6')
+                root.deviceClass['version'] = '6';
+            else if (pdArr[1] == 'black') {
+                if (pdArr[0] == 'android')
+                    loadjscssfile('css/dx.android.holo-dark.css', 'css');
+                if (pdArr[0] == 'tizen')
+                    loadjscssfile('css/dx.tizen.black.css', 'css');
+            }
+        }
+
+        root.UserName = iniLocalStor("userName", "-");
+        root.UserPassword = getDeviceId();    //iniLocalStor("UserPassword", "-");
         root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass + '; ver. ' + VerConst + ')';
 
         DAL.ReadFirstCategory();

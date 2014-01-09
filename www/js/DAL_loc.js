@@ -9,13 +9,13 @@ var DAL = (function ($, window) {
 
 
     root.Categories = function (params){
-        if (P.dataSouceType == "DAL_web")
+        if (!P.useWebDb)
             return DAL_web.Categories(params);
         
         return execDataSource({query: "SELECT * FROM CAT"});
     };
     root.Products = function (params, nopaging){
-        if (P.dataSouceType == "DAL_web")
+        if (!P.useWebDb)
             return DAL_web.Products(params);
         var paging = !nopaging;
         return execDataSource({query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'", 
@@ -35,7 +35,7 @@ var DAL = (function ($, window) {
             });
     }
     root.ProductDetails = function (params){
-        if (P.dataSouceType == "DAL_web")
+        if (!P.useWebDb)
             return DAL_web.ProductDetails(params);
         
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
@@ -62,7 +62,7 @@ var DAL = (function ($, window) {
 
 
     root.Clients = function (params){
-        if (P.dataSouceType == "DAL_web")
+        if (!P.useWebDb)
             return DAL_web.Clients(params);
         
         var param = {query: "SELECT * FROM CLI Where IdPar='0'", paging: true};
@@ -72,7 +72,7 @@ var DAL = (function ($, window) {
         return execDataSource(param);  
     };    
     root.ClientsPar = function (params){
-        if (P.dataSouceType == "DAL_web")
+        if (!P.useWebDb)
             return DAL_web.ClientsPar(params);
         
         return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
@@ -318,7 +318,7 @@ var DAL = (function ($, window) {
     function execQuery(query, mapCallback){
         var skip = 0;
         var PAGE_SIZE = 30;
-        var db = window.openDatabase1(dbName, "1.0", dbName, dbSize);
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
         var deferred = new $.Deferred();
         db.transaction(function(tx) {
             dbLastQ = query;

@@ -17,6 +17,7 @@ BAsket.Preferences = function (params) {
 	var modeProdView = ko.observable(P.modeProdView);
 	var debugMode = ko.observable(P.debugMode);
 	var useWebDb = ko.observable(P.useWebDb);
+	var userName = ko.observable(P.userName);
 
 	showPopup = function () {
 	  popupVisible(true);
@@ -54,7 +55,7 @@ BAsket.Preferences = function (params) {
 
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {
-            data: ['-', "generic", "ios", "android", "tizen"],
+            data: ['-', "generic", "ios", "ios v6", "android", "android black", "tizen", "tizen black"],
             // data: ['-', "generic", "ios", "android", "win8", "tizen"],
 //            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
             value: ko.observable(P.platformDevice)
@@ -71,6 +72,7 @@ BAsket.Preferences = function (params) {
 		modeProdView: modeProdView,
 		debugMode: debugMode,
 		useWebDb: useWebDb,
+		userName: userName,
 	};
 
 	Preferences_TableMode = function(arg){
@@ -81,6 +83,9 @@ BAsket.Preferences = function (params) {
 	}
 	Preferences_debugMode = function(arg){
 		P.debugMode = P.ChangeValue("debugMode", debugMode());
+	}
+	Preferences_userName = function(arg){
+		P.userName = P.ChangeValue("userName", userName());
 	}
 
 	Preferences_changePlatform = function(arg){
