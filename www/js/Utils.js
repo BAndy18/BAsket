@@ -333,8 +333,8 @@ var P = (function ($, window) {
 
 
     // root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
-    root.dataSouceUrl = "http://192.168.1.146//BAsketWS/api/";
-    // root.dataSouceUrl = ''; //"http://192.168.1.146//BAsketWS/api/";
+    // root.dataSouceUrl = "http://192.168.1.146//BAsketWS/api/";
+    root.dataSouceUrl = '';
     
     // root.dataSouceType = "DAL_local";
     // root.dataSouceType = "DAL_web";
