@@ -70,6 +70,8 @@ var DAL_web = (function ($, window) {
     }
 
     root.NMS = function (params){
+        if (!P.dataSouceUrl)
+            return DAL_tst.NMS_Data;
         return execDataSource({control: 'Nms', prm: {Id:params}});
     };
 

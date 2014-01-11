@@ -8,12 +8,12 @@ var DAL = (function ($, window) {
     var dbSize = 50000000;
 
 
-    root.Categories = function (params){
-        if (!P.useWebDb)
-            return DAL_web.Categories(params);
+    // root.Categories = function (params){
+    //     if (!P.useWebDb)
+    //         return DAL_web.Categories(params);
         
-        return execDataSource({query: "SELECT * FROM CAT"});
-    };
+    //     return execDataSource({query: "SELECT * FROM CAT"});
+    // };
     root.Products = function (params, nopaging){
         if (!P.useWebDb)
             return DAL_web.Products(params);
@@ -59,6 +59,12 @@ var DAL = (function ($, window) {
         }, function(err, err2){errorCB("*readProductDetail*", err, err2);}
         );
     }
+
+    root.NMS = function (params){
+        if (!P.useWebDb)
+            return DAL_web.NMS(params);
+        return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
+    };
 
 
     root.Clients = function (params){
@@ -145,10 +151,6 @@ var DAL = (function ($, window) {
         return execQuery(query);
     }
 
-    root.NMS = function (params){
-        return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
-    };
-
     root.CountTable = function (params){
         return execQuery("SELECT count(Id) as cnt FROM " + params);
     };
@@ -170,50 +172,79 @@ var DAL = (function ($, window) {
         });
     }
 
-    root.ReadNms = function () {
-        if (!P.useWebDb)
-            return;
-        
-        root.NMS(0).done(function (result) {
-            P.currentNms.push(result);
-            for (var i=0; i<result.length; i++) {
-                root.NMS(result[i].Id).done(function (result) {
-                    P.currentNms.push(result);
-                    //root.currentNms.push({id:result[0].id, Name:result[0].Name});
-                })
+    root.ProductsByWars = function (params){
+        var ids = '';
+        P.arrayBAsket = [];
+        var w = params.split(';');
+        for (var i in w) {
+            var v = w[i].split(':');
+            if (v[0]){
+                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
+                ids += "'" + v[0] + "',";
             }
-        })            
+        }
+        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
+            function(data){
+                for (var i in P.arrayBAsket) {
+                    if (P.arrayBAsket[i].Id == data.Id) {
+                        data.Quant = P.arrayBAsket[i].Quant;
+                    }
+                }
+                return data;    
+            });
     };
 
-    root.ReadFirstCategory = function () {
-        if (!P.useWebDb)
-            return;
+    // root.ReadNms = function () {
+    //     if (!P.useWebDb)
+    //         return;
         
-        execQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
-            if (result.length > 0) {
-                P.curCategoryId = result[0].Id;
-                P.curCategoryName = result[0].Name;
-            }
-            else {
-                DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
-                    if (dialogResult){
-                        root.ReadNews();
-                    }
-                });
-            }
-        })
-    };
+        // root.NMS(0).done(function (result) {
+        //     P.currentNms.push(result);
+        //     for (var i=0; i<result.length; i++) {
+        //         root.NMS(result[i].Id).done(function (result) {
+        //             P.currentNms.push(result);
+        //             //root.currentNms.push({id:result[0].id, Name:result[0].Name});
+        //         })
+        //     }
+        // })                    
+    // };
+
+    // root.ReadFirstCategory = function () {
+    //     if (!P.useWebDb)
+    //         return;
+        
+    //     execQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
+    //         if (result.length > 0) {
+    //             P.curCategoryId = result[0].Id;
+    //             P.curCategoryName = result[0].Name;
+    //         }
+    //         else {
+    //             DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
+    //                 if (dialogResult){
+    //                     root.ReadNews();
+    //                 }
+    //             });
+    //         }
+    //     })
+    // };
 
 
     root.ReadNews = function(){
         P.loadPanelVisible(true);
 
         root.RecreateLocalDB();
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+
+        var source0 = DAL_web.NMS();
+        if (Object.prototype.toString.call(source0) == '[object Array]')     writeToLocalData(db, source0, 'NMS');
+        else                         source0.load().done(function (result) { writeToLocalData(db, result, 'NMS'); });
 
         var source1 = DAL_web.Categories();
         if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
         else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
+
+        if (!P.useWebDb)
+            return;
+        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
 
         var source2 = DAL_web.Products({Id:'all'});
         if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
@@ -241,28 +272,6 @@ var DAL = (function ($, window) {
                 );
             }
         })
-    };
-
-    root.ProductsByWars = function (params){
-        var ids = '';
-        P.arrayBAsket = [];
-        var w = params.split(';');
-        for (var i in w) {
-            var v = w[i].split(':');
-            if (v[0]){
-                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
-                ids += "'" + v[0] + "',";
-            }
-        }
-        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
-            function(data){
-                for (var i in P.arrayBAsket) {
-                    if (P.arrayBAsket[i].Id == data.Id) {
-                        data.Quant = P.arrayBAsket[i].Quant;
-                    }
-                }
-                return data;    
-            });
     };
 
 
@@ -362,15 +371,29 @@ var DAL = (function ($, window) {
 
 
     var arrWAR;
-    var arrCAT;
+    var arrCLI;
     function writeToLocalData(db, dataArray, table) {
 
         //dbParam = {'array':dataArray, 'tab':table};
+        if (table == 'NMS') {
+            // var localData = JSON.stringify(dataArray);
+            // var arr = JSON.parse(P.ChangeValue('NMS0', localData));
+            P.arrNMS = [];
+            for (var i=0 in dataArray){
+                var j = dataArray[i].IdRoot;
+                if (!P.arrNMS[j]) P.arrNMS[j] = [];
+                P.arrNMS[j].push(dataArray[i]);
+                P.ChangeValue('NMS' + j, JSON.stringify(P.arrNMS[j]));
+            }
+        }
         if (table == 'CAT') {
-            arrCAT = dataArray;
-            db.transaction(writeToCAT, 
-                function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
-                function() {trace("write " + table + ": success");});
+            var localData = JSON.stringify(dataArray);
+            P.arrCategory = JSON.parse(P.ChangeValue('categories', localData));
+
+            // arrCAT = dataArray;
+            // db.transaction(writeToCAT, 
+            //     function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
+            //     function() {trace("write " + table + ": success");});
         } 
         if (table == 'WAR') {
             arrWAR = dataArray;

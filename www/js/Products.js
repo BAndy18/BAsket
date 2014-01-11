@@ -16,7 +16,7 @@ BAsket.products = function (params) {
         },
         showSearch: ko.observable(false),
 
-        dataSourceCat: DAL.Categories(),
+        dataSourceCat: P.arrCategory,   //DAL.Categories(),
         //dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
         dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}, !P.modeProdView),
         dataSourceBasket: P.arrayBAsket,

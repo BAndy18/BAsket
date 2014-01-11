@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DBPetraModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="DBPetraEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="BIL" EntityType="DBPetraModel.BIL" />
+    <EntitySet Name="BILS" EntityType="DBPetraModel.BILS" />
+    <EntitySet Name="spCLI" EntityType="DBPetraModel.spCLI" />
+    <EntitySet Name="spWAR" EntityType="DBPetraModel.spWAR" />
+    <AssociationSet Name="FK_BIL_spCLI" Association="DBPetraModel.FK_BIL_spCLI">
+      <End Role="spCLI" EntitySet="spCLI" />
+      <End Role="BIL" EntitySet="BIL" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BIL_spCLI1" Association="DBPetraModel.FK_BIL_spCLI1">
+      <End Role="spCLI" EntitySet="spCLI" />
+      <End Role="BIL" EntitySet="BIL" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BILS_spWAR" Association="DBPetraModel.FK_BILS_spWAR">
+      <End Role="spWAR" EntitySet="spWAR" />
+      <End Role="BILS" EntitySet="BILS" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="BIL">
+    <Key>
+      <PropertyRef Name="r_BIL" />
+    </Key>
+    <Property Name="r_BIL" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="r_SUP" Type="Int16" />
+    <Property Name="r_CLI" Type="Int32" />
+    <Property Name="r_FCLI" Type="Int32" />
+    <Property Name="r_STAD" Type="Byte" Nullable="false" />
+    <Property Name="r_OPER" Type="Int16" Nullable="false" />
+    <Property Name="r_NOTE" Type="Int32" />
+    <Property Name="N_TPAY" Type="Byte" Nullable="false" />
+    <Property Name="N_TINV" Type="Byte" Nullable="false" />
+    <Property Name="N_DAYS" Type="Byte" Nullable="false" />
+    <Property Name="N_TP" Type="Int16" Nullable="false" />
+    <Property Name="N_EP" Type="Byte" Nullable="false" />
+    <Property Name="N_VD" Type="Byte" Nullable="false" />
+    <Property Name="N_AM" Type="Byte" Nullable="false" />
+    <Property Name="n_reis" Type="Byte" Nullable="false" />
+    <Property Name="N_US" Type="Byte" Nullable="false" />
+    <Property Name="N_TPDOC" Type="Byte" Nullable="false" />
+    <Property Name="N_MOVE" Type="Byte" Nullable="false" />
+    <Property Name="NumDoc" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="DateDoc" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateCre" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="SumDoc" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="SumPay" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="SumInv" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Discont" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+    <Property Name="Note" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="NNP" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="spCLI" Relationship="DBPetraModel.FK_BIL_spCLI" FromRole="BIL" ToRole="spCLI" />
+    <NavigationProperty Name="spCLI1" Relationship="DBPetraModel.FK_BIL_spCLI1" FromRole="BIL" ToRole="spCLI" />
+  </EntityType>
+  <EntityType Name="BILS">
+    <Key>
+      <PropertyRef Name="r_BILS" />
+    </Key>
+    <Property Name="r_BILS" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="r_BIL" Type="Int32" />
+    <Property Name="r_WAR" Type="Int32" />
+    <Property Name="r_ISL" Type="Int32" />
+    <Property Name="N_TOST" Type="Byte" Nullable="false" />
+    <Property Name="N_UNI" Type="Byte" Nullable="false" />
+    <Property Name="Npp" Type="Int16" Nullable="false" />
+    <Property Name="Quant" Type="Single" Nullable="false" />
+    <Property Name="QRmnd" Type="Single" Nullable="false" />
+    <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="PriceIN" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="PricePor" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="PriceWar" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="NDS" Type="Int16" Nullable="false" />
+    <Property Name="NNP" Type="Boolean" Nullable="false" />
+    <Property Name="FromPN" Type="Boolean" Nullable="false" />
+    <Property Name="LastUnit" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="spWAR" Relationship="DBPetraModel.FK_BILS_spWAR" FromRole="BILS" ToRole="spWAR" />
+  </EntityType>
+  <EntityType Name="spCLI">
+    <Key>
+      <PropertyRef Name="r_CLI" />
+    </Key>
+    <Property Name="r_CLI" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="r_FCLI" Type="Int32" />
+    <Property Name="r_NOTE" Type="Int32" />
+    <Property Name="N_REG" Type="Int32" />
+    <Property Name="N_REGTP" Type="Int32" />
+    <Property Name="N_TCLI" Type="Byte" Nullable="false" />
+    <Property Name="N_TOCH" Type="Byte" Nullable="false" />
+    <Property Name="cN_DAYS" Type="Byte" Nullable="false" />
+    <Property Name="cr_SUP" Type="Int32" />
+    <Property Name="cN_TINV" Type="Byte" />
+    <Property Name="INN" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Kod" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="DateCre" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateEdit" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Balance" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Max_Credit" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Adres" Type="String" MaxLength="150" Unicode="false" FixedLength="false" />
+    <Property Name="AdresUr" Type="String" MaxLength="150" Unicode="false" FixedLength="false" />
+    <Property Name="Tel" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Dogovor" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Dogovor2" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="DayDelivery" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Discont" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+    <Property Name="Bank" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="CityBank" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="BIK" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+    <Property Name="RS" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+    <Property Name="KS" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+    <Property Name="CNote" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="bSusp" Type="Boolean" Nullable="false" />
+    <Property Name="bFactB" Type="Boolean" Nullable="false" />
+    <Property Name="bStopOut" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="BIL" Relationship="DBPetraModel.FK_BIL_spCLI" FromRole="spCLI" ToRole="BIL" />
+    <NavigationProperty Name="BIL1" Relationship="DBPetraModel.FK_BIL_spCLI1" FromRole="spCLI" ToRole="BIL" />
+  </EntityType>
+  <EntityType Name="spWAR">
+    <Key>
+      <PropertyRef Name="r_WAR" />
+    </Key>
+    <Property Name="r_WAR" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="r_NOTE" Type="Int32" />
+    <Property Name="N_CUR" Type="Byte" />
+    <Property Name="N_WHS" Type="Byte" Nullable="false" />
+    <Property Name="N_TIPT" Type="Byte" />
+    <Property Name="N_UNI" Type="Byte" />
+    <Property Name="N_PART" Type="Byte" />
+    <Property Name="Name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Name_c" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="BarCode" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="CPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="CPriceKf" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+    <Property Name="LastInPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Ostat" Type="Single" Nullable="false" />
+    <Property Name="DateCre" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateEdit" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Goden_Mes" Type="Int16" Nullable="false" />
+    <Property Name="Goden_Usl" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="NDS" Type="Int16" Nullable="false" />
+    <Property Name="Npp" Type="Int16" Nullable="false" />
+    <Property Name="NUPK" Type="Int16" Nullable="false" />
+    <Property Name="NupkBlock" Type="Int16" Nullable="false" />
+    <Property Name="NUPK_Note" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="NUPKG" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Volume" Type="Single" />
+    <Property Name="Weight" Type="Single" />
+    <Property Name="W_Netto" Type="Single" Nullable="false" />
+    <Property Name="C_N_Cntr" Type="Int16" />
+    <Property Name="C_NGTD" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="ToDelivery" Type="Boolean" Nullable="false" />
+    <Property Name="ForSale" Type="Boolean" Nullable="false" />
+    <Property Name="IsWare" Type="Boolean" Nullable="false" />
+    <Property Name="IsService" Type="Boolean" Nullable="false" />
+    <Property Name="NNP" Type="Boolean" Nullable="false" />
+    <Property Name="bPart" Type="Boolean" Nullable="false" />
+    <Property Name="bNoPost" Type="Boolean" Nullable="false" />
+    <Property Name="bSusp" Type="Boolean" Nullable="false" />
+    <Property Name="r_HWAR" Type="Int32" />
+    <Property Name="r_PWAR" Type="Int32" />
+    <NavigationProperty Name="BILS" Relationship="DBPetraModel.FK_BILS_spWAR" FromRole="spWAR" ToRole="BILS" />
+  </EntityType>
+  <Association Name="FK_BIL_spCLI">
+    <End Role="spCLI" Type="DBPetraModel.spCLI" Multiplicity="0..1" />
+    <End Role="BIL" Type="DBPetraModel.BIL" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="spCLI">
+        <PropertyRef Name="r_CLI" />
+      </Principal>
+      <Dependent Role="BIL">
+        <PropertyRef Name="r_CLI" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BIL_spCLI1">
+    <End Role="spCLI" Type="DBPetraModel.spCLI" Multiplicity="0..1" />
+    <End Role="BIL" Type="DBPetraModel.BIL" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="spCLI">
+        <PropertyRef Name="r_CLI" />
+      </Principal>
+      <Dependent Role="BIL">
+        <PropertyRef Name="r_FCLI" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BILS_spWAR">
+    <End Role="spWAR" Type="DBPetraModel.spWAR" Multiplicity="0..1" />
+    <End Role="BILS" Type="DBPetraModel.BILS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="spWAR">
+        <PropertyRef Name="r_WAR" />
+      </Principal>
+      <Dependent Role="BILS">
+        <PropertyRef Name="r_WAR" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

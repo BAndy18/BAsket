@@ -19,8 +19,8 @@ BAsket.Order = function (params) {
 	var noteVal = ko.observable('');
 	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
 
-	if (!P.currentNms)
-		DAL.ReadNms();
+	// if (!P.currentNms)
+	// 	DAL.ReadNms();
 
 	var viewModel = {
 		clients: DAL.Clients(),
@@ -35,20 +35,20 @@ BAsket.Order = function (params) {
         noteVal: noteVal,
 
         nmsNames: nmsNames,
-        dsNms1: P.currentNms[1],
-        dsNms2: P.currentNms[2],
+        dsNms1: P.arrNMS[1],
+        dsNms2: P.arrNMS[2],
         //dsNms: DAL.NMS(0),
         //arrayNms: arrayNms,       
 		//nmsId: P.currentNms[0]['id'],
         //nmsName: P.currentNms[0]['Name'],
 
         viewShown: function() {
-        	if (P.currentNms.length)
-			for (var i=0; i<P.currentNms[0].length; i++) {
+        	//if (P.currentNms.length)
+			for (var i=0; i<P.arrNMS[0].length; i++) {
 				var setNms = $("#idNms" + (i+1));
 				if (setNms.length == 1){
 					setNms.parent().show();
-					setNms[0].parentNode.children[0].innerText = P.currentNms[0][i].Name;
+					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].Name;
 				}
 			}
         },
@@ -65,7 +65,7 @@ BAsket.Order = function (params) {
 			var dateParts = result[0].DateDoc.split(".");
 			if (dateParts.length == 1)
 				dateParts = result[0].DateDoc.split("-");
-			console.log('Order id=' + params.Id + ' date=' + dateParts);
+			//console.log('Order id=' + params.Id + ' date=' + dateParts);
 			if (dateParts[0].length > 2)
 				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
 			else
@@ -90,7 +90,7 @@ BAsket.Order = function (params) {
 				var setNms = $("#idNms" + iNms).data("dxSelectBox");
 				if (setNms){
 					setNms.option().value = sNms[1];
-					var val = P.currentNms[iNms][sNms[1]-1].Name;
+					var val = P.arrNMS[iNms][sNms[1]-1].Name;
 					arr[iNms - 1] = val;
 				}
 			}
@@ -179,13 +179,13 @@ BAsket.Order = function (params) {
 		//prms['date'] = valueDate.getDate() + '.' + (valueDate.getMonth()+1) + '.' + valueDate.getFullYear();
 		prms['date'] = U.DateFormat(valueDate);
 		//console.log('Order save date=' + dataVal());
-		console.log('Order save datetoLocaleString=' + prms['date']);
+		//console.log('Order save datetoLocaleString=' + prms['date']);
 		prms['idCli'] = valueCli;
 		prms['idTp'] = (valueTP ? valueTP:0);
 		prms['sumDoc'] =Order_calcSum('-');
 		
 		prms['sOther'] = '';
-		for (var i=0; i<P.currentNms[1].length; i++) {
+		for (var i=0; i<P.arrNMS[1].length; i++) {
 			var setNms = $("#idNms" + (i+1)).data("dxSelectBox");
 			if (setNms && setNms.option().value){
 				prms['sOther'] += (i+1) + ':' + setNms.option().value + ';';

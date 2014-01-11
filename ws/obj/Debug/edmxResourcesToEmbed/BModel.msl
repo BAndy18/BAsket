@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DBPetraModelStoreContainer" CdmEntityContainer="DBPetraEntities">
+    <EntitySetMapping Name="BIL">
+      <EntityTypeMapping TypeName="DBPetraModel.BIL">
+        <MappingFragment StoreEntitySet="BIL">
+          <ScalarProperty Name="r_BIL" ColumnName="r_BIL" />
+          <ScalarProperty Name="r_SUP" ColumnName="r_SUP" />
+          <ScalarProperty Name="r_CLI" ColumnName="r_CLI" />
+          <ScalarProperty Name="r_FCLI" ColumnName="r_FCLI" />
+          <ScalarProperty Name="r_STAD" ColumnName="r_STAD" />
+          <ScalarProperty Name="r_OPER" ColumnName="r_OPER" />
+          <ScalarProperty Name="r_NOTE" ColumnName="r_NOTE" />
+          <ScalarProperty Name="N_TPAY" ColumnName="N_TPAY" />
+          <ScalarProperty Name="N_TINV" ColumnName="N_TINV" />
+          <ScalarProperty Name="N_DAYS" ColumnName="N_DAYS" />
+          <ScalarProperty Name="N_TP" ColumnName="N_TP" />
+          <ScalarProperty Name="N_EP" ColumnName="N_EP" />
+          <ScalarProperty Name="N_VD" ColumnName="N_VD" />
+          <ScalarProperty Name="N_AM" ColumnName="N_AM" />
+          <ScalarProperty Name="n_reis" ColumnName="n_reis" />
+          <ScalarProperty Name="N_US" ColumnName="N_US" />
+          <ScalarProperty Name="N_TPDOC" ColumnName="N_TPDOC" />
+          <ScalarProperty Name="N_MOVE" ColumnName="N_MOVE" />
+          <ScalarProperty Name="NumDoc" ColumnName="NumDoc" />
+          <ScalarProperty Name="DateDoc" ColumnName="DateDoc" />
+          <ScalarProperty Name="DateCre" ColumnName="DateCre" />
+          <ScalarProperty Name="SumDoc" ColumnName="SumDoc" />
+          <ScalarProperty Name="SumPay" ColumnName="SumPay" />
+          <ScalarProperty Name="SumInv" ColumnName="SumInv" />
+          <ScalarProperty Name="Discont" ColumnName="Discont" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="NNP" ColumnName="NNP" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BILS">
+      <EntityTypeMapping TypeName="DBPetraModel.BILS">
+        <MappingFragment StoreEntitySet="BILS">
+          <ScalarProperty Name="r_BILS" ColumnName="r_BILS" />
+          <ScalarProperty Name="r_BIL" ColumnName="r_BIL" />
+          <ScalarProperty Name="r_WAR" ColumnName="r_WAR" />
+          <ScalarProperty Name="r_ISL" ColumnName="r_ISL" />
+          <ScalarProperty Name="N_TOST" ColumnName="N_TOST" />
+          <ScalarProperty Name="N_UNI" ColumnName="N_UNI" />
+          <ScalarProperty Name="Npp" ColumnName="Npp" />
+          <ScalarProperty Name="Quant" ColumnName="Quant" />
+          <ScalarProperty Name="QRmnd" ColumnName="QRmnd" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceIN" ColumnName="PriceIN" />
+          <ScalarProperty Name="PricePor" ColumnName="PricePor" />
+          <ScalarProperty Name="PriceWar" ColumnName="PriceWar" />
+          <ScalarProperty Name="NDS" ColumnName="NDS" />
+          <ScalarProperty Name="NNP" ColumnName="NNP" />
+          <ScalarProperty Name="FromPN" ColumnName="FromPN" />
+          <ScalarProperty Name="LastUnit" ColumnName="LastUnit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="spCLI">
+      <EntityTypeMapping TypeName="DBPetraModel.spCLI">
+        <MappingFragment StoreEntitySet="spCLI">
+          <ScalarProperty Name="r_CLI" ColumnName="r_CLI" />
+          <ScalarProperty Name="r_FCLI" ColumnName="r_FCLI" />
+          <ScalarProperty Name="r_NOTE" ColumnName="r_NOTE" />
+          <ScalarProperty Name="N_REG" ColumnName="N_REG" />
+          <ScalarProperty Name="N_REGTP" ColumnName="N_REGTP" />
+          <ScalarProperty Name="N_TCLI" ColumnName="N_TCLI" />
+          <ScalarProperty Name="N_TOCH" ColumnName="N_TOCH" />
+          <ScalarProperty Name="cN_DAYS" ColumnName="cN_DAYS" />
+          <ScalarProperty Name="cr_SUP" ColumnName="cr_SUP" />
+          <ScalarProperty Name="cN_TINV" ColumnName="cN_TINV" />
+          <ScalarProperty Name="INN" ColumnName="INN" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Kod" ColumnName="Kod" />
+          <ScalarProperty Name="DateCre" ColumnName="DateCre" />
+          <ScalarProperty Name="DateEdit" ColumnName="DateEdit" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="Max_Credit" ColumnName="Max_Credit" />
+          <ScalarProperty Name="Adres" ColumnName="Adres" />
+          <ScalarProperty Name="AdresUr" ColumnName="AdresUr" />
+          <ScalarProperty Name="Tel" ColumnName="Tel" />
+          <ScalarProperty Name="Dogovor" ColumnName="Dogovor" />
+          <ScalarProperty Name="Dogovor2" ColumnName="Dogovor2" />
+          <ScalarProperty Name="DayDelivery" ColumnName="DayDelivery" />
+          <ScalarProperty Name="Discont" ColumnName="Discont" />
+          <ScalarProperty Name="Bank" ColumnName="Bank" />
+          <ScalarProperty Name="CityBank" ColumnName="CityBank" />
+          <ScalarProperty Name="BIK" ColumnName="BIK" />
+          <ScalarProperty Name="RS" ColumnName="RS" />
+          <ScalarProperty Name="KS" ColumnName="KS" />
+          <ScalarProperty Name="CNote" ColumnName="CNote" />
+          <ScalarProperty Name="bSusp" ColumnName="bSusp" />
+          <ScalarProperty Name="bFactB" ColumnName="bFactB" />
+          <ScalarProperty Name="bStopOut" ColumnName="bStopOut" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="spWAR">
+      <EntityTypeMapping TypeName="DBPetraModel.spWAR">
+        <MappingFragment StoreEntitySet="spWAR">
+          <ScalarProperty Name="r_WAR" ColumnName="r_WAR" />
+          <ScalarProperty Name="r_NOTE" ColumnName="r_NOTE" />
+          <ScalarProperty Name="N_CUR" ColumnName="N_CUR" />
+          <ScalarProperty Name="N_WHS" ColumnName="N_WHS" />
+          <ScalarProperty Name="N_TIPT" ColumnName="N_TIPT" />
+          <ScalarProperty Name="N_UNI" ColumnName="N_UNI" />
+          <ScalarProperty Name="N_PART" ColumnName="N_PART" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Name_c" ColumnName="Name_c" />
+          <ScalarProperty Name="BarCode" ColumnName="BarCode" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="CPrice" ColumnName="CPrice" />
+          <ScalarProperty Name="CPriceKf" ColumnName="CPriceKf" />
+          <ScalarProperty Name="LastInPrice" ColumnName="LastInPrice" />
+          <ScalarProperty Name="Ostat" ColumnName="Ostat" />
+          <ScalarProperty Name="DateCre" ColumnName="DateCre" />
+          <ScalarProperty Name="DateEdit" ColumnName="DateEdit" />
+          <ScalarProperty Name="Goden_Mes" ColumnName="Goden_Mes" />
+          <ScalarProperty Name="Goden_Usl" ColumnName="Goden_Usl" />
+          <ScalarProperty Name="NDS" ColumnName="NDS" />
+          <ScalarProperty Name="Npp" ColumnName="Npp" />
+          <ScalarProperty Name="NUPK" ColumnName="NUPK" />
+          <ScalarProperty Name="NupkBlock" ColumnName="NupkBlock" />
+          <ScalarProperty Name="NUPK_Note" ColumnName="NUPK_Note" />
+          <ScalarProperty Name="NUPKG" ColumnName="NUPKG" />
+          <ScalarProperty Name="Volume" ColumnName="Volume" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="W_Netto" ColumnName="W_Netto" />
+          <ScalarProperty Name="C_N_Cntr" ColumnName="_N_Cntr" />
+          <ScalarProperty Name="C_NGTD" ColumnName="_NGTD" />
+          <ScalarProperty Name="ToDelivery" ColumnName="ToDelivery" />
+          <ScalarProperty Name="ForSale" ColumnName="ForSale" />
+          <ScalarProperty Name="IsWare" ColumnName="IsWare" />
+          <ScalarProperty Name="IsService" ColumnName="IsService" />
+          <ScalarProperty Name="NNP" ColumnName="NNP" />
+          <ScalarProperty Name="bPart" ColumnName="bPart" />
+          <ScalarProperty Name="bNoPost" ColumnName="bNoPost" />
+          <ScalarProperty Name="bSusp" ColumnName="bSusp" />
+          <ScalarProperty Name="r_HWAR" ColumnName="r_HWAR" />
+          <ScalarProperty Name="r_PWAR" ColumnName="r_PWAR" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

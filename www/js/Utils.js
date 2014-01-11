@@ -324,12 +324,15 @@ var P = (function ($, window) {
     root.curModeChoice = true;
     root.modeProdView = true;
     root.fromProducts = false;
-    root.currentNms = []
+    //root.currentNms = []
     root.arrayBAsket = [];
     root.arrayBAsketL = [];
     root.copyright = '';
     root.debugMode = false;
     root.useWebDb = true;
+
+    root.arrCategory = [];
+    root.arrNMS = [];
 
 
     // root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
@@ -345,16 +348,6 @@ var P = (function ($, window) {
         root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
         if (!window.openDatabase)
             root.useWebDb = false;
-
-        DAL.TableCount();
-
-        root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
-        root.debugMode = iniLocalStor("debugMode", "true") == "true";
-
-        root.mapProvider = iniLocalStor("MapProvider", "google");
-        root.languageUI = '-';
-        root.languageUI = iniLocalStor("LanguageUI", '-');
-        root.ChangeLanguageUI();
 
         root.platformDevice = 'android';
         root.platformDevice = iniLocalStor("Platform", 'android');
@@ -376,14 +369,42 @@ var P = (function ($, window) {
             }
         }
 
+        root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
+        if (!root.arrCategory.length){
+            // DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
+                // if (dialogResult){
+                    DAL.ReadNews();
+                // }
+            // });
+            return;
+        }
+        root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
+        for (var i=0; i<root.arrNMS[0].length; i++) {
+            root.arrNMS[i+1] = JSON.parse(iniLocalStor("NMS" + (i+1), ''));
+        }
+        root.curCategoryId = root.arrCategory[0].Id;
+        root.curCategoryName = root.arrCategory[0].Name;
+
+        DAL.TableCount();
+
+        root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
+        root.debugMode = iniLocalStor("debugMode", "true") == "true";
+
+        root.mapProvider = iniLocalStor("MapProvider", "google");
+        root.languageUI = '-';
+        root.languageUI = iniLocalStor("LanguageUI", '-');
+        root.ChangeLanguageUI();
+
         root.UserName = iniLocalStor("userName", "-");
         root.UserPassword = getDeviceId();    //iniLocalStor("UserPassword", "-");
-        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass + '; ver. ' + VerConst + ')';
+        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
 
-        DAL.ReadFirstCategory();
-        DAL.ReadNms();
+        // DAL.Categories().done(function(res) {
 
-        var view = $("#idMainTileView").data("dxTileView");
+        // });
+        //DAL.ReadNms();
+
+        var view = $("#idMainTileView").data("instance");
         if (view)
             view.repaint();
     };
