@@ -1,14 +1,5 @@
 BAsket.Order = function (params) {	
- 	Order_showSum = function () {
-        var sum = 0.0;
-        for (var i in P.arrayBAsket) {
-            sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
-        }
-        return _.Products.SelSum.replace('#', P.arrayBAsket.length) + sum.toFixed(2);
-    };
-
 	var arrayTP = ko.observable([{"Id":"", "Name":""}]);
-	var arrayNms = ko.observable([{"Id":"", "Name":""}]);
     var showTP = ko.observable(false);
 	
 	var dataVal = ko.observable(new Date());
@@ -18,50 +9,19 @@ BAsket.Order = function (params) {
 	var tpName = ko.observable(_.Order.SelectPoint + '...'); 
 	var noteVal = ko.observable('');
 	var nmsNames = ko.observableArray([ _.Common.Select, _.Common.Select ]);
+	var calcSum = ko.observable('');
 
-	// if (!P.currentNms)
-	// 	DAL.ReadNms();
-
-	var viewModel = {
-		clients: DAL.Clients(),
-		arrayTP:  arrayTP,
-        showTP: showTP,
-
-        dataVal: dataVal,
-        cliId: cliId,
-        cliName: cliName,
-        tpId: tpId,
-        tpName: tpName,
-        noteVal: noteVal,
-
-        nmsNames: nmsNames,
-        dsNms1: P.arrNMS[1],
-        dsNms2: P.arrNMS[2],
-        //dsNms: DAL.NMS(0),
-        //arrayNms: arrayNms,       
-		//nmsId: P.currentNms[0]['id'],
-        //nmsName: P.currentNms[0]['Name'],
-
-        viewShown: function() {
-        	//if (P.currentNms.length)
-			for (var i=0; i<P.arrNMS[0].length; i++) {
-				var setNms = $("#idNms" + (i+1));
-				if (setNms.length == 1){
-					setNms.parent().show();
-					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].Name;
-				}
-			}
-        },
-	};
-
-	if (P.fromProducts)
-		Order_showSum();
-	else
+	if (!P.fromProducts)
 		P.arrayBAsket = [];
 
 	if (params.Id) {
-		var bil = DAL.BilMById(params.Id);
-		bil.load().done(function (result) {
+		DAL.BilMById(params.Id).load().done(function (result) {
+			if (!P.fromProducts) {
+				DAL.ProductsByWars(result[0].sWars).done(function (result) {
+					P.arrayBAsket = result;
+					calcSum(Order_calcSum());
+				})
+			}
 			var dateParts = result[0].DateDoc.split(".");
 			if (dateParts.length == 1)
 				dateParts = result[0].DateDoc.split("-");
@@ -75,12 +35,6 @@ BAsket.Order = function (params) {
 			cliName(result[0].cName);
 			tpId(result[0].IdTp);
 		
-			if (!P.fromProducts) {
-				DAL.ProductsByWars(result[0].sWars).done(function (result) {
-					P.arrayBAsket = result;
-				})
-			}
-
 			var arr = nmsNames();
 			var sOther = result[0].sOther.split(';');
 			for (var i=0; i<sOther.length; i++) {
@@ -103,26 +57,6 @@ BAsket.Order = function (params) {
 			})
 		});
 	}
-
-	// DAL.NMS(0).load().done(function (result) {
-	// 	for (var i=0; i<result.length; i++) {
-	// 		var setNms = $("#idNms" + (i+1));
-	// 		if (setNms.length == 1){
-	// 			setNms.parent().show();
-	// 			setNms[0].parentNode.children[0].innerText = result[i].Name;
-
-	// 			//var lookNms = setNms.data("dxSelectBox");
-	// 			//lookNms.option().placeholder = 'dddd' + i;
-	// 			//lookNms._dataSource._items = P.currentNms[0];
-	// 			//lookNms.dataSource.reload();
-
-	// 			//setNms.data("dxSelectBox").datasource.load();
-	// 			//setNms.data("dxSelectBox")._refreshDataSource();
-	// 			//viewModel.dsNms1=DAL.NMS(1);
-	// 			//viewModel.dsNms1.load();
-	// 		}
-	// 	}
-	// })
 
 	Order_clientChanged = function(arg){
 		var value = "";
@@ -185,7 +119,7 @@ BAsket.Order = function (params) {
 		prms['sumDoc'] =Order_calcSum('-');
 		
 		prms['sOther'] = '';
-		for (var i=0; i<P.arrNMS[1].length; i++) {
+		for (var i=0; i<P.arrNMS[0].length; i++) {
 			var setNms = $("#idNms" + (i+1)).data("dxSelectBox");
 			if (setNms && setNms.option().value){
 				prms['sOther'] += (i+1) + ':' + setNms.option().value + ';';
@@ -231,6 +165,36 @@ BAsket.Order = function (params) {
 //	    BAsket.app.navigationManager.saveState(window.localStorage);
 	}
 	
+
+	var viewModel = {
+		clients: DAL.Clients(),
+		arrayTP:  arrayTP,
+        showTP: showTP,
+        calcSum: calcSum,
+
+        dataVal: dataVal,
+        cliId: cliId,
+        cliName: cliName,
+        tpId: tpId,
+        tpName: tpName,
+        noteVal: noteVal,
+
+        nmsNames: nmsNames,
+        dsNms1: P.arrNMS[1],
+        dsNms2: P.arrNMS[2],
+        
+        viewShown: function() {
+			calcSum(Order_calcSum());
+			for (var i=0; i<P.arrNMS[0].length; i++) {
+				var setNms = $("#idNms" + (i+1));
+				if (setNms.length == 1){
+					setNms.parent().show();
+					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].Name;
+				}
+			}
+        },
+	};
+
 	return viewModel;
 };
 

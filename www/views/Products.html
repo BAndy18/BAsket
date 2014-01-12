@@ -32,9 +32,9 @@
         </div> -->
 
          <div id="listProducts" data-bind="dxList: { 
-            dataSource: dataSourceProd, 
-            noDataText: _.Common.NoDataText,
-            pullRefreshEnabled: true
+                dataSource: dataSourceProd, 
+                noDataText: _.Common.NoDataText,
+                pullRefreshEnabled: true
             }, visible: bChoice() && P.modeProdView">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
@@ -63,6 +63,7 @@
                 itemMargin: 3, baseItemHeight: 120, baseItemWidth: 160, 
                 listHeight: '80%', 
                 showScrollbar: true,
+                activeStateEnabled: false,
                 noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#product-details/{Id}'">
@@ -74,11 +75,15 @@
 
         <div class="dx-fieldset" data-bind="visible: !bChoice()">
             <div class="dx-field">
-                <div class="dx-field-label" data-bind="text: Products_calcSum()"/>
+                <div class="dx-field-label" data-bind="text: calcSum"/>
             </div>
         </div>
         
-        <div id="listBAsket" data-bind="dxList: { dataSource: dataSourceBasket, noDataText: _.Common.NoDataText }, visible: !bChoice()">
+        <div id="listBAsket" data-bind="dxList: { 
+                dataSource: dataSourceBasket, 
+                noDataText: _.Common.NoDataText,
+                pullRefreshEnabled: true
+            }, visible: !bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
                 <div class='marginleft' data-bind="text: $data.Name"/>
@@ -88,17 +93,6 @@
                 </div>
             </div>
         </div>
-<!-- 
-         <div id="listBAsket" data-bind="dxList: { dataSource: dataSourceBasket, noDataText: _.Common.NoDataText }, visible: !bChoice()">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
-                <div class="dx-table">
-                    <div class="cell70" data-bind="text: $data.Name"></div>
-                    <div class="cell10 alignright" data-bind="text: Globalize.format($data.Upak, 'n0')"></div>
-                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Quant, 'n0')"></strong></div>
-                    <div class="cell10 alignright"><strong data-bind="text: Globalize.format($data.Price, 'n2')"></strong></div>
-                </div>
-            </div>
-        </div>
- -->
+
     </div>
 </div>

@@ -2,16 +2,16 @@
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 		<div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
 		<div id="tabContent" >
-			 <!-- ko if: !selectedTab() -->
+			 <!-- ko if: selectedTab() == 0 -->
 				<div class="dx-fieldset">
 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Layout"></div>
 	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: Preferences_changePlatform}"></div>
 					</div>
-	                <div class="dx-field">
+	                <!-- <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
 	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: Preferences_changeMapProvider}"></div>
-					</div>
+					</div> -->
 <!-- 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
@@ -45,7 +45,7 @@
 	                </div>
 										
 				</div>
-				<div class="but50" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: clickRecreateLocal}"></div>
+				<div class="but50 fl-right" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: Preferences_clickRecreateLocal}"></div>
 
 <!-- 		<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
 		  <div data-options="dxTemplate : { name: 'item' }">
@@ -69,9 +69,13 @@
 	                <div class="dx-field">
 	                    <div class="dx-field-label">Admin Password</div>
 	                    <div class="dx-field-value">
-	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
+	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminPassword }"></div>
 	                    </div>
 	                </div>
+                    <div class="dx-field">
+		                <div class="dx-field-label">Web Service Url</div>
+		                <div class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsWsUrl, value: dataSouceUrl, valueChangeAction: Preferences_WsUrl }" /> 
+		            </div>
 	            </div>
             <!-- /ko -->
 		</div>
@@ -85,13 +89,13 @@
 	                <div class="dx-field">
 	                    <div class="dx-field-label">Password</div>
 	                    <div class="dx-field-value">
-	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminpass }"></div>
+	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminPassword }"></div>
 	                    </div>
 	                </div>
 	            </div>
 	            <div>
-					<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: clickLogin}"></div>
-					<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: clickCancel}"></div>
+					<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: Preferences_clickLogin}"></div>
+					<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: Preferences_clickCancel}"></div>
 				</div>
 		    </div>
 		</div>

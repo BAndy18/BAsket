@@ -296,9 +296,9 @@ var P = (function ($, window) {
     }
     root.itemCount = {
         'OrderList' : iniLocalStor("OrderList", '0'),
-        'RoadMap' : iniLocalStor("RoadMap", ''),  //'2.01 (2)',
-        'Clients' : iniLocalStor("Clients", ''), //'2134',
-        'ReadNews' : iniLocalStor("ReadNews", ''), //'13.12',
+        'RoadMap' : iniLocalStor("RoadMap", ''),
+        'Clients' : iniLocalStor("Clients", ''),
+        'ReadNews' : iniLocalStor("ReadNews", ''),
     }
 
     function getDeviceId(){
@@ -336,7 +336,9 @@ var P = (function ($, window) {
 
 
     // root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
-    // root.dataSouceUrl = "http://192.168.1.146//BAsketWS/api/";
+    // root.dataSouceUrl = "http://87.249.234.190:55777/BWS2/api/";
+    // root.dataSouceUrl = "http://10.0.0.2/BWS2/api/";
+    // root.dataSouceUrl = "http://192.168.1.146/BAsketWS/api/";
     root.dataSouceUrl = '';
     
     // root.dataSouceType = "DAL_local";
@@ -387,6 +389,8 @@ var P = (function ($, window) {
 
         DAL.TableCount();
 
+        root.dataSouceUrl = iniLocalStor("dataSouceUrl", ""); 
+        root.adminPassword = iniLocalStor("adminPassword", "admin"); 
         root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
         root.debugMode = iniLocalStor("debugMode", "true") == "true";
 
@@ -396,15 +400,10 @@ var P = (function ($, window) {
         root.ChangeLanguageUI();
 
         root.UserName = iniLocalStor("userName", "-");
-        root.UserPassword = getDeviceId();    //iniLocalStor("UserPassword", "-");
+        root.UserPassword = getDeviceId();
         root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
 
-        // DAL.Categories().done(function(res) {
-
-        // });
-        //DAL.ReadNms();
-
-        var view = $("#idMainTileView").data("instance");
+        var view = $("#idMainTileView").data("dxTileView");        //dxTileView("instance");
         if (view)
             view.repaint();
     };

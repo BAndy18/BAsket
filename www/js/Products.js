@@ -7,6 +7,7 @@ BAsket.products = function (params) {
     var bChoice = ko.observable(P.curModeChoice);
     var lbltitle =  ko.observable(_.Products.Title1);
     var btnSwText = ko.observable(_.Products.btnSwText1);
+    var calcSum = ko.observable('');
 
     var viewModel = {
         searchString: searchStr,
@@ -17,9 +18,10 @@ BAsket.products = function (params) {
         showSearch: ko.observable(false),
 
         dataSourceCat: P.arrCategory,   //DAL.Categories(),
-        //dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
-        dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}, !P.modeProdView),
-        dataSourceBasket: P.arrayBAsket,
+        dataSourceBasket:  new DevExpress.data.DataSource(new DevExpress.data.ArrayStore(P.arrayBAsket)),
+
+        dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
+        // dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}, !P.modeProdView),
 
         //categoryId: categoryId,
         //categoryName: P.curCategoryName,
@@ -27,13 +29,18 @@ BAsket.products = function (params) {
         bChoice: bChoice,
         lbltitle: lbltitle,
         btnSwText: btnSwText,
+        calcSum: calcSum,
+        
+        viewShown: function() {
+            viewModel.dataSourceProd.load();
+        }
     };
     ko.computed(function () {
         return viewModel.searchString();
     }).extend({
         throttle: 500
     }).subscribe(function () {
-        //viewModel.dataSourceProd.pageIndex(0);        
+        viewModel.dataSourceProd.pageIndex(0);        
         viewModel.dataSourceProd.load();
     });
 
@@ -54,10 +61,13 @@ BAsket.products = function (params) {
     Products_swichClicked  = function () {
         P.curModeChoice = !P.curModeChoice;
         if (!P.curModeChoice){
+            viewModel.dataSourceBasket.load();
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title2);
             btnSwText(_.Products.btnSwText2);
+            calcSum(Products_calcSum());
         } else {
+            //viewModel.dataSourceProd.load();
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title1);
             btnSwText(_.Products.btnSwText1);

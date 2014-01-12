@@ -52,8 +52,8 @@
         //     console.log('Product_Details_saveClicked arrayBAsket<' + P.arrayBAsket[i].Quant + '>');
         // }
 
-        BAsket.app.navigate('products/' + P.curCategoryId);
-        //BAsket.app.back(); 
+        //BAsket.app.navigate('products/' + P.curCategoryId);
+        BAsket.app.back(); 
     }
 
     return viewModel;

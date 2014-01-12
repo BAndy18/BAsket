@@ -279,6 +279,7 @@ var DAL = (function ($, window) {
         var dataSource = new DevExpress.data.DataSource({
             pageSize: P.pageSize, 
             load: function (loadOptions) {
+                //params.paging = false;
                 if (params.paging) {
                     params['skip'] = loadOptions.skip;
                     params['take'] = loadOptions.take;
