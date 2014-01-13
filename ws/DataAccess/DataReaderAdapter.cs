@@ -718,7 +718,10 @@ namespace BAsketWS.DataAccess
         /// </returns>
         public string GetString(string field)
         {
-            return GetString(field, default(string));
+            var ret = GetString(field, default(string));
+            if (!string.IsNullOrEmpty(ret))
+                ret = ret.Replace("'", "''");
+            return ret;
         }
 
 
@@ -737,7 +740,7 @@ namespace BAsketWS.DataAccess
         public string GetString(string field, string defaultValue)
         {
             int index = GetOrdinal(field);
-            return _dataReader.IsDBNull(index) ? defaultValue : _dataReader.GetString(index);
+            return (index < 0 || _dataReader.IsDBNull(index)) ? defaultValue : _dataReader.GetString(index);
         }
 
 
@@ -960,7 +963,8 @@ namespace BAsketWS.DataAccess
                 }
                 catch (IndexOutOfRangeException e)
                 {
-                    throw new ArgumentException(string.Format("Invalid column name '{0}'", field), "field", e);
+                    //throw new ArgumentException(string.Format("Invalid column name '{0}'", field), "field", e);
+                    index = -1;
                 }
 
                 _rowSchema.Add(field, index);

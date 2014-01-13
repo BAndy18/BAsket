@@ -30,15 +30,25 @@ namespace BAsketWS.DataAccess
                 //{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spWar Where isware=1 and bSusp=0 and Price > 0 and r_hwar={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
                 {"WarsByGId", "exec _Paging_War {0}, {1}, {2}, {3}"},
 
-                {"WarById", "Select * from spWar Where r_war={0} "},
-                {"War", "Select * from spWar Where isware=1 and bSusp=0 and Price > 0 and Ostat > 0 and r_hwar is not null and r_hwar in (22539,22549,-1,18759,21312,18415,-177,21306,22274,15520,19387,19459,14767,14515,17770,-164,17603,18679,13009,13236) Order by Name"},
+                {"WarById", "Select * From spWar Where r_war={0} "},
+                {"War", "Select * From spWar Where isware=1 and bSusp=0 and Price > 0 and Ostat > 0 and r_hwar is not null and r_hwar in (22539,22549,-1,18759,21312,18415,-177,21306,22274,15520,19387,19459,14767,14515,17770,-164,17603,18679,13009,13236) Order by Name"},
 
-                {"WarGr", "Select * from spWar Where r_pwar=0 and r_war in (22539,22549,-1,18759,21312,18415,-177,21306,22274,15520,19387,19459,14767,14515,17770,-164,17603,18679,13009,13236) Order by Name"},
+                {"WarGr", "Select * From spWar Where r_pwar=0 and r_war in (22539,22549,-1,18759,21312,18415,-177,21306,22274,15520,19387,19459,14767,14515,17770,-164,17603,18679,13009,13236) Order by Name"},
 
                 //{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by Name"},
                 {"Cli", "exec _Paging_Cli {0}, {1}, {2}"},
-                {"CliFil", "Select * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli={0} Order by Name"},
-                {"CliAll", "Select * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
+                {"CliFil", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli={0} Order by Name"},
+                {"CliById", "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}"},
+                {"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
+
+                {"Nms", "Select 0 as t_nms, 1001 as n_nms, 'Предприятие' as Name Union " +
+                    "Select 1001 as t_nms, r_sup as n_nms, Name From spSUP Where Npp>0 Union " +
+                    "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and N_NMS in (-1) and T_NMS=0 Union " +
+                    "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and T_NMS in (-1) " +
+                    "Order by t_nms, n_nms"},
+
+                {"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<600 Order by DateDoc desc"},
+                {"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
 
                 {"WebUsers", "Select * from sy_WebUsers"},
             };

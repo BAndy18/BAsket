@@ -58,6 +58,10 @@ BAsket.Order = function (params) {
 		});
 	}
 
+	substrDate = function(date){
+		return susbtring(date,1,5);
+	}
+
 	Order_clientChanged = function(arg){
 		var value = "";
 		if (arg && arg.element.length > 0) {
@@ -180,8 +184,6 @@ BAsket.Order = function (params) {
         noteVal: noteVal,
 
         nmsNames: nmsNames,
-        dsNms1: P.arrNMS[1],
-        dsNms2: P.arrNMS[2],
         
         viewShown: function() {
 			calcSum(Order_calcSum());

@@ -11,7 +11,11 @@ namespace BAsketWS.Controllers
     {
         public List<Client> Get(string id)
         {
-            var cmd = string.Format(Common.SqlCommands["CliFil"], id);
+            var qs = HttpContext.Current.Request.QueryString;
+            var fil = qs["fil"];
+            var cmd = (fil == null) 
+                ? string.Format(Common.SqlCommands["CliById"], id)
+                : string.Format(Common.SqlCommands["CliFil"], id);
             var ret = ProcessCommand(cmd);
             return ret;
         }
@@ -53,8 +57,9 @@ namespace BAsketWS.Controllers
                             {
                                 Id = reader.GetInt32(Common.GetName("r_cli")).ToString(),
                                 IdPar = reader.GetInt32(Common.GetName("r_fcli")).ToString(),
-                                Name = reader.GetString(Common.GetName("Name")).Replace("'", "''"),
-                                Adres = reader.GetString(Common.GetName("Adres")).Replace("'", "''"),
+                                Name = reader.GetString(Common.GetName("Name")),
+                                Adres = reader.GetString(Common.GetName("Adres")),
+                                FullName = reader.GetString(Common.GetName("FullName")),
                             });
                         limit--;
                         if (limit == 0) break;

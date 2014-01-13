@@ -43,7 +43,7 @@ namespace BAsketWS.Controllers
                         /*/
                         Id = reader.GetString("r_war"),
                         /**/
-                        Name = reader.GetString("Name").Replace("'", "''"),  //.Replace("\"","`")
+                        Name = reader.GetString("Name"),
                     });
                     //if (totalRows == 0) totalRows = reader.GetInt32("TotalRows");
                 }

@@ -51,16 +51,16 @@
             <div class="dx-field-label" data-bind="text: _.Products.FldUrlPict" />
             <div class="dx-field-value" data-bind="text: UrlPict" />
       </div>
-
+<!-- 
       <div class="dx-field">
             <div class="dx-field-label">Id: </div>
             <div class="dx-field-value" data-bind="text: Id"></div>
-      </div>
+      </div> -->
 
     </div>
 
     <center>
-      <div>
+      <div data-bind="visible: UrlPict">
         <img class = "image" data-bind="attr: { src: UrlPict }" />
       </div>
     </center>

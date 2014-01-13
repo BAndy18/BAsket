@@ -61,7 +61,7 @@ namespace BAsketWS.Controllers
                                 Upak = reader.GetInt32(Common.GetName("Upak")).ToString(),
                                 Ostat = reader.GetInt32(Common.GetName("Ostat")).ToString(),
                                 /**/
-                                Name = reader.GetString(Common.GetName("Name")).Replace("'", "''"),
+                                Name = reader.GetString(Common.GetName("Name")),
                                 NameArt = reader.GetString(Common.GetName("Name_c")),
                                 Price = reader.GetDecimal(Common.GetName("Price"))
                             });

@@ -66,13 +66,28 @@ var DAL_web = (function ($, window) {
         return execDataSource(param);
     };
     root.ClientsPar = function (params){
+        return execDataSource({control: 'Clients/' + params, prm: {fil: true}});
+    }
+    root.ClientById = function (params){
         return execDataSource({control: 'Clients/' + params});
     }
+
+    root.BilM = function (params){
+        return execDataSource({control: 'BilM', paging: true, prm: {} });
+    }
+    root.BilMById = function (params){
+        return execDataSource({control: 'BilM/' + params});
+    }
+    root.SaveBil = function(params){
+    }
+    root.DeleteBil = function (params){
+    }
+
 
     root.NMS = function (params){
         if (!P.dataSouceUrl)
             return DAL_tst.NMS_Data;
-        return execDataSource({control: 'Nms', prm: {Id:params}});
+        return execDataSource({control: 'Nms'});
     };
 
    function execDataSource (params, mapCallback){

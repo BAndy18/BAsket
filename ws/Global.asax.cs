@@ -78,12 +78,12 @@ namespace BAsketWS
             HttpCookie cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
             //var ticket = FormsAuthentication.Decrypt(cookie.Value);
 
-            var principal = CustomBasicAuth.Authenticate(cookie.Value);
-            //var principal = new GenericPrincipal(id, null);
-            if (principal == null)
+            var userInfo = CustomBasicAuth.Authenticate(cookie.Value);
+            if (userInfo == null)
             {
                 throw new SystemException("user not found");
             }
+            var principal = new GenericPrincipal(new GenericIdentity(userInfo.Name), userInfo.Roles);
 
             HttpContext.Current.User = principal;
         }

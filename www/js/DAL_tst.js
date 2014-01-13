@@ -16,11 +16,11 @@ var DAL_tst = (function ($, window) {
 
     root.NMS_Data = [
     	{'IdRoot': 0, 'Id': 1, 'Name': "Предприятие"},
-    	{'IdRoot': 0, 'Id': 2, 'Name': "Тип Оплаты"},
-    	{'IdRoot': 1, 'Id': 1, 'Name': "Пупкин ЧП"},
-    	{'IdRoot': 1, 'Id': 2, 'Name': "Ступкин ООО"},
-    	{'IdRoot': 2, 'Id': 1, 'Name': "наличные"},
-    	{'IdRoot': 2, 'Id': 2, 'Name': "безнал"}
+    	// {'IdRoot': 0, 'Id': 2, 'Name': "Тип Оплаты"},
+    	{'IdRoot': 1, 'Id': 16, 'Name': "Талисман ООО"},
+    	{'IdRoot': 1, 'Id': 18, 'Name': "Флагман ООО"},
+    	// {'IdRoot': 2, 'Id': 1, 'Name': "наличные"},
+    	// {'IdRoot': 2, 'Id': 2, 'Name': "безнал"}
     ]
 
     var Prod = [

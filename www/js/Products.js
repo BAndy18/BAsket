@@ -20,8 +20,8 @@ BAsket.products = function (params) {
         dataSourceCat: P.arrCategory,   //DAL.Categories(),
         dataSourceBasket:  new DevExpress.data.DataSource(new DevExpress.data.ArrayStore(P.arrayBAsket)),
 
-        dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
-        // dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}, !P.modeProdView),
+        // dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
+        dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}, !P.modeProdView),
 
         //categoryId: categoryId,
         //categoryName: P.curCategoryName,
@@ -32,7 +32,7 @@ BAsket.products = function (params) {
         calcSum: calcSum,
         
         viewShown: function() {
-            viewModel.dataSourceProd.load();
+            // viewModel.dataSourceProd.load();
         }
     };
     ko.computed(function () {
@@ -43,12 +43,6 @@ BAsket.products = function (params) {
         viewModel.dataSourceProd.pageIndex(0);        
         viewModel.dataSourceProd.load();
     });
-
-    // onClick: function () {
-    //    var list = $("#listBAsket").dxList("instance");
-    //    list.option('width', 200);            
-    //    list.repaint();
-    // }
 
     Products_calcSum = function () {
         var sum = 0.0;
@@ -67,13 +61,11 @@ BAsket.products = function (params) {
             btnSwText(_.Products.btnSwText2);
             calcSum(Products_calcSum());
         } else {
-            //viewModel.dataSourceProd.load();
+            viewModel.dataSourceProd.load();
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title1);
             btnSwText(_.Products.btnSwText1);
         }
-        //var list = $("#listProducts").data("dxList");
-        //list.repaint();
     };
 
     Products_categoryChanged = function(arg) {

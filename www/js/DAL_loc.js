@@ -5,7 +5,7 @@ var DAL = (function ($, window) {
     var dbParam = null;    
     var dbLastQ = null;    
     var dbName = 'BAsketDB';
-    var dbSize = 50000000;
+    var dbSize = 5000000;
 
 
     // root.Categories = function (params){
@@ -81,11 +81,13 @@ var DAL = (function ($, window) {
         if (!P.useWebDb)
             return DAL_web.ClientsPar(params);
         
-        return execDataSource({query: "SELECT * FROM CLI Where IdPar='" + params + "'"});  
+        return execDataSource({query:  "SELECT * FROM CLI Where IdPar='" + params + "'"});  
     }
     root.ClientById = function (params){
-        return execQuery("SELECT c.*, par.Name as ParName, IFNULL(par.Name || ' - ' || c.Name, c.Name) as FullName " +
-            "FROM CLI c Left Join CLI par On c.IdPar=par.Id Where c.Id='" + params + "'");
+        if (!P.useWebDb)
+            return DAL_web.ClientById(params);
+        return execDataSource({query: "SELECT c.*, par.Name as ParName, IFNULL(par.Name || ' - ' || c.Name, c.Name) as FullName " +
+            "FROM CLI c Left Join CLI par On c.IdPar=par.Id Where c.Id='" + params + "'"});
     }
 
     root.RoadMap = function (params){
@@ -116,24 +118,27 @@ var DAL = (function ($, window) {
     }
 
     root.BilM = function (params){
+        if (!P.useWebDb)
+            return DAL_web.BilM(params);
         return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName, substr(b.DateDoc,1,5) as ShortDate, " +
             "IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
             "IFNULL(t.Adres, c.Adres) as AdresDost " +
             "FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"});
     };
     root.BilMById = function (params){
+        if (!P.useWebDb)
+            return DAL_web.BilMById(params);
         return execDataSource({query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'"});
     };
 
-    root.SelectLastId = function(params){                
-        return execQuery("SELECT last_insert_rowid() as Id");
-//        return execQuery("SELECT Id FROM " + params + " WHERE rowid=last_insert_rowid()");
-    }
+//     root.SelectLastId = function(params){                
+//         return execQuery("SELECT last_insert_rowid() as Id");
+// //        return execQuery("SELECT Id FROM " + params + " WHERE rowid=last_insert_rowid()");
+//     }
 
-    root.DeleteBil = function (params){
-        return execQuery("DELETE FROM BILM Where Id='" + params + "'");
-    };
     root.SaveBil = function(params){
+        if (!P.useWebDb)
+            return DAL_web.SaveBil(params);
         var query = "";
         if (!params['sOther']) params['sOther'] = '';
         if (!params['sNote']) params['sNote'] = '';
@@ -150,8 +155,16 @@ var DAL = (function ($, window) {
         };
         return execQuery(query);
     }
+    root.DeleteBil = function (params){
+        if (!P.useWebDb)
+            return DAL_web.DeleteBil(params);
+            
+        return execQuery("DELETE FROM BILM Where Id='" + params + "'");
+    };
 
     root.CountTable = function (params){
+        if (!P.useWebDb)
+            return;
         return execQuery("SELECT count(Id) as cnt FROM " + params);
     };
     root.TableCount = function (params){
@@ -173,6 +186,9 @@ var DAL = (function ($, window) {
     }
 
     root.ProductsByWars = function (params){
+        if (!P.useWebDb)
+            return;
+
         var ids = '';
         P.arrayBAsket = [];
         var w = params.split(';');
@@ -194,45 +210,9 @@ var DAL = (function ($, window) {
             });
     };
 
-    // root.ReadNms = function () {
-    //     if (!P.useWebDb)
-    //         return;
-        
-        // root.NMS(0).done(function (result) {
-        //     P.currentNms.push(result);
-        //     for (var i=0; i<result.length; i++) {
-        //         root.NMS(result[i].Id).done(function (result) {
-        //             P.currentNms.push(result);
-        //             //root.currentNms.push({id:result[0].id, Name:result[0].Name});
-        //         })
-        //     }
-        // })                    
-    // };
-
-    // root.ReadFirstCategory = function () {
-    //     if (!P.useWebDb)
-    //         return;
-        
-    //     execQuery('SELECT * FROM CAT LIMIT 1').done(function (result) {
-    //         if (result.length > 0) {
-    //             P.curCategoryId = result[0].Id;
-    //             P.curCategoryName = result[0].Name;
-    //         }
-    //         else {
-    //             DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
-    //                 if (dialogResult){
-    //                     root.ReadNews();
-    //                 }
-    //             });
-    //         }
-    //     })
-    // };
-
 
     root.ReadNews = function(){
         P.loadPanelVisible(true);
-
-        root.RecreateLocalDB();
 
         var source0 = DAL_web.NMS();
         if (Object.prototype.toString.call(source0) == '[object Array]')     writeToLocalData(db, source0, 'NMS');
@@ -242,9 +222,12 @@ var DAL = (function ($, window) {
         if (Object.prototype.toString.call(source1) == '[object Array]')     writeToLocalData(db, source1, 'CAT');
         else                         source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
 
-        if (!P.useWebDb)
+        if (!P.useWebDb){
+            P.loadPanelVisible(false);
             return;
+        }
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+        root.RecreateLocalDB(db);
 
         var source2 = DAL_web.Products({Id:'all'});
         if (Object.prototype.toString.call(source2) == '[object Array]')     writeToLocalData(db, source2, 'WAR');
@@ -262,8 +245,8 @@ var DAL = (function ($, window) {
         P.Init();
     };
 
-    root.RecreateLocalDB = function(){
-        var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+    root.RecreateLocalDB = function(db){
+        //var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
         db.transaction(function(tx){
             trace('Local DB SCRIPT');
             for (i = 0; i < LocalScript.length; i++){
@@ -277,13 +260,13 @@ var DAL = (function ($, window) {
 
     function execDataSource(params, mapCallback){
         var dataSource = new DevExpress.data.DataSource({
-            pageSize: P.pageSize, 
+            pageSize: (params.paging) ? P.pageSize : dbSize, 
             load: function (loadOptions) {
                 //params.paging = false;
                 if (params.paging) {
                     params['skip'] = loadOptions.skip;
                     params['take'] = loadOptions.take;
-                }
+                } 
                 if (loadOptions.searchExpr && loadOptions.searchValue)
                     params['searchValue'] = loadOptions.searchValue;
                 else
@@ -328,6 +311,7 @@ var DAL = (function ($, window) {
     function execQuery(query, mapCallback){
         var skip = 0;
         var PAGE_SIZE = 30;
+        //alert("execQuery");
         var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
         var deferred = new $.Deferred();
         db.transaction(function(tx) {
@@ -554,11 +538,11 @@ var DAL = (function ($, window) {
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
         "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
+    ];
 
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
-        "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
-];
+        // "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
+        // "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
+        // "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
         // "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
         // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
         // "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",

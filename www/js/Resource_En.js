@@ -141,7 +141,7 @@ var RU_RU = (function (window) {
     	ColCount : 'количество',
     	ColPrice : 'цена',
     	TitleDetails: 'количество товара',
-    	ErrQuantity : 'Введите число больше либо равно 0',
+    	ErrQuantity : 'Введите число больше 0',
     	FldQuantity : 'Количество:',
     	FldName : 'Наименование:',
     	FldPrice : 'Цена:',

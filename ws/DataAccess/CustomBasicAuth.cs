@@ -12,18 +12,18 @@ namespace BAsketWS.DataAccess
 {
     public class CustomBasicAuth
     {
-         class UserInfo {
+         public class UserInfo {
             public string Name { get; set; }
             public string PasswordHash { get; set; }
             public string[] Roles { get; set; }
-        }
+         }
 
-        static UserInfo[] Users = new[] {
-            new UserInfo {
-                Name = "BAndy",
-                PasswordHash = "-", //"WavncDqfpxSuLg9YCeWKRtIBEa4=",
-                Roles = new[] { "User", "Admin" }
-            }
+         static UserInfo[] Users = new UserInfo[] {
+        //    new UserInfo {
+        //        Name = "BAndy",
+        //        PasswordHash = "-", //"WavncDqfpxSuLg9YCeWKRtIBEa4=",
+        //        Roles = new[] { "User", "Admin" }
+        //    }
         };
 
         static HashAlgorithm Hasher = new SHA1CryptoServiceProvider();
@@ -43,13 +43,14 @@ namespace BAsketWS.DataAccess
             return GetPrincipalFromCredentials(credentials[0], credentials[1]);
         }
 
-        public static IPrincipal Authenticate(string header)
+        public static UserInfo Authenticate(string header)
         {
             var credentials = ParseAuthHeader(header);
             if (credentials == null)
                 return null;
 
-            return GetPrincipalFromCredentials(credentials[0], credentials[1]);
+            return GetUserInfo(credentials[0], credentials[1]);
+            //return GetPrincipalFromCredentials(credentials[0], credentials[1]);
         }
 
         static string[] ParseAuthHeader(string header) {
@@ -68,6 +69,15 @@ namespace BAsketWS.DataAccess
 
         static IPrincipal GetPrincipalFromCredentials(string login, string password)
         {
+            var user = GetUserInfo(login, password);
+            if (user == null)
+                return null;
+
+            return new GenericPrincipal(new GenericIdentity(user.Name), user.Roles);
+        }
+
+        static UserInfo GetUserInfo(string login, string password)
+        {
             var passwordHash = password;    // GetSaltedHash(password);
             var user = Users.FirstOrDefault(u => u.Name == login && u.PasswordHash == passwordHash);
             if (user == null)
@@ -76,10 +86,10 @@ namespace BAsketWS.DataAccess
                 user = Users.FirstOrDefault(u => u.Name == login && u.PasswordHash == passwordHash);
             }
             Common.SaveLog("Login for " + login + " pwd=" + password + " res=" + (user != null));
-            if (user == null)
-                return null;
 
-            return new GenericPrincipal(new GenericIdentity(user.Name), user.Roles);
+            user.Name += ";" + user.Roles[0];
+
+            return user;
         }
 
         static void Users_Load()
@@ -93,10 +103,12 @@ namespace BAsketWS.DataAccess
 
                 while (reader.Read())
                 {
+                    //var roles = [];
                     result.Add(new UserInfo()
                         {
                             Name = reader.GetString("Name"),
-                            PasswordHash = reader.GetString("NameID"),
+                            PasswordHash = reader.GetString("NameID"), 
+                            Roles = new[] {reader.GetInt16("N_TP").ToString()},
                         });
                 }
                 Users = result.ToArray();

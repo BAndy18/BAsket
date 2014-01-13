@@ -38,13 +38,13 @@
             </div>
         </div>
         <div class="dx-fieldset">
-            <div class="dx-field" data-bind="visible: true">
+            <div class="dx-field" data-bind="visible: P.arrNMS[1]">
                 <div class="dx-field-label"></div>
-                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms1, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
+                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[1], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
             </div>
-            <div class="dx-field" data-bind="visible: true">
+            <div class="dx-field" data-bind="visible: P.arrNMS[2]">
                 <div class="dx-field-label"></div>
-                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsNms2, displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
+                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[2], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
             </div>
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Note" />
@@ -88,7 +88,7 @@
                     <div class="cell10" data-bind="text: $data.sWars"></div>
                 </div> -->
                 <div>
-                    <span class='textSmall' data-bind="text: $data.ShortDate"/>  
+                    <span class='textSmall' data-bind="text: substring($data.ShortDate)"/>  
                     <span data-bind="text: $data.FullName"/>
                     <span class='textSmall' data-bind="text: ($data.AdresDost)"/>
                 </div>

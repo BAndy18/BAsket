@@ -348,8 +348,23 @@ var P = (function ($, window) {
     
     root.Init = function(){
         root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
-        if (!window.openDatabase)
-            root.useWebDb = false;
+        var e;
+        try {
+            if (!window.openDatabase)
+                root.useWebDb = false;
+            else {
+                var mydb = openDatabase("BAsketDB", "1.0", "BAsketDB", 5000000); 
+            }
+        } catch(e) { 
+            // Error handling code goes here. 
+            if (e == INVALID_STATE_ERR) { 
+                    // Version number mismatch. 
+                    alert("Invalid database version."); 
+            } else { 
+                    alert("Unknown error "+e+"."); 
+            } 
+        }
+        //alert("Test openDatabase OK " + root.useWebDb);
 
         root.platformDevice = 'android';
         root.platformDevice = iniLocalStor("Platform", 'android');
@@ -382,7 +397,7 @@ var P = (function ($, window) {
         }
         root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
         for (var i=0; i<root.arrNMS[0].length; i++) {
-            root.arrNMS[i+1] = JSON.parse(iniLocalStor("NMS" + (i+1), ''));
+            root.arrNMS[i+1] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
         }
         root.curCategoryId = root.arrCategory[0].Id;
         root.curCategoryName = root.arrCategory[0].Name;

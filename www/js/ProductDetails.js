@@ -16,14 +16,22 @@
         viewShown: function() {
             var quant = $("#idQuant").data("dxNumberBox");
             quant.focus();
+            // setTimeout(function () {
+            //    // $('#idQuant :input').focus();
+            //     var input = $('#idQuant :input')[0];
+            //     var textEvent = document.createEvent('TextEvent');
+            //     textEvent.initTextEvent('textInput', true, true, null,  " ", 9, "en-US");
+            //     input.dispatchEvent(textEvent);
+
+            //     //simulateKeyPress("2");
+            // }, 300);
         }
     };
 	DAL.ProductDetails({Id: params.Id, model: viewModel});
 
-    // DAL.NMS(0).done(function (result) {
-    //         var quant = $("#idQuant").data("dxNumberBox");
-    //         quant.focus();
-    // })
+    // function simulateKeyPress(character) {
+    //   jQuery.event.trigger({ type : 'keypress', which : character.charCodeAt(0) });
+    // }
 
     Product_Details_saveClicked = function(arg) {
         var bFound = false;
@@ -45,7 +53,7 @@
                 break;
             }
         }
-        if (!bFound){
+        if (!bFound && quant && quant > 0){
             P.arrayBAsket.push({'Id':this.Id, 'Name':this.Name(),'Upak':this.Upak(),'Ostat':this.Ostat(),'Quant':quant,'Price':this.Price()});
         }
         // for(var i in P.arrayBAsket){

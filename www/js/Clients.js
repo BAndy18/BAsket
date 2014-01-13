@@ -82,6 +82,8 @@ BAsket.Client = function (params) {
         } else
         if (arg.itemData == arg.model.menuItems[1]) {
             var d = geoDirections();
+            if (!d.legs || d.legs.length == 0)
+                return;
             var text = '';
             text += '<p>Движение на авто ' + d.legs[0].duration.text + '; расстояние ' + d.legs[0].distance.text + 
                 '<br/>от: ' + d.legs[0].start_address + '<br/>до: ' + d.legs[0].end_address + '</p>';
@@ -110,7 +112,7 @@ BAsket.Client = function (params) {
         var map = $("#idClientMap").data("dxMap");
         map.addMarker({tooltip: _.Common.CurrentLocation, location: P.geoCurrent()});
 
-        DAL.ClientById(params.Id).done(function(result){
+        DAL.ClientById(params.Id).load().done(function(result){
             cliName(result[0].FullName + ' (' + result[0].Adres + ')');
         //              location(P.geoCurrent());
         //            if (location()){

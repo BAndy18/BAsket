@@ -4,7 +4,7 @@ BAsket.RoadMapList = function (params) {
   var dataVal = ko.observable(date);
   var itemSelected = ko.observable(0);
   var popVisible = ko.observable(false);
-  var holdTimeout = ko.observable(750);
+  var holdTimeout = ko.observable(500);
   var popupVisible = ko.observable(false);
 
   var showTP = ko.observable(false);
