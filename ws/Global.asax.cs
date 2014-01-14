@@ -77,6 +77,8 @@ namespace BAsketWS
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
             //var ticket = FormsAuthentication.Decrypt(cookie.Value);
+            if (cookie == null)
+                return;
 
             var userInfo = CustomBasicAuth.Authenticate(cookie.Value);
             if (userInfo == null)
