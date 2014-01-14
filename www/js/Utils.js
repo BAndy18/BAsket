@@ -415,6 +415,7 @@ var P = (function ($, window) {
         root.ChangeLanguageUI();
 
         root.UserName = iniLocalStor("userName", "-");
+        if (root.UserName == '-') root.UserName = 'BAndy';
         root.UserPassword = getDeviceId();
         root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
 

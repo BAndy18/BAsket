@@ -16,15 +16,18 @@ BAsket.Order = function (params) {
 
 	if (params.Id) {
 		DAL.BilMById(params.Id).load().done(function (result) {
-			if (!P.fromProducts) {
+			if (!P.fromProducts && result[0].sWars) {
 				DAL.ProductsByWars(result[0].sWars).done(function (result) {
 					P.arrayBAsket = result;
 					calcSum(Order_calcSum());
 				})
 			}
-			var dateParts = result[0].DateDoc.split(".");
+			var date = result[0].DateDoc;
+			if (date.split(" ").length > 1)
+				date = date.split(" ")[0];
+			var dateParts = date.split(".");
 			if (dateParts.length == 1)
-				dateParts = result[0].DateDoc.split("-");
+				dateParts = date.split("-");
 			//console.log('Order id=' + params.Id + ' date=' + dateParts);
 			if (dateParts[0].length > 2)
 				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
@@ -36,19 +39,26 @@ BAsket.Order = function (params) {
 			tpId(result[0].IdTp);
 		
 			var arr = nmsNames();
-			var sOther = result[0].sOther.split(';');
-			for (var i=0; i<sOther.length; i++) {
-				var sNms = sOther[i].split(':');
-				if (sNms.length < 2) continue;
-				var iNms = parseInt(sNms[0]);
-				var setNms = $("#idNms" + iNms).data("dxSelectBox");
-				if (setNms){
-					setNms.option().value = sNms[1];
-					var val = P.arrNMS[iNms][sNms[1]-1].Name;
-					arr[iNms - 1] = val;
+			var sOther = result[0].sOther;
+			if (sOther) {
+				sOther = sOther.split(';');				
+				for (var i=0; i<sOther.length; i++) {
+					var sNms = sOther[i].split(':');
+					if (sNms.length < 2) continue;
+					var iNms = parseInt(sNms[0]);
+					var setNms = $("#idNms" + iNms).data("dxSelectBox");
+					if (setNms){
+						setNms.option().value = sNms[1];
+						for (var ii=0; ii<P.arrNMS[iNms].length; ii++) 
+							if (P.arrNMS[iNms][ii].Id == sNms[1]) {
+								var val = P.arrNMS[iNms][ii].Name;
+								arr[iNms - 1] = val;
+								break;
+							}
+					}
 				}
+				nmsNames(arr);
 			}
-			nmsNames(arr);
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
     		DAL.ClientsPar(result[0].IdCli).load().done(function (result) {
@@ -56,10 +66,6 @@ BAsket.Order = function (params) {
 		    	showTP(result.length > 0);
 			})
 		});
-	}
-
-	substrDate = function(date){
-		return susbtring(date,1,5);
 	}
 
 	Order_clientChanged = function(arg){

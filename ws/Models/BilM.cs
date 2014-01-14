@@ -8,8 +8,11 @@ namespace BAsketWS.Models
     public class BilM
     {
         public string Id { get; set; }
+        public string IdCli { get; set; }
+        public string IdTp { get; set; }
 
         public string DateDoc { get; set; }
+        public string ShortDate { get; set; }
         public string SumDoc { get; set; }
         public string sNote { get; set; }
         public string sOther { get; set; }

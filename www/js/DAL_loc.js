@@ -59,7 +59,30 @@ var DAL = (function ($, window) {
         }, function(err, err2){errorCB("*readProductDetail*", err, err2);}
         );
     }
+    root.ProductsByWars = function (params){
+        var ids = '';
+        P.arrayBAsket = [];
+        var w = params.split(';');
+        for (var i in w) {
+            var v = w[i].split(':');
+            if (v[0]){
+                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
+                ids += "'" + v[0] + "',";
+            }
+        }
+        if (!P.useWebDb)
+            return DAL_web.ProductsByWars(params);
 
+        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
+            function(data){
+                for (var i in P.arrayBAsket) {
+                    if (P.arrayBAsket[i].Id == data.Id) {
+                        data.Quant = P.arrayBAsket[i].Quant;
+                    }
+                }
+                return data;    
+            });
+    };
     root.NMS = function (params){
         if (!P.useWebDb)
             return DAL_web.NMS(params);
@@ -184,31 +207,6 @@ var DAL = (function ($, window) {
             P.itemCount['RoadMap'] = P.ChangeValue('RoadMap', datestr  + ' (' + result[0].cnt + ')');
         });
     }
-
-    root.ProductsByWars = function (params){
-        if (!P.useWebDb)
-            return;
-
-        var ids = '';
-        P.arrayBAsket = [];
-        var w = params.split(';');
-        for (var i in w) {
-            var v = w[i].split(':');
-            if (v[0]){
-                P.arrayBAsket.push({'Id':v[0], 'Quant':v[1]});
-                ids += "'" + v[0] + "',";
-            }
-        }
-        return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
-            function(data){
-                for (var i in P.arrayBAsket) {
-                    if (P.arrayBAsket[i].Id == data.Id) {
-                        data.Quant = P.arrayBAsket[i].Quant;
-                    }
-                }
-                return data;    
-            });
-    };
 
 
     root.ReadNews = function(){

@@ -100,7 +100,7 @@ BAsket.Preferences = function (params) {
 		popupTitle: "Login",
 		dataSouceUrl: dataSouceUrl,
 
-		dsWsUrl: ['', 'http://87.249.234.190:55777/BWS2/api/', 'http://10.0.0.2/BWS2/api/', 'http://192.168.1.146/BAsketWS/api/'],
+		dsWsUrl: ['', 'http://87.249.234.190:55777/BWS2/api/', 'http://10.0.0.2/BWS2/api/', 'http://192.168.1.147/BAsketWS/api/'],
 
     // "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
 		dsPlatform: {

@@ -32,7 +32,7 @@ BAsket.products = function (params) {
         calcSum: calcSum,
         
         viewShown: function() {
-            // viewModel.dataSourceProd.load();
+            viewModel.dataSourceProd.load();
         }
     };
     ko.computed(function () {
@@ -61,7 +61,7 @@ BAsket.products = function (params) {
             btnSwText(_.Products.btnSwText2);
             calcSum(Products_calcSum());
         } else {
-            viewModel.dataSourceProd.load();
+            // viewModel.dataSourceProd.load();
             bChoice(P.curModeChoice);
             lbltitle(_.Products.Title1);
             btnSwText(_.Products.btnSwText1);

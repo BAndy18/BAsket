@@ -30,24 +30,25 @@ var DAL_web = (function ($, window) {
     };
     root.ProductDetails = function (params){
         execDataSource({control: 'Products/' + params.Id}).load()
-//        var dataSource = $.get(P.dataSouce + 'Products/' + params.Id)
-            .done(function (data) {
-                var quant = '0';
-                for (var i in P.arrayBAsket) {
-                    if (P.arrayBAsket[i].Id == data[0].Id) {
-                        quant = P.arrayBAsket[i].Quant;
-                    }
+        .done(function (data) {
+            var quant = '0';
+            for (var i in P.arrayBAsket) {
+                if (P.arrayBAsket[i].Id == data[0].Id) {
+                    quant = P.arrayBAsket[i].Quant;
                 }
-                params.model.Name(data[0].Name),
-                params.model.Price(data[0].Price.toFixed(2)),
-                params.model.NameArt(data[0].NameArt),
-                params.model.NameManuf(data[0].NameManuf),
-                params.model.UrlPict(data[0].UrlPict),
-                params.model.Upak(data[0].Upak),
-                params.model.Ostat(data[0].Ostat)
-                params.model.Quant(quant)
-            });
-//        return dataSource;  
+            }
+            params.model.Name(data[0].Name),
+            params.model.Price(data[0].Price.toFixed(2)),
+            params.model.NameArt(data[0].NameArt),
+            params.model.NameManuf(data[0].NameManuf),
+            params.model.UrlPict(data[0].UrlPict),
+            params.model.Upak(data[0].Upak),
+            params.model.Ostat(data[0].Ostat)
+            params.model.Quant(quant)
+        });
+    }
+    root.ProductsByWars = function (params){
+        return execDataSource({control: 'Products/', prm: {w: params}});
     }
 
     root.Clients = function (params){
@@ -79,8 +80,10 @@ var DAL_web = (function ($, window) {
         return execDataSource({control: 'BilM/' + params});
     }
     root.SaveBil = function(params){
+        return execMethod({method: 'POST', control: 'BilM/', prm: params}).load();
     }
     root.DeleteBil = function (params){
+        return execMethod({method: 'DELETE', control: 'BilM/', prm: params}).load();
     }
 
 
@@ -153,53 +156,35 @@ var DAL_web = (function ($, window) {
             });
     }
 
-    function execDataSource1 (params, mapCallback){
-         var   dataSource = new DevExpress.data.ODataContext({
-                    url: P.dataSouceUrl + params.control,
-                    errorHandler: function (error) {
-                        // if (error.httpStatus == 401)
-                        //     app.navigate('Login');
-                        // else
-                        // alert(error.message);
+    function execMethod (params, mapCallback){
+        document.cookie = ".ASPXAUTH=Basic " + P.UserName + ":" + P.UserPassword;
+
+        return new DevExpress.data.DataSource({
+            pageSize: P.pageSize, 
+            load: function (loadOptions) {
+                return $.ajax({
+                    type: params.method,
+                    url: P.dataSouceUrl + params.control, 
+                    data: params.prm,
+                    xhrFields: {
+                       withCredentials: true
                     },
-                    entities: {
-                        Clients: {
-                             key: "CategoryID",
-                             name: "Categories"
-                         }
+                    success: function (result) {
                     },
-                    beforeSend: function (request) {
-                        request.headers["Authorization"] = "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
-                        request.headers['Access-Control-Allow-Origin'] = true
-                    }        
-                });
-        return dataSource.Clients.toDataSource();
-    };
-
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-
-    // Check if the XMLHttpRequest object has a "withCredentials" property.
-    // "withCredentials" only exists on XMLHTTPRequest2 objects.
-    xhr.open(method, url, true);
-
-  } else if (typeof XDomainRequest != "undefined") {
-
-    // Otherwise, check if XDomainRequest.
-    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-
-  } else {
-
-    // Otherwise, CORS is not supported by the browser.
-    xhr = null;
-
-  }
-  return xhr;
-}
-
-
+                    error: function (result) {
+                    },
+                })
+                .done(function (result) {
+                     var mapped = $.map(result, function (item) {
+                        if (mapCallback)
+                            return mapCallback(item)
+                        else
+                            return item;
+                    });
+                })
+            }
+        });
+    }
+ 
     return root;
 })(jQuery, window);
