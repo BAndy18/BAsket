@@ -85,7 +85,7 @@ namespace BAsketWS.DataAccess
                 Users_Load();
                 user = Users.FirstOrDefault(u => u.Name == login);  // && u.PasswordHash == passwordHash);
             }
-            if (passwordHash != "-")
+            //if (passwordHash != "-")
                 Common.SaveLog("Login for " + login + " pwd=" + password + " tp=" + user.Roles[0] + " res=" + (user != null));
 
             user.Name += ";" + user.Roles[0];
