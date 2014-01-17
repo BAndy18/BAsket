@@ -303,8 +303,10 @@ var P = (function ($, window) {
 
     function getDeviceId(){
         var deviceId = '';
-        if (window.device)
+        if (window.device) {
             deviceId = window.device.uuid;
+            root.bPhoneGap = true;
+        }
         if (!deviceId)
             deviceId = iniLocalStor("userPassword", "-");
         return deviceId;
@@ -330,6 +332,7 @@ var P = (function ($, window) {
     root.copyright = '';
     root.debugMode = false;
     root.useWebDb = true;
+    root.bPhoneGap = false;
 
     root.arrCategory = [];
     root.arrNMS = [];
@@ -417,6 +420,18 @@ var P = (function ($, window) {
         root.UserName = iniLocalStor("userName", "-");
         if (root.UserName == '-') root.UserName = 'BAndy';
         root.UserPassword = getDeviceId();
+
+        var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
+        // document.cookie = ".ASPXAUTH=" + auth;
+        document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
+        root.ajaxHeaders =  (root.bPhoneGap) ? {
+            'Authorization': DevExpress.data.base64_encode(auth)
+            // 'Access-Control-Allow-Origin': true,
+            // 'Authorization' : getToken()
+            // 'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
+        } : {};
+
+
         root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
 
         var view = $("#idMainTileView").data("dxTileView");        //dxTileView("instance");

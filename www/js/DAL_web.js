@@ -94,8 +94,6 @@ var DAL_web = (function ($, window) {
     };
 
    function execDataSource (params, mapCallback){
-        document.cookie = ".ASPXAUTH=Basic " + P.UserName + ":" + P.UserPassword;
-
         if (params.lookup)
             return new DevExpress.data.DataSource({
                 pageSize: P.pageSize, 
@@ -109,8 +107,9 @@ var DAL_web = (function ($, window) {
                         url: P.dataSouceUrl + params.control, 
                         data: params.prm,
                         xhrFields: {
-                           withCredentials: true
-                       }
+                            withCredentials: true
+                        },
+                        headers: P.ajaxHeaders,
                     })
                     .done(function (result) {
                          var mapped = $.map(result, function (item) {
@@ -135,16 +134,17 @@ var DAL_web = (function ($, window) {
                     }
 //                    return $.get(P.dataSouceUrl + params.control, params.prm);
                     return $.ajax({
-                        type: "GET",
+                        // type: "GET",
                         url: P.dataSouceUrl + params.control, 
                         data: params.prm,
-                        headers: {
-                            //'Access-Control-Allow-Origin': true,
-                            //'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
-                        },
                         xhrFields: {
                            withCredentials: true
                         },
+                        headers: P.ajaxHeaders,
+                        beforeSend: function(xhrObj){
+                            // xhrObj.setRequestHeader("Accept","application/json");
+                            // xhrObj.setRequestHeader("Authorization","Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":")));
+                        }
                     });
                 },
                 map: function(item) {
@@ -157,8 +157,6 @@ var DAL_web = (function ($, window) {
     }
 
     function execMethod (params, mapCallback){
-        document.cookie = ".ASPXAUTH=Basic " + P.UserName + ":" + P.UserPassword;
-
         return new DevExpress.data.DataSource({
             pageSize: P.pageSize, 
             load: function (loadOptions) {
@@ -169,6 +167,7 @@ var DAL_web = (function ($, window) {
                     xhrFields: {
                        withCredentials: true
                     },
+                    headers: P.ajaxHeaders,
                     success: function (result) {
                     },
                     error: function (result) {

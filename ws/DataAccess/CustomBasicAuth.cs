@@ -32,15 +32,17 @@ namespace BAsketWS.DataAccess
             // NOTE in production, use basic authentication over SSL only!
             //if(!context.Request.IsSecureConnection)
             //    return;
-            context.User = Authenticate(context.Request.Headers);
+           // context.User = Authenticate(context.Request.Headers);
         }
 
-        public static IPrincipal Authenticate(NameValueCollection requestHeaders) {
+        public static UserInfo Authenticate(NameValueCollection requestHeaders)
+        {
             var credentials = ParseAuthHeader(requestHeaders["Authorization"]);
             if (credentials == null)
                 return null;
 
-            return GetPrincipalFromCredentials(credentials[0], credentials[1]);
+            return GetUserInfo(credentials[0], credentials[1]);
+            //return GetPrincipalFromCredentials(credentials[0], credentials[1]);
         }
 
         public static UserInfo Authenticate(string header)

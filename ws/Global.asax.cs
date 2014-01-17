@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Principal;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Security;
@@ -76,14 +77,19 @@ namespace BAsketWS
         void WebApiApplication_AuthenticateRequest(object sender, EventArgs e)
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
-            //var ticket = FormsAuthentication.Decrypt(cookie.Value);
-            if (cookie == null)
-                return;
+            var ticket = (cookie == null) ? HttpContext.Current.Request.Headers["Authorization"] : cookie.Value;
+            if (string.IsNullOrEmpty(ticket))
+            {
+                Common.SaveLog("*** Authorization ticket not found");
+                throw new SystemException("Authorization ticket not found");
+            }
+            ticket = Encoding.ASCII.GetString(Convert.FromBase64String(ticket));
 
-            var userInfo = CustomBasicAuth.Authenticate(cookie.Value);
+            var userInfo = CustomBasicAuth.Authenticate(ticket);
             if (userInfo == null)
             {
-                throw new SystemException("user not found");
+                Common.SaveLog("*** User not found for ticket: " + ticket);
+                throw new SystemException("User not found");
             }
             var principal = new GenericPrincipal(new GenericIdentity(userInfo.Name), userInfo.Roles);
 

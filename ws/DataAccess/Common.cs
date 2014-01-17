@@ -23,6 +23,7 @@ namespace BAsketWS.DataAccess
             res.Headers.Add("Access-Control-Allow-Credentials", "true");
             //res.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             //res.Headers.Add("Access-Control-Allow-Headers", "*");   //"Origin, X-Requested-With, Content-Type, Accept, Authorization");
+            res.Headers.Add("Access-Control-Allow-Headers", "Accept, Authorization");
         }
 
         static public Dictionary<string, string> SqlCommands = new Dictionary<string, string>()
