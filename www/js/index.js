@@ -14,6 +14,20 @@ window.onerror = function(msg, url, line, column, errorObj) {
 };
 
 $(function() {
+    // are we running in native app or in browser?
+    window.isphone = false;
+    if(document.URL.indexOf("http://") === -1 && document.URL.indexOf("https://") === -1) {
+        window.isphone = true;
+    }
+
+    if(window.isphone) {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    } else {
+        onDeviceReady();
+    }
+})
+
+function onDeviceReady() {
     //var db = window.indexedDB.open('FriendDB', 'My Friends!');
     P.Init();
 
@@ -33,7 +47,7 @@ $(function() {
     BAsket.app.router.register(":view/:Id", {view: "home", Id: undefined});
     BAsket.app.navigate();  
 //    BAsket.app.navigate('Index');  
-});
+};
 
 //type: 'info'|'warning'|'error'|'success', default == "success"
 BAsket.notify = function(message, type, time) {

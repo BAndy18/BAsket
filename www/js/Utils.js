@@ -301,7 +301,7 @@ var P = (function ($, window) {
         'ReadNews' : iniLocalStor("ReadNews", ''),
     }
 
-    function getDeviceId(){
+    root.getDeviceId = function(){
         var deviceId = '';
         if (window.device) {
             deviceId = window.device.uuid;
@@ -419,7 +419,7 @@ var P = (function ($, window) {
 
         root.UserName = iniLocalStor("userName", "-");
         if (root.UserName == '-') root.UserName = 'BAndy';
-        root.UserPassword = getDeviceId();
+        root.UserPassword = root.getDeviceId();
 
         var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
         // document.cookie = ".ASPXAUTH=" + auth;
