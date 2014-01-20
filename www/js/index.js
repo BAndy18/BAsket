@@ -15,10 +15,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
 
 $(function() {
     // are we running in native app or in browser?
-    window.isphone = false;
-    if(document.URL.indexOf("http://") === -1 && document.URL.indexOf("https://") === -1) {
-        window.isphone = true;
-    }
+    window.isphone = document.URL.indexOf("http://") === -1 && document.URL.indexOf("https://") === -1;
 
     if(window.isphone) {
         document.addEventListener("deviceready", onDeviceReady, false);

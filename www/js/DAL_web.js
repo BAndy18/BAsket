@@ -94,6 +94,7 @@ var DAL_web = (function ($, window) {
     };
 
    function execDataSource (params, mapCallback){
+        //P.getDeviceId();
         if (params.lookup)
             return new DevExpress.data.DataSource({
                 pageSize: P.pageSize, 

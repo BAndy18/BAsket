@@ -81,7 +81,8 @@ namespace BAsketWS
             if (string.IsNullOrEmpty(ticket))
             {
                 Common.SaveLog("*** Authorization ticket not found");
-                throw new SystemException("Authorization ticket not found");
+                //throw new SystemException("Authorization ticket not found");
+                return;
             }
             ticket = Encoding.ASCII.GetString(Convert.FromBase64String(ticket));
 
@@ -89,7 +90,8 @@ namespace BAsketWS
             if (userInfo == null)
             {
                 Common.SaveLog("*** User not found for ticket: " + ticket);
-                throw new SystemException("User not found");
+                //throw new SystemException("User not found");
+                return;
             }
             var principal = new GenericPrincipal(new GenericIdentity(userInfo.Name), userInfo.Roles);
 
