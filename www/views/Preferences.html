@@ -18,19 +18,19 @@
 					</div>
  -->
  	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.TableMode "/>
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.TableMode "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: modeProdView,
 	                        valueChangeAction: Preferences_TableMode}"></div>	                    
 	                </div>
 	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.UseWebDb "/>
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.UseWebDb "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: useWebDb,
-	                        valueChangeAction: Preferences_useWebDb}"/>	                    
+	                        valueChangeAction: Preferences_useWebDb}"></div>	                    
 	                </div>
 	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.DebugMode "/>
+	                    <div class="dx-field-label"data-bind="text: _.Preferences.DebugMode "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: debugMode,
-	                        valueChangeAction: Preferences_debugMode}"/>	                    
+	                        valueChangeAction: Preferences_debugMode}"></div>	                    
 	                </div>
 
 				</div>
@@ -74,7 +74,11 @@
 	                </div>
                     <div class="dx-field">
 		                <div class="dx-field-label">Web Service Url</div>
-		                <div class="dx-field-value" data-bind="dxSelectBox: {dataSource: dsWsUrl, value: dataSouceUrl, valueChangeAction: Preferences_WsUrl }" /> 
+	                    <div class="dx-field-value" data-bind="dxSelectBox: {
+							dataSource: dsWsUrl,
+							value: dataSouceUrl,
+							valueChangeAction: Preferences_WsUrl
+						}"></div> 
 		            </div>
 	            </div>
             <!-- /ko -->
@@ -94,8 +98,8 @@
 	                </div>
 	            </div>
 	            <div>
-					<div class="button but20" data-bind="dxButton:{text:'Login', clickAction: Preferences_clickLogin}"></div>
-					<div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: Preferences_clickCancel}"></div>
+					<div class="but20" data-bind="dxButton:{text:'Login', clickAction: Preferences_clickLogin}"></div>
+					<div class="but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: Preferences_clickCancel}"></div>
 				</div>
 		    </div>
 		</div>
@@ -120,7 +124,8 @@
 	    size : <span data-bind="text: screen.height + '-' + screen.width  "></span> 
 
 	    <br/><br/>
-    	<span data-bind="text: P.navAgent"></span>
+	    <span data-bind="text: navigator.userAgent"></span>
+		<br/>cookieEnabled: <span data-bind="text: navigator.cookieEnabled"></span>
 
 		<div class="copyright">
 	      <p><span data-bind="text: P.copyright"></span></p>

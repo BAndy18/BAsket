@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
-using BAsketWS.Models;
+//using System.ComponentModel.Composition;
 
 namespace BAsketWS.DataAccess
 {
@@ -29,26 +29,27 @@ namespace BAsketWS.DataAccess
         static public Dictionary<string, string> SqlCommands = new Dictionary<string, string>()
             {
                 //{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spWar Where isware=1 and bSusp=0 and Price > 0 and r_hwar={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
-                {"WarsByGId", "exec _BasketStuff 1, {0}, {1}, {2}, {3}"},
+                {"WarsByGId", "exec _BasketPaging 1, {0}, {1}, {2}, {3}"},
                 {"WarById", "Select * From spWar Where r_war={0} "},
                 {"War", "Select * From spWar Where isware=1 and bSusp=0 and Price > 0 and Ostat > 0 and r_hwar is not null and r_hwar not in (-182,18801,14967,15003) Order by Name"},
                 {"WarGr", "Select * From spWar Where r_pwar=0 and r_war not in (-182,18801,14967,15003) Order by Name"},
 
                 //{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by Name"},
-                {"Cli", "exec _BasketStuff 2, 0, {0}, {1}, {2}"},
+                {"Cli", "exec _BasketPaging 2, 0, {0}, {1}, {2}"},
                 {"CliFil", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli={0} Order by Name"},
                 {"CliById", "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}"},
                 {"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
 
-                {"Nms", "Select 0 as t_nms, 1001 as n_nms, 'Предприятие' as Name Union " +
-                    "Select 1001 as t_nms, r_sup as n_nms, Name From spSUP Where Npp>0 Union " +
+                {"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
+                    "Select 1 as t_nms, r_sup as n_nms, Name From spSUP Where Npp>0 Union " +
                     "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and N_NMS in (-1) and T_NMS=0 Union " +
                     "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and T_NMS in (-1) " +
                     "Order by t_nms, n_nms"},
 
-                {"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<600 Order by DateDoc desc"},
+                //{"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
+                {"BilM", "exec _BasketPaging 3, {0}, {1}, {2}, {3}"},
                 {"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
-                {"BilMSave", "exec _BasketStuff 3, 0, {0}, {1}, {2}"},
+                {"BilMSave", "exec _BasketStuff 1, {0}, '{1}'"},
 
                 {"WebUsers", "Select * from sy_WebUsers"},
             };

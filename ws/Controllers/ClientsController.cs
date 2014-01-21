@@ -26,8 +26,8 @@ namespace BAsketWS.Controllers
 
             var qs = HttpContext.Current.Request.QueryString;
             var id = qs["IdAll"];
-            var top = qs["take"] ?? "30";
-            var skip = qs["skip"] ?? "0";
+            var top = int.Parse(qs["take"] ?? "30");
+            var skip = int.Parse(qs["skip"] ?? "0");
             var searchString = qs["searchString"] ?? "''";
             if (string.IsNullOrEmpty(searchString))
                 searchString = "' '"; 

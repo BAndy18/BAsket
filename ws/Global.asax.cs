@@ -76,7 +76,7 @@ namespace BAsketWS
 
         void WebApiApplication_AuthenticateRequest(object sender, EventArgs e)
         {
-            HttpCookie cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+	        HttpCookie cookie = HttpContext.Current.Request.Cookies[".BAsketAUTH"];		//[FormsAuthentication.FormsCookieName];
             var ticket = (cookie == null) ? HttpContext.Current.Request.Headers["Authorization"] : cookie.Value;
             if (string.IsNullOrEmpty(ticket))
             {

@@ -1,185 +1,185 @@
 var EN_US = (function (window) {
-    var root = {};
-    root.Language = 'English';
-    root.getObj = function(obj){
-    	var objValue = eval('root.' + obj);
-    	if (objValue)
-    		return objValue;
-    	else {
-    		return obj;
-    	}
-    }
+	var root = {};
+	root.Language = 'English';
+	root.getObj = function(obj) {
+		var objValue = eval('root.' + obj);
+		if (objValue)
+			return objValue;
+		else {
+			return obj;
+		}
+	};
 
-    root.Common = {
-    	Default : "Default",
-    	Back: "Back",
-    	NoDataText: "No data to display",
-    };
+	root.Common = {
+		Default: "Default",
+		Back: "Back",
+		NoDataText: "No data to display",
+	};
 
 	root.Navigation = {
-		Order : "New Order",
-		OrderList : "Order List",
-		RoadMap : "Road Map",
-		Clients : "Clients",
-		ReadNews : "Read News",
-		Preferences : "Preferences",
-		Info : "Info",
-    };  
+		Order: "New Order",
+		OrderList: "Order List",
+		RoadMap: "Road Map",
+		Clients: "Clients",
+		ReadNews: "Read News",
+		Preferences: "Preferences",
+		Info: "Info",
+	};
 
-    root.Preferences = {
-		Title : "Preferences",
-        Main : "Main Preferences",
-        Functions : "Functions",
-        Admin : "Admin",
-        Layout: 'Layout Style',
-        MapProvider: "Map Provider",
-        Language: "Language UI",
+	root.Preferences = {
+		Title: "Preferences",
+		Main: "Main Preferences",
+		Functions: "Functions",
+		Admin: "Admin",
+		Layout: 'Layout Style',
+		MapProvider: "Map Provider",
+		Language: "Language UI",
 
-        Incorrect_password: "Incorrect password",
-    };  
+		Incorrect_password: "Incorrect password",
+	};
 
-    root.Order = {
-		Title: "Order", 
+	root.Order = {
+		Title: "Order",
 		Note: 'Note',
 		NotePrompt: 'Comments, if any',
-    	ColDate : 'Date',
-    	ColName : 'Name',
-    	ColNote : 'Note',
-    	ColOther : 'Other',
-    	ColWars : 'Wars',
-    };
+		ColDate: 'Date',
+		ColName: 'Name',
+		ColNote: 'Note',
+		ColOther: 'Other',
+		ColWars: 'Wars',
+	};
 
-    root.Products = {
-    	ColName : 'Name',
-    	ColPack : 'Pack',
-    	ColCount : 'Count',
-    	ColPrice : 'Price',
-    };
+	root.Products = {
+		ColName: 'Name',
+		ColPack: 'Pack',
+		ColCount: 'Count',
+		ColPrice: 'Price',
+	};
 
-    return root;
+	return root;
 })(window);
 
 
 var RU_RU = (function (window) {
-    var root = {};
-    root.Language = 'Русский';
+	var root = {};
+	root.Language = 'Русский';
 
-    root.Common = {
-    	Yes : "Да",
-    	No : "Нет",
-    	Cancel: 'Отменить',
-    	Default : "по умолчанию",
-    	Back: "назад",
-    	Save: 'Сохранить',
-    	Search: 'Поиск',
-    	Select : 'Выбор ...',
-    	Confirm: 'Подтвердите',
-        Loading: 'Загружается ...',
-    	NoDataText: "Нет данных",
-        CurrentLocation: 'Текущее положение',
-    };
+	root.Common = {
+		Yes: "Да",
+		No: "Нет",
+		Cancel: 'Отменить',
+		Default: "по умолчанию",
+		Back: "назад",
+		Save: 'Сохранить',
+		Search: 'Поиск',
+		Select: 'Выбор ...',
+		Confirm: 'Подтвердите',
+		Loading: 'Загружается ...',
+		NoDataText: "Нет данных",
+		CurrentLocation: 'Текущее положение',
+	};
 
 	root.Navigation = {
-		Order : "Новый Заказ",
-		OrderList : "Заказы",
-		RoadMap : "Дорожная Карта",
-		Clients : "Клиенты",
-		ReadNews : "Новости",
-		Preferences : "Настройка",
-		Info : "Инфо",
-    };  
+		Order: "Новый Заказ",
+		OrderList: "Заказы",
+		RoadMap: "Дорожная Карта",
+		Clients: "Клиенты",
+		ReadNews: "Новости",
+		Preferences: "Настройка",
+		Info: "Инфо",
+	};
 
-    root.Preferences = {
-		Title : "Настройка",
-        Main : "Основные свойства",
-        Functions : "Функции",
-        Admin : "Админ",
-        Layout: 'Стиль Интерфейса',
-        MapProvider: "Поставщик Карт",
-        Language: "Язык интерфейса",
-        TableMode: "Табличный выбор товаров",
-        UseWebDb: "Использовать Web Db",
-        DebugMode: "Режим отладки",
+	root.Preferences = {
+		Title: "Настройка",
+		Main: "Основные свойства",
+		Functions: "Функции",
+		Admin: "Админ",
+		Layout: 'Стиль Интерфейса',
+		MapProvider: "Поставщик Карт",
+		Language: "Язык интерфейса",
+		TableMode: "Табличный выбор товаров",
+		UseWebDb: "Использовать Web Db",
+		DebugMode: "Режим отладки",
 
-        Incorrect_password: "Не правильный пароль",
-    };  
+		Incorrect_password: "Не правильный пароль",
+	};
 
 	root.Order = {
-		Title: "Заказ", 
+		Title: "Заказ",
 		Products: "Товары",
-		Date : 'Дата', 
-		Client : 'Клиент', 
-		SelectClient : 'Выбор клиента ',
-		Point : 'Торговая точка',
-		SelectPoint : 'Выбор точки ',
+		Date: 'Дата',
+		Client: 'Клиент',
+		SelectClient: 'Выбор клиента ',
+		Point: 'Торговая точка',
+		SelectPoint: 'Выбор точки ',
 		SelectDop: 'Выбор типа параметра ',
 		SelectParam: 'Выбор параметра ',
 		Note: 'Примечания',
 		NotePrompt: 'комментарии если есть',
-    	ColDate : 'дата',
-    	ColName : 'имя клиента',
-    	ColTpName : 'точка',
-    	ColNote : 'примечание',
-    	ColOther : 'Other',
-    	ColWars : 'Wars',
+		ColDate: 'дата',
+		ColName: 'имя клиента',
+		ColTpName: 'точка',
+		ColNote: 'примечание',
+		ColOther: 'Other',
+		ColWars: 'Wars',
 
-    	ActionDelete : 'Удалить заказ',
+		ActionDelete: 'Удалить заказ',
 
-    	ErrNoWars : 'Не выбраны товары в заказ',
-    	ErrNoDate : 'Не установлена дата в заказе',
-    	ErrNoCli : 'Не выбраны покупатель в заказе',
-    };
+		ErrNoWars: 'Не выбраны товары в заказ',
+		ErrNoDate: 'Не установлена дата в заказе',
+		ErrNoCli: 'Не выбраны покупатель в заказе',
+	};
 
-    root.Products = {
-    	Title1 : 'Выбор товаров',
-    	Title2 : 'Корзина',
-    	btnSwText1 : 'корзина',
-    	btnSwText2 : 'товары',
-    	TitleCat : 'Выбери категорию',
-    	ColName : 'наименование',
-    	ColPack : 'упаковка',
-    	ColCount : 'количество',
-    	ColPrice : 'цена',
-    	TitleDetails: 'количество товара',
-    	ErrQuantity : 'Введите число больше 0',
-    	FldQuantity : 'Количество:',
-    	FldName : 'Наименование:',
-    	FldPrice : 'Цена:',
-    	FldNameArt : 'Артикул:',
-    	FldNameManuf : 'Производитель:',
-    	FldUpak : 'Количество в упаковке:',
-    	FldOstat : 'Остаток:',
-    	FldUrlPict : 'картинка:',
-        SelSum : 'выбрано: #; на сумму: ',
-    };
+	root.Products = {
+		Title1: 'Выбор товаров',
+		Title2: 'Корзина',
+		btnSwText1: 'корзина',
+		btnSwText2: 'товары',
+		TitleCat: 'Выбери категорию',
+		ColName: 'наименование',
+		ColPack: 'упаковка',
+		ColCount: 'количество',
+		ColPrice: 'цена',
+		TitleDetails: 'количество товара',
+		ErrQuantity: 'Введите число больше 0',
+		FldQuantity: 'Количество:',
+		FldName: 'Наименование:',
+		FldPrice: 'Цена:',
+		FldNameArt: 'Артикул:',
+		FldNameManuf: 'Производитель:',
+		FldUpak: 'Количество в упаковке:',
+		FldOstat: 'Остаток:',
+		FldUrlPict: 'картинка:',
+		SelSum: 'выбрано: #; на сумму: ',
+	};
 
-    root.Clients = {
-        Title : 'Клиент',
-        RoutDetail: "Маршрут подробно",
-    };
+	root.Clients = {
+		Title: 'Клиент',
+		RoutDetail: "Маршрут подробно",
+	};
 
-    root.RoadMap = {
-        Title : 'Дорожная Карта',
-        AddToTheMap: 'Добавить клиента',
-        ShowOnTheMap: 'Показать на карте',
-        OpenBil: 'Открыть Заказ',
-        ActionDelete : 'Удалить клиента',
-        MoveDown: 'Переместить вниз',
-        MoveUp: 'Переместить вверх',
-        ColNpp : '№',
-        ColNBil : '№ з',
-        ColCliName : 'имя клиента',
-        ColTpName : 'точка',
-        ColAdres : 'адрес',
-    };
+	root.RoadMap = {
+		Title: 'Дорожная Карта',
+		AddToTheMap: 'Добавить клиента',
+		ShowOnTheMap: 'Показать на карте',
+		OpenBil: 'Открыть Заказ',
+		ActionDelete: 'Удалить клиента',
+		MoveDown: 'Переместить вниз',
+		MoveUp: 'Переместить вверх',
+		ColNpp: '№',
+		ColNBil: '№ з',
+		ColCliName: 'имя клиента',
+		ColTpName: 'точка',
+		ColAdres: 'адрес',
+	};
 
-    // root.getObj = function(obj){
-    // 	var objValue = eval('root.' + obj);
-    // 	if (objValue)
-    // 		return objValue;
-    // 	else {
-    // 		return obj;
-    // 	}
-    // }    
-    return root;
+	// root.getObj = function(obj){
+	// 	var objValue = eval('root.' + obj);
+	// 	if (objValue)
+	// 		return objValue;
+	// 	else {
+	// 		return obj;
+	// 	}
+	// }    
+	return root;
 })(window);
