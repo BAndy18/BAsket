@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
+using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Dependencies;
+using System.Web.Mvc;
 using System.Web.Security;
 using BAsketWS.DataAccess;
 
@@ -21,6 +29,8 @@ namespace BAsketWS
             // Create an inferred delegate that invokes methods for the timer.
             //TimerCallback tcb = Common.CheckPriceStatus;
             //Timer priceTimer = new Timer(tcb, null, 0, 0);
+
+			//MefConfig.RegisterMef();
         }
 
         public static void Register(HttpConfiguration config)
@@ -81,7 +91,7 @@ namespace BAsketWS
             if (string.IsNullOrEmpty(ticket))
             {
                 Common.SaveLog("*** Authorization ticket not found");
-                //throw new SystemException("Authorization ticket not found");
+                throw new SystemException("Authorization ticket not found");
                 return;
             }
             ticket = Encoding.ASCII.GetString(Convert.FromBase64String(ticket));
@@ -96,6 +106,114 @@ namespace BAsketWS
             var principal = new GenericPrincipal(new GenericIdentity(userInfo.Name), userInfo.Roles);
 
             HttpContext.Current.User = principal;
+			//MefConfig.RegisterMef();
         }
     }
+
+	/// <summary>
+	/// Resolve dependencies for MVC / Web API using MEF.
+	/// </summary>
+	public class MefDependencyResolver : System.Web.Http.Dependencies.IDependencyResolver, System.Web.Mvc.IDependencyResolver
+	{
+		private readonly CompositionContainer _container;
+
+		public MefDependencyResolver(CompositionContainer container)
+		{
+			_container = container;
+		}
+
+		public IDependencyScope BeginScope()
+		{
+			return this;
+		}
+
+		/// <summary>
+		/// Called to request a service implementation.
+		/// 
+		/// Here we call upon MEF to instantiate implementations of dependencies.
+		/// </summary>
+		/// <param name="serviceType">Type of service requested.</param>
+		/// <returns>Service implementation or null.</returns>
+		public object GetService(Type serviceType)
+		{
+			if (serviceType == null)
+				throw new ArgumentNullException("serviceType");
+
+			var name = AttributedModelServices.GetContractName(serviceType);
+			var export = _container.GetExportedValueOrDefault<object>(name);
+			return export;
+		}
+
+		/// <summary>
+		/// Called to request service implementations.
+		/// 
+		/// Here we call upon MEF to instantiate implementations of dependencies.
+		/// </summary>
+		/// <param name="serviceType">Type of service requested.</param>
+		/// <returns>Service implementations.</returns>
+		public IEnumerable<object> GetServices(Type serviceType)
+		{
+			if (serviceType == null)
+				throw new ArgumentNullException("serviceType");
+
+			var exports = _container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
+			return exports;
+		}
+
+		public void Dispose()
+		{
+		}
+	}
+
+	public static class MefConfig
+	{
+		public static void RegisterMef()
+		{
+			var appSection = ConfigurationManager.GetSection("appSettings");
+			var catalog = new AggregateCatalog();
+			catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+			var dc = new DirectoryCatalog(".");
+			catalog.Catalogs.Add(dc);
+			//catalog.Parts.Except()
+			//var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
+
+			var container = new CompositionContainer(catalog);
+/*
+			// Settings should have 0 values.
+			container.ComposeParts(this);
+			//Contract.Assert(this.Settings.Count() == 0);
+
+			CompositionBatch batch = new CompositionBatch();
+
+			// Store the settingsPart for later removal...
+			ComposablePart settingsPart =
+				batch.AddExportedValue(new Settings { ConnectionString = "Value1" });
+
+			container.Compose(batch);
+
+			// Settings should have "Value1"
+			UsesSettings result = container.GetExportedValue<UsesSettings>();
+			Contract.Assert(result.TheSettings.ConnectionString == "Value1");
+
+			// Settings should have 1 value which is "Value1";
+//			Contract.Assert(this.Settings.Count() == 1);
+	//		Contract.Assert(this.Settings.First().ConnectionString == "Value1");
+
+			// Remove the old settings and replace it with a new one.
+			batch = new CompositionBatch();
+			batch.RemovePart(settingsPart);
+			batch.AddExportedValue(new Settings { ConnectionString = "Value2" });
+			container.Compose(batch);/**/
+
+			var resolver = new MefDependencyResolver(container);
+			// Install MEF dependency resolver for MVC
+			//DependencyResolver.SetResolver(resolver);
+			// Install MEF dependency resolver for Web API
+			System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = resolver;
+		}
+	}
+	public class Settings
+	{
+		public string ConnectionString = "default value";
+	}
 }

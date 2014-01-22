@@ -425,10 +425,11 @@ var P = (function ($, window) {
 
 		var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
 		// document.cookie = ".ASPXAUTH=" + auth;
-		//document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
+		// document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
 		document.cookie = ".BAsketAUTH=" + DevExpress.data.base64_encode(auth);
-		root.ajaxHeaders = (root.bPhoneGap) ? {
-			'Authorization': DevExpress.data.base64_encode(auth)
+		root.ajaxHeaders = (root.bPhoneGap || !location.port) ? {
+			'Authorization': DevExpress.data.base64_encode(auth),
+            // 'Cookie' : document.cookie
 			// 'Access-Control-Allow-Origin': true,
 			// 'Authorization' : getToken()
 			// 'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))

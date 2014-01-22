@@ -141,14 +141,15 @@ var DAL_web = (function ($, window) {
 						// type: "GET",
 						url: P.dataSouceUrl + params.control,
 						data: params.prm,
+                        //crossDomain: true,
 						xhrFields: {
 							withCredentials: true
 						},
 						headers: P.ajaxHeaders,
-						beforeSend: function (xhrObj) {
+						// beforeSend: function (xhrObj) {
 							// xhrObj.setRequestHeader("Accept","application/json");
 							// xhrObj.setRequestHeader("Authorization","Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":")));
-						}
+						// }
 					});
 				},
 				map: function (item) {
@@ -173,8 +174,10 @@ var DAL_web = (function ($, window) {
 						},
 						headers: P.ajaxHeaders,
 						success: function(result) {
+                            BAsket.notify('Server reply: ' + result.sNote);
 						},
 						error: function(result) {
+                            BAsket.error(result.responseText);
 						},
 					})
 					.done(function(result) {

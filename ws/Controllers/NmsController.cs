@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
@@ -7,9 +8,13 @@ using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
 {
-    public class NmsController : ApiController
+	//[Export]
+	//[PartCreationPolicy(CreationPolicy.NonShared)]
+	public class NmsController : ApiController
     {
-//        public List<Nms> Get(string id)
+		//[Import]
+		//private IMyTest _myTest;
+
         public List<Nms> Get()
         {
             var cmd = Common.SqlCommands["Nms"];
@@ -42,13 +47,16 @@ namespace BAsketWS.Controllers
                     //    result.Add(new Nms { IdRoot = 2, Id = 2, Name = "безнал" });
                     //} 
 
+	                //var name = _myTest.GetMessage();
+
                     while (reader.Read())
                     {
                         result.Add(new Nms()
                             {
                                 IdRoot = reader.GetInt32(Common.GetName("T_NMS")),
                                 Id = reader.GetInt32(Common.GetName("N_NMS")),
-                                Name = reader.GetString(Common.GetName("Name")),
+								//Name = name,
+								Name = reader.GetString(Common.GetName("Name")),
                             });
                         limit--;
                         if (limit == 0) break;
@@ -64,5 +72,27 @@ namespace BAsketWS.Controllers
         }
     }
 
+
+	public interface IMyTest
+	{
+		String GetMessage();
+	}
+
+	////[ExportMetadata("ViewType", "MyTest1")]
+	////[Export(typeof(IMyTest))]
+	////public class MyTest1 : IMyTest
+	////{
+	////	public MyTest1()
+	////	{
+	////		creationDate = DateTime.Now;
+	////	}
+
+	////	public string GetMessage()
+	////	{
+	////		return String.Format("MyTest1 created at {0}", creationDate.ToString("hh:mm:ss"));
+	////	}
+
+	////	private DateTime creationDate;
+	////}
 
 }

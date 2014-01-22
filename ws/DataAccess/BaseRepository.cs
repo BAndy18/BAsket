@@ -73,6 +73,24 @@ namespace BAsketWS.DataAccess
 			return returnValue;
 		}
 
+		public static object ExecuteScalar(string connectionName, string procedureName, List<SqlParameter> parameters)
+		{
+			object returnValue = null;
+
+			using (var connection = GetConnection(connectionName))
+			using (var command = CreateSqlCommand(connection, procedureName, parameters))
+			{
+				connection.Open();
+				returnValue = command.ExecuteScalar();
+
+				if (parameters.Count > 0 && parameters[0].Direction == ParameterDirection.Output)
+					returnValue = parameters[0].Value;
+			}
+
+
+			return returnValue;
+		}
+
 		/// <summary>
 		/// The execute reader.
 		/// </summary>

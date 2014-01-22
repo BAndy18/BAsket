@@ -54,7 +54,7 @@ BAsket.notify = function(message, type, time) {
 };
 
 BAsket.error = function(message) {
-	BAsket.notify(message, "error");
+	BAsket.notify(message, "error", 5000);
 };
 
 

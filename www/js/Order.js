@@ -146,9 +146,11 @@ BAsket.Order = function (params) {
 
 		Order_clickBack();
 
-		DAL.CountTable('BILM').done(function (result) {
-			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
-		});
+		var cnt = DAL.CountTable('BILM');
+		if (cnt)
+			cnt.done(function (result) {
+				P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
+			});
 	};
 
 	Order_clickBack = function (arg) {

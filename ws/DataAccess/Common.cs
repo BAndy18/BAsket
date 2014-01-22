@@ -49,7 +49,7 @@ namespace BAsketWS.DataAccess
                 //{"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
                 {"BilM", "exec _BasketPaging 3, {0}, {1}, {2}, {3}"},
                 {"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
-                {"BilMSave", "exec _BasketStuff 1, {0}, '{1}'"},
+                {"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
                 {"WebUsers", "Select * from sy_WebUsers"},
             };
