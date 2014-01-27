@@ -16,14 +16,19 @@ namespace BAsketWS.DataAccess
         static public void AddCorsHeaders(HttpResponse res)
         {
             var req = HttpContext.Current.Request.Headers;
-            if (req["Origin"] != null)
-                res.Headers.Add("Access-Control-Allow-Origin", req["Origin"]);
-            //res.Headers.Add("Access-Control-Allow-Origin", "http://192.168.1.146:3000");
+	        if (req["Origin"] == null)
+	        {
+				res.Headers.Add("Access-Control-Allow-Origin", "*");
+		        Common.SaveLog("*** Common (Access-Control-Allow-Origin) Origin not found");
+	        }
+	        else
+		        res.Headers.Add("Access-Control-Allow-Origin", req["Origin"]);
+	        //res.Headers.Add("Access-Control-Allow-Origin", "http://192.168.1.146:3000");
             //res.Headers.Add("Access-Control-Allow-Origin", "*");
             res.Headers.Add("Access-Control-Allow-Credentials", "true");
-            //res.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            res.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             //res.Headers.Add("Access-Control-Allow-Headers", "*");   //"Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            res.Headers.Add("Access-Control-Allow-Headers", "Accept, Authorization");
+            //res.Headers.Add("Access-Control-Allow-Headers", "Accept, Authorization");
         }
 
         static public Dictionary<string, string> SqlCommands = new Dictionary<string, string>()
@@ -312,20 +317,40 @@ namespace BAsketWS.DataAccess
         static public void SaveLog(string sLog)
         {
             var sFN = "C:\\BAsketWS.log";
-            if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.PhysicalApplicationPath.Length > 0)
-                sFN = HttpContext.Current.Request.PhysicalApplicationPath + "BAsketWS.log";
-
-            DateTime dt = DateTime.Now;
+	        try
+	        {
+		        if (HttpContext.Current != null && HttpContext.Current.Request != null &&
+		            HttpContext.Current.Request.PhysicalApplicationPath.Length > 0)
+			        sFN = HttpContext.Current.Request.PhysicalApplicationPath + "BAsketWS.log";
+	        }
+	        catch
+	        {
+				if (HttpContext.Current != null)
+				foreach (System.Collections.DictionaryEntry ckey in HttpContext.Current.Cache)
+		        {
+					if (ckey.Key.ToString().StartsWith("__System.Web.WebPages.Deployment"))
+					{
+						sFN = ckey.Value.ToString() + "BAsketWS.log";
+					}
+		        }
+	        }
+	        DateTime dt = DateTime.Now;
             string sOut = String.Format("\n{0}.{1}.{2} {3}:{4}:{5}| {6}", dt.Day.ToString("D2"), dt.Month.ToString("D2"), (dt.Year - 2000).ToString("D2"), dt.Hour.ToString("D2"), dt.Minute.ToString("D2"), dt.Second.ToString("D2"), sLog);
             System.Diagnostics.Trace.WriteLine(sOut);
             Console.Write(sOut);
             System.Text.Encoding encoding = System.Text.Encoding.Default;
-            using (FileStream fs = File.Open(sFN, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-            {
-                fs.Seek(0, SeekOrigin.End);
-                byte[] info = encoding.GetBytes(sOut.ToCharArray());
-                fs.Write(info, 0, info.Length);
-            }
+			try
+	        {
+				using (FileStream fs = File.Open(sFN, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+				{
+					fs.Seek(0, SeekOrigin.End);
+					byte[] info = encoding.GetBytes(sOut.ToCharArray());
+					fs.Write(info, 0, info.Length);
+				}
+			}
+			catch
+			{
+			}
         }
 
         #region creates

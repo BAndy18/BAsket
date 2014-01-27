@@ -138,7 +138,7 @@ var DAL_web = (function ($, window) {
 					}
 					//                    return $.get(P.dataSouceUrl + params.control, params.prm);
 					return $.ajax({
-						// type: "GET",
+						type: "GET",
 						url: P.dataSouceUrl + params.control,
 						data: params.prm,
                         //crossDomain: true,

@@ -424,16 +424,19 @@ var P = (function ($, window) {
 		root.UserPassword = root.getDeviceId();
 
 		var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
+        auth = DevExpress.data.base64_encode(auth);
 		// document.cookie = ".ASPXAUTH=" + auth;
 		// document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
-		document.cookie = ".BAsketAUTH=" + DevExpress.data.base64_encode(auth);
+		document.cookie = ".BAsketAUTH=" + auth;
+        sessionStorage['.BAsketAUTH'] = auth;
 		root.ajaxHeaders = (root.bPhoneGap || !location.port) ? {
-			'Authorization': DevExpress.data.base64_encode(auth),
+			'Authorization': auth,
             // 'Cookie' : document.cookie
 			// 'Access-Control-Allow-Origin': true,
 			// 'Authorization' : getToken()
 			// 'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
 		} : {};
+        // root.ajaxHeaders = {};
 
 
 		root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';

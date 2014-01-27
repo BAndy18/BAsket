@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
@@ -29,8 +28,8 @@ namespace BAsketWS.Controllers
             {
                 if (reader == null)
                     return null;
-                try
-                {
+				//try
+				//{
                     //if (cmd == "0")
                     //{
                     //    result.Add(new Nms {IdRoot = 0, Id = 1, Name = "Предприятие"});
@@ -61,11 +60,11 @@ namespace BAsketWS.Controllers
                         limit--;
                         if (limit == 0) break;
                     }
-                }
-                catch (Exception ex)
-                {
-                    return new List<Nms> { new Nms() { Name = ex.Message + ex.StackTrace } };
-                }
+				//}
+				//catch (Exception ex)
+				//{
+				//	return new List<Nms> { new Nms() { Name = ex.Message + ex.StackTrace } };
+				//}
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;

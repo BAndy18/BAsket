@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Configuration;
 using System.Linq;
-using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.Dependencies;
-using System.Web.Mvc;
-using System.Web.Security;
 using BAsketWS.DataAccess;
 
 namespace BAsketWS
@@ -24,6 +15,8 @@ namespace BAsketWS
     {
         protected void Application_Start()
         {
+			Common.SaveLog("*** BAsketWS Start; ver " + VerConst.ProductVer);
+
             Register(GlobalConfiguration.Configuration);
 
             // Create an inferred delegate that invokes methods for the timer.
@@ -78,11 +71,19 @@ namespace BAsketWS
         //    base.OnStartProcessingRequest(args);
         //}
 
+		private void Application_Error(object sender, EventArgs e)
+		{
+			var exception = Server.GetLastError();
+			Server.ClearError();
+
+			Common.SaveLog("Error: " + exception.Message + exception.StackTrace);
+		}
+
         public override void Init()
         {
             this.AuthenticateRequest += new EventHandler(WebApiApplication_AuthenticateRequest);
             base.Init();
-        }
+		}
 
         void WebApiApplication_AuthenticateRequest(object sender, EventArgs e)
         {
@@ -91,7 +92,7 @@ namespace BAsketWS
             if (string.IsNullOrEmpty(ticket))
             {
                 Common.SaveLog("*** Authorization ticket not found");
-                throw new SystemException("Authorization ticket not found");
+                //throw new SystemException("*** Authorization ticket not found");
                 return;
             }
             ticket = Encoding.ASCII.GetString(Convert.FromBase64String(ticket));
@@ -106,10 +107,10 @@ namespace BAsketWS
             var principal = new GenericPrincipal(new GenericIdentity(userInfo.Name), userInfo.Roles);
 
             HttpContext.Current.User = principal;
-			//MefConfig.RegisterMef();
         }
     }
 
+	/*
 	/// <summary>
 	/// Resolve dependencies for MVC / Web API using MEF.
 	/// </summary>
@@ -178,32 +179,6 @@ namespace BAsketWS
 			//var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
 
 			var container = new CompositionContainer(catalog);
-/*
-			// Settings should have 0 values.
-			container.ComposeParts(this);
-			//Contract.Assert(this.Settings.Count() == 0);
-
-			CompositionBatch batch = new CompositionBatch();
-
-			// Store the settingsPart for later removal...
-			ComposablePart settingsPart =
-				batch.AddExportedValue(new Settings { ConnectionString = "Value1" });
-
-			container.Compose(batch);
-
-			// Settings should have "Value1"
-			UsesSettings result = container.GetExportedValue<UsesSettings>();
-			Contract.Assert(result.TheSettings.ConnectionString == "Value1");
-
-			// Settings should have 1 value which is "Value1";
-//			Contract.Assert(this.Settings.Count() == 1);
-	//		Contract.Assert(this.Settings.First().ConnectionString == "Value1");
-
-			// Remove the old settings and replace it with a new one.
-			batch = new CompositionBatch();
-			batch.RemovePart(settingsPart);
-			batch.AddExportedValue(new Settings { ConnectionString = "Value2" });
-			container.Compose(batch);/**/
 
 			var resolver = new MefDependencyResolver(container);
 			// Install MEF dependency resolver for MVC
@@ -211,9 +186,36 @@ namespace BAsketWS
 			// Install MEF dependency resolver for Web API
 			System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = resolver;
 		}
-	}
+	}/**/
+
+	/*
+				// Settings should have 0 values.
+				container.ComposeParts(this);
+				//Contract.Assert(this.Settings.Count() == 0);
+
+				CompositionBatch batch = new CompositionBatch();
+
+				// Store the settingsPart for later removal...
+				ComposablePart settingsPart =
+					batch.AddExportedValue(new Settings { ConnectionString = "Value1" });
+
+				container.Compose(batch);
+
+				// Settings should have "Value1"
+				UsesSettings result = container.GetExportedValue<UsesSettings>();
+				Contract.Assert(result.TheSettings.ConnectionString == "Value1");
+
+				// Settings should have 1 value which is "Value1";
+	//			Contract.Assert(this.Settings.Count() == 1);
+		//		Contract.Assert(this.Settings.First().ConnectionString == "Value1");
+
+				// Remove the old settings and replace it with a new one.
+				batch = new CompositionBatch();
+				batch.RemovePart(settingsPart);
+				batch.AddExportedValue(new Settings { ConnectionString = "Value2" });
+				container.Compose(batch);
 	public class Settings
 	{
 		public string ConnectionString = "default value";
-	}
+	}/**/
 }

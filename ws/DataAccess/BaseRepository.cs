@@ -1,12 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RepositoryBase.cs" company="Aramark Corporation">
-//   Copyright (c) Aramark Corporation 2011
-// </copyright>
-// <summary>
-//   The base repository.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿
 #region Namespace Imports
 
 using System;
@@ -22,9 +14,6 @@ using System.Text;
 
 namespace BAsketWS.DataAccess
 {
-	/// <summary>
-	/// The repository base.
-	/// </summary>
 	public abstract class BaseRepository
 	{
 		#region Constants and Fields
@@ -43,21 +32,6 @@ namespace BAsketWS.DataAccess
 
 		#region Public Methods
 
-		/// <summary>
-		/// The execute command.
-		/// </summary>
-		/// <param name="connectionName">
-		/// The name of a connection to execute a command on.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// The execute command.
-		/// </returns>
 		public static int ExecuteCommand(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			var returnValue = 0;
@@ -91,20 +65,6 @@ namespace BAsketWS.DataAccess
 			return returnValue;
 		}
 
-		/// <summary>
-		/// The execute reader.
-		/// </summary>
-		/// <param name="connectionName">
-		/// The name of a connection to execute a command on.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// </returns>
 		public static SqlDataReader ExecuteReader(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			SqlDataReader result = null;
@@ -121,26 +81,28 @@ namespace BAsketWS.DataAccess
 			    {
 			        if (ex.Message.StartsWith("Invalid object"))
                         Common.CreateDbObject(ex.Message);
+			        else
+						Common.SaveLog("ExecuteReader: " + ex.Message);
 			    }
 			}
 
 			return result;
 		}
 
-		/// <summary>
-		/// The execute DataSet.
-		/// </summary>
-		/// <param name="connectionName">
-		/// The name of a connection to execute a command on.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// </returns>
+		public static DataReaderAdapter ExecuteReaderEx(string connectionName, string procedureName, List<SqlParameter> parameters)
+		{
+			DataReaderAdapter ra = null;
+			try
+			{
+				ra = new DataReaderAdapter(ExecuteReader(connectionName, procedureName, parameters));
+			}
+			catch (Exception ex)
+			{
+				Common.SaveLog("ExecuteReaderEx: " + ex.Message);
+			}
+			return ra;
+		}
+
 		public static DataSet ExecuteDataSet(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			var result = new DataSet();
@@ -156,20 +118,6 @@ namespace BAsketWS.DataAccess
 			return result;
 		}
 
-		/// <summary>
-		/// The execute reader transactional.
-		/// </summary>
-		/// <param name="transaction">
-		/// The transaction.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// </returns>
 		public static SqlDataReader ExecuteReaderTransactional(SqlTransaction transaction, string procedureName, List<SqlParameter> parameters)
 		{
 			SqlDataReader result = null;
@@ -183,24 +131,6 @@ namespace BAsketWS.DataAccess
 			return result;
 		}
 
-		/// <summary>
-		/// The execute transactional command.
-		/// </summary>
-		/// <param name="transaction">
-		/// The transaction.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// The execute transactional command.
-		/// </returns>
-		/// <exception cref="Exception">
-		/// <c>Exception</c>.
-		/// </exception>
 		public static int ExecuteTransactionalCommand(SqlTransaction transaction, string procedureName, List<SqlParameter> parameters)
 		{
 			var returnValue = 0;
@@ -214,46 +144,10 @@ namespace BAsketWS.DataAccess
 			return returnValue;
 		}
 
-		/// <summary>
-		/// The execute reader ex.
-		/// </summary>
-		/// <param name="connectionName">
-		/// The name of a connection to execute a command on.
-		/// </param>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="parameters">
-		/// The parameters.
-		/// </param>
-		/// <returns>
-		/// </returns>
-		public static DataReaderAdapter ExecuteReaderEx(string connectionName, string procedureName, List<SqlParameter> parameters)
-		{
-            DataReaderAdapter ra = null;
-		    try
-		    {
-		        ra = new DataReaderAdapter(ExecuteReader(connectionName, procedureName, parameters));
-		    }
-            catch (Exception ex)
-            {
-            }
-		    return ra;
-		}
-
 		#endregion
 
 		#region Methods
 
-		/// <summary>
-		/// Get the connection for database.
-		/// </summary>
-		/// <param name="connectionName">
-		/// The name of a connection to execute a command on.
-		/// </param>
-		/// <returns>
-		/// Connection.
-		/// </returns>
 		private static SqlConnection GetConnection(string connectionName)
 		{
 			var connectionString = ConfigurationManager.ConnectionStrings[connectionName].ToString();
@@ -261,21 +155,6 @@ namespace BAsketWS.DataAccess
 			return result;
 		}
 
-		/// <summary>
-		/// Create sql command.
-		/// </summary>
-		/// <param name="connection">
-		/// The connection.
-		/// </param>
-		/// <param name="procedureName">
-		/// Name of stored procedure.
-		/// </param>
-		/// <param name="parameters">
-		/// List of parameters.
-		/// </param>
-		/// <returns>
-		/// SQL command.
-		/// </returns>
 		private static SqlCommand CreateSqlCommand(SqlConnection connection, string procedureName, List<SqlParameter> parameters)
 		{
             //_log.InfoFormat("Execute stored procedure {0}", procedureName);
@@ -312,18 +191,6 @@ namespace BAsketWS.DataAccess
 			return cmd;
 		}
 
-		/// <summary>
-		/// The provide method log info.
-		/// </summary>
-		/// <param name="procedureName">
-		/// The procedure name.
-		/// </param>
-		/// <param name="sqlparameters">
-		/// The sqlparameters.
-		/// </param>
-		/// <returns>
-		/// The provide method log info.
-		/// </returns>
 		protected static string GetStoredProcedureString(string procedureName, IEnumerable<SqlParameter> sqlparameters)
 		{
 			var builder = new StringBuilder();

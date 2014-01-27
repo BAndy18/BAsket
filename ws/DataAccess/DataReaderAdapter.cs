@@ -51,6 +51,7 @@ namespace BAsketWS.DataAccess
         {
             if (dataReader == null)
             {
+				//Common.SaveLog("*** DataReaderAdapter ArgumentNullException");
                 throw new ArgumentNullException("dataReader");
             }
 

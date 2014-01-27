@@ -17,8 +17,6 @@ D:\P\BAsketPG\WsDef\WsDef\obj\Debug\WsDef.pdb
 D:\P\BAsketPG\BAsketWS\WsDef\bin\WsDef.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\WsDef.pdb
 D:\P\BAsketPG\BAsketWS\WsDef\bin\BAsketWS.dll
-D:\P\BAsketPG\BAsketWS\WsDef\bin\System.ComponentModel.Composition.CodePlex.dll
-D:\P\BAsketPG\BAsketWS\WsDef\bin\System.ComponentModel.Composition.Web.Mvc.CodePlex.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.WebHost.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Net.Http.dll
