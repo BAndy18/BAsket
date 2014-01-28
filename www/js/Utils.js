@@ -138,6 +138,20 @@ var U = (function ($, window) {
 var P = (function ($, window) {
 	var root = {};
 
+    // root.Command_Info = function(arg) {
+    //     if (typeof arg == 'string'){
+    //         BAsket.notify('Info for:' + arg);
+    //         BAsket.app.navigate('Info/' + arg);
+    //     }
+    //     else
+    //         if (arg.model){
+    //             BAsket.notify('Info for:' + arg.model.name)
+    //             BAsket.app.navigate('Info/' + arg.model.name);
+    //         }
+    //     //debugger;
+    //     //alert('BAsket.Command_Info');
+    // }
+
 	root.navigation = [
             {
             	"id": "Home", "action": "#home", "heightRatio": 4, "widthRatio": 4, "icon": "home",
@@ -152,7 +166,7 @@ var P = (function ($, window) {
             	"title": "Order List", "backcolor": "#15992A",
             },
             {
-            	"id": "RoadMap", "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8, "icon": "map",
+            	"id": "RoadMapList", "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8, "icon": "map",
             	"title": "RoadMap", "backcolor": "#006AC1",
             },
             {
@@ -296,10 +310,15 @@ var P = (function ($, window) {
 	};
 	root.itemCount = {
 		'OrderList': iniLocalStor("OrderList", '0'),
-		'RoadMap': iniLocalStor("RoadMap", ''),
+		'RoadMapList': iniLocalStor("RoadMapList", ''),
 		'Clients': iniLocalStor("Clients", ''),
 		'ReadNews': iniLocalStor("ReadNews", ''),
 	};
+
+    root.validateEmail = function(email) { 
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    } 
 
 	root.getDeviceId = function() {
 		var deviceId = '';
@@ -421,7 +440,9 @@ var P = (function ($, window) {
 
 		root.UserName = iniLocalStor("userName", "-");
 		if (root.UserName == '-') root.UserName = 'BAndy';
-		root.UserPassword = root.getDeviceId();
+        root.UserPassword = iniLocalStor("userPassword", "-");
+		if (root.UserPassword == '-') root.UserPassword = root.getDeviceId();
+        root.UserEMail = iniLocalStor("userEMail", "-");
 
 		var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
         auth = DevExpress.data.base64_encode(auth);

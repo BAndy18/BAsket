@@ -84,7 +84,13 @@
 <body>
   
   <div data-options="dxLayout : { name: 'default' } " >
-      <div data-options="dxContentPlaceholder  : { name: 'content', transition: 'slide' } "></div>
+    <!-- <div data-options="dxCommandContainer: { id: 'header-toolbar' }"></div> -->
+    <div class="layout-header">
+        <div data-bind="dxToolbar: { items: [ { text: title, align: 'center' } ] }" 
+            data-options="dxCommandContainer : { id: 'header-toolbar' }">
+        </div>
+    </div>
+    <div data-options="dxContentPlaceholder  : { name: 'content', transition: 'slide' } "></div>
   </div>    
   <div data-options="dxView : { name: 'home' } " >
     <div class="center" data-options="dxContent : { targetPlaceholder: 'content'}">

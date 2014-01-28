@@ -46,7 +46,9 @@ namespace BAsketWS.DataAccess
                 {"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
 
                 {"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
+					"Select 0 as t_nms, 101 as n_nms, 'Отчет' as Name Union " +
                     "Select 1 as t_nms, r_sup as n_nms, Name From spSUP Where Npp>0 Union " +
+					"Select 101 as t_nms, fkey as n_nms, ltrim(rtrim(p.Name)) as Name From sy_PRN p Where bSusp=0 and NView<10 and NView>=0 and left(p.Name,2)<>'+ ' and left(p.Name,2)<>'--'   and p.fkey in (21,40, 78,79, 351, 454,455, 350) Union " +
                     "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and N_NMS in (-1) and T_NMS=0 Union " +
                     "Select t_nms, n_nms, Name From spNMS Where bSusp=0 and T_NMS in (-1) " +
                     "Order by t_nms, n_nms"},
@@ -57,6 +59,7 @@ namespace BAsketWS.DataAccess
                 {"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
                 {"WebUsers", "Select * from sy_WebUsers"},
+				//{"RepList", "Select fkey, p.Name, t.RusName as grName From sy_PRN p Join sy_TAB t on p.r_tab=t.r_tab  Where bSusp=0 and NView<10 and NView>=0 and left(p.Name,2)<>'+ ' and left(p.Name,2)<>'--'   and p.fkey in (21,40, 78,79, 351, 454,455, 350)  Order by t.Name, p.nView, p.Npp, p.Name"},
             };
 
             /* Нормаль данные

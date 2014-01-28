@@ -1,4 +1,5 @@
 <div data-options="dxView : { name: 'RoadMapList', title: _.Navigation.RoadMap } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/RoadMapList' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
         <div class="dx-fieldset">
@@ -92,8 +93,9 @@
 <div data-options="dxView : { name: 'RoadMap', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
-          {  align: 'center', text: _.RoadMap.Title},
+          { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          { location: 'center', text: _.RoadMap.Title},
+          { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/RoadMap' }},          
         ]}"></div>
 
         <div data-bind="dxMap: options"></div>

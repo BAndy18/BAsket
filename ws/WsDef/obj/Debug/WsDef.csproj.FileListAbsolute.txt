@@ -19,7 +19,6 @@ D:\P\BAsketPG\BAsketWS\WsDef\bin\WsDef.pdb
 D:\P\BAsketPG\BAsketWS\WsDef\bin\BAsketWS.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.WebHost.dll
-D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Net.Http.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Net.Http.Formatting.dll
 D:\P\BAsketPG\BAsketWS\WsDef\bin\BAsketWS.pdb
 D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.xml
@@ -27,5 +26,4 @@ D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Web.Http.WebHost.xml
 D:\P\BAsketPG\BAsketWS\WsDef\obj\Debug\WsDef.csprojResolveAssemblyReference.cache
 D:\P\BAsketPG\BAsketWS\WsDef\obj\Debug\WsDef.dll
 D:\P\BAsketPG\BAsketWS\WsDef\obj\Debug\WsDef.pdb
-D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Reflection.Context.CodePlex.dll
-D:\P\BAsketPG\BAsketWS\WsDef\bin\System.ComponentModel.Composition.Registration.CodePlex.dll
+D:\P\BAsketPG\BAsketWS\WsDef\bin\System.Net.Http.dll

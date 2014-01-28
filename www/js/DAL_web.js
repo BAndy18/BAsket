@@ -89,6 +89,10 @@ var DAL_web = (function ($, window) {
 		return execMethod({ method: 'DELETE', control: 'BilM/', prm: params }).load();
 	};
 
+    root.SendRepo = function(params) {
+        return execMethod({ method: 'PUT', control: 'BilM/', prm: params }).load();
+    };
+
 
 	root.NMS = function (params) {
 		if (!P.dataSouceUrl)

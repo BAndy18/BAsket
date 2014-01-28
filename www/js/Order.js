@@ -131,7 +131,7 @@ BAsket.Order = function (params) {
 		prms['sOther'] = '';
 		for (var i = 0; i < P.arrNMS[0].length; i++) {
 			var setNms = $("#idNms" + (i + 1)).data("dxSelectBox");
-			if (setNms && setNms.option().value) {
+			if (setNms && setNms.option().value && P.arrNMS[0][i].Id < 100) {
 				prms['sOther'] += (i + 1) + ':' + setNms.option().value + ';';
 			}
 		}
@@ -197,7 +197,7 @@ BAsket.Order = function (params) {
 			calcSum(Order_calcSum());
 			for (var i = 0; i < P.arrNMS[0].length; i++) {
 				var setNms = $("#idNms" + (i + 1));
-				if (setNms.length == 1) {
+				if (setNms.length == 1 && P.arrNMS[0][i].Id < 100) {
 					setNms.parent().show();
 					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].Name;
 				}

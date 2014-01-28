@@ -1,8 +1,9 @@
 ﻿<div data-options="dxView : { name: 'product-details', layout: 'empty' } " >
   <div class="product-details" data-options="dxContent : { targetPlaceholder: 'content' } " >
       <div data-bind="dxToolbar: { items: [
-        {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
-        {  align: 'center', text: _.Products.TitleDetails },
+        { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+        { location: 'center', text: _.Products.TitleDetails },
+        { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Product-Details' }},
       ]}">
   </div>
 

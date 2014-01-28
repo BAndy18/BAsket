@@ -1,8 +1,8 @@
 BAsket.Preferences = function (params) {
 	tabs = [
 	  { text: _.Preferences.Main, icon: "comment" },
-	  { text: _.Preferences.Functions, icon: "find" },
-	  { text: _.Preferences.Admin, icon: "user" },
+	  { text: _.Preferences.Functions, icon: "user" },
+	  { text: _.Preferences.Admin, icon: "preferences" },
 	];
 	var tabContent = ko.observable();
 	var selectedTab = ko.observable(0);
@@ -25,8 +25,9 @@ BAsket.Preferences = function (params) {
 	var modeProdView = ko.observable(P.modeProdView);
 	var debugMode = ko.observable(P.debugMode);
 	var useWebDb = ko.observable(P.useWebDb);
-	var userName = ko.observable(P.userName);
-
+	var userName = ko.observable(P.UserName);
+	var userPass = ko.observable(P.UserPass);
+	var userEMail = ko.observable(P.UserEMail);
 
 	Preferences_WsUrl = function(arg) {
 		P.dataSouceUrl = P.ChangeValue("dataSouceUrl", dataSouceUrl());
@@ -41,7 +42,17 @@ BAsket.Preferences = function (params) {
 		P.debugMode = P.ChangeValue("debugMode", debugMode());
 	};
 	Preferences_userName = function(arg) {
-		P.userName = P.ChangeValue("userName", userName());
+		P.UserName = P.ChangeValue("userName", userName());
+	};
+	Preferences_userPass = function(arg) {
+		P.UserPassword = P.ChangeValue("userPassword", userName());
+	};
+	Preferences_userEMail = function(arg) {
+		if (!P.validateEmail(userEMail())){
+			BAsket.notify(_Common.EMailNotValid + ': ' + userEMail());
+			return;
+		}
+		P.UserEMail = P.ChangeValue("userEMail", userEMail());
 	};
 
 	Preferences_changePlatform = function(arg) {
@@ -125,13 +136,72 @@ BAsket.Preferences = function (params) {
 		debugMode: debugMode,
 		useWebDb: useWebDb,
 		userName: userName,
+		userPass: userPass,
+		userEMail: userEMail,
 	};
 
 	return viewModel;
 };
 
+
+BAsket.Info = function (params) {
+	// var rootShow = ko.observable(true);
+	var subTitle = ko.observable('');
+	var subText = ko.observable('');
+	var dsInfo = P.navigation.splice(1);
+	if (params.Id) {
+		// rootShow(false);
+		subTitle(params.Id);	//' - ' + 
+		var text = _.Info[params.Id]	//params.Id + " string to repeat\n";
+		// subText('<p>'+ new Array( 444 ).join( text ) + '</p>');
+		subText(text);		
+	} else {
+		dsInfo.splice(-1, 1);
+		dsInfo.push({"id": "Products", "heightRatio": 4, "widthRatio": 8, "icon": "cart", "title": _.Info.IProducts, "backcolor": "#FF981D"});
+		dsInfo.push({"id": "Product-Details", "heightRatio": 4, "widthRatio": 4, "icon": "cart", "title": _.Info.IProductDet, "backcolor": "#FF981D"});
+		dsInfo.push({"id": "Client", "heightRatio": 4, "widthRatio": 4, "icon": "globe", "title": _.Info.IClient, "backcolor": "#7200AC"});
+		dsInfo.push({"id": "RoadMap", "heightRatio": 4, "widthRatio": 4, "icon": "map", "title": _.Info.IMap, "backcolor": "#006AC1"});
+		dsInfo.push({"id": "Contacts", "heightRatio": 4, "widthRatio": 8, "icon": "home", "title": _.Info.IContacts, "backcolor": "red"});
+		dsInfo.push({"id": "SysInfo", "heightRatio": 4, "widthRatio": 4, "icon": "preferences", "title": "SysInfo", "backcolor": "black"});
+		for (var info in dsInfo){
+			dsInfo[info].action = '#Info/' + dsInfo[info].id;
+		}
+	}
+	var viewModel = {
+		title: _.Info.Title,	//'Info',	// + subTitle(),
+		// rootShow: rootShow,
+		subTitle: subTitle,
+		viewShown: function () {
+			$("#textContainer").html(subText());
+		},
+		dsInfo: dsInfo, 
+	};
+	return viewModel;
+};
+
+
 BAsket.ReadNews = function (params) {
 	var viewModel = {
+		modeSaveOrd:  ko.observable(true),
+		modeLoadOst:  ko.observable(true),
+		modeLoadSpr:  ko.observable(false),
+		arrayRepo: P.arrNMS[2],
 	};
+
+	ReadNews_SendRepo = function(){
+		if (!P.UserEMail || !P.validateEmail(P.UserEMail)){
+			BAsket.notify(_Common.EMailNotValid);
+			return;
+		}
+		var lookupRepo = $("#lookupRepo").data("dxLookup");
+		var value = lookupRepo.option().value;
+		if (!value) {
+			BAsket.notify(_.ReadNews.ChoiceRepo);
+			return;
+		}
+		DAL_web.SendRepo({'id':value, 'mail':P.UserEMail});
+		//BAsket.notify('SendRepo '+ value + ' to ' + P.UserEMail);		
+	}
+
 	return viewModel;
 };

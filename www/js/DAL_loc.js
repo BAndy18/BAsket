@@ -211,7 +211,7 @@ var DAL = (function ($, window) {
 		DAL.CountTable('RMAP').done(function(result) {
 			var date = new Date();
 			var datestr = date.getDate() + '.' + (date.getMonth() + 1);
-			P.itemCount['RoadMap'] = P.ChangeValue('RoadMap', datestr + ' (' + result[0].cnt + ')');
+			P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', datestr + ' (' + result[0].cnt + ')');
 		});
 	};
 
@@ -245,7 +245,7 @@ var DAL = (function ($, window) {
 		var date = new Date();
 		P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
-		P.itemCount['RoadMap'] = P.ChangeValue('RoadMap', 0);
+		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
 		P.Init();
 	};
@@ -364,10 +364,7 @@ var DAL = (function ($, window) {
 	var arrCLI;
 	function writeToLocalData(db, dataArray, table) {
 
-		//dbParam = {'array':dataArray, 'tab':table};
 		if (table == 'NMS') {
-			// var localData = JSON.stringify(dataArray);
-			// var arr = JSON.parse(P.ChangeValue('NMS0', localData));
 			P.arrNMS = [];
 			for (var i = 0 in dataArray) {
 				var j = dataArray[i].IdRoot;
@@ -379,45 +376,24 @@ var DAL = (function ($, window) {
 		if (table == 'CAT') {
 			var localData = JSON.stringify(dataArray);
 			P.arrCategory = JSON.parse(P.ChangeValue('categories', localData));
-
-			// arrCAT = dataArray;
-			// db.transaction(writeToCAT, 
-			//     function(err, err2) {errorCB("*write " + table + "*", err, err2);}, 
-			//     function() {trace("write " + table + ": success");});
 		}
+
 		if (table == 'WAR') {
 			arrWAR = dataArray;
 			db.transaction(writeToWAR,
                 function (err, err2) { errorCB("*write " + table + "*", err, err2); },
-                function () { trace("write " + table + ": success"); });
+                function () { trace(_.ReadNews.WroteRecs + table + ": success"); });
 		}
 		if (table == 'CLI') {
 			arrCLI = dataArray;
 			db.transaction(writeToCLI,
                 function (err, err2) { errorCB("*write " + table + "*", err, err2); },
-                function () { trace("write " + table + ": success"); });
+                function () { trace(_.ReadNews.WroteRecs + table + ": success"); });
 		}
 
 		//db.transaction(writeToDB, function(err, err2) {errorCB("*writeWars ***", err, err2);}, successCB1);
 	};
 
-	function writeToCAT(tx) {
-		P.loadPanelVisible(true);
-		var arr = arrCAT;
-		var i, maxlen = 50000;
-		//tx.executeSql("BEGIN TRANSACTION");
-		var len = arr.length;   // < maxlen? arr.length:maxlen;
-		//console.log('writeWars: writing=' + len);
-		for (i = 0; i < len; i++) {
-			dbLastQ = "INSERT INTO CAT (Id, Name) VALUES('" + arr[i].Id + "','" + arr[i].Name + "')"
-			tx.executeSql(dbLastQ, [], function (tx, results) { },
-				function (err, err2) { errorCB("*writeToCAT sql*", err, err2); }
-			);
-		}
-		//tx.executeSql("COMMIT TRANSACTION", errorCB);
-		trace('Прочитано записей: ' + i);
-		P.loadPanelVisible(false);
-	};
 	function writeToWAR(tx, arr) {
 		P.loadPanelVisible(true);
 		var arr = arrWAR;
@@ -439,7 +415,7 @@ var DAL = (function ($, window) {
 			);
 		}
 		//tx.executeSql("COMMIT TRANSACTION", errorCB);
-		trace('Прочитано записей: ' + i);
+		trace(_.ReadNews.ReadRecs + ' WAR: ' + i);
 		P.loadPanelVisible(false);
 	};
 	function writeToCLI(tx) {
@@ -460,7 +436,7 @@ var DAL = (function ($, window) {
 			);
 		}
 		//tx.executeSql("COMMIT TRANSACTION", errorCB);
-		trace('Прочитано записей: ' + i);
+		trace(_.ReadNews.ReadRecs + ' CLI: ' + i);
 		P.itemCount['Clients'] = P.ChangeValue('Clients', i);
 
 		P.loadPanelVisible(false);
@@ -531,15 +507,15 @@ var DAL = (function ($, window) {
         'DROP TABLE IF EXISTS BILM',
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
-        'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
+        // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
-        'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
+        // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
-        "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
+        // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
+        // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
+        // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",

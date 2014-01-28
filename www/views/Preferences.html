@@ -1,4 +1,5 @@
 <div data-options="dxView : { name: 'Preferences', title: _.Preferences.Title } " >
+	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Preferences' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 		<div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
 		<div id="tabContent" >
@@ -18,17 +19,17 @@
 					</div>
  -->
  	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.TableMode "></div>
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.TableMode "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: modeProdView,
 	                        valueChangeAction: Preferences_TableMode}"></div>	                    
 	                </div>
 	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.UseWebDb "></div>
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.UseWebDb "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: useWebDb,
 	                        valueChangeAction: Preferences_useWebDb}"></div>	                    
 	                </div>
 	                <div class="dx-field">
-	                    <div class="dx-field-label"data-bind="text: _.Preferences.DebugMode "></div>
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.DebugMode "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: debugMode,
 	                        valueChangeAction: Preferences_debugMode}"></div>	                    
 	                </div>
@@ -38,31 +39,18 @@
             <!-- ko if: selectedTab() == 1 -->
 				<div class="dx-fieldset">
 	                <div class="dx-field">
-	                    <div class="dx-field-label">User Name</div>
-	                    <div class="dx-field-value">
-	                        <div data-bind="dxTextBox: { value: userName, valueUpdateAction: Preferences_userName }"></div>
-	                    </div>
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.UserName "></div>
+	                    <div class="dx-field-value" data-bind="dxTextBox: { value: userName, valueUpdateAction: Preferences_userName }"></div>
 	                </div>
-										
+	                <div class="dx-field">
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.UserPassword "></div>
+	                    <div class="dx-field-value" data-bind="dxTextBox: { mode: 'password', value: userPass, valueUpdateAction: Preferences_userPass }"></div>
+	                </div>
+	                <div class="dx-field">
+	                    <div class="dx-field-label" data-bind="text: _.Preferences.UserEMail "></div>
+	                    <div class="dx-field-value" data-bind="dxTextBox: { value: userEMail, valueUpdateAction: Preferences_userEMail }"></div>
+	                </div>
 				</div>
-				<div class="but50 fl-right" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: Preferences_clickRecreateLocal}"></div>
-
-<!-- 		<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
-		  <div data-options="dxTemplate : { name: 'item' }">
-				<div class="dx-field-value" data-bind="dxLookup: {placeholder:sql, dataSource: dsSQLiteTable, 
-					displayExpr:'name', valueExpr: 'name', value: name, width:'100%' }"/>
-		  </div>
-		</div> -->
-
-<!-- 				<div data-bind="dxList: { dataSource: dsSQLiteSystem }">
-		            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#products/{id}'">
-		                <div class="dx-table">
-		                    <div class="cell10" data-bind="text: $data.name"></div>
-		                    <div class="cell50" data-bind="text: $data.sql"></div>
-		                </div>
-		            </div>
-		        </div>
- -->
 			<!-- /ko -->
             <!-- ko if: selectedTab() == 2 -->
 	            <div class="dx-fieldset">
@@ -81,6 +69,7 @@
 						}"></div> 
 		            </div>
 	            </div>
+				<div class="but50 fl-right" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: Preferences_clickRecreateLocal}"></div>
             <!-- /ko -->
 		</div>
     
@@ -109,37 +98,92 @@
 
 
 
-<div data-options="dxView : { name: 'Info', title: 'Info' } " >
+<div data-options="dxView : { name: 'Info' } " >
     <div class="home-view center"  data-options="dxContent : { targetPlaceholder: 'content' } " >
-    	<div><b class="basket-header">BAsket</b></div>
+    	<div data-bind="visible: subTitle().length == 0">
+	    	<div><b class="basket-header">BAsket</b></div>
 
-	    phone: <span data-bind="text: P.deviceInfo.phone"></span> 
-	    tablet : <span data-bind="text: P.deviceInfo.tablet "></span> 
-	    android  : <span data-bind="text: P.deviceInfo.android  "></span> 
-	    ios  : <span data-bind="text: P.deviceInfo.ios  "></span> 
-	    win8  : <span data-bind="text: P.deviceInfo.win8  "></span> 
-	    tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> <br/>
-	    platform  : <span data-bind="text: P.deviceInfo.platform  "></span> 
-	    <br/>
-	    size : <span data-bind="text: screen.height + '-' + screen.width  "></span> 
+			<div id='idInfoTileView' class="tileView" data-bind="dxTileView: {
+		          dataSource: dsInfo, 
+		          itemMargin: 5, baseItemHeight: 25, baseItemWidth: 25, height: '400', 
+		          itemClickAction: P.itemClick
+		        }">
+		        <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="style: {background: backcolor}" >
+		            <span class="center" data-bind="attr: { 'class': P.itemIcon(icon) }"></span>
+		            <p class="tiletext">
+		                <span data-bind="text: title"></span>
+		                <span class="fl-right" data-bind="text: P.itemCount[id]"></span>
+		            </p>
+		        </div>
+			</div>
+<!-- 		    phone: <span data-bind="text: P.deviceInfo.phone"></span> 
+		    tablet : <span data-bind="text: P.deviceInfo.tablet "></span> 
+		    android  : <span data-bind="text: P.deviceInfo.android  "></span> 
+		    ios  : <span data-bind="text: P.deviceInfo.ios  "></span> 
+		    win8  : <span data-bind="text: P.deviceInfo.win8  "></span> 
+		    tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> <br/>
+		    platform  : <span data-bind="text: P.deviceInfo.platform  "></span> 
+		    <br/>
+		    size : <span data-bind="text: screen.height + '-' + screen.width  "></span> 
 
-	    <br/><br/>
-	    <span data-bind="text: navigator.userAgent"></span>
-		<br/>cookieEnabled: <span data-bind="text: navigator.cookieEnabled"></span>
+		    <br/><br/>
+		    <span data-bind="text: navigator.userAgent"></span>
+			<br/>cookieEnabled: <span data-bind="text: navigator.cookieEnabled"></span>
 
-		<div class="copyright">
-	      <p><span data-bind="text: P.copyright"></span></p>
+ -->			<div class="copyright">
+		      <p><span data-bind="text: P.copyright"></span></p>
+			</div>
+		</div>
+		<div data-bind="visible: subTitle">
+			<!-- <div data-bind="dxToolbar: { items: [{  align: 'center', text: subTitle}]}"></div> -->
+			<div data-bind="dxScrollView: {showScrollbar: true}">
+            	<div class="infotext" id="textContainer"></div>
+            </div>
 		</div>
     </div>
 </div>
 
-<div data-options="dxView : { name: 'ReadNews', title: 'Read News' } " >
-    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " style="text-align:center" >
-		<div class="startstop" data-bind="dxButton: { text: 'Load Data', clickAction: DAL.ReadNews, width:'300px' }"></div>
+<div data-options="dxView : { name: 'ReadNews', title: _.ReadNews.Title } " >
+	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/ReadNews' } "></div>
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+	<div data-bind="dxScrollView: { }">
+		<div class="dx-fieldset">
+		    <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.ReadNews.SaveOrd "></div>
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeSaveOrd }"></div>	                    
+            </div>
+		    <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.ReadNews.LoadOst "></div>
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadOst }"></div>	                    
+            </div>
+		    <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.ReadNews.LoadSpr "></div>
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadSpr }"></div>	                    
+            </div>
+        </div>
+        <div class="center">
+			<div class="but50" data-bind="dxButton: { text: _.ReadNews.LoadData, clickAction: DAL.ReadNews }"></div>
+		</div>
+        <p id="consoleOut"></p>
+
+		<br/><hr/><br/>
+		<div class="dx-fieldset">
+		    <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.ReadNews.RepoName "></div>
+	            <div id="lookupRepo" class="dx-field-value" data-bind="dxLookup: { 
+                    title: _.ReadNews.SelectRepo, 
+                    dataSource: arrayRepo, 
+                    displayExpr: 'Name', 
+                    valueExpr: 'Id', 
+                    placeholder: _.Common.Select,
+                    }"/>
+            </div>
+        </div>
+        <div class="center">
+			<div class="but50" data-bind="dxButton: { text: _.ReadNews.SendRepo, clickAction: ReadNews_SendRepo }"></div>
+		</div>
 
 		<div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
 
-        <p id="consoleOut"></p>
-
-    </div>
+    </div></div>
 </div>

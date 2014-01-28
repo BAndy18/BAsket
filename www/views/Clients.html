@@ -1,4 +1,5 @@
 <div data-options="dxView : { name: 'Clients', title: _.Navigation.Clients } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Clients' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div class="dx-fieldset" >
             <div class="dx-field">
@@ -33,10 +34,12 @@
 <div data-options="dxView : { name: 'Client', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
-          {  align: 'center', text: _.Clients.Title},
-          {  align: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
+          { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          { location: 'center', text: _.Clients.Title},
+          { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Client' }},
+          { location: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
         ]}"></div>
+<!--           {  location: 'menu', text: _.Clients.RoutDetail, clickAction: Client_ClickMenuAction}, -->
 
         <!-- <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " > -->
         <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
@@ -60,9 +63,9 @@
         </div>
  -->       
 
-        <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
+        <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"></div>
 
-        <div data-bind="dxPopover: { width: 200, height: 'auto', visible: visibleMenu, target: '.dx-icon-menu'}">
+        <div data-bind="dxPopover: { width: 250, height: 'auto', visible: visibleMenu, target: '.dx-icon-menu'}">
             <div data-bind="dxList: { items: menuItems, itemClickAction: Client_ClickMenuAction }"></div>
         </div>
 
@@ -76,7 +79,6 @@
             </div>
 
             <div data-options="dxTemplate:{name: 'content'}">
-                <!-- <div class="button but20 fl-right" data-bind="dxButton:{text:'Cancel', clickAction: Client_clickCancel}"/> -->
                 <div data-bind="dxScrollView: {}">
                     <div id="textContainer"></div>
                 </div>

@@ -1,15 +1,23 @@
 ﻿<div data-options="dxView : { name: 'products', layout: 'empty'} " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text:  _.Common.Back, clickAction: Products_clickBack }},
-          {  align: 'center', text: lbltitle},
-          {  align: 'right', widget: 'button', options: { icon: 'cart', text: btnSwText, clickAction: Products_swichClicked}},
+          { location: 'left', widget: 'button', options: { type: 'back', text:  _.Common.Back, clickAction: Products_clickBack }},
+          { location: 'center', text: lbltitle},
+          { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Products' }},
+          { location: 'right', widget: 'button', options: { icon: 'cart', text: btnSwText, clickAction: Products_swichClicked}},
         ]}" />
-    
+
+<!--         <div data-bind="dxToolbar: { items: [
+          { location: 'left', widget: 'button', options: { icon:'find' }},
+          { location: 'left', widget: 'button', },
+          { location: 'right', widget: 'button', options: { icon: 'info', clickAction: function () { P.Command_Info('Products') }}},
+          { location: 'right', widget: 'button', options: { icon: 'cart', text: btnSwText, clickAction: Products_swichClicked}},
+        ]}" />
+ -->    
         <div class="dx-fieldset" data-bind="visible: bChoice()">
             <div class="dx-field">
-                <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', value: searchString, 
-                    visible: true, 
+                <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
+                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
 		        	valueUpdateEvent: 'search change keyup' }"/>
                 <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { 
                     title: _.Products.TitleCat, 

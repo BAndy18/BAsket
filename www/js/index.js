@@ -37,6 +37,23 @@ function onDeviceReady() {
 		navigation: P.navigation,
 		navigateToRootViewMode: true,
 		//        disableViewCache: true
+    commandMapping: {
+      'android-header-toolbar': {
+            // defaults: {
+            //     'showIcon':true, 
+            //     'align':'left'
+            // },          
+            commands: [
+              {
+                  id: 'cmdInfo',
+                  align: 'right'
+              }
+          ]
+        },
+      'ios-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+      'tizen-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+      'generic-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+    }
 	});
 	//Globalize.culture = Globalize.culture["ru-RU"];
 	//$.preferCulture("ru-RU");
@@ -68,6 +85,7 @@ BAsket.home = function() {
 	};
 	return viewModel;
 };
+
 
 var _ = EN_US;
 

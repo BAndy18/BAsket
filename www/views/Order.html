@@ -1,9 +1,10 @@
 <div data-options="dxView : { name: 'Order', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          {  align: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: Order_clickBack}},
-          {  align: 'center', text: _.Order.Title},
-          {  align: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: Order_clickProduct}},
+            { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: Order_clickBack}},
+            { location: 'center', text: _.Order.Title},
+            { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Order' }},          
+            { location: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: Order_clickProduct}},
         ]}"></div>
 
         <div id="scrollViewContainer" data-bind="dxScrollView: { }">
@@ -38,11 +39,11 @@
             </div>
         </div>
         <div class="dx-fieldset">
-            <div class="dx-field" data-bind="visible: P.arrNMS[1]">
+            <div class="dx-field" data-bind="visible: false">
                 <div class="dx-field-label"></div>
                 <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[1], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
             </div>
-            <div class="dx-field" data-bind="visible: P.arrNMS[2]">
+            <div class="dx-field" data-bind="visible: false">
                 <div class="dx-field-label"></div>
                 <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[2], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
             </div>
@@ -63,6 +64,7 @@
 </div>
 
 <div data-options="dxView : { name: 'OrderList', title: _.Navigation.OrderList } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/OrderList' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
 		<!-- <div class="dx-table">
