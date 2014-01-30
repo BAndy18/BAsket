@@ -16,6 +16,8 @@ namespace BAsketWS.Controllers
 
         public List<Nms> Get()
         {
+			//Common.readDbf();
+
             var cmd = Common.SqlCommands["Nms"];
 
             return ProcessCommand(cmd);
@@ -28,43 +30,36 @@ namespace BAsketWS.Controllers
             {
                 if (reader == null)
                     return null;
-				//try
-				//{
-                    //if (cmd == "0")
-                    //{
-                    //    result.Add(new Nms {IdRoot = 0, Id = 1, Name = "Предприятие"});
-                    //    result.Add(new Nms {IdRoot = 0, Id = 2, Name = "Тип Оплаты"});
-                    //} else
-                    //if (cmd == "1")
-                    //{
-                    //    result.Add(new Nms {IdRoot = 1, Id = 1, Name = "Пупкин ЧП"});
-                    //    result.Add(new Nms {IdRoot = 1, Id = 2, Name = "Ступкин ООО"});
-                    //} else
-                    //if (cmd == "2")
-                    //{
-                    //    result.Add(new Nms { IdRoot = 2, Id = 1, Name = "наличные" });
-                    //    result.Add(new Nms { IdRoot = 2, Id = 2, Name = "безнал" });
-                    //} 
+                //if (cmd == "0")
+                //{
+                //    result.Add(new Nms {IdRoot = 0, Id = 1, Name = "Предприятие"});
+                //    result.Add(new Nms {IdRoot = 0, Id = 2, Name = "Тип Оплаты"});
+                //} else
+                //if (cmd == "1")
+                //{
+                //    result.Add(new Nms {IdRoot = 1, Id = 1, Name = "Пупкин ЧП"});
+                //    result.Add(new Nms {IdRoot = 1, Id = 2, Name = "Ступкин ООО"});
+                //} else
+                //if (cmd == "2")
+                //{
+                //    result.Add(new Nms { IdRoot = 2, Id = 1, Name = "наличные" });
+                //    result.Add(new Nms { IdRoot = 2, Id = 2, Name = "безнал" });
+                //} 
 
-	                //var name = _myTest.GetMessage();
+	            //var name = _myTest.GetMessage();
 
-                    while (reader.Read())
-                    {
-                        result.Add(new Nms()
-                            {
-                                IdRoot = reader.GetInt32(Common.GetName("T_NMS")),
-                                Id = reader.GetInt32(Common.GetName("N_NMS")),
-								//Name = name,
-								Name = reader.GetString(Common.GetName("Name")),
-                            });
-                        limit--;
-                        if (limit == 0) break;
-                    }
-				//}
-				//catch (Exception ex)
-				//{
-				//	return new List<Nms> { new Nms() { Name = ex.Message + ex.StackTrace } };
-				//}
+                while (reader.Read())
+                {
+                    result.Add(new Nms()
+                        {
+                            IdRoot = reader.GetInt32(Common.GetName("T_NMS")),
+                            Id = reader.GetInt32(Common.GetName("N_NMS")),
+							//Name = name,
+							Name = reader.GetString(Common.GetName("Name")),
+                        });
+                    limit--;
+                    if (limit == 0) break;
+                }
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;

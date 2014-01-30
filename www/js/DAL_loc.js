@@ -179,15 +179,17 @@ var DAL = (function ($, window) {
 				"', sWars='" + params['sWars'] +
 				"' WHERE Id='" + params['id'] + "'";
 		} else {
-			query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, SumDoc, sNote, sOther, sWars) VALUES('" + params['date'] +
+			query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, SumDoc, sNote, sOther, sWars, bSusp) VALUES('" + params['date'] +
 				"', '" + params['idCli'] + "','" + params['idTp'] + "','" + params['sumDoc'] + "','" + params['sNote'] +
-				"', '" + params['sOther'] + "', '" + params['sWars'] + "')";
+				"', '" + params['sOther'] + "', '" + params['sWars'] + "', 0)";
 		};
 		return execQuery(query);
 	};
+    root.ChangeActivityBil = function (params) {
+        return execQuery("UPDATE BILM set bSusp = 1-bSusp WHERE Id=" + params)
+    }
 	root.DeleteBil = function (params) {
-		if (!P.useWebDb)
-			return DAL_web.DeleteBil(params);
+		if (!P.useWebDb) return DAL_web.DeleteBil(params);
 
 		return execQuery("DELETE FROM BILM Where Id='" + params + "'");
 	};
@@ -215,8 +217,28 @@ var DAL = (function ($, window) {
 		});
 	};
 
+    root.SendBils = function(){
+        if (!P.useWebDb) 
+            return;
+        execQuery("SELECT * FROM BILM WHERE bSusp=0").done(function(result) {
+            var prm = {};
+            for (var i in result) {
+                prm['id'] = result[i].Id;
+                prm['idServ'] = result[i].IdServ;
+                prm['date'] = result[i].DateDoc;
+                prm['idCli'] = result[i].IdCli;
+                prm['idTp'] = result[i].IdTp;
+                prm['sOther'] = result[i].sOther;
+                prm['sNote'] = result[i].sNote;
+                prm['sWars'] = result[i].sWars;
+                DAL_web.SaveBil(prm).done(function(res) {
+                    execQuery("UPDATE BILM set bSusp=1, sServRet='" + res[0].sNote + "' WHERE Id=" + result[i].Id);
+                })
+            }
+        })
+    }
 
-	root.ReadNews = function () {
+	root.ReadNews = function (fullNews) {
 		P.loadPanelVisible(true);
 
 		var source0 = DAL_web.NMS();
@@ -231,17 +253,21 @@ var DAL = (function ($, window) {
 			P.loadPanelVisible(false);
 			return;
 		}
-		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-		root.RecreateLocalDB(db);
 
-		var source2 = DAL_web.Products({ Id: 'all' });
+		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+      // if (fullNews)
+		    // root.RecreateLocalDB(db);
+
+        var prm = fullNews ? 'all':'ost';
+		var source2 = DAL_web.Products({ Id: prm });
 		if (Object.prototype.toString.call(source2) == '[object Array]') writeToLocalData(db, source2, 'WAR');
 		else source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
 
-		var source3 = DAL_web.Clients({ IdAll: 'all' });
-		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(db, source3, 'CLI');
-		else source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
-
+        if (fullNews){
+    		var source3 = DAL_web.Clients({ IdAll: 'all' });
+    		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(db, source3, 'CLI');
+    		else source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+        }
 		var date = new Date();
 		P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
@@ -511,7 +537,7 @@ var DAL = (function ($, window) {
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
         // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
-        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, bSusp bit)',
+        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",

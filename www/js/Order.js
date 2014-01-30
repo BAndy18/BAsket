@@ -221,6 +221,7 @@ BAsket.OrderList = function (params) {
 		holdTimeout: holdTimeout,
 		popActions: [
 		    { text: _.Order.ActionDelete, clickAction: function () { Order_DeleteClick() } },
+		    { text: _.Order.ChangeActivity, clickAction: function () { Order_ChangeActivity() } },
 		],
 	};
 
@@ -239,13 +240,18 @@ BAsket.OrderList = function (params) {
 			]
 		}).show();
 	};
-
 	Order_Delete = function(arg) {
 		DAL.DeleteBil(idSelected());
 		DAL.CountTable('BILM').done(function(result) {
 			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
 		viewModel.dataSource.load();
+	};
+
+	Order_ChangeActivity = function() {
+		DAL.ChangeActivityBil(idSelected()).done(function(result) {
+			viewModel.dataSource.load();
+		})
 	};
 
 	Order_processItemHold = function (arg) {

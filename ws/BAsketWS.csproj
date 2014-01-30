@@ -96,6 +96,7 @@
     <Compile Include="DataAccess\Common.cs" />
     <Compile Include="DataAccess\CustomBasicAuth.cs" />
     <Compile Include="DataAccess\DataReaderAdapter.cs" />
+    <Compile Include="DataAccess\DbfHelper.cs" />
     <Compile Include="DataAccess\ParamsHelper.cs" />
     <Compile Include="DataAccess\RepoHelper.cs" />
     <Compile Include="DataAccess\SerializationHelper.cs" />

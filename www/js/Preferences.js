@@ -181,12 +181,31 @@ BAsket.Info = function (params) {
 
 
 BAsket.ReadNews = function (params) {
+	var arrayRepo = [];
+	for (var i in P.arrNMS[0]) 
+		if (P.arrNMS[0][i].Id == 101){
+			arrayRepo = P.arrNMS[parseInt(i) + 1];
+			break;
+		}
+	var modeSaveOrd = ko.observable(true);
+	var modeLoadOst = ko.observable(false);
+	var modeLoadSpr = ko.observable(false);
+
 	var viewModel = {
-		modeSaveOrd:  ko.observable(true),
-		modeLoadOst:  ko.observable(true),
-		modeLoadSpr:  ko.observable(false),
-		arrayRepo: P.arrNMS[2],
+		modeSaveOrd: modeSaveOrd,
+		modeLoadOst: modeLoadOst,
+		modeLoadSpr: modeLoadSpr,
+		arrayRepo: arrayRepo,
 	};
+
+	ReadNews_ReadNews  = function(){
+		if (modeSaveOrd()){
+			DAL.SendBils();
+		}
+		if (modeLoadOst() || modeLoadSpr()) {
+			DAL.ReadNews(modeLoadSpr());
+		}
+	}
 
 	ReadNews_SendRepo = function(){
 		if (!P.UserEMail || !P.validateEmail(P.UserEMail)){

@@ -38,7 +38,7 @@ namespace BAsketWS.Controllers
                 {
                     result.Add(new Category()
                     {
-                        //*
+                        /*
                         Id = reader.GetInt32("r_war").ToString(),
                         /*/
                         Id = reader.GetString("r_war"),
@@ -85,8 +85,6 @@ namespace BAsketWS.Controllers
         public IEnumerable<SpWar> Post(JObject jsonData)
         //public string Post(JObject jsonData)
         {
-            //readDbf();
-
             dynamic json = jsonData;
             var jcmd = json["cmd"];
             var jdata = json["data"];

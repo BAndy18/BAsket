@@ -89,7 +89,9 @@
                     <div class="cell10" data-bind="text: $data.sNote"></div>
                     <div class="cell10" data-bind="text: $data.sWars"></div>
                 </div> -->
+                <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
                 <div>
+                    <!-- <span class='textSmall' data-bind="text: $data.bSusp"/> #  -->
                     <span class='textSmall' data-bind="text: $data.Id"/> - 
                     <span class='textSmall' data-bind="text: $data.ShortDate"/> 
                     <span data-bind="text: $data.FullName"/>
@@ -99,7 +101,8 @@
                     <span data-bind="text: $data.SumDoc"/>
                     <span class='textSmall' data-bind="text: $data.sNote"/>
                     (<span class='textSmall' data-bind="text: $data.sWars"/>) 
-                </div>
+                    <span class='textSmall' data-bind="text: $data.sServRet"/> 
+                </div></div>
             </div>
         </div>
 

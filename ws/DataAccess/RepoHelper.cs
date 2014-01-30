@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,20 +10,16 @@ namespace BAsketWS.DataAccess
 	public class RepoHelper
 	{
 		static string _sErr;
-		static SqlConnection _con = null;	//new SqlConnection(connectionString);
-		static SqlDataAdapter _da = null;	//new SqlDataAdapter("", _con);
+		static SqlConnection _con = BaseRepository.GetConnection();	//new SqlConnection(connectionString);
+		static SqlDataAdapter _da = new SqlDataAdapter("", _con);
 
-		static public string RepoPrint(int iID, int iDirect)
+		static public string RepoPrint(string iID, string email, int iDirect = 0)
 		{
 			string sRet = "";
-			//			System.Web.Security.MembershipUser mu = System.Web.Security.Membership.GetUser(sU);
-			System.Web.Security.MembershipUser mu = System.Web.Security.Membership.GetUser(false);
-			//			System.Web.Security.MembershipUserCollection muc = System.Web.Security.Membership.FindUsersByName(_sUsr);
-			//			string sTmpPath = System.IO.Path.GetTempPath();
-			//.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BAsket") + "\\";
+			//System.Web.Security.MembershipUser mu = System.Web.Security.Membership.GetUser(false);
 			string sFNr = System.IO.Path.GetTempFileName() + ".rpt";
-			DataRow dr = GetRows("Select * from sy_PRN Where fkey=" + iID.ToString())[0];
-			using (System.IO.FileStream fs = System.IO.File.Open(sFNr, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read))
+			DataRow dr = GetRows("Select * from sy_PRN Where fkey=" + iID)[0];
+			using (var fs = System.IO.File.Open(sFNr, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read))
 			{
 				if (!(dr["repfile"] is DBNull))
 				{
@@ -38,7 +33,7 @@ namespace BAsketWS.DataAccess
 			DataSet ds = GetDS(dr["SQLExp"].ToString());
 			ds.Tables[0].TableName = "DBMM";
 
-			CrystalDecisions.CrystalReports.Engine.ReportDocument m_reportDocument = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
+			var m_reportDocument = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
 			m_reportDocument.FileName = sFNr;
 			m_reportDocument.SetDataSource(ds);
 
@@ -47,7 +42,8 @@ namespace BAsketWS.DataAccess
 				sFN = System.IO.Path.GetTempFileName() + ".pdf";
 				m_reportDocument.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, sFN);
 				//*
-				SendMail(mu.Email, "BAsket report <" + sNameR + ">",
+				//SendMail(mu.Email, "BAsket report <" + sNameR + ">",
+				SendMail(email, "BAsket report <" + sNameR + ">",
 					"See the attached file", sFN);
 				/*/
 				System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage("BAsket@gmail.com",
@@ -92,7 +88,7 @@ namespace BAsketWS.DataAccess
 
 		static public void SendMail(string sTo, string sSubj, string sBody, string sAttFN)
 		{
-			System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage("BAsket18.O3@gmail.com",
+			System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage("BAsket2@gmail.com",
 				//			   "bandys18@gmail.com",
 				sTo, sSubj, sBody);
 			if (sAttFN.Length > 0)

@@ -148,7 +148,7 @@ namespace BAsketWS.DataAccess
 
 		#region Methods
 
-		private static SqlConnection GetConnection(string connectionName)
+		public static SqlConnection GetConnection(string connectionName = "BAsket")
 		{
 			var connectionString = ConfigurationManager.ConnectionStrings[connectionName].ToString();
 			var result = new SqlConnection(connectionString);

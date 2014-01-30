@@ -83,6 +83,7 @@ var DAL_web = (function ($, window) {
 		return execDataSource({ control: 'BilM/' + params });
 	};
 	root.SaveBil = function(params) {
+        params['cmd'] = 'SaveBil';
 		return execMethod({ method: 'POST', control: 'BilM/', prm: params }).load();
 	};
 	root.DeleteBil = function(params) {
@@ -90,7 +91,8 @@ var DAL_web = (function ($, window) {
 	};
 
     root.SendRepo = function(params) {
-        return execMethod({ method: 'PUT', control: 'BilM/', prm: params }).load();
+        params['cmd'] = 'SendRepo';
+        return execMethod({ method: 'POST', control: 'BilM/', prm: params }).load();
     };
 
 

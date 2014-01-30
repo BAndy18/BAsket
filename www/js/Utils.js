@@ -329,7 +329,7 @@ var P = (function ($, window) {
 		if (!deviceId)
 			deviceId = iniLocalStor("userPassword", "-");
 
-		console.log('deviceId:' + deviceId);
+		//console.log('deviceId:' + deviceId);
 		return deviceId;
 	};
 

@@ -29,7 +29,7 @@ namespace BAsketWS.Controllers
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
             var cmd = string.Format(Common.SqlCommands["WarsByGId"], grId, searchString, skip+1, top);
-            if (grId == "all")
+			if (grId == "all" || grId == "ost")
                 cmd = Common.SqlCommands["War"];
 
             return ProcessCommand(cmd);
@@ -48,7 +48,7 @@ namespace BAsketWS.Controllers
                     {
                         result.Add(new Product()
                             {
-                                //*
+                                /*
                                 Id = reader.GetInt32(Common.GetName("r_war")).ToString(),
                                 GrId = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
                                 Upak = reader.GetInt16(Common.GetName("NUPK")).ToString(),
