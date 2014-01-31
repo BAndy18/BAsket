@@ -86,6 +86,5 @@ BAsket.home = function() {
 	return viewModel;
 };
 
-
 var _ = EN_US;
 

@@ -190,12 +190,18 @@ var P = (function ($, window) {
 	root.loadPanelVisible = ko.observable(false);
 	function iniLocalStor(key, defval) {
 		var vari = window.localStorage.getItem(key);
-		if (!vari) {
+		if (!vari && defval) {
 			vari = defval;
 			window.localStorage.setItem(key, vari);
 		}
 		return vari;
 	};
+    root.getLocalStor = function(key, defval) {
+        var ret = iniLocalStor(key, defval);
+        if (ret == 'true') return true;
+        if (ret == 'false') return false;
+        return ret;
+    }
 
 	root.ChangeLookup = function(id, key) {
 		var lookup = $(id).data("dxLookup");
@@ -234,7 +240,7 @@ var P = (function ($, window) {
 		});
 	};
 
-	function loadjscssfile(filename, filetype) {
+	root.LoadFile = function(filename, filetype) {
 		if (filetype == "js") { //if filename is a external JavaScript file
 			var fileref = document.createElement('script');
 			fileref.setAttribute("type", "text/javascript");
@@ -398,23 +404,33 @@ var P = (function ($, window) {
 		root.deviceClass = {};
 		root.deviceClass['platform'] = root.platformDevice;
 		var pdArr = root.platformDevice.split(' ');
+        if (pdArr[0] == 'ios')
+            root.LoadFile('css/dx.ios.default.css', 'css');
+        else if (pdArr[0] == 'generic')
+            root.LoadFile('css/dx.generic.light.css', 'css');
 		if (pdArr.length > 1) {
 			root.deviceClass['platform'] = pdArr[0];
 			if (pdArr[0] == 'ios' && pdArr[1] == 'v6')
 				root.deviceClass['version'] = '6';
 			else if (pdArr[1] == 'black') {
 				if (pdArr[0] == 'android')
-					loadjscssfile('css/dx.android.holo-dark.css', 'css');
+					root.LoadFile('css/dx.android.holo-dark.css', 'css');
 				if (pdArr[0] == 'tizen')
-					loadjscssfile('css/dx.tizen.black.css', 'css');
+					root.LoadFile('css/dx.tizen.black.css', 'css');
 			}
-		}
+		} else {
+            if (pdArr[0] == 'tizen')
+                root.LoadFile('css/dx.tizen.white.css', 'css');
+        }
+
+        if (!root.dataSouceUrl && !window['DAL_tst'])
+            root.LoadFile('js/DAL_tst.js', 'js');
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
 		if (!root.arrCategory.length) {
 			// DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
 			// if (dialogResult){
-			DAL.ReadNews();
+			DAL.ReadNews(true, true);
 			// }
 			// });
 			return;
@@ -437,6 +453,9 @@ var P = (function ($, window) {
 		root.languageUI = '-';
 		root.languageUI = iniLocalStor("LanguageUI", '-');
 		root.ChangeLanguageUI();
+
+        BAsket.navigation = P.navigation.slice(0);
+        BAsket.navigation = BAsket.navigation.splice(1);
 
 		root.UserName = iniLocalStor("userName", "-");
 		if (root.UserName == '-') root.UserName = 'BAndy';

@@ -102,7 +102,7 @@ var RU_RU = (function (window) {
         ChoiceRepo: "Отчет не выбран", 
 
         ReadRecs: 'Прочитано записей',
-        WroteRecs: 'Запись закончилась ',
+        WroteRecs: 'Запись ',
     };
 
 	root.Preferences = {
@@ -169,7 +169,7 @@ var RU_RU = (function (window) {
 		FldNameManuf: 'Производитель:',
 		FldUpak: 'Количество в упаковке:',
 		FldOstat: 'Остаток:',
-		FldUrlPict: 'картинка:',
+		FldUrlPict: 'Картинка:',
 		SelSum: 'выбрано: #; на сумму: ',
 	};
 

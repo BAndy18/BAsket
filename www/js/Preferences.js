@@ -94,15 +94,6 @@ BAsket.Preferences = function (params) {
 		});
 	};
 
-
-
-	//dsSQLiteSystem = DAL_local.ExecDataSource("select * from sqlite_master where type='table'");
-	// dsSQLiteTable = function (arg) {
-	// 	return [{name:'Mo '}, {name:'Tu '}, {name:'We '}, {name:'Th '}, {name:'Fr '}, {name:'Sa '}, {name:'Su '}];
-	// }
-	//dsSQLiteTable =  DAL_local.ExecDataSource2(name);
-	//[{name:'Mo '}, {name:'Tu '}, {name:'We '}, {name:'Th '}, {name:'Fr '}, {name:'Sa '}, {name:'Su '}];
-
 	var viewModel = {
 		selectedTab: selectedTab,
 		popupVisible: popupVisible,
@@ -148,7 +139,8 @@ BAsket.Info = function (params) {
 	// var rootShow = ko.observable(true);
 	var subTitle = ko.observable('');
 	var subText = ko.observable('');
-	var dsInfo = P.navigation.splice(1);
+	var dsInfo = P.navigation.slice(0);
+	dsInfo = dsInfo.splice(1);
 	if (params.Id) {
 		// rootShow(false);
 		subTitle(params.Id);	//' - ' + 
@@ -187,17 +179,30 @@ BAsket.ReadNews = function (params) {
 			arrayRepo = P.arrNMS[parseInt(i) + 1];
 			break;
 		}
-	var modeSaveOrd = ko.observable(true);
-	var modeLoadOst = ko.observable(false);
-	var modeLoadSpr = ko.observable(false);
+
+	var modeSaveOrd = ko.observable(P.getLocalStor('modeSaveOrd', true));
+	var modeLoadOst = ko.observable(P.getLocalStor('modeLoadOst', true));
+	var modeLoadSpr = ko.observable(P.getLocalStor('modeLoadSpr', false));
 
 	var viewModel = {
 		modeSaveOrd: modeSaveOrd,
 		modeLoadOst: modeLoadOst,
 		modeLoadSpr: modeLoadSpr,
 		arrayRepo: arrayRepo,
+		viewShown: function () {
+			$('#consoleOut').html();
+		},
 	};
 
+	ReadNews_SUA = function(arg){
+		if (arg == 'modeSaveOrd')
+			P.ChangeValue(arg, modeSaveOrd());
+		else if (arg == 'modeLoadOst')
+			P.ChangeValue(arg, modeLoadOst());
+		else if (arg == 'modeLoadSpr')
+			P.ChangeValue(arg, modeLoadSpr());
+	}
+	
 	ReadNews_ReadNews  = function(){
 		if (modeSaveOrd()){
 			DAL.SendBils();

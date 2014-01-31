@@ -1,25 +1,80 @@
 /// *** local Web Data Base Access *** ///
+function SQLite(cfg) {
+    if (typeof window.openDatabase === 'undefined') {
+        return;
+    }    
+    function log(str) {
+        if (!console)
+          console.log(str);
+    }
+    // Default Handlers
+    function nullDataHandler(results) { }
+    function errorHandler(error) {
+        log('Oops. ' + error.message + ' (Code ' + error.code + ')');
+    }
+
+    var config = cfg || {}, db;
+
+    config.shortName = config.shortName || 'BAsketDB';
+    config.version = config.version || '1.0';
+    config.displayName = config.displayName || 'BAsketDB SQLite Database';
+    config.maxSize = 5000000;
+    config.defaultErrorHandler = config.defaultErrorHandler || errorHandler;
+    config.defaultDataHandler = config.defaultDataHandler || nullDataHandler;
+
+    db = openDatabase(config.shortName, config.version, config.displayName, config.maxSize);
+
+    function execute(query, v, d, e) {
+        var values = v || [],
+          dH = d || config.defaultDataHandler,
+          eH = e || config.defaultErrorHandler;
+
+        if (!query || query === '') {
+          return;
+        }
+
+        function err(t, error) {
+            eH(error, query);
+        }
+
+        function data(t, result) {
+            d(t, result, query);
+        }
+
+        db.transaction(
+            function (transaction) {
+                transaction.executeSql(query, values, data, err);
+            }
+        );
+    }
+
+    return {
+        database: db,
+        executeSql: function (q, p, data, error) {
+            execute(q, p, data, error);
+        },
+        transaction: function (e, error, data) {
+            db.transaction(e, error, data)
+        },
+    }  
+}
+
 var DAL = (function ($, window) {
 	var root = {};
 
-	var dbParam = null;
-	var dbLastQ = null;
-	var dbName = 'BAsketDB';
-	var dbSize = 5000000;
+	var dbLastQ = '';
+	// var dbName = 'BAsketDB';
+	// var dbSize = 5000000;
+    // var dbParam = null;
 
+    var DB = SQLite();
 
-	// root.Categories = function (params){
-	//     if (!P.useWebDb)
-	//         return DAL_web.Categories(params);
-
-	//     return execDataSource({query: "SELECT * FROM CAT"});
-	// };
 	root.Products = function(params, nopaging) {
 		if (!P.useWebDb)
 			return DAL_web.Products(params);
 		var paging = !nopaging;
 		return execDataSource({
-			query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "'",
+			query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "' and Ostat>0",
 			paging: paging,
 			searchString: params.search
 		}, function(data) {
@@ -39,26 +94,23 @@ var DAL = (function ($, window) {
 		if (!P.useWebDb)
 			return DAL_web.ProductDetails(params);
 
-		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-		db.transaction(function(tx) {
-				dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
-				tx.executeSql(dbLastQ, [], function(tx, results) {
-						params.Quant = '0';
-						params = setQuant(params);
-						if (results.rows.length > 0) {
-							params.model.Name(results.rows.item(0).Name),
-								params.model.Price(results.rows.item(0).Price.toFixed(2))
-							params.model.NameArt(results.rows.item(0).NameArt),
-								params.model.NameManuf(results.rows.item(0).NameManuf),
-								params.model.UrlPict(results.rows.item(0).UrlPict),
-								params.model.Upak(results.rows.item(0).Upak),
-								params.model.Ostat(results.rows.item(0).Ostat),
-								params.model.Quant(params.Quant)
-						}
-					}, function(err, err2) { errorCB("*readProductDetail sql*", err, err2); }
-				);
-			}, function(err, err2) { errorCB("*readProductDetail*", err, err2); }
-		);
+		dbLastQ = "SELECT * FROM WAR WHERE Id='" + params.Id + "'";
+		DB.executeSql(dbLastQ, [], function(tx, results) {
+        // execQuery(dbLastQ).done(function(results) {
+			params.Quant = '0';
+			params = setQuant(params);
+			if (results.rows.length > 0) {
+				params.model.Name(results.rows.item(0).Name),
+				params.model.Price(results.rows.item(0).Price.toFixed(2))
+				params.model.NameArt(results.rows.item(0).NameArt),
+				params.model.NameManuf(results.rows.item(0).NameManuf),
+				params.model.UrlPict(results.rows.item(0).UrlPict),
+				params.model.Upak(results.rows.item(0).Upak),
+				params.model.Ostat(results.rows.item(0).Ostat),
+				params.model.Quant(params.Quant)
+			}
+        })
+		// }, function(err, err2) { errorCB("*readProductDetail sql*", err, err2); }	);
 	};
 	root.ProductsByWars = function (params) {
 		var ids = '';
@@ -238,35 +290,35 @@ var DAL = (function ($, window) {
         })
     }
 
-	root.ReadNews = function (fullNews) {
+    var modeReadNews;
+	root.ReadNews = function (fullNews, createDB) {
 		P.loadPanelVisible(true);
-
+        
 		var source0 = DAL_web.NMS();
-		if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(db, source0, 'NMS');
-		else source0.load().done(function (result) { writeToLocalData(db, result, 'NMS'); });
+		if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
+		else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
 
 		var source1 = DAL_web.Categories();
-		if (Object.prototype.toString.call(source1) == '[object Array]') writeToLocalData(db, source1, 'CAT');
-		else source1.load().done(function (result) { writeToLocalData(db, result, 'CAT'); });
+		if (Object.prototype.toString.call(source1) == '[object Array]') writeToLocalData(source1, 'CAT');
+		else source1.load().done(function (result) { writeToLocalData(result, 'CAT'); });
 
 		if (!P.useWebDb) {
 			P.loadPanelVisible(false);
 			return;
 		}
 
-		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-      // if (fullNews)
-		    // root.RecreateLocalDB(db);
+        if (createDB)
+		    root.RecreateLocalDB(db);
 
-        var prm = fullNews ? 'all':'ost';
-		var source2 = DAL_web.Products({ Id: prm });
-		if (Object.prototype.toString.call(source2) == '[object Array]') writeToLocalData(db, source2, 'WAR');
-		else source2.load().done(function (result) { writeToLocalData(db, result, 'WAR'); });
+        modeReadNews = fullNews ? 'all':'ost';
+		var source2 = DAL_web.Products({ Id: modeReadNews });
+		if (Object.prototype.toString.call(source2) == '[object Array]') writeToLocalData(source2, 'WAR');
+		else source2.load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
     		var source3 = DAL_web.Clients({ IdAll: 'all' });
-    		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(db, source3, 'CLI');
-    		else source3.load().done(function (result) { writeToLocalData(db, result, 'CLI'); });
+    		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(source3, 'CLI');
+    		else source3.load().done(function (result) { writeToLocalData(result, 'CLI'); });
         }
 		var date = new Date();
 		P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
@@ -276,10 +328,9 @@ var DAL = (function ($, window) {
 		P.Init();
 	};
 
-	root.RecreateLocalDB = function (db) {
-		//var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-		db.transaction(function(tx) {
-			trace('Local DB SCRIPT');
+	root.RecreateLocalDB = function () {
+        trace('Local DB SCRIPT');
+		DB.transaction(function(tx) {
 			for (i = 0; i < LocalScript.length; i++) {
 				tx.executeSql(LocalScript[i], [], function(tx, results) {},
 					function(err, err2) { errorCB("*RecreateLocalDB*", err, err2); }
@@ -302,9 +353,9 @@ var DAL = (function ($, window) {
 					params['searchValue'] = loadOptions.searchValue;
 				else
 					params['searchValue'] = null;
-				var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-				var deferred = new $.Deferred();
-				db.transaction(function (tx) {
+                var deferred = new $.Deferred();
+				// var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+				// db.transaction(function (tx) {
 					dbLastQ = params.query;
 					var searchValue = '';
 					if (params.searchString && params.searchString())
@@ -317,7 +368,7 @@ var DAL = (function ($, window) {
 					if (params.paging)
 						dbLastQ += " LIMIT " + params['skip'] + ", " + params['take'];
 
-					tx.executeSql(dbLastQ, [], function (tx, results) {
+					DB.executeSql(dbLastQ, [], function (tx, results) {
 						var res = [];
 						for (var i = 0; i < results.rows.length; i++) {
 							var resrow = results.rows.item(i);
@@ -328,8 +379,7 @@ var DAL = (function ($, window) {
 						deferred.resolve(res);
 					}, function (err, err2) { errorCB("*execDataSource sql*", err, err2); }
                     );
-				}, function (err, err2) { errorCB("*execDataSource*", err, err2); }
-                );
+				// }, function (err, err2) { errorCB("*execDataSource*", err, err2); });
 				return deferred;
 			},
 			lookup: function (key) {
@@ -342,12 +392,11 @@ var DAL = (function ($, window) {
 	function execQuery(query, mapCallback) {
 		var skip = 0;
 		var PAGE_SIZE = 30;
-		//alert("execQuery");
-		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
-		var deferred = new $.Deferred();
-		db.transaction(function (tx) {
+        var deferred = new $.Deferred();
+		// var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+		// db.transaction(function (tx) {
 			dbLastQ = query;
-			tx.executeSql(dbLastQ, [], function (tx, results) {
+			DB.executeSql(dbLastQ, [], function (tx, results) {
 				if (dbLastQ.toUpperCase().substring(0, 7) == 'INSERT ') {
 					//if (results.insertId) {
 					deferred.resolve(results);
@@ -369,10 +418,28 @@ var DAL = (function ($, window) {
 				errorCB("*execQuery sql*", err, err2);
 			}
             );
-		}, function (err, err2) { errorCB("*execQuery*", err, err2); }
-        );
+		// }, function (err, err2) { errorCB("*execQuery*", err, err2); }        );
 		return deferred;
 	};
+
+   // execute a query and fetches the data as an array of objects
+    function executeQuery(tx, query, args, callback, callbackparams) {
+        //var self = this;
+        //console.log('db execute: '+query);
+        // db.transaction(function(tx) {
+            tx.executeSql(query, args, function(tx, result) {
+                var retval = [];
+                for (var i = 0; i < result.rows.length; ++i) {
+                    retval.push(result.rows.item(i));
+                }
+                if (callback) {
+                    callback(tx, retval, result, callbackparams);
+                }
+            }, 
+            function (err, err2) { errorCB("*executeQuery*", err, err2); });
+            //self.error);
+        // });
+    }
 
 	function setQuant(resrow) {
 		for (var i in P.arrayBAsket) {
@@ -388,7 +455,7 @@ var DAL = (function ($, window) {
 
 	var arrWAR;
 	var arrCLI;
-	function writeToLocalData(db, dataArray, table) {
+	function writeToLocalData(dataArray, table) {
 
 		if (table == 'NMS') {
 			P.arrNMS = [];
@@ -406,44 +473,63 @@ var DAL = (function ($, window) {
 
 		if (table == 'WAR') {
 			arrWAR = dataArray;
-			db.transaction(writeToWAR,
-                function (err, err2) { errorCB("*write " + table + "*", err, err2); },
-                function () { trace(_.ReadNews.WroteRecs + table + ": success"); });
+            DB.transaction(function (tx) {
+                dbLastQ = 'Update WAR set Ostat=0';
+                tx.executeSql(dbLastQ, [], function (tx, results) {
+                    DB.transaction(writeToWAR,
+                        function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
+                        function () { trace(_.ReadNews.WroteRecs + table + ": success");        P.loadPanelVisible(false); });
+                }, function (err, err2) {errorCB("*writeToWAR-ost sql*", err, err2)});
+            });
 		}
 		if (table == 'CLI') {
 			arrCLI = dataArray;
-			db.transaction(writeToCLI,
-                function (err, err2) { errorCB("*write " + table + "*", err, err2); },
-                function () { trace(_.ReadNews.WroteRecs + table + ": success"); });
+            // writeToCLI();
+			DB.transaction(writeToCLI,
+                function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
+                function () { trace(_.ReadNews.WroteRecs + table + ": success");        P.loadPanelVisible(false); });
 		}
-
-		//db.transaction(writeToDB, function(err, err2) {errorCB("*writeWars ***", err, err2);}, successCB1);
 	};
-
-	function writeToWAR(tx, arr) {
+    
+ 	function writeToWAR(tx) {
 		P.loadPanelVisible(true);
 		var arr = arrWAR;
 		var i, maxlen = 50000;
 		var len = arr.length;   // < maxlen? arr.length:maxlen;
 		//console.log('writeWars: writing=' + len);
 		//tx.executeSql("BEGIN TRANSACTION");
-		for (i = 0; i < len; i++) {
+		for (i = 0; i < arr.length; i++) {
 			arr[i].NameArt = (arr[i].NameArt) ? arr[i].NameArt : '';
 			arr[i].NameManuf = (arr[i].NameManuf) ? arr[i].NameManuf : '';
 			arr[i].UrlPict = (arr[i].UrlPict) ? arr[i].UrlPict : '';
-			dbLastQ = "INSERT INTO WAR (Id, IdGr, Name, Price, NameArt, NameManuf, UrlPict, Upak, Ostat) VALUES('"
-				+ arr[i].Id + "','" + arr[i].GrId + "','" + arr[i].Name + "','" + arr[i].Price + "','"
-				+ arr[i].NameArt + "','" + arr[i].NameManuf + "','" + arr[i].UrlPict + "','" + arr[i].Upak + "','" + arr[i].Ostat
-				+ "')";
-
-			tx.executeSql(dbLastQ, [], function (tx, results) { },
-				function (err, err2) { errorCB("*writeToWAR sql*", err, err2); }
-			);
+            dbLastQ = "Select Id From WAR Where Id='" + arr[i].Id + "'";
+            //tx.executeSql(dbLastQ, [], function (tx, results) {
+            executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
+                if (modeReadNews == 'ost' && results.rows.length)
+                    dbLastQ = "UPDATE WAR set Ostat='" + item.O + "' WHERE Id='" + item.Id + "'";
+                else {
+                    if (results.rows.length)
+                        dbLastQ = "UPDATE WAR set IdGr='" + item.GrId + "', Name='" + item.Name + "', NameArt='" + item.NameArt + 
+                            "', Upak='" + item.Upak + "', NameManuf='" + item.NameManuf + "', UrlPict='" + item.UrlPict + 
+                            "', Price='" + item.Price + "', Ostat='" + item.O + 
+                            "' WHERE Id='" + item.Id + "'";
+                    else
+                        dbLastQ = "INSERT INTO WAR (Id, IdGr, Name, Price, NameArt, NameManuf, UrlPict, Upak, Ostat) VALUES('"
+                            + item.Id + "','" + item.GrId + "','" + item.Name + "','" + item.Price + "','"
+                            + item.NameArt + "','" + item.NameManuf + "','" + item.UrlPict + "','" + item.Upak + "','" + item.O
+                            + "')";
+                    }
+                tx.executeSql(dbLastQ, [], function (tx, results) { },
+                    function (err, err2) { errorCB("*writeToWAR sql*", err, err2); }
+                );
+            }, arr[i]);
+            //}, function (err, err2) {errorCB("*writeToWAR-rd sql*", err, err2)});
 		}
 		//tx.executeSql("COMMIT TRANSACTION", errorCB);
 		trace(_.ReadNews.ReadRecs + ' WAR: ' + i);
-		P.loadPanelVisible(false);
+		// P.loadPanelVisible(false);
 	};
+
 	function writeToCLI(tx) {
 		P.loadPanelVisible(true);
 		var arr = arrCLI;
@@ -451,26 +537,33 @@ var DAL = (function ($, window) {
 		//tx.executeSql("BEGIN TRANSACTION");
 		var len = arr.length;   // < maxlen? arr.length:maxlen;
 		//console.log('writeWars: writing=' + len);
-		for (i = 0; i < len; i++) {
-			dbLastQ = "INSERT INTO CLI (Id, IdPar, Name, Adres) VALUES('"
-				+ arr[i].Id + "','" + arr[i].IdPar + "','" + arr[i].Name + "','" + arr[i].Adres +
-				//"','" + arr[i].geoLoc + 
-				"')";
-			//                tx.executeSql(dbLastQ);
-			tx.executeSql(dbLastQ, [], function (tx, results) { },
-				function (err, err2) { errorCB("*writeToCLI sql*", err, err2); }
-			);
+		for (i = 0; i < arr.length; i++) {
+            dbLastQ = "Select Id From CLI Where Id='" + arr[i].Id + "'";
+            // tx.executeSql(dbLastQ, [], function (tx, results) {
+            //var item = arr[i]
+            executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
+                if (results.rows.length)
+                    dbLastQ = "UPDATE CLI set IdPar='" + item.IdPar + "', Name='" + item.Name + "', Adres='" + item.Adres + 
+                        "' WHERE Id='" + item.Id + "'";
+                else
+                    dbLastQ = "INSERT INTO CLI (Id, IdPar, Name, Adres) VALUES('"
+                        + item.Id + "','" + item.IdPar + "','" + item.Name + "','" + item.Adres +
+                        "')";
+
+    			tx.executeSql(dbLastQ, [], function (tx, results) { },
+    				function (err, err2) { errorCB("*writeToCLI sql*", err, err2); }
+                );
+            }, arr[i]);
+            // }, function (err, err2) {errorCB("*writeToCLI-rd sql*", err, err2)} );
 		}
 		//tx.executeSql("COMMIT TRANSACTION", errorCB);
 		trace(_.ReadNews.ReadRecs + ' CLI: ' + i);
 		P.itemCount['Clients'] = P.ChangeValue('Clients', i);
-
-		P.loadPanelVisible(false);
+		// P.loadPanelVisible(false);
 	};
 
 
 	// Transaction error callback
-	//
 	function errorCB(src, err, err2) {
 		var message = (err) ? ((err.message) ? err.message : err2.message) : src;
 		var code = (err) ? ((err.code || (err && err.code == 0)) ? err.code : err2.code) : "";
@@ -478,27 +571,14 @@ var DAL = (function ($, window) {
 		return false;
 	};
 	// Transaction success callback
-	//
 	function successCB() {
 		//var db = window.openDatabase("Database", "1.0", "Cordova Demo", dbSize);
 		//db.transaction(queryDB, errorCB);
 	};
-	// function consoleOut(str, skipbr) {
-	//     var element = document.getElementById('consoleOut');
-	//     if (element)
-	//         if (skipbr)
-	//             element.innerHTML = str;
-	//         else
-	//             element.innerHTML += str + '<br />';
-	// }
-
-
-
-
 
 
 	function successCB1() {
-		var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+		//var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
 		db.transaction(queryDB1, errorCB);
 	};
 	function queryDB1(tx) {
@@ -534,7 +614,7 @@ var DAL = (function ($, window) {
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
-        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat int, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
         // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',

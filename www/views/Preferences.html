@@ -116,21 +116,8 @@
 		            </p>
 		        </div>
 			</div>
-<!-- 		    phone: <span data-bind="text: P.deviceInfo.phone"></span> 
-		    tablet : <span data-bind="text: P.deviceInfo.tablet "></span> 
-		    android  : <span data-bind="text: P.deviceInfo.android  "></span> 
-		    ios  : <span data-bind="text: P.deviceInfo.ios  "></span> 
-		    win8  : <span data-bind="text: P.deviceInfo.win8  "></span> 
-		    tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> <br/>
-		    platform  : <span data-bind="text: P.deviceInfo.platform  "></span> 
-		    <br/>
-		    size : <span data-bind="text: screen.height + '-' + screen.width  "></span> 
 
-		    <br/><br/>
-		    <span data-bind="text: navigator.userAgent"></span>
-			<br/>cookieEnabled: <span data-bind="text: navigator.cookieEnabled"></span>
-
- -->			<div class="copyright">
+			<div class="copyright">
 		      <p><span data-bind="text: P.copyright"></span></p>
 			</div>
 		</div>
@@ -150,15 +137,15 @@
 		<div class="dx-fieldset">
 		    <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.ReadNews.SaveOrd "></div>
-                <div class="dx-field-value" data-bind="dxSwitch: { value: modeSaveOrd }"></div>	                    
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeSaveOrd, valueUpdateAction: ReadNews_SUA('modeSaveOrd') }"></div>
             </div>
 		    <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.ReadNews.LoadOst "></div>
-                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadOst }"></div>	                    
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadOst, valueUpdateAction: ReadNews_SUA('modeLoadOst') }"></div>
             </div>
 		    <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.ReadNews.LoadSpr "></div>
-                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadSpr }"></div>	                    
+                <div class="dx-field-value" data-bind="dxSwitch: { value: modeLoadSpr, valueUpdateAction: ReadNews_SUA('modeLoadSpr') }"></div>
             </div>
         </div>
         <div class="center">

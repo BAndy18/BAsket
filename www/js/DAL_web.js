@@ -2,6 +2,11 @@
 var DAL_web = (function ($, window) {
 	var root = {};
 
+    root.NMS = function (params) {
+        if (!P.dataSouceUrl)
+            return DAL_tst.NMS_Data;
+        return execDataSource({ control: 'Nms' });
+    };
 	root.Categories = function (params) {
 		if (!P.dataSouceUrl)
 			return DAL_tst.Categories_Data;
@@ -11,9 +16,12 @@ var DAL_web = (function ($, window) {
 	root.Products = function (params) {
 		if (!P.dataSouceUrl)
 			return DAL_tst.Products_Data;
+        var control = 'Products';
+        if (params.Id == 'ost')
+            control = 'ProdOst';
 
 		return execDataSource({
-			control: 'Products', paging: true,
+			control: control, paging: true,
 			prm: {
 				grId: params.Id,
 				searchString: params.search
@@ -95,12 +103,6 @@ var DAL_web = (function ($, window) {
         return execMethod({ method: 'POST', control: 'BilM/', prm: params }).load();
     };
 
-
-	root.NMS = function (params) {
-		if (!P.dataSouceUrl)
-			return DAL_tst.NMS_Data;
-		return execDataSource({ control: 'Nms' });
-	};
 
 	function execDataSource(params, mapCallback) {
 		//P.getDeviceId();

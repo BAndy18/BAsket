@@ -21,25 +21,25 @@
     <script type="text/javascript" src="js/vendor/dx.phonejs.debug.js"></script>
     
     <link rel="stylesheet" type="text/css" href="css/dx.common.css" />
-    <link rel="stylesheet" type="text/css" href="css/dx.ios.default.css" />
     <link rel="stylesheet" type="text/css" href="css/dx.android.holo-light.css" />
-    <link rel="stylesheet" type="text/css" href="css/dx.win8.white.css" />
-    <link rel="stylesheet" type="text/css" href="css/dx.tizen.white.css" />
-    <link rel="stylesheet" type="text/css" href="css/dx.generic.light.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/dx.ios.default.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/dx.win8.white.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/dx.tizen.white.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/dx.generic.light.css" /> -->
 
     <!-- Layouts -->
     <link rel="stylesheet" type="text/css" href="layouts/SlideOut/SlideOutLayout.css" />
     <link rel="dx-template" type="text/html" href="layouts/SlideOut/SlideOutLayout.html" />
     <script type="text/javascript" src="layouts/SlideOut/SlideOutLayout.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="layouts/Navbar/NavbarLayout.css" />
+<!--     <link rel="stylesheet" type="text/css" href="layouts/Navbar/NavbarLayout.css" />
     <link rel="dx-template" type="text/html" href="layouts/Navbar/NavbarLayout.html" />
     <script type="text/javascript" src="layouts/Navbar/NavbarLayout.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="layouts/Pivot/PivotLayout.css" />
+ -->
+<!--     <link rel="stylesheet" type="text/css" href="layouts/Pivot/PivotLayout.css" />
     <link rel="dx-template" type="text/html" href="layouts/Pivot/PivotLayout.html" />
     <script type="text/javascript" src="layouts/Pivot/PivotLayout.js"></script>
-
+ -->
     <link rel="stylesheet" type="text/css" href="layouts/Empty/EmptyLayout.css" />
     <link rel="dx-template" type="text/html" href="layouts/Empty/EmptyLayout.html" />
     <script type="text/javascript" src="layouts/Empty/EmptyLayout.js"></script>
@@ -51,8 +51,7 @@
     <script type="text/javascript" src="js/VerConst.js"></script>    
     <script type="text/javascript" src="js/Utils.js"></script>    
     <script type="text/javascript" src="js/index.js"></script>    
-    <!--script type="text/javascript" src="js/DAL.js"></script-->
-    <script type="text/javascript" src="js/DAL_tst.js"></script>    
+    <!--script type="text/javascript" src="js/DAL_tst.js"></script-->
     <script type="text/javascript" src="js/DAL_web.js"></script>    
     <script type="text/javascript" src="js/DAL_loc.js"></script>    
 
@@ -97,7 +96,7 @@
       <div><b class="basket-header">BAsket</b></div>
 
       <div id='idMainTileView' class="tileView" data-bind="dxTileView: {
-          dataSource: P.navigation.splice(1), 
+          dataSource: BAsket.navigation, 
           itemMargin: 5, baseItemHeight: 25, baseItemWidth: 25, height: '400', 
           itemClickAction: P.itemClick
         }">
