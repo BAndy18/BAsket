@@ -77,9 +77,12 @@ namespace BAsketWS.DataAccess
 			        connection.Open();
 			        result = command.ExecuteReader(CommandBehavior.CloseConnection);
 			    }
-			    catch (Exception ex)
+			    catch (SqlException ex)
 			    {
-			        if (ex.Message.StartsWith("Invalid object"))
+					if (ex is SqlException && (ex as SqlException).Number == 15350)
+						//Common.CreateDb(connectionName)
+							;
+			        if (ex.Number == 208)	// Invalid object
                         Common.CreateDbObject(ex.Message);
 			        else
 						Common.SaveLog("ExecuteReader: " + ex.Message);
@@ -102,7 +105,8 @@ namespace BAsketWS.DataAccess
 			}
 			catch (Exception ex)
 			{
-				Common.SaveLog("ExecuteReaderEx: " + ex.Message);
+				if (!(ex is ArgumentNullException))
+					Common.SaveLog("ExecuteReaderEx: " + ex.Message);
 			}
 			return ra;
 		}

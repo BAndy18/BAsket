@@ -423,63 +423,65 @@ var P = (function ($, window) {
                 root.LoadFile('css/dx.tizen.white.css', 'css');
         }
 
-        if (!root.dataSouceUrl && !window['DAL_tst'])
-            root.LoadFile('js/DAL_tst.js', 'js');
+        root.dataSouceUrl = iniLocalStor("dataSouceUrl", "");
+        root.adminPassword = iniLocalStor("adminPassword", "admin");
+        root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
+        root.debugMode = iniLocalStor("debugMode", "true") == "true";
 
-		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
-		if (!root.arrCategory.length) {
-			// DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
-			// if (dialogResult){
-			DAL.ReadNews(true, true);
-			// }
-			// });
-			return;
-		}
-		root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
-		for (var i = 0; i < root.arrNMS[0].length; i++) {
-			root.arrNMS[i + 1] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
-		}
-		root.curCategoryId = root.arrCategory[0].Id;
-		root.curCategoryName = root.arrCategory[0].Name;
-
-		DAL.TableCount();
-
-		root.dataSouceUrl = iniLocalStor("dataSouceUrl", "");
-		root.adminPassword = iniLocalStor("adminPassword", "admin");
-		root.modeProdView = iniLocalStor("modeProdView", "true") == "true";
-		root.debugMode = iniLocalStor("debugMode", "true") == "true";
-
-		root.mapProvider = iniLocalStor("MapProvider", "google");
-		root.languageUI = '-';
-		root.languageUI = iniLocalStor("LanguageUI", '-');
-		root.ChangeLanguageUI();
+        root.mapProvider = iniLocalStor("MapProvider", "google");
+        root.languageUI = '-';
+        root.languageUI = iniLocalStor("LanguageUI", '-');
+        root.ChangeLanguageUI();
 
         BAsket.navigation = P.navigation.slice(0);
         BAsket.navigation = BAsket.navigation.splice(1);
 
-		root.UserName = iniLocalStor("userName", "-");
-		if (root.UserName == '-') root.UserName = 'BAndy';
+        root.UserName = iniLocalStor("userName", "-");
+        if (root.UserName == '-') root.UserName = 'BAndy';
         root.UserPassword = iniLocalStor("userPassword", "-");
-		if (root.UserPassword == '-') root.UserPassword = root.getDeviceId();
+        if (root.UserPassword == '-') root.UserPassword = root.getDeviceId();
         root.UserEMail = iniLocalStor("userEMail", "-");
 
-		var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
+        var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
         auth = DevExpress.data.base64_encode(auth);
-		// document.cookie = ".ASPXAUTH=" + auth;
-		// document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
-		document.cookie = ".BAsketAUTH=" + auth;
+        // document.cookie = ".ASPXAUTH=" + auth;
+        // document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
+        document.cookie = ".BAsketAUTH=" + auth;
         sessionStorage['.BAsketAUTH'] = auth;
-		root.ajaxHeaders = (root.bPhoneGap || !location.port) ? {
-			'Authorization': auth,
+        root.ajaxHeaders = (root.bPhoneGap || !location.port) ? {
+            'Authorization': auth,
             // 'Cookie' : document.cookie
-			// 'Access-Control-Allow-Origin': true,
-			// 'Authorization' : getToken()
-			// 'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
-		} : {};
+            // 'Access-Control-Allow-Origin': true,
+            // 'Authorization' : getToken()
+            // 'Authorization': "Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":"))
+        } : {};
         // root.ajaxHeaders = {};
 
+        root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
 
-		root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
+
+        // if (!root.dataSouceUrl && !window['DAL_tst'])
+        //     root.LoadFile('js/DAL_tst.js', 'js');
+
+		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
+        if (!root.arrCategory.length) {
+            // DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
+            // if (dialogResult){
+            DAL.ReadNews(true, true);
+            // }
+            // });
+            return;
+        }
+		root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
+		for (var i = 0; i < root.arrNMS[0].length; i++) {
+			root.arrNMS[i + 1] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
+		}
+        if (root.arrCategory.length > 0){
+    		root.curCategoryId = root.arrCategory[0].Id;
+    		root.curCategoryName = root.arrCategory[0].Name;
+        }
+
+		DAL.TableCount();
 
 		var view = $("#idMainTileView").data("dxTileView");        //dxTileView("instance");
 		if (view)

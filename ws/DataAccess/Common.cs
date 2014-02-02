@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 //using System.ComponentModel.Composition;
 
@@ -9,13 +12,18 @@ namespace BAsketWS.DataAccess
 {
     public class Common
     {
-        static public void AddCorsHeaders(HttpResponse res)
+	    public const string SWUTable = "sy_WebUsers";
+	    public const string SWarTable = "bas_spWar";
+		public const string SCliTable = "bas_spCli";
+
+
+	    static public void AddCorsHeaders(HttpResponse res)
         {
             var req = HttpContext.Current.Request.Headers;
 	        if (req["Origin"] == null)
 	        {
 				res.Headers.Add("Access-Control-Allow-Origin", "*");
-		        Common.SaveLog("*** Common (Access-Control-Allow-Origin) Origin not found");
+		        SaveLog("*** Common (Access-Control-Allow-Origin) Origin not found");
 	        }
 	        else
 		        res.Headers.Add("Access-Control-Allow-Origin", req["Origin"]);
@@ -63,10 +71,8 @@ namespace BAsketWS.DataAccess
 
 				{"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
 						"Select 0 as t_nms, 101 as n_nms, 'Отчет' as Name Union " +
-						"Select 1 as t_nms, r_sup as n_nms, Name From spSUP Where Npp>0 Union " +
-						"Select 101 as t_nms, fkey as n_nms, ltrim(rtrim(p.Name)) as Name From sy_PRN p Where bSusp=0 and NView<10 and NView>=0 and left(p.Name,2)<>'+ ' and left(p.Name,2)<>'--'   and p.fkey in (21,40, 78,79, 351, 454,455, 350) Union " +
-						"Select t_nms, n_nms, Name From spNMS Where bSusp=0 and N_NMS in (2) and T_NMS=0 Union " +
-						"Select t_nms, n_nms, Name From spNMS Where bSusp=0 and T_NMS in (2) " +
+						"Select 1 as t_nms, 1 as n_nms, 'Нормаль ООО' as Name Union " +
+						"Select 101 as t_nms, 1 as n_nms, 'Отчет 1' as Name " +
 						"Order by t_nms, n_nms"},
 
                 {"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
@@ -98,7 +104,7 @@ namespace BAsketWS.DataAccess
 	        catch
 	        {
 				if (HttpContext.Current != null)
-				foreach (System.Collections.DictionaryEntry ckey in HttpContext.Current.Cache)
+				foreach (DictionaryEntry ckey in HttpContext.Current.Cache)
 		        {
 					if (ckey.Key.ToString().StartsWith("__System.Web.WebPages.Deployment"))
 					{
@@ -108,9 +114,9 @@ namespace BAsketWS.DataAccess
 	        }
 	        DateTime dt = DateTime.Now;
             string sOut = String.Format("\n{0}.{1}.{2} {3}:{4}:{5}| {6}", dt.Day.ToString("D2"), dt.Month.ToString("D2"), (dt.Year - 2000).ToString("D2"), dt.Hour.ToString("D2"), dt.Minute.ToString("D2"), dt.Second.ToString("D2"), sLog);
-            System.Diagnostics.Trace.WriteLine(sOut);
+            Trace.WriteLine(sOut);
             Console.Write(sOut);
-            System.Text.Encoding encoding = System.Text.Encoding.Default;
+            Encoding encoding = Encoding.Default;
 			try
 	        {
 				using (FileStream fs = File.Open(sFN, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
@@ -128,37 +134,62 @@ namespace BAsketWS.DataAccess
 		#region CreateDbObject
 		static public void CreateDbObject(string message, string table = "")
         {
-	        if (string.IsNullOrEmpty(table))
+	        if (String.IsNullOrEmpty(table))
 	        {
-				var sV = message.Split('\'');
+				var sV = message.Replace("\"", "'").Split('\'');
 		        if (sV.Length > 2)
 			        table = sV[1];
 
 	        }
-			var cmd = string.Format(sqlCreateCommands[table], table);
-            if (!string.IsNullOrEmpty(cmd))
-            {
-                BaseRepository.ExecuteCommand("BAsket", cmd, null);
-            }
+			if (sqlCreateCommands.ContainsKey(table))
+			{
+				var cmd = String.Format(sqlCreateCommands[table], table);
+				if (!String.IsNullOrEmpty(cmd))
+				{
+					BaseRepository.ExecuteCommand("BAsket", cmd, null);
+				}
+			}
+			else
+	        {
+				SaveLog("CreateDbObject: key not found: " + table);
+			}
         }
 
         static Dictionary<string, string> sqlCreateCommands = new Dictionary<string, string>()
         {
-            {DbfHelper.SWarTable, "Create table dbo.{0} (" +
-                        "r_war varchar(10) primary key," +
-                        "r_hwar varchar(10)," +
-                        "name varchar(250)," +
-                        "name_c varchar(250)," +
-                        "name_manuf varchar(250)," +
-                        "name_pict varchar(250)," +
-                        "ostat int," +
-                        "price money," +
-                        "datedit smalldatetime default getdate()," +
-                        "isware bit)" +
-                        ";Create Index IX_war_hwar On {0}(r_hwar)" + 
-                        ";Create Index IX_war_name On {0}(name)" + 
-                        ""},
-            //{"getWarsByGId", "Select * from spWar Where r_hwar={0}"},
+            {Common.SWUTable, "CREATE TABLE [dbo].{0}("+
+					"[ID] [int] IDENTITY(1,1) primary key,"+
+					"[Name] [varchar](50) NOT NULL,"+
+					"[NameID] [varchar](50) NULL,"+
+					"[EMail] [varchar](50) NULL,"+
+					//"[SelCli] [varchar](500) NULL,"+
+					//"[SelSup] [varchar](500) NULL,"+
+					//"[SelWar] [varchar](500) NULL,"+
+					"[N_TP] [smallint] NOT NULL)"
+			},
+            {Common.SWarTable, "Create table dbo.{0} (" +
+                    "r_war varchar(10) primary key," +
+                    "r_hwar varchar(10)," +
+                    "name varchar(250)," +
+                    "name_c varchar(250)," +
+                    "name_manuf varchar(250)," +
+                    "name_pict varchar(250)," +
+                    "ostat int," +
+                    "price money," +
+                    "datedit smalldatetime default getdate()," +
+                    "isware bit)" +
+                    ";Create Index IX_war_hwar On {0}(r_hwar)" + 
+                    ";Create Index IX_war_name On {0}(name)" +
+					""
+            },
+            {Common.SCliTable, "CREATE TABLE [dbo].{0}("+
+					"[r_CLI] varchar(10) IDENTITY(1,1) primary key,"+
+					"[r_FCLI] [int] NULL,"+
+					"[Name] [varchar](100) NULL,"+
+					"[Adres] [varchar](150) NULL"
+            },
+
+			//{"getWarsByGId", "Select * from spWar Where r_hwar={0}"},
             //{"getWarById", "Select * from spWar Where r_war={0}"},
         };
         #endregion

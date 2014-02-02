@@ -116,6 +116,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\BAsketDB.mdf" />
+    <Content Include="App_Data\BAsketDB_log.ldf">
+      <DependentUpon>BAsketDB.mdf</DependentUpon>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -11,8 +12,7 @@ namespace BAsketWS.DataAccess
 	{
 		static DateTime dtPriceUpdate = DateTime.Now;
 		static string sPricePath = "d:\\price.dbf";
-		public const string SWarTable = "bas_spWar";
-
+		
 		static public void readDbf()
 		{
 			var iGrpId = GetLastGrpId();
@@ -43,11 +43,11 @@ namespace BAsketWS.DataAccess
 				var group = dr["group"].ToString();
 				if (!grpNames.ContainsKey(group))
 				{
-					var s = GetDbValue<string>(string.Format("select r_war from {0} where isware=0 and name='{1}'", SWarTable, group));
+					var s = GetDbValue<string>(string.Format("select r_war from {0} where isware=0 and name='{1}'", Common.SWarTable, group));
 					if (string.IsNullOrEmpty(s))
 					{
 						cmd = string.Format("Insert {0} (r_war,r_hwar,name,isware) values({1},0,'{2}',0)",
-								SWarTable, iGrpId, group);
+								Common.SWarTable, iGrpId, group);
 						var ret = BaseRepository.ExecuteCommand("BAsket", cmd, null);
 						grpNames[group] = iGrpId.ToString();
 						iGrpId--;
@@ -57,7 +57,7 @@ namespace BAsketWS.DataAccess
 				}
 				group = grpNames[group];
 
-				cmd = string.Format("select * from {0} where r_war='{1}'", SWarTable, dr["code"]);
+				cmd = string.Format("select * from {0} where r_war='{1}'", Common.SWarTable, dr["code"]);
 				using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
 				{
 					if (reader.Read())
@@ -73,7 +73,7 @@ namespace BAsketWS.DataAccess
 						cmd = string.Format(
 								"Insert {0} (r_war,r_hwar,name,name_c,name_manuf,name_pict,ostat,price,isware)" +
 								" values('{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}', 1)",
-								SWarTable, dr["code"], group, dr["name"],
+								Common.SWarTable, dr["code"], group, dr["name"],
 								dr["art"], dr["manufact"], dr["pict"],
 								stock, price);
 						try
@@ -114,9 +114,9 @@ namespace BAsketWS.DataAccess
 					if (reader.Read())
 						ret = reader.GetValue(0, default(T));
 				}
-				catch (Exception ex)
+				catch (SqlException ex)
 				{
-					if (ex.Message.StartsWith("Invalid object"))
+					if (ex.Number == 208)	// Invalid object
 						Common.CreateDbObject(ex.Message, table);
 				}
 			}
@@ -125,7 +125,7 @@ namespace BAsketWS.DataAccess
 
 		static int GetLastGrpId()
 		{
-			var iGrpId = GetDbValue<int>(string.Format("select min(cast(r_war as int)) as r_war from {0} where isware=0 and left(r_war,1)<>'.'", SWarTable));
+			var iGrpId = GetDbValue<int>(string.Format("select min(cast(r_war as int)) as r_war from {0} where isware=0 and left(r_war,1)<>'.'", Common.SWarTable));
 			iGrpId--;
 			return iGrpId;
 			/*            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
@@ -175,7 +175,7 @@ namespace BAsketWS.DataAccess
 						{
 							if (!grpNames.ContainsKey(val))
 							{
-								cmd = string.Format("select r_war from {0} where isware=0 and name='{1}'", SWarTable, val);
+								cmd = string.Format("select r_war from {0} where isware=0 and name='{1}'", Common.SWarTable, val);
 								using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
 								{
 									if (reader.Read())
@@ -188,7 +188,7 @@ namespace BAsketWS.DataAccess
 											string.Format(
 												"Insert {0} (r_war,r_hwar,name,isware) values({1},0,'{2}',0)",
 											//";Select @@IDENTITY AS fKey",
-												SWarTable, iGrpId, val);
+												Common.SWarTable, iGrpId, val);
 										var ret = BaseRepository.ExecuteCommand("BAsket", cmd, null);
 										grpNames[val] = iGrpId.ToString();
 										iGrpId--;
@@ -209,7 +209,7 @@ namespace BAsketWS.DataAccess
 						fi = fi.NextNode;
 					} while (fi != null);
 
-					cmd = string.Format("select * from {0} where r_war='{1}'", SWarTable, warFields["r_war"]);
+					cmd = string.Format("select * from {0} where r_war='{1}'", Common.SWarTable, warFields["r_war"]);
 					using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
 					{
 						if (reader.Read())
@@ -224,7 +224,7 @@ namespace BAsketWS.DataAccess
 								string.Format(
 									"Insert {0} (r_war,r_hwar,name,name_c,name_manuf,name_pict,ostat,price,isware)" +
 									" values('{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}', 1)",
-									SWarTable, warFields["r_war"], warFields["r_hwar"], warFields["name"],
+									Common.SWarTable, warFields["r_war"], warFields["r_hwar"], warFields["name"],
 									warFields["name_c"], warFields["name_manuf"], warFields["name_pict"],
 									warFields["ostat"], warFields["price"]);
 							try

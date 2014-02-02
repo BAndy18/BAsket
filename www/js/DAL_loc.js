@@ -294,13 +294,19 @@ var DAL = (function ($, window) {
 	root.ReadNews = function (fullNews, createDB) {
 		P.loadPanelVisible(true);
         
-		var source0 = DAL_web.NMS();
-		if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
-		else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
+		// var source0 = DAL_web.NMS();
+		// if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
+		// else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
 
-		var source1 = DAL_web.Categories();
-		if (Object.prototype.toString.call(source1) == '[object Array]') writeToLocalData(source1, 'CAT');
-		else source1.load().done(function (result) { writeToLocalData(result, 'CAT'); });
+		// var source1 = DAL_web.Categories();
+		// if (Object.prototype.toString.call(source1) == '[object Array]') writeToLocalData(source1, 'CAT');
+		// else source1.load().done(function (result) { writeToLocalData(result, 'CAT'); });
+  //       .error(function (result) { 
+  //           writeToLocalData(result, 'CAT'); 
+  //       });
+        DAL_web.NMS().load().done(function (result) { writeToLocalData(result, 'NMS'); });
+        DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
+
 
 		if (!P.useWebDb) {
 			P.loadPanelVisible(false);
@@ -308,7 +314,7 @@ var DAL = (function ($, window) {
 		}
 
         if (createDB)
-		    root.RecreateLocalDB(db);
+		    root.RecreateLocalDB();
 
         modeReadNews = fullNews ? 'all':'ost';
 		var source2 = DAL_web.Products({ Id: modeReadNews });
@@ -325,7 +331,7 @@ var DAL = (function ($, window) {
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
-		P.Init();
+		// P.Init();
 	};
 
 	root.RecreateLocalDB = function () {
@@ -467,6 +473,8 @@ var DAL = (function ($, window) {
 			}
 		}
 		if (table == 'CAT') {
+            if (!dataArray.length)
+                dataArray = [{"Id":"0", "Name":"-"}]
 			var localData = JSON.stringify(dataArray);
 			P.arrCategory = JSON.parse(P.ChangeValue('categories', localData));
 		}
