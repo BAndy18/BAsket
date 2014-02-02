@@ -10,7 +10,7 @@ namespace BAsketWS.DataAccess
 	public class RepoHelper
 	{
 		static string _sErr;
-		static SqlConnection _con = BaseRepository.GetConnection();	//new SqlConnection(connectionString);
+		static SqlConnection _con = BaseRepository.GetConnection("BAsket");	//new SqlConnection(connectionString);
 		static SqlDataAdapter _da = new SqlDataAdapter("", _con);
 
 		static public string RepoPrint(string iID, string email, int iDirect = 0)

@@ -38,7 +38,7 @@ namespace BAsketWS.Controllers
         List<Product> ProcessCommand(string cmd, int limit = -1)
         {
             var result = new List<Product>();
-            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
+            using (var reader = BaseRepository.ExecuteReaderEx(cmd))
             {
                 if (reader == null)
                     return null;
@@ -52,14 +52,14 @@ namespace BAsketWS.Controllers
                                 Id = reader.GetInt32(Common.GetName("r_war")).ToString(),
                                 GrId = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
                                 Upak = reader.GetInt16(Common.GetName("NUPK")).ToString(),
-                                Ostat = reader.GetFloat(Common.GetName("Ostat")).ToString(),
+                                O = reader.GetFloat(Common.GetName("Ostat")).ToString(),
                                 /*/
                                 Id = reader.GetString(Common.GetName("r_war")),
                                 GrId = reader.GetString(Common.GetName("r_hwar")),
                                 NameManuf = reader.GetString(Common.GetName("Name_manuf")).Replace("'", "''"),
                                 UrlPict = reader.GetString(Common.GetName("Name_pict")).Replace("'", "''"),
                                 Upak = reader.GetInt32(Common.GetName("Upak")).ToString(),
-                                Ostat = reader.GetInt32(Common.GetName("Ostat")).ToString(),
+                                O = reader.GetInt32(Common.GetName("Ostat")).ToString(),
                                 /**/
                                 Name = reader.GetString(Common.GetName("Name")),
                                 NameArt = reader.GetString(Common.GetName("Name_c")),

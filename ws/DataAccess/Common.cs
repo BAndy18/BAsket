@@ -53,7 +53,7 @@ namespace BAsketWS.DataAccess
 				{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from bas_spWar Where r_hwar={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
 
 				{"WarById", "Select * from bas_spWar Where r_war={0} "},
-				{"War", "Select * from bas_spWar Where isware=1 and len(Name)>1 Order by Name"},
+				{"War", "Select * from bas_spWar Where isware=1 and len(Name)>1 and Ostat>0 Order by Name"},
 
 				{"WarGr", "Select * from bas_spWar Where r_hwar=0"},
 

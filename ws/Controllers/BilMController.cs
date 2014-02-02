@@ -43,7 +43,7 @@ namespace BAsketWS.Controllers
         List<BilM> ProcessCommand(string cmd, int limit = -1)
         {
             var result = new List<BilM>();
-            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
+            using (var reader = BaseRepository.ExecuteReaderEx(cmd))
             {
                 if (reader == null)
                     return null;
@@ -99,18 +99,18 @@ namespace BAsketWS.Controllers
 	        {
 				return new BilM() { sNote = "user not found " + user };
 	        }
-			var fr = HttpContext.Current.Request.Form;
-	        var comand = fr["cmd"];
+			var form = HttpContext.Current.Request.Form;
+			var comand = form["cmd"];
 			if (comand == "SaveBil")
 	        {
-		        var vOther = fr["sOther"].Split(';');
+				var vOther = form["sOther"].Split(';');
 		        var sup = (vOther.Length > 0 && vOther[0].Length > 0) ? vOther[0].Split(':')[1] : "";
 
 //			var sParam = string.Format("id={0};date={1};idCli={2};idTp={3};sOther={4};sWars={5};sNote={6};", 
 //                form["id"], form["date"], form["idCli"], form["idTp"], form["sOther"], form["sWars"], form["sNote"], user.Split(';')[1]);
-		        var idServ = fr["idServ"];
+				var idServ = form["idServ"];
 		        var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7};|",
-			        sup, fr["date"], fr["idCli"], fr["idTp"], fr["sNote"], userTp, idServ, fr["sWars"]);
+					sup, form["date"], form["idCli"], form["idTp"], form["sNote"], userTp, idServ, form["sWars"]);
 
 		        var cmd = string.Format(Common.SqlCommands["BilMSave"], sParam);
 		        var prm = new List<SqlParameter>
@@ -122,7 +122,7 @@ namespace BAsketWS.Controllers
 	        }
 			else if (comand == "SendRepo")
 			{
-				RepoHelper.RepoPrint(fr["id"], fr["mail"]);
+				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
 	        return new BilM() { sNote = retvalue };

@@ -14,7 +14,14 @@ namespace BAsketWS.Models
         public string NameManuf { get; set; }
         public string UrlPict { get; set; }
         public string Upak { get; set; }
-        public string Ostat { get; set; }
+        public string O { get; set; }
         public decimal Price { get; set; }
     }
+
+	public class ProdOst
+	{
+		public string Id { get; set; }
+		public string O { get; set; }
+	}
+
 }

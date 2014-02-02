@@ -89,6 +89,10 @@ namespace BAsketWS.DataAccess
 			return result;
 		}
 
+		public static DataReaderAdapter ExecuteReaderEx(string procedureName)
+		{
+			return ExecuteReaderEx("BAsket", procedureName, null);
+		}
 		public static DataReaderAdapter ExecuteReaderEx(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			DataReaderAdapter ra = null;
@@ -148,7 +152,7 @@ namespace BAsketWS.DataAccess
 
 		#region Methods
 
-		public static SqlConnection GetConnection(string connectionName = "BAsket")
+		public static SqlConnection GetConnection(string connectionName)
 		{
 			var connectionString = ConfigurationManager.ConnectionStrings[connectionName].ToString();
 			var result = new SqlConnection(connectionString);

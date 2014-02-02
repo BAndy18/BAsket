@@ -90,6 +90,7 @@
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\BilMController.cs" />
+    <Compile Include="Controllers\ProdOstController.cs" />
     <Compile Include="Controllers\NmsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="DataAccess\BaseRepository.cs" />

@@ -19,16 +19,13 @@ namespace BAsketWS.Controllers
             var jdata = qs["data"];
             var jusr = qs["usr"];
 
-            //Common.CheckPriceStatus(null);
-            //Common.readDbf();
-
             var result = new List<Category>();
             var cmd = Common.SqlCommands[jcmd == null ? "WarGr" : jcmd.ToString()];
             if (string.IsNullOrEmpty(cmd))
                 return null;
             if (jdata == null) jdata = "";
             cmd = string.Format(cmd, jdata);
-            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
+            using (var reader = BaseRepository.ExecuteReaderEx(cmd))
             //using (var reader = BaseRepository.ExecuteReaderEx("BAsket", "Select * From spWar where r_pwar=-8", null))
             {
                 if (reader == null)
