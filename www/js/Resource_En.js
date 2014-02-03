@@ -165,11 +165,11 @@ var RU_RU = (function (window) {
 		FldQuantity: 'Количество:',
 		FldName: 'Наименование:',
 		FldPrice: 'Цена:',
-		FldNameArt: 'Артикул:',
-		FldNameManuf: 'Производитель:',
-		FldUpak: 'Количество в упаковке:',
-		FldOstat: 'Остаток:',
-		FldUrlPict: 'Картинка:',
+        FldOstat: 'Остаток:',
+		FldName1: 'Артикул:',
+		FldName2: 'Производитель:',
+        FldName3: 'Картинка:',
+		FldName4: 'Количество в упаковке:',
 		SelSum: 'выбрано: #; на сумму: ',
 	};
 

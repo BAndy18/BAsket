@@ -25,7 +25,7 @@ namespace BAsketWS.Controllers
             //CustomBasicAuth.Authenticate(HttpContext.Current);
 
             var qs = HttpContext.Current.Request.QueryString;
-            var id = qs["IdAll"];
+            var id = qs["pId"];
             var top = int.Parse(qs["take"] ?? "30");
             var skip = int.Parse(qs["skip"] ?? "0");
             var searchString = qs["searchString"] ?? "''";
@@ -49,26 +49,26 @@ namespace BAsketWS.Controllers
             {
                 if (reader == null)
                     return null;
-                try
+                //try
                 {
                     while (reader.Read())
                     {
                         result.Add(new Client()
                             {
-                                Id = reader.GetInt32(Common.GetName("r_cli")).ToString(),
-                                IdPar = reader.GetInt32(Common.GetName("r_fcli")).ToString(),
-                                Name = reader.GetString(Common.GetName("Name")),
-                                Adres = reader.GetString(Common.GetName("Adres")),
-                                FullName = reader.GetString(Common.GetName("FullName")),
+								Id = reader.GetString(Common.GetName("Id")),
+								IdP = reader.GetString(Common.GetName("IdP")),
+                                N = reader.GetString(Common.GetName("N")),
+                                A = reader.GetString(Common.GetName("A")),
+                                //N2 = reader.GetString(Common.GetName("N2")),
                             });
                         limit--;
                         if (limit == 0) break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    return new List<Client> { new Client() { Name = ex.Message + ex.StackTrace } };
-                }
+				//catch (Exception ex)
+				//{
+				//	return new List<Client> { new Client() { Name = ex.Message + ex.StackTrace } };
+				//}
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;

@@ -2,6 +2,9 @@
 var DAL_web = (function ($, window) {
 	var root = {};
 
+    if (!window.localStorage.getItem("dataSouceUrl") && !window['DAL_tst'])
+        P.LoadFile('js/DAL_tst.js', 'js');
+
     root.NMS = function (params) {
         if (!P.dataSouceUrl)
             return DAL_tst.NMS_Data;
@@ -17,13 +20,13 @@ var DAL_web = (function ($, window) {
 		if (!P.dataSouceUrl)
 			return DAL_tst.Products_Data;
         var control = 'Products';
-        if (params.Id == 'ost')
+        if (params.pId == 'ost')
             control = 'ProdOst';
 
 		return execDataSource({
 			control: control, paging: true,
 			prm: {
-				grId: params.Id,
+				pId: params.pId,
 				searchString: params.search
 			}
 		}, function (data) {
@@ -48,13 +51,13 @@ var DAL_web = (function ($, window) {
 						quant = P.arrayBAsket[i].Quant;
 					}
 				};
-				params.model.Name(data[0].Name);
-				params.model.Price(data[0].Price.toFixed(2));
-				params.model.NameArt(data[0].NameArt);
-				params.model.NameManuf(data[0].NameManuf);
-				params.model.UrlPict(data[0].UrlPict);
-				params.model.Upak(data[0].Upak);
-				params.model.Ostat(data[0].Ostat);
+				params.model.Name(data[0].N);
+				params.model.Price(data[0].P.toFixed(2));
+				params.model.N1(data[0].N1);
+				params.model.N2(data[0].N2);
+				params.model.N3(data[0].N3);
+				params.model.N4(data[0].N4);
+				params.model.Ostat(data[0].O);
 				params.model.Quant(quant);
 			});
 	};

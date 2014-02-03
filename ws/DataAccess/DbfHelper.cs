@@ -43,10 +43,10 @@ namespace BAsketWS.DataAccess
 				var group = dr["group"].ToString();
 				if (!grpNames.ContainsKey(group))
 				{
-					var s = GetDbValue<string>(string.Format("select r_war from {0} where isware=0 and name='{1}'", Common.SWarTable, group));
+					var s = GetDbValue<string>(string.Format("Select Id From {0} Where isware=0 and N='{1}'", Common.SWarTable, group));
 					if (string.IsNullOrEmpty(s))
 					{
-						cmd = string.Format("Insert {0} (r_war,r_hwar,name,isware) values({1},0,'{2}',0)",
+						cmd = string.Format("Insert {0} (Id,IdP,N,isware) values({1},0,'{2}',0)",
 								Common.SWarTable, iGrpId, group);
 						var ret = BaseRepository.ExecuteCommand("BAsket", cmd, null);
 						grpNames[group] = iGrpId.ToString();
@@ -57,7 +57,7 @@ namespace BAsketWS.DataAccess
 				}
 				group = grpNames[group];
 
-				cmd = string.Format("select * from {0} where r_war='{1}'", Common.SWarTable, dr["code"]);
+				cmd = string.Format("Select * From {0} Where Id='{1}'", Common.SWarTable, dr["code"]);
 				using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
 				{
 					if (reader.Read())
@@ -71,8 +71,8 @@ namespace BAsketWS.DataAccess
 						var stock = dr["stock"].ToString() == "True" ? 1 : 0;
 						var price = dr["price"].ToString().Replace(",", ".");
 						cmd = string.Format(
-								"Insert {0} (r_war,r_hwar,name,name_c,name_manuf,name_pict,ostat,price,isware)" +
-								" values('{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}', 1)",
+								"Insert {0} (Id,IdP,N,N1,N2,N3,O,P,isware) " +
+								"Values('{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}', 1)",
 								Common.SWarTable, dr["code"], group, dr["name"],
 								dr["art"], dr["manufact"], dr["pict"],
 								stock, price);
@@ -125,7 +125,7 @@ namespace BAsketWS.DataAccess
 
 		static int GetLastGrpId()
 		{
-			var iGrpId = GetDbValue<int>(string.Format("select min(cast(r_war as int)) as r_war from {0} where isware=0 and left(r_war,1)<>'.'", Common.SWarTable));
+			var iGrpId = GetDbValue<int>(string.Format("select min(cast(Id as int)) as Id from {0} where isware=0 and left(Id, 1)<>'.'", Common.SWarTable));
 			iGrpId--;
 			return iGrpId;
 			/*            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))

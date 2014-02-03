@@ -19,7 +19,7 @@ namespace BAsketWS.Controllers
         public List<Product> Get()
         {
             var qs = HttpContext.Current.Request.QueryString;
-            var grId = qs["grId"];
+            var id = qs["pId"];
             var top = qs["take"] ?? "30";
             var skip = qs["skip"] ?? "0";
             var searchString = qs["searchString"] ?? "''";
@@ -28,8 +28,8 @@ namespace BAsketWS.Controllers
             //if (!string.IsNullOrEmpty(searchString))
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
-            var cmd = string.Format(Common.SqlCommands["WarsByGId"], grId, searchString, skip+1, top);
-			if (grId == "all" || grId == "ost")
+            var cmd = string.Format(Common.SqlCommands["WarsByGId"], id, searchString, skip+1, top);
+			if (id == "all" || id == "ost")
                 cmd = Common.SqlCommands["War"];
 
             return ProcessCommand(cmd);
@@ -42,7 +42,7 @@ namespace BAsketWS.Controllers
             {
                 if (reader == null)
                     return null;
-                try
+                //try
                 {
                     while (reader.Read())
                     {
@@ -50,29 +50,29 @@ namespace BAsketWS.Controllers
                             {
                                 /*
                                 Id = reader.GetInt32(Common.GetName("r_war")).ToString(),
-                                GrId = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
-                                Upak = reader.GetInt16(Common.GetName("NUPK")).ToString(),
+                                IdP = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
+                                N4 = reader.GetInt16(Common.GetName("NUPK")).ToString(),
                                 O = reader.GetFloat(Common.GetName("Ostat")).ToString(),
                                 /*/
-                                Id = reader.GetString(Common.GetName("r_war")),
-                                GrId = reader.GetString(Common.GetName("r_hwar")),
-                                NameManuf = reader.GetString(Common.GetName("Name_manuf")).Replace("'", "''"),
-                                UrlPict = reader.GetString(Common.GetName("Name_pict")).Replace("'", "''"),
-                                Upak = reader.GetInt32(Common.GetName("Upak")).ToString(),
-                                O = reader.GetInt32(Common.GetName("Ostat")).ToString(),
+                                Id = reader.GetString(Common.GetName("Id")),
+                                IdP = reader.GetString(Common.GetName("IdP")),
+								N2 = reader.GetString(Common.GetName("N2")).Replace("'", "''"),	//NameManuf
+								N3 = reader.GetString(Common.GetName("N3")).Replace("'", "''"),	//UrlPict - Name_pict
+								N4 = reader.GetInt32(Common.GetName("N4")).ToString(),	//Upak 
+                                O = reader.GetInt32(Common.GetName("O")).ToString(),
                                 /**/
-                                Name = reader.GetString(Common.GetName("Name")),
-                                NameArt = reader.GetString(Common.GetName("Name_c")),
-                                Price = reader.GetDecimal(Common.GetName("Price"))
+                                N = reader.GetString(Common.GetName("N")),
+                                N1 = reader.GetString(Common.GetName("N1")),	//NameArt
+                                P = reader.GetDecimal(Common.GetName("P"))
                             });
                         limit--;
                         if (limit == 0) break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    return new List<Product>{ new Product(){Name = ex.Message + ex.StackTrace}};
-                }
+				//catch (Exception ex)
+				//{
+				//	return new List<Product>{ new Product(){N = ex.Message + ex.StackTrace}};
+				//}
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;

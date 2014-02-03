@@ -378,22 +378,22 @@ var P = (function ($, window) {
 
 	root.Init = function () {
 		root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
-		var e;
-		try {
-			if (!window.openDatabase)
-				root.useWebDb = false;
-			else {
-				var mydb = openDatabase("BAsketDB", "1.0", "BAsketDB", 5000000);
-			}
-		} catch (e) {
-			// Error handling code goes here. 
-			if (e == INVALID_STATE_ERR) {
-				// Version number mismatch. 
-				alert("Invalid database version.");
-			} else {
-				alert("Unknown error " + e + ".");
-			}
-		}
+		// var e;
+		// try {
+		// 	if (!window.openDatabase)
+		// 		root.useWebDb = false;
+		// 	else {
+		// 		var mydb = openDatabase("BAsketDB", "1.0", "BAsketDB", 5000000);
+		// 	}
+		// } catch (e) {
+		// 	// Error handling code goes here. 
+		// 	if (e == INVALID_STATE_ERR) {
+		// 		// Version number mismatch. 
+		// 		alert("Invalid database version.");
+		// 	} else {
+		// 		alert("Unknown error " + e + ".");
+		// 	}
+		// }
 		//alert("Test openDatabase OK " + root.useWebDb);
 
 		root.platformDevice = 'android';
@@ -458,10 +458,6 @@ var P = (function ($, window) {
         // root.ajaxHeaders = {};
 
         root.copyright = 'BAsket \u00A9 2014 BAndy soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
-
-
-        // if (!root.dataSouceUrl && !window['DAL_tst'])
-        //     root.LoadFile('js/DAL_tst.js', 'js');
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
         if (!root.arrCategory.length) {

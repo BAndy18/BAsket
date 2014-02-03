@@ -22,7 +22,7 @@
                 <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { 
                     title: _.Products.TitleCat, 
                     dataSource: dataSourceCat, 
-                    displayExpr: 'Name', 
+                    displayExpr: 'N', 
                     valueExpr: 'Id', 
                     value: P.curCategoryId, 
                     placeholder: P.curCategoryName,
@@ -48,7 +48,7 @@
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
                 <div class='marginleft' data-bind="text: $data.Name"/>
                 <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
-                    (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
+                    (уп=<span data-bind="text: Globalize.format($data.N4, 'n0')"/> 
                     ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#product-details/{Id}'">
-                <img class="tile-image" data-bind="attr: { src: UrlPict }"/>
+                <img class="tile-image" data-bind="attr: { src: N3 }"/>
                 <span class="tile-text" data-bind="text: Name"></span>
                 <span class="tile-text-top" data-bind="text: Quant"></span>
             </div>

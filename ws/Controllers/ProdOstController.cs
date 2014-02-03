@@ -11,7 +11,7 @@ namespace BAsketWS.Controllers
 		public List<ProdOst> Get()
         {
             var qs = HttpContext.Current.Request.QueryString;
-            var grId = qs["grId"];
+            var grId = qs["Id"];
             var cmd = Common.SqlCommands["War"];
 
 			var result = new List<ProdOst>();

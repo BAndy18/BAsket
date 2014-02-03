@@ -16,7 +16,7 @@ namespace BAsketWS.Controllers
 
         public List<Nms> Get()
         {
-			//Common.readDbf();
+			//DbfHelper.readDbf();
 
             var cmd = Common.SqlCommands["Nms"];
 
@@ -52,7 +52,7 @@ namespace BAsketWS.Controllers
                 {
                     result.Add(new Nms()
                         {
-                            IdRoot = reader.GetInt32(Common.GetName("T_NMS")),
+                            IdP = reader.GetInt32(Common.GetName("T_NMS")),
                             Id = reader.GetInt32(Common.GetName("N_NMS")),
 							//Name = name,
 							Name = reader.GetString(Common.GetName("Name")),

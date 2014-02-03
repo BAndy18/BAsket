@@ -5,10 +5,10 @@
 		Id: params.Id,
 		Name: ko.observable(''),
 		Price: ko.observable(''),
-		NameArt: ko.observable(''),
-		NameManuf: ko.observable(''),
-		UrlPict: ko.observable(''),
-		Upak: ko.observable(''),
+		N1: ko.observable(''),
+		N2: ko.observable(''),
+		N3: ko.observable(''),
+		N4: ko.observable(''),
 		Ostat: ko.observable(''),
 
 		Quant: ko.observable(),
@@ -54,7 +54,7 @@
 			}
 		}
 		if (!bFound && quant && quant > 0) {
-			P.arrayBAsket.push({ 'Id': this.Id, 'Name': this.Name(), 'Upak': this.Upak(), 'Ostat': this.Ostat(), 'Quant': quant, 'Price': this.Price() });
+			P.arrayBAsket.push({ 'Id': this.Id, 'Name': this.Name(), 'N4': this.N4(), 'Ostat': this.Ostat(), 'Quant': quant, 'Price': this.Price() });
 		}
 		// for(var i in P.arrayBAsket){
 		//     console.log('Product_Details_saveClicked arrayBAsket<' + P.arrayBAsket[i].Quant + '>');

@@ -63,9 +63,9 @@ var DAL = (function ($, window) {
 	var root = {};
 
 	var dbLastQ = '';
-	// var dbName = 'BAsketDB';
-	// var dbSize = 5000000;
     // var dbParam = null;
+	// var dbName = 'BAsketDB';
+	var dbSize = 5000000;
 
     var DB = SQLite();
 
@@ -74,7 +74,7 @@ var DAL = (function ($, window) {
 			return DAL_web.Products(params);
 		var paging = !nopaging;
 		return execDataSource({
-			query: "SELECT * FROM WAR WHERE IdGr='" + params.Id + "' and Ostat>0",
+			query: "SELECT * FROM WAR WHERE IdP='" + params.Id + "' and Ostat>0",
 			paging: paging,
 			searchString: params.search
 		}, function(data) {
@@ -102,10 +102,10 @@ var DAL = (function ($, window) {
 			if (results.rows.length > 0) {
 				params.model.Name(results.rows.item(0).Name),
 				params.model.Price(results.rows.item(0).Price.toFixed(2))
-				params.model.NameArt(results.rows.item(0).NameArt),
-				params.model.NameManuf(results.rows.item(0).NameManuf),
-				params.model.UrlPict(results.rows.item(0).UrlPict),
-				params.model.Upak(results.rows.item(0).Upak),
+				params.model.N1(results.rows.item(0).N1),
+				params.model.N2(results.rows.item(0).N2),
+				params.model.N3(results.rows.item(0).N3),
+				params.model.N4(results.rows.item(0).N4),
 				params.model.Ostat(results.rows.item(0).Ostat),
 				params.model.Quant(params.Quant)
 			}
@@ -147,7 +147,7 @@ var DAL = (function ($, window) {
 		if (!P.useWebDb)
 			return DAL_web.Clients(params);
 
-		var param = { query: "SELECT * FROM CLI Where IdPar='0'", paging: true };
+		var param = { query: "SELECT * FROM CLI Where IdP='0'", paging: true };
 		if (params && params.search)
 			param.searchString = params.search;
 
@@ -157,14 +157,14 @@ var DAL = (function ($, window) {
 		if (!P.useWebDb)
 			return DAL_web.ClientsPar(params);
 
-		return execDataSource({ query: "SELECT * FROM CLI Where IdPar='" + params + "'" });
+		return execDataSource({ query: "SELECT * FROM CLI Where IdP='" + params + "'" });
 	};
 	root.ClientById = function(params) {
 		if (!P.useWebDb)
 			return DAL_web.ClientById(params);
 		return execDataSource({
 			query: "SELECT c.*, par.Name as ParName, IFNULL(par.Name || ' - ' || c.Name, c.Name) as FullName " +
-				"FROM CLI c Left Join CLI par On c.IdPar=par.Id Where c.Id='" + params + "'"
+				"FROM CLI c Left Join CLI par On c.IdP=par.Id Where c.Id='" + params + "'"
 		});
 	};
 
@@ -317,12 +317,12 @@ var DAL = (function ($, window) {
 		    root.RecreateLocalDB();
 
         modeReadNews = fullNews ? 'all':'ost';
-		var source2 = DAL_web.Products({ Id: modeReadNews });
+		var source2 = DAL_web.Products({ pId: modeReadNews });
 		if (Object.prototype.toString.call(source2) == '[object Array]') writeToLocalData(source2, 'WAR');
 		else source2.load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
-    		var source3 = DAL_web.Clients({ IdAll: 'all' });
+    		var source3 = DAL_web.Clients({ pId: 'all' });
     		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(source3, 'CLI');
     		else source3.load().done(function (result) { writeToLocalData(result, 'CLI'); });
         }
@@ -331,7 +331,8 @@ var DAL = (function ($, window) {
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
-		// P.Init();
+        if (P.arrCategory.length > 0) 
+            P.Init();
 	};
 
 	root.RecreateLocalDB = function () {
@@ -466,7 +467,7 @@ var DAL = (function ($, window) {
 		if (table == 'NMS') {
 			P.arrNMS = [];
 			for (var i = 0 in dataArray) {
-				var j = dataArray[i].IdRoot;
+				var j = dataArray[i].IdP;
 				if (!P.arrNMS[j]) P.arrNMS[j] = [];
 				P.arrNMS[j].push(dataArray[i]);
 				P.ChangeValue('NMS' + j, JSON.stringify(P.arrNMS[j]));
@@ -507,24 +508,24 @@ var DAL = (function ($, window) {
 		//console.log('writeWars: writing=' + len);
 		//tx.executeSql("BEGIN TRANSACTION");
 		for (i = 0; i < arr.length; i++) {
-			arr[i].NameArt = (arr[i].NameArt) ? arr[i].NameArt : '';
-			arr[i].NameManuf = (arr[i].NameManuf) ? arr[i].NameManuf : '';
-			arr[i].UrlPict = (arr[i].UrlPict) ? arr[i].UrlPict : '';
             dbLastQ = "Select Id From WAR Where Id='" + arr[i].Id + "'";
             //tx.executeSql(dbLastQ, [], function (tx, results) {
             executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
                 if (modeReadNews == 'ost' && results.rows.length)
                     dbLastQ = "UPDATE WAR set Ostat='" + item.O + "' WHERE Id='" + item.Id + "'";
                 else {
+                    item.N1 = (item.N1) ? item.N1 : '';
+                    item.N2 = (item.N2) ? item.N2 : '';
+                    item.N3 = (item.N3) ? item.N3 : '';
                     if (results.rows.length)
-                        dbLastQ = "UPDATE WAR set IdGr='" + item.GrId + "', Name='" + item.Name + "', NameArt='" + item.NameArt + 
-                            "', Upak='" + item.Upak + "', NameManuf='" + item.NameManuf + "', UrlPict='" + item.UrlPict + 
-                            "', Price='" + item.Price + "', Ostat='" + item.O + 
+                        dbLastQ = "UPDATE WAR set IdP='" + item.IdP + "', Name='" + item.N + "', N1='" + item.N1 + 
+                            "', N2='" + item.N2 + "', N3='" + item.N3 + "', N4='" + item.N4 + 
+                            "', Price='" + item.P + "', Ostat='" + item.O + 
                             "' WHERE Id='" + item.Id + "'";
                     else
-                        dbLastQ = "INSERT INTO WAR (Id, IdGr, Name, Price, NameArt, NameManuf, UrlPict, Upak, Ostat) VALUES('"
-                            + item.Id + "','" + item.GrId + "','" + item.Name + "','" + item.Price + "','"
-                            + item.NameArt + "','" + item.NameManuf + "','" + item.UrlPict + "','" + item.Upak + "','" + item.O
+                        dbLastQ = "INSERT INTO WAR (Id, IdP, Name, Price, N1, N2, N3, N4, Ostat) VALUES('"
+                            + item.Id + "','" + item.IdP + "','" + item.N + "','" + item.P + "','"
+                            + item.N1 + "','" + item.N2 + "','" + item.N3 + "','" + item.N4 + "','" + item.O
                             + "')";
                     }
                 tx.executeSql(dbLastQ, [], function (tx, results) { },
@@ -550,12 +551,13 @@ var DAL = (function ($, window) {
             // tx.executeSql(dbLastQ, [], function (tx, results) {
             //var item = arr[i]
             executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
+                item.IdP = (item.IdP == null || item.IdP == 'null') ? '0' : item.IdP;
                 if (results.rows.length)
-                    dbLastQ = "UPDATE CLI set IdPar='" + item.IdPar + "', Name='" + item.Name + "', Adres='" + item.Adres + 
+                    dbLastQ = "UPDATE CLI set IdP='" + item.IdP + "', Name='" + item.N + "', Adres='" + item.A + 
                         "' WHERE Id='" + item.Id + "'";
                 else
-                    dbLastQ = "INSERT INTO CLI (Id, IdPar, Name, Adres) VALUES('"
-                        + item.Id + "','" + item.IdPar + "','" + item.Name + "','" + item.Adres +
+                    dbLastQ = "INSERT INTO CLI (Id, IdP, Name, Adres) VALUES('"
+                        + item.Id + "','" + item.IdP + "','" + item.N + "','" + item.A +
                         "')";
 
     			tx.executeSql(dbLastQ, [], function (tx, results) { },
@@ -622,8 +624,8 @@ var DAL = (function ($, window) {
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
-        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdGr, Name, Price DECIMAL(20,2), NameArt, NameManuf, UrlPict, Upak, Ostat int, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdPar, Name, Adres, GeoLoc)',
+        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, Name, Price DECIMAL(20,2), N1, N2, N3, N4, N5, Ostat int, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, Name, Adres)',
         // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
@@ -639,8 +641,8 @@ var DAL = (function ($, window) {
 	// "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
 	// "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
 	// "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
-	// "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
-	// "INSERT INTO CLI (Id,  IdPar, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
+	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
+	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
 
 	return root;
 })(jQuery, window);

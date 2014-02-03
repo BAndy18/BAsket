@@ -8,14 +8,14 @@ namespace BAsketWS.Models
     public class Product
     {
         public string Id { get; set; }
-        public string GrId { get; set; }
-        public string Name { get; set; }
-        public string NameArt { get; set; }
-        public string NameManuf { get; set; }
-        public string UrlPict { get; set; }
-        public string Upak { get; set; }
+        public string IdP { get; set; }
+        public string N { get; set; }
+        public string N1 { get; set; }
+        public string N2 { get; set; }
+        public string N3 { get; set; }
+        public string N4 { get; set; }
         public string O { get; set; }
-        public decimal Price { get; set; }
+        public decimal P { get; set; }
     }
 
 	public class ProdOst

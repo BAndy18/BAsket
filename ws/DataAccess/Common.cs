@@ -58,16 +58,16 @@ namespace BAsketWS.DataAccess
             
 		/*/
 		// Нормаль данные
-				{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from bas_spWar Where r_hwar={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
+				{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * From " + SWarTable + "Where IdP={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
 
-				{"WarById", "Select * from bas_spWar Where r_war={0} "},
-				{"War", "Select * from bas_spWar Where isware=1 and len(Name)>1 and Ostat>0 Order by Name"},
+				{"WarById", "Select * from " + SWarTable + " Where Id={0} "},
+				{"War", "Select * from " + SWarTable + " Where isware=1 and len(N)>1 and O>0 Order by N"},
 
-				{"WarGr", "Select * from bas_spWar Where r_hwar=0"},
+				{"WarGr", "Select * from " + SWarTable + " Where IdP=0"},
 
-				{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by Name"},
+				{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " +SCliTable+ " Where N is not null and A is not null and IdP is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by N"},
         /**/
-                {"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
+                {"CliAll", "Select * From " + SCliTable + " Where N is not null and A is not null Order by N"},
 
 				{"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
 						"Select 0 as t_nms, 101 as n_nms, 'Отчет' as Name Union " +
@@ -77,7 +77,7 @@ namespace BAsketWS.DataAccess
 
                 {"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
-				{"WebUsers", "Select * from sy_WebUsers"},
+				{"WebUsers", "Select * From " + SWUTable},
 			};
 
 		public static Dictionary<string, string> Names = new Dictionary<string, string>()
@@ -158,35 +158,36 @@ namespace BAsketWS.DataAccess
         static Dictionary<string, string> sqlCreateCommands = new Dictionary<string, string>()
         {
             {Common.SWUTable, "CREATE TABLE [dbo].{0}("+
-					"[ID] [int] IDENTITY(1,1) primary key,"+
-					"[Name] [varchar](50) NOT NULL,"+
-					"[NameID] [varchar](50) NULL,"+
-					"[EMail] [varchar](50) NULL,"+
+					"Id int IDENTITY(1,1) primary key,"+
+					"Name varchar(50),"+
+					"NameID varchar(50),"+
+					"EMail varchar(50),"+
 					//"[SelCli] [varchar](500) NULL,"+
 					//"[SelSup] [varchar](500) NULL,"+
 					//"[SelWar] [varchar](500) NULL,"+
-					"[N_TP] [smallint] NOT NULL)"
+					"N_TP smallint)"
 			},
             {Common.SWarTable, "Create table dbo.{0} (" +
-                    "r_war varchar(10) primary key," +
-                    "r_hwar varchar(10)," +
-                    "name varchar(250)," +
-                    "name_c varchar(250)," +
-                    "name_manuf varchar(250)," +
-                    "name_pict varchar(250)," +
-                    "ostat int," +
-                    "price money," +
-                    "datedit smalldatetime default getdate()," +
-                    "isware bit)" +
+                    "Id varchar(10) primary key," +
+                    "IdP varchar(10)," +
+                    "N varchar(250)," +
+                    "N1 varchar(250)," +
+                    "N2 varchar(250)," +
+                    "N3 varchar(250)," +
+                    "N4 varchar(250)," +
+                    "N5 varchar(250)," +
+                    "O int," +
+                    "P money," +
+                    "isWare bit)" +
                     ";Create Index IX_war_hwar On {0}(r_hwar)" + 
-                    ";Create Index IX_war_name On {0}(name)" +
+                    ";Create Index IX_war_name On {0}(Name)" +
 					""
             },
             {Common.SCliTable, "CREATE TABLE [dbo].{0}("+
-					"[r_CLI] varchar(10) IDENTITY(1,1) primary key,"+
-					"[r_FCLI] [int] NULL,"+
-					"[Name] [varchar](100) NULL,"+
-					"[Adres] [varchar](150) NULL"
+					"Id varchar(10) primary key,"+
+					"IdP varchar(10),"+
+					"N varchar(250),"+
+					"A varchar(250))"
             },
 
 			//{"getWarsByGId", "Select * from spWar Where r_hwar={0}"},

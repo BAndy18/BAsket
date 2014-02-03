@@ -8,9 +8,6 @@ namespace BAsketWS.Models
     public class Category
     {
         public string Id { get; set; }
-        //public int Id { get; set; }
-       //public int IdPar { get; set; }
-        public string Name { get; set; }
-       //public decimal Price { get; set; }
+        public string N { get; set; }
     }
 }

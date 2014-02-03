@@ -38,9 +38,9 @@ namespace BAsketWS.Controllers
                         /*
                         Id = reader.GetInt32("r_war").ToString(),
                         /*/
-                        Id = reader.GetString("r_war"),
+                        Id = reader.GetString("Id"),
                         /**/
-                        Name = reader.GetString("Name"),
+                        N = reader.GetString("N"),
                     });
                     //if (totalRows == 0) totalRows = reader.GetInt32("TotalRows");
                 }
