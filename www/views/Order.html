@@ -18,7 +18,7 @@
 	            <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { 
                     title: _.Order.SelectClient, 
                     dataSource: clients, 
-                    displayExpr: 'Name', 
+                    displayExpr: 'N', 
                     valueExpr: 'Id', 
                     value: cliId, 
                     placeholder: cliName, 
@@ -32,7 +32,7 @@
                 <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { 
                     title: _.Order.SelectPoint, 
                     dataSource: arrayTP, 
-                    displayExpr: 'Name', 
+                    displayExpr: 'N', 
                     valueExpr: 'Id',
                     searchEnabled: false, 
                     placeholder: tpName }"/>
@@ -41,11 +41,11 @@
         <div class="dx-fieldset">
             <div class="dx-field" data-bind="visible: false">
                 <div class="dx-field-label"></div>
-                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[1], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
+                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[1], displayExpr: 'N', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
             </div>
             <div class="dx-field" data-bind="visible: false">
                 <div class="dx-field-label"></div>
-                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[2], displayExpr: 'Name', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
+                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[2], displayExpr: 'N', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
             </div>
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.Order.Note" />

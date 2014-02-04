@@ -101,10 +101,11 @@ BAsket.Preferences = function (params) {
 		popupTitle: "Login",
 		dataSouceUrl: dataSouceUrl,
 
-		dsWsUrl: ['', 'http://87.249.234.190:55777/BWS2/api/', 
-			'http://10.0.0.30:55444/BWS2/api/', 
+		dsWsUrl: ['', 
+			// 'http://87.249.234.190:55777/BWS2/api/', 
+			'http://10.0.0.30/BWS2/api/', 
 			'http://192.168.1.146/BAsketWS/api/',
-			'http://192.168.1.125/BAsketWS/api/',
+			// 'http://192.168.1.125/BAsketWS/api/',
 			],
 
 		// "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
@@ -139,8 +140,15 @@ BAsket.Info = function (params) {
 	// var rootShow = ko.observable(true);
 	var subTitle = ko.observable('');
 	var subText = ko.observable('');
-	var dsInfo = P.navigation.slice(0);
-	dsInfo = dsInfo.splice(1);
+	var dsInfo = [];
+	for (var i=0; i<P.navigation.length; i++){
+		var clone = {};   
+    	for (var j in P.navigation[i]) 
+        	clone[j] = P.navigation[i][j];
+    
+		dsInfo.push(clone);
+	}
+	//dsInfo = dsInfo.splice(1);
 	if (params.Id) {
 		// rootShow(false);
 		subTitle(params.Id);	//' - ' + 

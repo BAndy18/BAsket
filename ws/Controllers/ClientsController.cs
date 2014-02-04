@@ -28,13 +28,13 @@ namespace BAsketWS.Controllers
             var id = qs["pId"];
             var top = int.Parse(qs["take"] ?? "30");
             var skip = int.Parse(qs["skip"] ?? "0");
-            var searchString = qs["searchString"] ?? "''";
-            if (string.IsNullOrEmpty(searchString))
-                searchString = "' '"; 
+            var searchString = qs["searchString"] ?? "";
+//            if (string.IsNullOrEmpty(searchString))
+  //              searchString = "' '"; 
             //if (!string.IsNullOrEmpty(searchString))
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
-            var cmd = string.Format(Common.SqlCommands["Cli"], searchString, skip+1, top);
+            var cmd = string.Format(Common.SqlCommands["Cli"], searchString, skip, top);
 
             if (id == "all")
                 cmd = Common.SqlCommands["CliAll"];

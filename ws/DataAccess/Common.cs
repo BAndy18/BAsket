@@ -58,22 +58,24 @@ namespace BAsketWS.DataAccess
             
 		/*/
 		// Нормаль данные
-				{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * From " + SWarTable + "Where IdP={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
+				{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " + SWarTable + " Where IdP='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
 
-				{"WarById", "Select * from " + SWarTable + " Where Id={0} "},
+				{"WarById", "Select * from " + SWarTable + " Where Id='{0}'"},
 				{"War", "Select * from " + SWarTable + " Where isware=1 and len(N)>1 and O>0 Order by N"},
 
 				{"WarGr", "Select * from " + SWarTable + " Where IdP=0"},
 
 				{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " +SCliTable+ " Where N is not null and A is not null and IdP is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by N"},
         /**/
-                {"CliAll", "Select * From " + SCliTable + " Where N is not null and A is not null Order by N"},
+				{"CliFil", "Select * From " + SCliTable + " Where N is not null and A is not null and IdP='{0}' Order by N"},
+                {"CliById", "Select c.*, par.N as PN, ISNULL(par.N + ' - ' + c.N, c.N) as FN From " + SCliTable + " c Left Join " + SCliTable + " par On c.IdP=par.Id Where c.Id='{0}'"},
+				{"CliAll", "Select * From " + SCliTable + " Where N is not null and A is not null Order by N"},
 
-				{"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
-						"Select 0 as t_nms, 101 as n_nms, 'Отчет' as Name Union " +
-						"Select 1 as t_nms, 1 as n_nms, 'Нормаль ООО' as Name Union " +
-						"Select 101 as t_nms, 1 as n_nms, 'Отчет 1' as Name " +
-						"Order by t_nms, n_nms"},
+				{"Nms", "Select 0 as IdP, 1 as Id, 'Предприятие' as N Union " +
+						"Select 0 as IdP, 101 as Id, 'Отчет' as N Union " +
+						"Select 1 as IdP, 1 as Id, 'Нормаль ООО' as N Union " +
+						"Select 101 as IdP, 1 as Id, 'Отчет 1' as N " +
+						"Order by IdP, Id"},
 
                 {"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 

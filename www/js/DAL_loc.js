@@ -18,7 +18,7 @@ function SQLite(cfg) {
     config.shortName = config.shortName || 'BAsketDB';
     config.version = config.version || '1.0';
     config.displayName = config.displayName || 'BAsketDB SQLite Database';
-    config.maxSize = 5000000;
+    config.maxSize = P.maxSizeLocalDb;
     config.defaultErrorHandler = config.defaultErrorHandler || errorHandler;
     config.defaultDataHandler = config.defaultDataHandler || nullDataHandler;
 
@@ -65,7 +65,7 @@ var DAL = (function ($, window) {
 	var dbLastQ = '';
     // var dbParam = null;
 	// var dbName = 'BAsketDB';
-	var dbSize = 5000000;
+	// var dbSize = 5000000;
 
     var DB = SQLite();
 
@@ -136,11 +136,11 @@ var DAL = (function ($, window) {
             	return data;
             });
 	};
-	root.NMS = function (params) {
-		if (!P.useWebDb)
-			return DAL_web.NMS(params);
-		return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
-	};
+	// root.NMS = function (params) {
+	// 	if (!P.useWebDb)
+	// 		return DAL_web.NMS(params);
+	// 	return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
+	// };
 
 
 	root.Clients = function (params) {
@@ -298,15 +298,8 @@ var DAL = (function ($, window) {
 		// if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
 		// else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
 
-		// var source1 = DAL_web.Categories();
-		// if (Object.prototype.toString.call(source1) == '[object Array]') writeToLocalData(source1, 'CAT');
-		// else source1.load().done(function (result) { writeToLocalData(result, 'CAT'); });
-  //       .error(function (result) { 
-  //           writeToLocalData(result, 'CAT'); 
-  //       });
         DAL_web.NMS().load().done(function (result) { writeToLocalData(result, 'NMS'); });
         DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
-
 
 		if (!P.useWebDb) {
 			P.loadPanelVisible(false);
@@ -317,14 +310,10 @@ var DAL = (function ($, window) {
 		    root.RecreateLocalDB();
 
         modeReadNews = fullNews ? 'all':'ost';
-		var source2 = DAL_web.Products({ pId: modeReadNews });
-		if (Object.prototype.toString.call(source2) == '[object Array]') writeToLocalData(source2, 'WAR');
-		else source2.load().done(function (result) { writeToLocalData(result, 'WAR'); });
+		DAL_web.Products({ pId: modeReadNews }).load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
-    		var source3 = DAL_web.Clients({ pId: 'all' });
-    		if (Object.prototype.toString.call(source3) == '[object Array]') writeToLocalData(source3, 'CLI');
-    		else source3.load().done(function (result) { writeToLocalData(result, 'CLI'); });
+    		DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
         }
 		var date = new Date();
 		P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
@@ -349,7 +338,7 @@ var DAL = (function ($, window) {
 
 	function execDataSource(params, mapCallback) {
 		var dataSource = new DevExpress.data.DataSource({
-			pageSize: (params.paging) ? P.pageSize : dbSize,
+			pageSize: (params.paging) ? P.pageSize : P.maxSizeLocalDb,
 			load: function (loadOptions) {
 				//params.paging = false;
 				if (params.paging) {
@@ -361,7 +350,7 @@ var DAL = (function ($, window) {
 				else
 					params['searchValue'] = null;
                 var deferred = new $.Deferred();
-				// var db = window.openDatabase(dbName, "1.0", dbName, dbSize);
+				// var db = window.openDatabase(dbName, "1.0", dbName, P.maxSizeLocalDb);
 				// db.transaction(function (tx) {
 					dbLastQ = params.query;
 					var searchValue = '';
@@ -623,10 +612,10 @@ var DAL = (function ($, window) {
         'DROP TABLE IF EXISTS BILM',
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
+        // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, Name, Price DECIMAL(20,2), N1, N2, N3, N4, N5, Ostat int, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, Name, Adres)',
-        // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
         'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",

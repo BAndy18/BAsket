@@ -830,6 +830,15 @@ namespace BAsketWS.DataAccess
             return GetValue(index, null);
         }
 
+		public string GetStrValue(string field)
+		{
+			int index = GetOrdinal(field);
+			var ret = GetValue(index, null).ToString();
+			if (!string.IsNullOrEmpty(ret))
+                ret = (ret as string).Replace("'", "''");
+			return ret;
+		}
+
 
         /// <summary>
         /// The get value.

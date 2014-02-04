@@ -22,13 +22,13 @@ namespace BAsketWS.Controllers
             var id = qs["pId"];
             var top = qs["take"] ?? "30";
             var skip = qs["skip"] ?? "0";
-            var searchString = qs["searchString"] ?? "''";
-            if (string.IsNullOrEmpty(searchString))
-                searchString = "' '";
+            var searchString = qs["searchString"] ?? "";
+			//if (string.IsNullOrEmpty(searchString))
+			//	searchString = "' '";
             //if (!string.IsNullOrEmpty(searchString))
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
-            var cmd = string.Format(Common.SqlCommands["WarsByGId"], id, searchString, skip+1, top);
+            var cmd = string.Format(Common.SqlCommands["WarsByGId"], id, searchString, skip, top);
 			if (id == "all" || id == "ost")
                 cmd = Common.SqlCommands["War"];
 
@@ -56,10 +56,11 @@ namespace BAsketWS.Controllers
                                 /*/
                                 Id = reader.GetString(Common.GetName("Id")),
                                 IdP = reader.GetString(Common.GetName("IdP")),
-								N2 = reader.GetString(Common.GetName("N2")).Replace("'", "''"),	//NameManuf
-								N3 = reader.GetString(Common.GetName("N3")).Replace("'", "''"),	//UrlPict - Name_pict
+								N2 = reader.GetString(Common.GetName("N2")),	//NameManuf
+								N3 = reader.GetString(Common.GetName("N3")),	//UrlPict - Name_pict
 								N4 = reader.GetInt32(Common.GetName("N4")).ToString(),	//Upak 
-                                O = reader.GetInt32(Common.GetName("O")).ToString(),
+								//O = reader.GetInt32(Common.GetName("O")).ToString(),
+								O = reader.GetStrValue("O"),
                                 /**/
                                 N = reader.GetString(Common.GetName("N")),
                                 N1 = reader.GetString(Common.GetName("N1")),	//NameArt

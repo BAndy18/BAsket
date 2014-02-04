@@ -51,7 +51,7 @@ BAsket.Order = function (params) {
 						setNms.option().value = sNms[1];
 						for (var ii = 0; ii < P.arrNMS[iNms].length; ii++)
 							if (P.arrNMS[iNms][ii].Id == sNms[1]) {
-								var val = P.arrNMS[iNms][ii].Name;
+								var val = P.arrNMS[iNms][ii].N;
 								arr[iNms - 1] = val;
 								break;
 							}
@@ -199,7 +199,7 @@ BAsket.Order = function (params) {
 				var setNms = $("#idNms" + (i + 1));
 				if (setNms.length == 1 && P.arrNMS[0][i].Id < 100) {
 					setNms.parent().show();
-					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].Name;
+					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].N;
 				}
 			}
 		},

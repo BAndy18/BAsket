@@ -21,7 +21,7 @@ BAsket.products = function (params) {
 		dataSourceBasket: new DevExpress.data.DataSource(new DevExpress.data.ArrayStore(P.arrayBAsket)),
 
 		// dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
-		dataSourceProd: DAL.Products({ Id: P.curCategoryId, search: searchStr }, !P.modeProdView),
+		dataSourceProd: DAL.Products({ pId: P.curCategoryId, search: searchStr }, !P.modeProdView),
 
 		//categoryId: categoryId,
 		//categoryName: P.curCategoryName,

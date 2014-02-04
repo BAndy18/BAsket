@@ -138,20 +138,6 @@ var U = (function ($, window) {
 var P = (function ($, window) {
 	var root = {};
 
-    // root.Command_Info = function(arg) {
-    //     if (typeof arg == 'string'){
-    //         BAsket.notify('Info for:' + arg);
-    //         BAsket.app.navigate('Info/' + arg);
-    //     }
-    //     else
-    //         if (arg.model){
-    //             BAsket.notify('Info for:' + arg.model.name)
-    //             BAsket.app.navigate('Info/' + arg.model.name);
-    //         }
-    //     //debugger;
-    //     //alert('BAsket.Command_Info');
-    // }
-
 	root.navigation = [
             {
             	"id": "Home", "action": "#home", "heightRatio": 4, "widthRatio": 4, "icon": "home",
@@ -360,6 +346,7 @@ var P = (function ($, window) {
 	root.debugMode = false;
 	root.useWebDb = true;
 	root.bPhoneGap = false;
+    root.maxSizeLocalDb = 5000000;
 
 	root.arrCategory = [];
 	root.arrNMS = [];
@@ -474,7 +461,7 @@ var P = (function ($, window) {
 		}
         if (root.arrCategory.length > 0){
     		root.curCategoryId = root.arrCategory[0].Id;
-    		root.curCategoryName = root.arrCategory[0].Name;
+    		root.curCategoryName = root.arrCategory[0].N;
         }
 
 		DAL.TableCount();

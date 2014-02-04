@@ -39,6 +39,9 @@ var DAL_web = (function ($, window) {
 			}
 			if (!bFound)
 				data.Quant = '';
+            data.Name = data.N;
+            data.Price = data.P;
+            data.Ostat = data.O;
 			return data;
 		});
 	};
@@ -78,13 +81,25 @@ var DAL_web = (function ($, window) {
 		} else
 			param['lookup'] = true;
 
-		return execDataSource(param);
+		return execDataSource(param, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
 	};
 	root.ClientsPar = function(params) {
-		return execDataSource({ control: 'Clients/' + params, prm: { fil: true } });
+		return execDataSource({ control: 'Clients/' + params, prm: { fil: true } }, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
 	};
 	root.ClientById = function(params) {
-		return execDataSource({ control: 'Clients/' + params });
+		return execDataSource({ control: 'Clients/' + params }, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
 	};
 
 	root.BilM = function(params) {

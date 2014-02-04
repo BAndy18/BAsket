@@ -68,17 +68,6 @@
     <script type="text/javascript" src="js/Products.js"></script>
     <link rel="dx-template" type="text/html" href="views/ProductDetails.html"/>
     <script type="text/javascript" src="js/ProductDetails.js"></script>
-
-    <!--<link rel="dx-template" type="text/html" href="views/DataBoundApp.html"/>
-    <script type="text/javascript" src="js/DataBoundApp.js"></script>-->
-
-    <!--script type="text/javascript" src="views/index.js"></script>
-    <link rel="dx-template" type="text/html" href="views/index.dxview"/-->
-
-<!--     <link rel="stylesheet" type="text/css" href="Navigation.css" />
-    <script type="text/javascript" src="Navigation.js"></script>
-    <link rel="dx-template" type="text/html" href="Navigation.html"/>
- -->
 </head>
 <body>
   
@@ -92,6 +81,7 @@
     <div data-options="dxContentPlaceholder  : { name: 'content', transition: 'slide' } "></div>
   </div>    
   <div data-options="dxView : { name: 'home' } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Home' } "></div>
     <div class="center" data-options="dxContent : { targetPlaceholder: 'content'}">
       <div><b class="basket-header">BAsket</b></div>
 

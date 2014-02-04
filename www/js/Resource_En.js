@@ -200,6 +200,7 @@ var RU_RU = (function (window) {
         IMap:        "Карта",
         IClient:     "Клиент", 
         IContacts:   "Наши Контакты", 
+        'Home':     '<h1 class="center">Справка по BAsket</h1><br/><p>нету пока )</p>',
         'Order':        '<h1>Справка по экрану "Заказ"</h1> <p>Оформление Заказа производится на трех, связанных переходами, экранах:</p> <ul> <li><a href="#Info/Order">Заказ</a></li> <li><a href="#Info/Products">Выбор товаров</a></li> <li><a href="#Info/Product-Details">Характеристики товара</a></li> </ul> <p>Здесь нужно указать параметры "шапки" Заказа:</p> <ul> <li>Дата - дата предполагаемой отгрузки Заказа</li> <li>Клиент - выбор клиента, которому будет отгружет Заказ</li> <li>Торговая Точка - выбор торговой точки клиента, в которую будет отгружет Заказ. Если выбранный клиент не имеет торговых точек, это поле скрывается</li> <li>* Предприятие - выбор юридического лица, на которого будет оформлен Заказ</li> <li>* Тип Оплаты - выбор типа оплаты, для Заказа</li> <li>Примечания - любые примечания к Заказу</li> <li>Информация о том, сколько выбрано товаров в Заказ и на какую сумму</li> </ul> * параметры определяются конфигурацией программы и могут отсустствовать <p>При нажатии на кнопку "Сохранить", производится проверка правильности оформления Заказа, и, если все сделано правильно, Заказ сохраняется в <a href="#Info/OrderList">Списке Заказов</a> и производится переход на экран из которого пришли сюда</p> <p>Если проверка завершилась с ошибкой, внизу всплывает сообщение об ошибке. Список ошибочных ситуаций:</p> <ul> <li>Не выбраны товары в заказе</li> <li>Не установлена дата в заказе</li> <li>Не выбран клиент в заказе</li> </ul> <p>В первой строке на экране слева направо присутствуют:</p> <ul> <li>Кнопка "назад" - переход к предыдущему экрану</li> <li>Название экрана</li> <li>Кнопка "I" - вызывает этот экран справки</li> <li>Кнопка "Товары" - вызывает экран <a href="#Info/Products">Выбор товаров</a></li> </ul> ',
         'Products':     '<h1 class="center">Справка по Списку продуктов</h1><br/><p>нету пока )</p>',
         'Product-Details':      '<h1 class="center">Справка по Характеристики Продукта</h1><br/><p>нету пока )</p>',
@@ -211,17 +212,20 @@ var RU_RU = (function (window) {
         'Preferences':  '<h1 class="center">Справка по Настройке</h1><br/><p>нету пока )</p>',
         'ReadNews':    '<h1 class="center">Справка по Обновлению Новостей</h1><br/><p>нету пока )</p>',
         'Contacts':    '<h1 class="center">Наши Контакты</h1><br/><p>нету пока )</p>',
-        'SysInfo':    '<h1 class="center">Системная информация</h1><br/>phone: <span data-bind="text: P.deviceInfo.phone"></span>'+
-            'tablet : <span data-bind="text: P.deviceInfo.tablet "></span> '+
-            'android  : <span data-bind="text: P.deviceInfo.android  "></span> '+
-            'ios  : <span data-bind="text: P.deviceInfo.ios  "></span> '+
-            'win8  : <span data-bind="text: P.deviceInfo.win8  "></span> '+
-            'tizen  : <span data-bind="text: P.deviceInfo.tizen  "></span> '+
-            '<br/>Platform  : <span data-bind="text: P.deviceInfo.platform  "></span> '+
+        'SysInfo':    '<h1 class="center">Системная информация</h1>CurrentDevice : ' +
+            (DevExpress.devices.current().generic  ? ' =generic= ':'') + 
+            (DevExpress.devices.current().phone  ? ' =phone= ':'') + 
+            (DevExpress.devices.current().tablet  ? ' =tablet= ':'') + 
+            (DevExpress.devices.current().android  ? ' =android= ':'') + 
+            (DevExpress.devices.current().ios  ? ' =ios= ':'') + 
+            (DevExpress.devices.current().tizen  ? ' =tizen= ':'') + 
+            (DevExpress.devices.current().win8  ? ' =win8= ':'') + 
+            '<br/>DeviceType  : ' + DevExpress.devices.current().deviceType +
+            '<br/>Platform  : ' + DevExpress.devices.current().platform +
             '<br/>'+
             '<br/>Screen Size: ' + screen.height + " x " + screen.width +
             '<br/>Agent: ' + navigator.userAgent +
-            '<br/>Cookie Enabled: ' + navigator.cookieEnabled ,
+            '<br/>Cookie: ' + (navigator.cookieEnabled ? 'Enabled':'Disabled')
     };
 
 	// root.getObj = function(obj){
