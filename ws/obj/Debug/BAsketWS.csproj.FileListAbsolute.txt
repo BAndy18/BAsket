@@ -8,4 +8,3 @@ D:\P\BAsketPG\BAsketWS\bin\System.Web.Http.xml
 D:\P\BAsketPG\BAsketWS\bin\System.Web.Http.WebHost.xml
 D:\P\BAsketPG\BAsketWS\obj\Debug\BAsketWS.dll
 D:\P\BAsketPG\BAsketWS\obj\Debug\BAsketWS.pdb
-D:\P\BAsketPG\BAsketWS\obj\Debug\BAsketWS.csprojResolveAssemblyReference.cache

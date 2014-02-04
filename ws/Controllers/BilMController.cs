@@ -30,12 +30,17 @@ namespace BAsketWS.Controllers
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
 			var user = HttpContext.Current.User.Identity.Name;
-	        if (user.Split(';').Length < 2)
+			var userTp = "-1";
+	        if (user.Split(';').Length > 1)
 	        {
-				return new List<BilM> { new BilM() { cName = "user not found " + user } }; 
+		        userTp = user.Split(';')[1];
+	        }
+	        else
+	        {
+		        return new List<BilM> {new BilM() {sNote = "user not found " + user}};
 	        }
 
-            var cmd = string.Format(Common.SqlCommands["BilM"], user.Split(';')[1], searchString, skip + 1, top);
+	        var cmd = string.Format(Common.SqlCommands["BilM"], userTp, searchString, skip + 1, top);
 
             return ProcessCommand(cmd);
         }

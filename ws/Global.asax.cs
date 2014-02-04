@@ -1,10 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Dependencies;
+using System.Web.Mvc;
 using BAsketWS.DataAccess;
+using BAsketWS.Controllers;
 
 namespace BAsketWS
 {
@@ -23,7 +34,8 @@ namespace BAsketWS
             //TimerCallback tcb = Common.CheckPriceStatus;
             //Timer priceTimer = new Timer(tcb, null, 0, 0);
 
-			//MefConfig.RegisterMef();
+			//(new MefConfig()).RegisterMef();
+			MefConfig.RegisterMef();
         }
 
         public static void Register(HttpConfiguration config)
@@ -110,7 +122,7 @@ namespace BAsketWS
         }
     }
 
-	/*
+	//*
 	/// <summary>
 	/// Resolve dependencies for MVC / Web API using MEF.
 	/// </summary>
@@ -166,9 +178,90 @@ namespace BAsketWS
 		}
 	}
 
+	public class MefControllerFactory : DefaultControllerFactory
+	{
+		private readonly CompositionContainer _compositionContainer;
+
+		public MefControllerFactory(CompositionContainer compositionContainer)
+		{
+			_compositionContainer = compositionContainer;
+		}
+
+		protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, Type controllerType)
+		{
+			var export = _compositionContainer.GetExports(controllerType, null, null).SingleOrDefault();
+
+			IController result;
+
+			if (null != export)
+			{
+				result = export.Value as IController;
+			}
+			else
+			{
+				result = base.GetControllerInstance(requestContext, controllerType);
+				_compositionContainer.ComposeParts(result);
+			}
+
+			return result;
+		}
+	}
+
 	public static class MefConfig
 	{
+		//[ImportMany(typeof(IBAsketPlugin), AllowRecomposition = true)]
+		//public IEnumerable<Lazy<IBAsketPlugin, IBAsketPluginMetadata>> //Senders { get; set; }
+		//	_loadedIPlugins = new List<Lazy<IBAsketPlugin, IBAsketPluginMetadata>>();  
+
+		//[ImportMany("StringTransformer")]
+		//public IEnumerable<StringTransformer> Transformers
+		//{ get; set; }
+
+		//public IBAsketPlugin GetMessageSender(string name, string version)
+		//{
+		//	return _loadedIPlugins
+		//	  .Where(l => l.Metadata.Name.Equals(name))// && l.Metadata.Version.Equals(version))
+		//	  .Select(l => l.Value)
+		//	  .FirstOrDefault();
+		//}
+
 		public static void RegisterMef()
+		{
+			var catalog = new AggregateCatalog();
+			var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+			catalog.Catalogs.Add(new DirectoryCatalog(path));
+
+			//var catalog = new AssemblyCatalog(typeof(Program).Assembly);
+			var parent = new CompositionContainer(catalog);
+
+			var filteredCat = new FilteredCatalog(catalog,
+				def => !def.Metadata.ContainsKey("Name") ||
+				def.Metadata["Name"].ToString() == "webrequest");
+			//var container = new CompositionContainer(filteredCat, parent);
+			//var controller = container.GetExportedObject<HomeController>();
+			//container.Dispose();
+			//catalog.Dispose();
+
+			var container = new CompositionContainer(filteredCat);
+
+			//BAsketWS.PlugContainer = container;
+			//container.SatisfyImportsOnce(this);
+			
+			//ControllerBuilder.Current.SetControllerFactory(new MefControllerFactory(container));
+
+			var resolver = new MefDependencyResolver(container);
+				// Install MEF dependency resolver for MVC
+				//DependencyResolver.SetResolver(resolver);
+				// Install MEF dependency resolver for Web API
+			System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = resolver;
+
+			//foreach (var transformer in Transformers)
+			//	Console.WriteLine(transformer("Sample StRiNg."));
+
+			//var sender1 = GetMessageSender("EmailSender1", "1.0.0.0");
+		}
+
+		public static void RegisterMef1()
 		{
 			var appSection = ConfigurationManager.GetSection("appSettings");
 			var catalog = new AggregateCatalog();
@@ -186,7 +279,58 @@ namespace BAsketWS
 			// Install MEF dependency resolver for Web API
 			System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = resolver;
 		}
-	}/**/
+	}
+	public class FilteredCatalog : ComposablePartCatalog, INotifyComposablePartCatalogChanged
+	{
+		private readonly ComposablePartCatalog _inner;
+		private readonly INotifyComposablePartCatalogChanged _innerNotifyChange;
+		private readonly IQueryable<ComposablePartDefinition> _partsQuery;
+
+		public FilteredCatalog(ComposablePartCatalog inner,
+							   Expression<Func<ComposablePartDefinition, bool>> expression)
+		{
+			_inner = inner;
+			_innerNotifyChange = inner as INotifyComposablePartCatalogChanged;
+			_partsQuery = inner.Parts.Where(expression);
+		}
+
+		public override IQueryable<ComposablePartDefinition> Parts
+		{
+			get
+			{
+				return _partsQuery;
+			}
+		}
+
+		public event EventHandler<ComposablePartCatalogChangeEventArgs> Changed
+		{
+			add
+			{
+				if (_innerNotifyChange != null)
+					_innerNotifyChange.Changed += value;
+			}
+			remove
+			{
+				if (_innerNotifyChange != null)
+					_innerNotifyChange.Changed -= value;
+			}
+		}
+
+		public event EventHandler<ComposablePartCatalogChangeEventArgs> Changing
+		{
+			add
+			{
+				if (_innerNotifyChange != null)
+					_innerNotifyChange.Changing += value;
+			}
+			remove
+			{
+				if (_innerNotifyChange != null)
+					_innerNotifyChange.Changing -= value;
+			}
+		}
+	}
+	/**/
 
 	/*
 				// Settings should have 0 values.

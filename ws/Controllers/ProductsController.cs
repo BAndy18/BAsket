@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
@@ -7,8 +8,12 @@ using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
 {
-    public class ProductsController : ApiController
+	[Export] 
+	public class ProductsController : ApiController
     {
+		[Import]
+		private IBAsketPlugin mPlugin;
+
         public Product Get(string id)
         {
             var cmd = string.Format(Common.SqlCommands["WarById"], id);
@@ -27,8 +32,9 @@ namespace BAsketWS.Controllers
 			//	searchString = "' '";
             //if (!string.IsNullOrEmpty(searchString))
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
-
-            var cmd = string.Format(Common.SqlCommands["WarsByGId"], id, searchString, skip, top);
+	        
+			var scmd = mPlugin == null ? Common.SqlCommands["WarsByGId"] : mPlugin.SqlCommand("WarsByGId");
+			var cmd = string.Format(scmd, id, searchString, skip, top);
 			if (id == "all" || id == "ost")
                 cmd = Common.SqlCommands["War"];
 

@@ -40,7 +40,7 @@ D:\P\BAsketPG\BAsketWS\WsPP\bin\System.Web.Http.xml
 D:\P\BAsketPG\BAsketWS\WsPP\bin\System.Web.Http.WebHost.xml
 D:\P\BAsketPG\BAsketWS\WsPP\obj\Debug\WsPP.dll
 D:\P\BAsketPG\BAsketWS\WsPP\obj\Debug\WsPP.pdb
-D:\P\BAsketPG\BAsketWS\WsPP\bin\System.Net.Http.Formatting.xml
-D:\P\BAsketPG\BAsketWS\WsPP\obj\Debug\WsPP.csprojResolveAssemblyReference.cache
 D:\P\BAsketPG\BAsketWS\WsPP\bin\System.Net.Http.dll
-D:\P\BAsketPG\BAsketWS\WsPP\bin\System.Net.Http.xml
+D:\P\BAsketPG\BAsketWS\WsPP\bin\BAsketWS.dll
+D:\P\BAsketPG\BAsketWS\WsPP\bin\BAsketWS.pdb
+D:\P\BAsketPG\BAsketWS\WsPP\obj\Debug\WsPP.csprojResolveAssemblyReference.cache
