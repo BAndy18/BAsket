@@ -833,10 +833,13 @@ namespace BAsketWS.DataAccess
 		public string GetStrValue(string field)
 		{
 			int index = GetOrdinal(field);
-			var ret = GetValue(index, null).ToString();
-			if (!string.IsNullOrEmpty(ret))
-                ret = (ret as string).Replace("'", "''");
-			return ret;
+			var ret = GetValue(index, null);
+			if (ret == null)
+				return "";
+			var rets = ret.ToString();
+			if (!string.IsNullOrEmpty(rets))
+				rets = rets.Replace("'", "''");
+			return rets;
 		}
 
 

@@ -34,7 +34,6 @@ namespace BAsketWS
             //TimerCallback tcb = Common.CheckPriceStatus;
             //Timer priceTimer = new Timer(tcb, null, 0, 0);
 
-			//(new MefConfig()).RegisterMef();
 			MefConfig.RegisterMef();
         }
 
@@ -227,21 +226,23 @@ namespace BAsketWS
 
 		public static void RegisterMef()
 		{
+			var pluginName = ConfigurationManager.AppSettings["UsePlugin"];
+			if (string.IsNullOrEmpty(pluginName))
+				return;
 			var catalog = new AggregateCatalog();
 			var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			catalog.Catalogs.Add(new DirectoryCatalog(path));
 
-			//var catalog = new AssemblyCatalog(typeof(Program).Assembly);
-			var parent = new CompositionContainer(catalog);
+//			var a = catalog.Parts.Where(m => m.Metadata["Name"].ToString() == pluginName);
 
 			var filteredCat = new FilteredCatalog(catalog,
-				def => !def.Metadata.ContainsKey("Name") ||
-				def.Metadata["Name"].ToString() == "webrequest");
+				def => !def.Metadata.ContainsKey("Name") || def.Metadata["Name"].ToString() == pluginName);
 			//var container = new CompositionContainer(filteredCat, parent);
 			//var controller = container.GetExportedObject<HomeController>();
 			//container.Dispose();
 			//catalog.Dispose();
 
+			//var container = new CompositionContainer(catalog);
 			var container = new CompositionContainer(filteredCat);
 
 			//BAsketWS.PlugContainer = container;
@@ -280,6 +281,7 @@ namespace BAsketWS
 			System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = resolver;
 		}
 	}
+
 	public class FilteredCatalog : ComposablePartCatalog, INotifyComposablePartCatalogChanged
 	{
 		private readonly ComposablePartCatalog _inner;

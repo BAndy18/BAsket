@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 //using System.ComponentModel.Composition;
+using BAsketWS.Models;
 
 namespace BAsketWS.DataAccess
 {
@@ -81,6 +82,12 @@ namespace BAsketWS.DataAccess
 
 				{"WebUsers", "Select * From " + SWUTable},
 			};
+
+		//public static string GetSqlCommand(string cmd, IBAsketPlugin mPlugin)
+		//{
+		//	var ret = mPlugin == null ? SqlCommands[cmd] : mPlugin.GetSqlCommand(cmd);
+		//	return ret;
+		//}
 
 		public static Dictionary<string, string> Names = new Dictionary<string, string>()
             {
@@ -197,4 +204,53 @@ namespace BAsketWS.DataAccess
         };
         #endregion
     }
+
+	public interface IBAsketPlugin
+	{
+		string GetSqlCommand(string cmd);
+
+		List<Nms> ReadNms(DataReaderAdapter reader);
+		List<Category> ReadCategories(DataReaderAdapter reader);
+		List<Product> ReadProducts(DataReaderAdapter reader);
+		List<Client> ReadClient(DataReaderAdapter reader);
+	}
+
+	//public interface IBAsketPluginMetadata
+	//{
+	//	string Name { get; }
+	//	//string Version { get; }
+	//}
+
+	//[MetadataAttribute]
+	//[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+	//public class MessageMetadataAttribute : ExportAttribute, IBAsketPluginMetadata
+	//{
+	//	public MessageMetadataAttribute(string name, string version)
+	//		: base(typeof(IBAsketPlugin))
+	//	{
+	//		Name = name;
+	//		//Version = version;
+	//	}
+
+	//	public string Name { get; set; }
+	//	public string Version { get; set; }
+	//}
+
+	////[ExportMetadata("ViewType", "MyTest1")]
+	////[Export(typeof(IMyTest))]
+	////public class MyTest1 : IMyTest
+	////{
+	////	public MyTest1()
+	////	{
+	////		creationDate = DateTime.Now;
+	////	}
+
+	////	public string GetMessage()
+	////	{
+	////		return String.Format("MyTest1 created at {0}", creationDate.ToString("hh:mm:ss"));
+	////	}
+
+	////	private DateTime creationDate;
+	////}
+
 }

@@ -8,15 +8,20 @@ using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
 {
-	[Export] 
+	[Export]
+	[PartCreationPolicy(CreationPolicy.NonShared)]
 	public class ProductsController : ApiController
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
+		private ProductsController()
+		{
+			if (mPlugin == null) mPlugin = new DefPlugin();
+		}
 
         public Product Get(string id)
         {
-            var cmd = string.Format(Common.SqlCommands["WarById"], id);
+            var cmd = string.Format(mPlugin.GetSqlCommand("WarById"), id);
             var ret = ProcessCommand(cmd, 1);
             return ret[0];
         }
@@ -33,58 +38,54 @@ namespace BAsketWS.Controllers
             //if (!string.IsNullOrEmpty(searchString))
             //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 	        
-			var scmd = mPlugin == null ? Common.SqlCommands["WarsByGId"] : mPlugin.SqlCommand("WarsByGId");
-			var cmd = string.Format(scmd, id, searchString, skip, top);
-			if (id == "all" || id == "ost")
-                cmd = Common.SqlCommands["War"];
+			var cmd = (id == "all" || id == "ost") ?
+				mPlugin.GetSqlCommand("War") :
+				string.Format(mPlugin.GetSqlCommand("WarsByGId"), 
+					id, searchString, skip, top);
 
             return ProcessCommand(cmd);
         }
 
         List<Product> ProcessCommand(string cmd, int limit = -1)
         {
-            var result = new List<Product>();
+			List<Product> result = null;
             using (var reader = BaseRepository.ExecuteReaderEx(cmd))
             {
                 if (reader == null)
                     return null;
-                //try
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(new Product()
-                            {
-                                /*
-                                Id = reader.GetInt32(Common.GetName("r_war")).ToString(),
-                                IdP = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
-                                N4 = reader.GetInt16(Common.GetName("NUPK")).ToString(),
-                                O = reader.GetFloat(Common.GetName("Ostat")).ToString(),
-                                /*/
-                                Id = reader.GetString(Common.GetName("Id")),
-                                IdP = reader.GetString(Common.GetName("IdP")),
-								N2 = reader.GetString(Common.GetName("N2")),	//NameManuf
-								N3 = reader.GetString(Common.GetName("N3")),	//UrlPict - Name_pict
-								N4 = reader.GetInt32(Common.GetName("N4")).ToString(),	//Upak 
-								//O = reader.GetInt32(Common.GetName("O")).ToString(),
-								O = reader.GetStrValue("O"),
-                                /**/
-                                N = reader.GetString(Common.GetName("N")),
-                                N1 = reader.GetString(Common.GetName("N1")),	//NameArt
-                                P = reader.GetDecimal(Common.GetName("P"))
-                            });
-                        limit--;
-                        if (limit == 0) break;
-                    }
-                }
-				//catch (Exception ex)
+				result = mPlugin.ReadProducts(reader);
+				//else
 				//{
-				//	return new List<Product>{ new Product(){N = ex.Message + ex.StackTrace}};
+				//	result = new List<Product>();
+				//	while (reader.Read())
+				//	{
+				//		result.Add(new Product()
+				//			{
+				//				/*
+				//				Id = reader.GetInt32(Common.GetName("r_war")).ToString(),
+				//				IdP = reader.GetInt32(Common.GetName("r_hwar")).ToString(),
+				//				N4 = reader.GetInt16(Common.GetName("NUPK")).ToString(),
+				//				O = reader.GetFloat(Common.GetName("Ostat")).ToString(),
+				//				/*/
+				//				Id = reader.GetString(Common.GetName("Id")),
+				//				IdP = reader.GetString(Common.GetName("IdP")),
+				//				N2 = reader.GetString(Common.GetName("N2")),	//NameManuf
+				//				N3 = reader.GetString(Common.GetName("N3")),	//UrlPict - Name_pict
+				//				N4 = reader.GetInt32(Common.GetName("N4")).ToString(),	//Upak 
+				//				//O = reader.GetInt32(Common.GetName("O")).ToString(),
+				//				O = reader.GetStrValue("O"),
+				//				/**/
+				//				N = reader.GetString(Common.GetName("N")),
+				//				N1 = reader.GetString(Common.GetName("N1")),	//NameArt
+				//				P = reader.GetDecimal(Common.GetName("P"))
+				//			});
+				//		limit--;
+				//		if (limit == 0) break;
+				//	}
 				//}
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;
         }
     }
-
-
 }

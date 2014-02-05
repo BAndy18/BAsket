@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
@@ -6,44 +7,55 @@ using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
 {
-    public class CategoriesController : ApiController
+	[Export]
+	[PartCreationPolicy(CreationPolicy.NonShared)]
+	public class CategoriesController : ApiController
     {
+		[Import]
+		private IBAsketPlugin mPlugin;
+		private CategoriesController()
+		{
+			if (mPlugin == null) mPlugin = new DefPlugin();
+		}
         // GET api/values
         //*
         //public void Get()
         //public string Get()
         public IEnumerable<Category> Get()
         {
-            var qs = HttpContext.Current.Request.QueryString;
-            var jcmd = qs["cmd"];
-            var jdata = qs["data"];
-            var jusr = qs["usr"];
+			//var qs = HttpContext.Current.Request.QueryString;
+			//var jcmd = qs["cmd"];
+			//var jdata = qs["data"];
+			//var jusr = qs["usr"];
 
-            var result = new List<Category>();
-            var cmd = Common.SqlCommands[jcmd == null ? "WarGr" : jcmd.ToString()];
-            if (string.IsNullOrEmpty(cmd))
-                return null;
-            if (jdata == null) jdata = "";
-            cmd = string.Format(cmd, jdata);
-            using (var reader = BaseRepository.ExecuteReaderEx(cmd))
+			//var cmd = Common.SqlCommands[jcmd == null ? "WarGr" : jcmd.ToString()];
+			//if (string.IsNullOrEmpty(cmd))
+			//	return null;
+			//if (jdata == null) jdata = "";
+			//cmd = string.Format(cmd, jdata);
+
+			var cmd = mPlugin.GetSqlCommand("WarGr");
+
+			List<Category> result = null;
+			using (var reader = BaseRepository.ExecuteReaderEx(cmd))
             //using (var reader = BaseRepository.ExecuteReaderEx("BAsket", "Select * From spWar where r_pwar=-8", null))
             {
                 if (reader == null)
                     return null;
-
-                while (reader.Read())
-                {
-                    result.Add(new Category()
-                    {
-                        /*
-                        Id = reader.GetInt32("r_war").ToString(),
-                        /*/
-                        Id = reader.GetString("Id"),
-                        /**/
-                        N = reader.GetString("N"),
-                    });
-                    //if (totalRows == 0) totalRows = reader.GetInt32("TotalRows");
-                }
+				result = mPlugin.ReadCategories(reader);
+				//while (reader.Read())
+				//{
+				//	result.Add(new Category()
+				//	{
+				//		/*
+				//		Id = reader.GetInt32("r_war").ToString(),
+				//		/*/
+				//		Id = reader.GetString("Id"),
+				//		/**/
+				//		N = reader.GetString("N"),
+				//	});
+				//	//if (totalRows == 0) totalRows = reader.GetInt32("TotalRows");
+				//}
             }
             Common.AddCorsHeaders(HttpContext.Current.Response);
             return result;
