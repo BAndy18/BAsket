@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
+using BAsketWS.Helpers;
 using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
 {
-	public delegate string StringTransformer(string src);
+	//public delegate string StringTransformer(string src);
 
 	[Export]
 	[PartCreationPolicy(CreationPolicy.NonShared)]
@@ -17,15 +17,19 @@ namespace BAsketWS.Controllers
 		private IBAsketPlugin mPlugin;
 		private NmsController()
 		{
-			if (mPlugin == null) mPlugin = new DefPlugin();
+			if (mPlugin == null) mPlugin = new DefaultPlugin();
 		}
 		//[ImportMany("StringTransformer")]
 		//public IEnumerable<StringTransformer> Transformers
 		//{ get; set; }
 
-        public List<Nms> Get()
-        {
-			//var catalog = new AggregateCatalog();
+		public List<Nms> Get()
+		{
+			var result = mPlugin.GetNms();
+			return result;
+		}
+
+		//var catalog = new AggregateCatalog();
 			//var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			////catalog.Catalogs.Add(new DirectoryCatalog(path));
 			//catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
@@ -41,36 +45,36 @@ namespace BAsketWS.Controllers
 			//mPlugin.GetMessage();
 			//var scmd = mPlugin == null ? Common.SqlCommands["WarsByGId"] : mPlugin.SqlCommand("WarsByGId");
 
-			var cmd = mPlugin.GetSqlCommand("Nms");
+		//	var cmd = mPlugin.GetSqlCommand("Nms");
 
-            return ProcessCommand(cmd);
-        }
+		//	return ProcessCommand(cmd);
+		//}
 
-        List<Nms> ProcessCommand(string cmd, int limit = -1)
-        {
-			List<Nms> result;
-            using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
-            {
-                if (reader == null)
-                    return null;
-				//if (mPlugin == null)
-				//	mPlugin = new DefPlugin();
+		//List<Nms> ProcessCommand(string cmd, int limit = -1)
+		//{
+		//	List<Nms> result;
+		//	using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
+		//	{
+		//		if (reader == null)
+		//			return null;
+		//		//if (mPlugin == null)
+		//		//	mPlugin = new DefaultPlugin();
 
-				result = mPlugin.ReadNms(reader);
-				//while (reader.Read())
-				//{
-				//	result.Add(new Nms()
-				//		{
-				//			IdP = reader.GetInt32(Common.GetName("IdP")),
-				//			Id = reader.GetInt32(Common.GetName("Id")),
-				//			N = reader.GetString(Common.GetName("N")),
-				//		});
-				//	limit--;
-				//	if (limit == 0) break;
-				//}
-            }
-            Common.AddCorsHeaders(HttpContext.Current.Response);
-            return result;
-        }
+		//		result = mPlugin.ReadNms(reader);
+		//		//while (reader.Read())
+		//		//{
+		//		//	result.Add(new Nms()
+		//		//		{
+		//		//			IdP = reader.GetInt32(Common.GetName("IdP")),
+		//		//			Id = reader.GetInt32(Common.GetName("Id")),
+		//		//			N = reader.GetString(Common.GetName("N")),
+		//		//		});
+		//		//	limit--;
+		//		//	if (limit == 0) break;
+		//		//}
+		//	}
+		//	Common.AddCorsHeaders();
+		//	return result;
+		//}
     }
 }

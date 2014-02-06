@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
-using BAsketWS.Models;
 
 namespace BAsketWS.DataAccess
 {
@@ -99,10 +98,9 @@ namespace BAsketWS.DataAccess
 
         static void Users_Load()
         {
-            var cmd = Common.SqlCommands["WebUsers"];
+			var cmd = "Select * From " + Common.SwuTable;
             var result = new List<UserInfo>();
             using (var reader = BaseRepository.ExecuteReaderEx("BAsket", cmd, null))
-                //using (var reader = BaseRepository.ExecuteReaderEx("BAsket", "Select * From spWar where r_pwar=-8", null))
             {
                 if (reader == null) return;
 
@@ -111,9 +109,10 @@ namespace BAsketWS.DataAccess
                     //var roles = [];
                     result.Add(new UserInfo()
                         {
-                            Name = reader.GetString("Name"),
-                            PasswordHash = reader.GetString("NameID"), 
-                            Roles = new[] {reader.GetInt16("N_TP").ToString()},
+							Name = reader.GetStrValue("Name"),
+							PasswordHash = reader.GetStrValue("NameID"),
+							Roles = new[] { reader.GetStrValue("Id") },
+							//Roles = new[] { reader.GetInt16("N_TP").ToString() },
                         });
                 }
                 Users = result.ToArray();

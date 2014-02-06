@@ -32,6 +32,19 @@ namespace BAsketWS.DataAccess
 
 		#region Public Methods
 
+		public static List<SqlParameter> NewParamList(SqlParameter prm)
+		{
+			return new List<SqlParameter>() { prm };
+		}
+		public static SqlParameter NewParam(string pName, string pValue, ParameterDirection pDirect, int pSize)
+		{
+			return new SqlParameter(pName, pValue) {Direction = pDirect, Size = pSize};
+		}
+
+		public static int ExecuteCommand(string procedureName)
+		{
+			return ExecuteCommand("BAsket", procedureName, null);
+		}
 		public static int ExecuteCommand(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			var returnValue = 0;
@@ -47,6 +60,10 @@ namespace BAsketWS.DataAccess
 			return returnValue;
 		}
 
+		public static object ExecuteScalar(string procedureName, List<SqlParameter> parameters)
+		{
+			return ExecuteScalar("BAsket", procedureName, parameters);
+		}
 		public static object ExecuteScalar(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			object returnValue = null;
@@ -95,6 +112,10 @@ namespace BAsketWS.DataAccess
 		public static DataReaderAdapter ExecuteReaderEx(string procedureName)
 		{
 			return ExecuteReaderEx("BAsket", procedureName, null);
+		}
+		public static DataReaderAdapter ExecuteReaderEx(string procedureName, List<SqlParameter> parameters)
+		{
+			return ExecuteReaderEx("BAsket", procedureName, parameters);
 		}
 		public static DataReaderAdapter ExecuteReaderEx(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
@@ -150,6 +171,25 @@ namespace BAsketWS.DataAccess
 			}
 
 			return returnValue;
+		}
+
+		public static SqlTransaction BeginTransaction()
+		{
+			return BeginTransaction("BAsket");
+		}
+
+		public static SqlTransaction BeginTransaction(string connectionName)
+		{
+			var connection = GetConnection(connectionName);
+			connection.Open();
+			var sqlTran = connection.BeginTransaction();
+
+			return sqlTran;
+		}
+
+		public static void CommitTransaction(SqlTransaction transaction)
+		{
+			transaction.Commit();
 		}
 
 		#endregion

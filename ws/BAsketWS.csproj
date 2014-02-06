@@ -91,18 +91,19 @@
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\BilMController.cs" />
-    <Compile Include="Controllers\ProdOstController.cs" />
+    <Compile Include="Controllers\ProdStockController.cs" />
     <Compile Include="Controllers\NmsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="DataAccess\BaseRepository.cs" />
     <Compile Include="DataAccess\Common.cs" />
     <Compile Include="DataAccess\CustomBasicAuth.cs" />
     <Compile Include="DataAccess\DataReaderAdapter.cs" />
-    <Compile Include="DataAccess\DbfHelper.cs" />
-    <Compile Include="DataAccess\DefPlugin.cs" />
-    <Compile Include="DataAccess\ParamsHelper.cs" />
-    <Compile Include="DataAccess\RepoHelper.cs" />
-    <Compile Include="DataAccess\SerializationHelper.cs" />
+    <Compile Include="Helpers\DbfHelper.cs" />
+    <Compile Include="Helpers\DefaultPlugin.cs" />
+    <Compile Include="Helpers\MefHelper.cs" />
+    <Compile Include="Helpers\ParamsHelper.cs" />
+    <Compile Include="Helpers\RepoHelper.cs" />
+    <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="DataAccess\TypedDataTablesFactory.cs" />
     <Compile Include="DataAccess\VerConst.cs">
       <SubType>Code</SubType>
@@ -110,6 +111,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\BilM.cs" />

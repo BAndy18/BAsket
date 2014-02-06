@@ -18,7 +18,7 @@ namespace BAsketWS.Models
         public decimal P { get; set; }
     }
 
-	public class ProdOst
+	public class ProdStock
 	{
 		public string Id { get; set; }
 		public string O { get; set; }

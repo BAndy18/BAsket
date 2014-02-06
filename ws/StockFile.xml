@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BAsketSwap xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BAsketSwap-Header>
+    <SwapNumber />
+    <SwapDate>06.02.2014 18:53:50</SwapDate>
+  </BAsketSwap-Header>
+  <BAsketSwap-Products>
+    <Prod Id="18114" IdP="-164" Name="Горох Крестьянский 800г*12 Агрокультура" Stock="0" Price="267900,0000" />
+    <Prod Id="10678" IdP="-164" Name="Горох экспортный 900г*12 Ангстрем" Stock="0" Price="351100,0000" />
+    <Prod Id="876" IdP="-164" Name="Греча 500г*12 PROSTO №43" Stock="0" Price="389600,0000" />
+    <Prod Id="10384" IdP="-164" Name="Греча 900г*12 Ангстрем  № 4" Stock="0" Price="415800,0000" />
+    <Prod Id="10575" IdP="-164" Name="Манка 800г*12 Ангстрем" Stock="0" Price="334900,0000" />
+    <Prod Id="886" IdP="-164" Name="Пшено 500г*12 PROSTO" Stock="0" Price="320800,0000" />
+    <Prod Id="10481" IdP="-164" Name="Пшено 900г*12 Ангстрем" Stock="0" Price="308000,0000" />
+    <Prod Id="898" IdP="-164" Name="Рис 500г*12 PROSTO Золотистый" Stock="0" Price="420600,0000" />
+    <Prod Id="899" IdP="-164" Name="Рис 500г*12 PROSTO Краснодарский" Stock="0" Price="351600,0000" />
+    <Prod Id="900" IdP="-164" Name="Рис 500г*12 PROSTO Отборный №41" Stock="0" Price="420600,0000" />
+    <Prod Id="11745" IdP="-164" Name="Рис 800г*12 Здоровье" Stock="0" Price="503100,0000" />
+    <Prod Id="18020" IdP="-164" Name="Рис 800г*12 Пропаренный №1 длиннозерный Агрокультура" Stock="0" Price="366500,0000" />
+    <Prod Id="23946" IdP="-164" Name="Рис 900г*12 Для плова" Stock="0" Price="521100,0000" />
+    <Prod Id="10386" IdP="-164" Name="Рис 900г*12 Золотистый" Stock="0" Price="536200,0000" />
+    <Prod Id="10419" IdP="-164" Name="Рис 900г*12 Краснодарский" Stock="0" Price="437100,0000" />
+    <Prod Id="23945" IdP="-164" Name="Рис 900г*12 Кубанский Лиман" Stock="0" Price="418100,0000" />
+    <Prod Id="10485" IdP="-164" Name="Рис 900г*12 Отборный №1" Stock="0" Price="527200,0000" />
+    <Prod Id="13755" IdP="-164" Name="Фасоль 450г*6 &quot;Ангстрем&quot; белая" Stock="0" Price="579400,0000" />
+    <Prod Id="23274" IdP="-164" Name="Фасоль 450г*6 &quot;Ангстрем&quot; красная" Stock="0" Price="579400,0000" />
+    <Prod Id="925" IdP="-164" Name="Хлопья 400г*12 Русский завтрак 4 злака крупные №15" Stock="0" Price="320800,0000" />
+    <Prod Id="924" IdP="-164" Name="Хлопья 400г*12 Русский завтрак 4 злака мелкие №11" Stock="0" Price="348700,0000" />
+    <Prod Id="9580" IdP="-164" Name="Хлопья 400г*12 Русский завтрак 4 злака с отрубями №18" Stock="0" Price="419800,0000" />
+    <Prod Id="926" IdP="-164" Name="Хлопья 400г*12 Русский завтрак 5 злаков мелкие №16" Stock="0" Price="390600,0000" />
+    <Prod Id="12841" IdP="-164" Name="Хлопья 400г*12 Русский завтрак гречневые №23" Stock="0" Price="390600,0000" />
+    <Prod Id="930" IdP="-164" Name="Хлопья 400г*12 Русский завтрак овсяные Экстра №10" Stock="0" Price="320800,0000" />
+    <Prod Id="928" IdP="-164" Name="Хлопья 400г*12 Русский завтрак пшенно-рисовые №12" Stock="0" Price="446400,0000" />
+    <Prod Id="11736" IdP="-164" Name="Хлопья овсяные Геркулес 450г*12 Ангстрем" Stock="0" Price="245100,0000" />
+  </BAsketSwap-Products>
+</BAsketSwap>

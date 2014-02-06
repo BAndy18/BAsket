@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Web;
 using System.Web.Http;
 using BAsketWS.DataAccess;
+using BAsketWS.Helpers;
 using BAsketWS.Models;
 
 namespace BAsketWS.Controllers
@@ -16,44 +15,47 @@ namespace BAsketWS.Controllers
 		private IBAsketPlugin mPlugin;
 		private ProductsController()
 		{
-			if (mPlugin == null) mPlugin = new DefPlugin();
+			if (mPlugin == null) mPlugin = new DefaultPlugin();
 		}
 
         public Product Get(string id)
         {
-            var cmd = string.Format(mPlugin.GetSqlCommand("WarById"), id);
-            var ret = ProcessCommand(cmd, 1);
-            return ret[0];
+			var result = mPlugin.GetProductById(id);
+			return result;
         }
 
-        public List<Product> Get()
-        {
-            var qs = HttpContext.Current.Request.QueryString;
-            var id = qs["pId"];
-            var top = qs["take"] ?? "30";
-            var skip = qs["skip"] ?? "0";
-            var searchString = qs["searchString"] ?? "";
-			//if (string.IsNullOrEmpty(searchString))
-			//	searchString = "' '";
-            //if (!string.IsNullOrEmpty(searchString))
-            //    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
-	        
-			var cmd = (id == "all" || id == "ost") ?
-				mPlugin.GetSqlCommand("War") :
-				string.Format(mPlugin.GetSqlCommand("WarsByGId"), 
-					id, searchString, skip, top);
+		public List<Product> Get()
+		{
+			var result = mPlugin.GetProducts();
+			return result;
+		}
 
-            return ProcessCommand(cmd);
-        }
+		//var qs = HttpContext.Current.Request.QueryString;
+	        //var id = qs["pId"];
+	        //var top = qs["take"] ?? "30";
+	        //var skip = qs["skip"] ?? "0";
+	        //var searchString = qs["searchString"] ?? "";
+	        ////if (string.IsNullOrEmpty(searchString))
+	        ////	searchString = "' '";
+	        ////if (!string.IsNullOrEmpty(searchString))
+	        ////    searchString = string.Format(" and Name Like '%{0}%' ", searchString);
 
-        List<Product> ProcessCommand(string cmd, int limit = -1)
-        {
-			List<Product> result = null;
-            using (var reader = BaseRepository.ExecuteReaderEx(cmd))
-            {
-                if (reader == null)
-                    return null;
-				result = mPlugin.ReadProducts(reader);
+	        //var cmd = (id == "all" || id == "ost") ?
+	        //	mPlugin.GetSqlCommand("War") :
+	        //	string.Format(mPlugin.GetSqlCommand("SqlGetProductsByPId"),
+	        //		id, searchString, skip, top);
+
+	        //return ProcessCommand(cmd);
+        //}
+
+		//List<Product> ProcessCommand(string cmd, int limit = -1)
+		//{
+		//	List<Product> result = null;
+		//	using (var reader = BaseRepository.ExecuteReaderEx(cmd))
+		//	{
+		//		if (reader == null)
+		//			return null;
+		//		result = mPlugin.ReadProducts(reader);
 				//else
 				//{
 				//	result = new List<Product>();
@@ -83,9 +85,9 @@ namespace BAsketWS.Controllers
 				//		if (limit == 0) break;
 				//	}
 				//}
-            }
-            Common.AddCorsHeaders(HttpContext.Current.Response);
-            return result;
-        }
+		//	}
+		//	Common.AddCorsHeaders(HttpContext.Current.Response);
+		//	return result;
+		//}
     }
 }
