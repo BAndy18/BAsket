@@ -18,7 +18,11 @@
                 </div>
             </div>
         </div> -->
-        <div data-bind="dxList: { dataSource: dataSource, noDataText: _.Common.NoDataText }">
+        <div data-bind="dxList: { 
+                dataSource: dataSource, 
+                noDataText: _.Common.NoDataText,
+                pullRefreshEnabled: true
+            }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{Id}'">
                 <div data-bind="text: $data.Name"></div>
                 <div class='textSmall marginleft'><span data-bind="text: $data.Adres"/>
@@ -81,6 +85,8 @@
             <div data-options="dxTemplate:{name: 'content'}">
                 <div data-bind="dxScrollView: {}">
                     <div id="textContainer"></div>
+<!--                     <div class="dx-button fl-right" data-bind="dxButton:{icon: 'info'}" />
+                    <div>.</div> -->
                 </div>
             </div>
         </div>        

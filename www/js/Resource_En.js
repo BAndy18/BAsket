@@ -169,7 +169,7 @@ var RU_RU = (function (window) {
 		FldName1: 'Артикул:',
 		FldName2: 'Производитель:',
         FldName3: 'Картинка:',
-		FldName4: 'Количество в упаковке:',
+		FldName4: 'Упаковка:',
 		SelSum: 'выбрано: #; на сумму: ',
 	};
 

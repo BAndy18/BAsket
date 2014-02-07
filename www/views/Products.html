@@ -48,8 +48,8 @@
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
                 <div class='marginleft' data-bind="text: $data.Name"/>
                 <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
-                    (уп=<span data-bind="text: Globalize.format($data.N4, 'n0')"/> 
-                    ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
+                    (<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/>; 
+                        <span data-bind="text: Globalize.format($data.N4, 'n0')"/>)
                 </div>
             </div>
         </div>
@@ -96,8 +96,8 @@
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
                 <div class='marginleft' data-bind="text: $data.Name"/>
                 <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
-                    (уп=<span data-bind="text: Globalize.format($data.Upak, 'n0')"/> 
-                    ; ост=<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/> )
+                    (<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/>; 
+                        <span data-bind="text: Globalize.format($data.N4, 'n0')"/>)
                 </div>
             </div>
         </div>

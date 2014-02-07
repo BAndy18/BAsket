@@ -27,7 +27,9 @@ namespace BAsketWS.DataAccess
 	    static Timer stockCheckTimer;
 	    static DateTime dtStockChange;
 		public static string StockFileName = "";
-		static string dirTemp = "";
+		static string dirRoot = "";
+		const string DirMessages = "messages\\";
+		public const string DirMessagesOut = "messages\\outbox\\";
 
 		public const string SProdTable = "bas_spProducts";
 		public const string SCliTable = "bas_spClients";
@@ -42,9 +44,13 @@ namespace BAsketWS.DataAccess
 
 		public static List<T> ProcessCommand<T>(string cmd, Func<DataReaderAdapter, T> func)
 		{
+			return ProcessCommand("BAsket", cmd, func);
+		}
+		public static List<T> ProcessCommand<T>(string connect, string cmd, Func<DataReaderAdapter, T> func)
+		{
 			AddCorsHeaders();
 			var result = new List<T>();
-			using (var reader = BaseRepository.ExecuteReaderEx(cmd))
+			using (var reader = BaseRepository.ExecuteReaderEx(connect, cmd, null))
 			{
 				if (reader == null)
 					return null;
@@ -80,11 +86,11 @@ namespace BAsketWS.DataAccess
 		{
 			var sfn = ConfigurationManager.AppSettings["StockFileName"];
 			var scm = ConfigurationManager.AppSettings["StockCheckInMin"];
+			StockFileName = GetRootDir() + DirMessages + sfn;
 			var iscm = 0;
 			if (string.IsNullOrEmpty(sfn) || string.IsNullOrEmpty(scm) || !int.TryParse(scm, out iscm) || iscm < 1)
 				return;
 
-			StockFileName = GetRootDir() + sfn;
 			if (File.Exists(StockFileName))
 			{
 				var fi = new FileInfo(StockFileName);
@@ -117,15 +123,15 @@ namespace BAsketWS.DataAccess
 
 	    static public string GetRootDir()
 	    {
-		    if (!string.IsNullOrEmpty(dirTemp))
-			    return dirTemp;
+		    if (!string.IsNullOrEmpty(dirRoot))
+			    return dirRoot;
 
 		    var sDir = "C:\\Temp\\";
 			try
 			{
 				if (HttpContext.Current != null && HttpContext.Current.Request != null &&
 					HttpContext.Current.Request.PhysicalApplicationPath.Length > 0)
-					dirTemp = sDir = HttpContext.Current.Request.PhysicalApplicationPath;
+					dirRoot = sDir = HttpContext.Current.Request.PhysicalApplicationPath;
 			}
 			catch
 			{
@@ -134,7 +140,7 @@ namespace BAsketWS.DataAccess
 					{
 						if (ckey.Key.ToString().StartsWith("__System.Web.WebPages.Deployment"))
 						{
-							dirTemp = sDir = ckey.Value.ToString();
+							dirRoot = sDir = ckey.Value.ToString();
 						}
 					}
 			}
@@ -167,7 +173,8 @@ namespace BAsketWS.DataAccess
 		#region CreateDbObject
 
 		static public void CreateDbObject(string message, string table = "")
-        {
+		{
+			var cmd = "";
 	        if (String.IsNullOrEmpty(table))
 	        {
 				var sV = message.Replace("\"", "'").Split('\'');
@@ -175,12 +182,30 @@ namespace BAsketWS.DataAccess
 			        table = sV[1];
 
 	        }
+			if (table == SwuTable)
+			{
+				var app = "if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[{0}]')) drop table [dbo].[{0}];";
+				foreach (var key in sqlCreateCommands.Keys)
+				{
+					if (key == SBasketProc)
+					{
+						cmd = String.Format(app.Replace("table", "procedure"), key);
+						BaseRepository.ExecuteCommand(cmd);
+						cmd = String.Format(sqlCreateCommands[key], key, SBilTable);
+					}
+					else
+						cmd = String.Format(app + sqlCreateCommands[key], key);
+					BaseRepository.ExecuteCommand(cmd);
+				}
+				return;
+			}
+				
 			if (sqlCreateCommands.ContainsKey(table))
 			{
-				var cmd = String.Format(sqlCreateCommands[table], table);
+				cmd = String.Format(sqlCreateCommands[table], table);
 				if (!String.IsNullOrEmpty(cmd))
 				{
-					BaseRepository.ExecuteCommand("BAsket", cmd, null);
+					BaseRepository.ExecuteCommand(cmd);
 				}
 			}
 			else
@@ -193,9 +218,9 @@ namespace BAsketWS.DataAccess
         {
             {SwuTable, "CREATE TABLE [dbo].{0}("+
 					"Id int IDENTITY(1,1) primary key"+
-					",Name varchar(50)"+
-					",NameID varchar(50)"+
-					",EMail varchar(50)"+
+					",Name nvarchar(50)"+
+					",NameID nvarchar(50)"+
+					",EMail nvarchar(50)"+
 					//",[SelCli] [varchar](500)"+
 					//",[SelSup] [varchar](500)"+
 					//",[SelWar] [varchar](500)"+
@@ -204,44 +229,137 @@ namespace BAsketWS.DataAccess
 			},
             {SProdTable, "Create table dbo.{0} (" +
                     "Id varchar(10) primary key," +
-                    "IdP varchar(10)," +
-                    "N varchar(250)," +
-                    "N1 varchar(250)," +
-                    "N2 varchar(250)," +
-                    "N3 varchar(250)," +
-                    "N4 varchar(250)," +
-                    "N5 varchar(250)," +
+                    "IdP varchar(10) not null," +
+                    "N nvarchar(250) not null," +
+                    "N1 nvarchar(250)," +
+                    "N2 nvarchar(250)," +
+                    "N3 nvarchar(250)," +
+                    "N4 nvarchar(250)," +
                     "O int," +
                     "P money," +
                     "isWare bit)" +
-                    ";Create Index IX_war_hwar On {0}(IdP)" + 
-                    ";Create Index IX_war_name On {0}(N)" +
+                    ";Create Index IX_prod_idp On {0}(IdP)" + 
+                    ";Create Index IX_prod_n On {0}(N)" +
 					""
             },
             {SCliTable, "CREATE TABLE [dbo].{0}("+
 					"Id varchar(10) primary key,"+
-					"IdP varchar(10),"+
-					"N varchar(250),"+
-					"A varchar(250))"
-            },
-			{SBilTable, "CREATE TABLE [dbo].{0}("+
-					"Id varchar(10) primary key,"+
-					"IdC varchar(10),"+
-					"IdT varchar(10),"+
-					"IdP1 varchar(10),"+
-					"IdP2 varchar(10),"+
-					"IdLoc int,"+
-					"IdUser int,"+
-					"DateDoc datetime,"+
-					"SumDoc money,"+
-					"Note varchar(250),"+
-					"Wars varchar(8000))"+
-                    ";Create Index IX_bil_cli On {0}(IdC)" + 
-                    ";Create Index IX_bil_tch On {0}(IdT)" +
+					"IdP varchar(10) not null,"+
+					"N nvarchar(250) not null,"+
+                    "N1 nvarchar(250)," +
+                    "N2 nvarchar(250)," +
+					"A nvarchar(250) not null)"+
+					";Create Index IX_cli_idp On {0}(IdP)" + 
+                    ";Create Index IX_cli_n On {0}(N)" +
 					""
             },
+			{SBilTable, "CREATE TABLE [dbo].{0}("+
+					"Id int IDENTITY(1,1) primary key,"+
+					"IdC varchar(10) not null,"+
+					"IdT varchar(10),"+
+					"IdUser int,"+
+					"LocNum int,"+
+					"NumDoc varchar(50),"+
+					"DateDoc datetime not null,"+
+					"SumDoc money,"+
+                    "N1 nvarchar(250)," +
+                    "N2 nvarchar(250)," +
+                    "N3 nvarchar(250)," +
+                    "N4 nvarchar(250)," +
+					"Note nvarchar(250),"+
+					"Wars varchar(8000))"+
+                    ";Create Index IX_bil_c On {0}(IdC)" + 
+                    ";Create Index IX_bil_t On {0}(IdT)" +
+					""
+            },
+	        {SBasketProc, 
+@"CREATE Procedure [dbo].[{0}]
+	@Key int, @Param varchar(4000) = '', @Reply varchar(100)  OUTPUT 
+As
+DECLARE @i int, @id int, @start int, @token varchar(4000), @NumDoc varchar(4000), 
+	@P1 varchar(100), @P2 varchar(100), @P3 varchar(100), @P4 varchar(100), @P5 varchar(100), @P6 varchar(100), @P7 varchar(100), @P8 varchar(100), @P9 varchar(100),
+	@I1 int, @D1 money
+
+if (@Key = 1) -- BilM Save
+begin
+	set @i = 0
+	while CHARINDEX('|', @Param) > 0
+	begin
+		set @i = @i + 1
+		SELECT @start = CHARINDEX('|', @Param)
+		SELECT @token = SUBSTRING(@Param, 0, @start)
+		SELECT @Param = SUBSTRING(@Param, @start + 1, len(@Param) - @start)
+		if @i = 1 set @P1 = @token else
+		if @i = 2 set @P2 = @token else
+		if @i = 3 set @P3 = @token else
+		if @i = 4 set @P4 = @token else
+		if @i = 5 set @P5 = @token else
+		if @i = 6 set @P6 = @token else
+		if @i = 7 set @P7 = @token else
+		if @i = 8 set @P8 = @token else
+		if @i = 9 set @P9 = @token 
+	end
+
+		if @P4 = '0'
+			set @P4 = null
+
+		Insert {1}(IdUser,DateDoc, IdC,IdT, Note,LocNum, SumDoc, N1, Wars)
+		Select @P1, CONVERT(DateTime, @P2, 105), @P3,@P4, @P5, @P6, @P7, @P8, @P9
+		set @I1 = @@IDENTITY
+		if @P6=0 set @P6='# ' + ltrim(str(@I1))
+		Update {1} set NumDoc=@P6 Where Id=@I1
+
+		set @Reply = ltrim(str(@I1)) + ' OK'
+	return
+end
+"
+	        }
         };
         #endregion
+
+		public static void ReadTest(IBAsketPlugin mPlugin)
+		{
+			return;
+			CreateDbObject(SwuTable, SwuTable);
+			//Common.CreateDbObject(Common.SProdTable, Common.SProdTable);
+			//Common.CreateDbObject(Common.SCliTable, Common.SCliTable);
+
+			var cmd = "SELECT -CategoryID as CategoryID,[CategoryName] FROM [Northwind].[dbo].[Categories]";
+			cmd = "SELECT [ProductID],[ProductName],s.[CompanyName],-CategoryID as CategoryID,[QuantityPerUnit],[UnitPrice],[UnitsInStock]FROM [Northwind].[dbo].[Products] p Join [Suppliers] s On p.[SupplierID]=s.[SupplierID]";
+			cmd = "SELECT [CustomerID],[CompanyName],[Address]+', '+[City]+', '+[PostalCode]+', '+[Country] as [Address] FROM [Northwind].[dbo].[Customers]";
+
+			//			var result = Common.ProcessCommand("Northwind", cmd, reader => new Category
+			//			var result = Common.ProcessCommand("Northwind", cmd, reader => new Product
+			var result = Common.ProcessCommand("Northwind", cmd, reader => new Client
+			{
+				/*
+				//	Category
+				Id = reader.GetStrValue("CategoryID"),
+				N = reader.GetStrValue("CategoryName"),
+				/* /
+				// Product
+				Id = reader.GetStrValue("ProductID"),
+				IdP = reader.GetStrValue("CategoryID"),
+				N = reader.GetStrValue("ProductName"),
+				//N1 = reader.GetStrValue("N1"), //NameArt
+				N2 = reader.GetStrValue("CompanyName"), //NameManuf
+				//N3 = reader.GetStrValue("N3"), //UrlPict - Name_pict
+				N4 = reader.GetStrValue("QuantityPerUnit"), //Upak 
+				O = reader.GetStrValue("UnitsInStock"),
+				P = reader.GetDecimal("UnitPrice"),
+				/*/
+				// Client
+				Id = reader.GetStrValue("CustomerID"),
+				//IdP = reader.GetStrValue("CategoryID"),
+				N = reader.GetStrValue("CompanyName"),
+				//N1 = reader.GetStrValue("N1"),
+				A = reader.GetStrValue("Address"),
+				/**/
+			});
+			//XmlHelper.XmlOut(result);
+
+			mPlugin.UpdateDbFromSwapFile();
+		}
 
     }
 

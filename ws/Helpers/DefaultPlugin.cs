@@ -24,10 +24,10 @@ namespace BAsketWS.Helpers
 		const string SBasketProc = "bas_BAsketStuff";
 
 		const string SqlGetCategories = "Select * from " + Common.SProdTable + " Where IdP=0";
-		const string SqlGetNms = "Select 0 as IdP, 1 as Id, 'Предприятие' as N Union " +
-						"Select 0 as IdP, 101 as Id, 'Отчет' as N Union " +
-						"Select 1 as IdP, 1 as Id, 'Нормаль ООО' as N Union " +
-						"Select 101 as IdP, 1 as Id, 'Отчет 1' as N " +
+		const string SqlGetNms = "Select 0 as IdP, 1 as Id, N'Предприятие' as N Union " +
+						"Select 0 as IdP, 101 as Id, N'Отчет' as N Union " +
+						"Select 1 as IdP, 1 as Id, N'BAsket ООО' as N Union " +
+						"Select 101 as IdP, 1 as Id, N'Отчет 1' as N " +
 						"Order by IdP, Id";
 
 		const string SqlGetAllProducts =
@@ -35,25 +35,25 @@ namespace BAsketWS.Helpers
 		const string SqlGetProductById = "Select * from " + Common.SProdTable + " Where Id='{0}'";
 		const string SqlGetProductsByPId =
 			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " + Common.SProdTable +
-			" Where IdP='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}";
+			" Where IdP='{0}' {1})x Where O>0 and rowNum > {2} and rowNum <= {2}+{3}";
 
 		const string SqlGetClients =
 			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " + Common.SCliTable +
-			" Where N is not null and A is not null and IdP is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by N";
+			" Where (IdP='' or IdP is null) {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by N";
 		const string SqlGetClientsByPId =
-			"Select * From " + Common.SCliTable + " Where N is not null and A is not null and IdP='{0}' Order by N";
+			"Select * From " + Common.SCliTable + " Where IdP='{0}' Order by N";
 		const string SqlGetClientById =
-			"Select c.*, par.N as PN, ISNULL(par.N + ' - ' + c.N, c.N) as FN From " + Common.SCliTable + " c Left Join " +
-			Common.SCliTable + " par On c.IdP=par.Id Where c.Id='{0}'";
+			"Select c.Id,c.IdP,c.N,c.A, par.N as N1, ISNULL(par.N + ' - ' + c.N, c.N) as N2 From " + Common.SCliTable +
+			" c Left Join " + Common.SCliTable + " par On c.IdP=par.Id Where c.Id='{0}'";
 		const string SqlGetAllClients =
-			"Select * From " + Common.SCliTable + " Where N is not null and A is not null Order by N";
+			"Select * From " + Common.SCliTable + " Where 1=1 Order by N";
 
 		const string SqlGetBilM =
-			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, b.*, c.N From " + Common.SBilTable + " b Join " +
-			Common.SCliTable + " c On c.Id=b.IdC " +
+			"Select * FROM (Select Row_Number() OVER (ORDER BY [N1] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " + Common.SBilTable +
+			" b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
 			" Where IdUser='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}";
 		const string SqlGetBilMById =
-			"Select b.*, c.N as cN, t.N as tN, ISNULL(c.N + ' - ' + t.N, c.N) as FN, ISNULL(t.A, c.A) as AD From " +
+			"Select b.*, c.N as N1, t.N as N2, ISNULL(c.N + ' - ' + t.N, c.N) as FN, ISNULL(t.A, c.A) as AD From " +
 			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC Left Join " + Common.SCliTable +
 			" t On t.Id=b.IdT Where b.Id={0}";
 		const string SqlExecBilMSave = "exec " + Common.SBasketProc + " 1, '{0}', @Reply output";
@@ -61,8 +61,14 @@ namespace BAsketWS.Helpers
 		const string SqlGetWebUsers = "Select * From " + Common.SwuTable;
 
 		const string SqlExecUpdStock0 = "Update " + Common.SProdTable + " set O=0";
-		const string SqlExecUpdUpdateProd = "Update " + Common.SProdTable + " set O=0";
-		const string SqlExecUpdInsertProd = "Insert Into " + Common.SProdTable + " (Id,IdP,N,N1,N2,N3,N4,O,P,isWare) Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',{9})";
+		const string SqlExecUpdInsProd =
+			"If Exists(Select Id From " + Common.SProdTable + " Where Id='{0}') Update " + Common.SProdTable +
+			" set IdP='{1}',N='{2}',N1={3},N2={4},N3={5},N4={6}, O={7},P={8},isWare={9} Where Id='{0}' Else Insert Into " +
+			Common.SProdTable + " (Id,IdP,N,N1,N2,N3,N4,O,P,isWare) Values('{0}','{1}','{2}',{3},{4},{5},{6}, {7},{8},{9})";
+		const string SqlExecUpdInsCli =
+			"If Exists(Select Id From " + Common.SCliTable + " Where Id='{0}') Update " + Common.SCliTable +
+			" set IdP='{1}',N='{2}',N1={3},A='{4}' Where Id='{0}' Else Insert Into " +
+			Common.SCliTable + " (Id,IdP,N,N1,A) Values('{0}','{1}','{2}',{3},'{4}')";
 
 		#endregion
 
@@ -101,6 +107,8 @@ namespace BAsketWS.Helpers
 				Id = reader.GetStrValue("Id"),
 				IdP = reader.GetStrValue("IdP"),
 				N = reader.GetStrValue("N"),
+				N1 = reader.GetStrValue("N1"),
+				N2 = reader.GetStrValue("N2"),
 				A = reader.GetStrValue("A"),
 			});
 		}
@@ -111,6 +119,9 @@ namespace BAsketWS.Helpers
 			var top = int.Parse(qs["take"] ?? "30");
 			var skip = int.Parse(qs["skip"] ?? "0");
 			var searchString = qs["searchString"] ?? "";
+			if (!string.IsNullOrEmpty(searchString))
+				searchString = string.Format(" and (N Like '%{0}%') ", searchString);
+
 			var cmd = (id == "all")
 				? SqlGetAllClients
 				: string.Format(SqlGetClients, searchString, skip, top);
@@ -157,6 +168,8 @@ namespace BAsketWS.Helpers
 			var top = qs["take"] ?? "30";
 			var skip = qs["skip"] ?? "0";
 			var searchString = qs["searchString"] ?? "";
+			if (!string.IsNullOrEmpty(searchString))
+	            searchString = string.Format(" and (N Like '%{0}%') ", searchString);
 			
 			var cmd = (id == "all" || id == "ost") ?
 				SqlGetAllProducts :
@@ -164,7 +177,6 @@ namespace BAsketWS.Helpers
 					id, searchString, skip, top);
 
 			var result = ProcessProducts(cmd);
-			XmlHelper.XmlOut(result);
 
 			return result;
 		}
@@ -194,16 +206,20 @@ namespace BAsketWS.Helpers
 		{
 			return Common.ProcessCommand(cmd, reader => new BilM
 			{
-				Id = reader.GetStrValue("r_bil"),
-				IdCli = reader.GetStrValue("r_cli"),
-				IdTp = reader.GetStrValue("r_fcli"),
+				Id = reader.GetStrValue("Id"),
+				IdC = reader.GetStrValue("IdC"),
+				IdT = reader.GetStrValue("IdT"),
+				IdUser = reader.GetStrValue("IdUser"),
+				NumDoc = reader.GetStrValue("NumDoc"),
 				DateDoc = reader.GetStrValue("DateDoc"),
 				SumDoc = reader.GetDecimal("SumDoc").ToString("N2"),
-				sNote = reader.GetStrValue("Note"),
-				cName = reader.GetStrValue("cName"),
-				tName = reader.GetStrValue("tName"),
-				FullName = reader.GetStrValue("FullName"),
-				AdresDost = reader.GetStrValue("AdresDost"),
+				Note = reader.GetStrValue("Note"),
+				Wars = reader.GetStrValue("Wars"),
+				N1 = reader.GetStrValue("N1"),
+				N2 = reader.GetStrValue("N2"),
+				//tName = reader.GetStrValue("tName"),
+				//FullName = reader.GetStrValue("FullName"),
+				//AdresDost = reader.GetStrValue("AdresDost"),
 			});
 		}
 
@@ -214,6 +230,8 @@ namespace BAsketWS.Helpers
 			var top = qs["take"] ?? "30";
 			var skip = qs["skip"] ?? "0";
 			var searchString = qs["searchString"] ?? "";
+			if (!string.IsNullOrEmpty(searchString))
+				searchString = string.Format(" and (N Like '%{0}%') ", searchString);
 
 			var user = HttpContext.Current.User.Identity.Name;
 			var userTp = "-1";
@@ -242,39 +260,55 @@ namespace BAsketWS.Helpers
 		{
 			var retvalue = "";
 			var user = HttpContext.Current.User.Identity.Name;
-			var userTp = "-1";
+			var userId = "-1";
 			if (user.Split(';').Length > 1)
 			{
-				userTp = user.Split(';')[1];
+				userId = user.Split(';')[1];
 			}
 			else
 			{
-				//return new BilM() { sNote = "user not found " + user };
+				//return new BilM() { Note = "user not found " + user };
 			}
 			var form = HttpContext.Current.Request.Form;
 			var comand = form["cmd"];
 			if (comand == "SaveBil")
 			{
-				var vOther = form["sOther"].Split(';');
-				var sup = (vOther.Length > 0 && vOther[0].Length > 0) ? vOther[0].Split(':')[1] : "";
+				var h = new XmlHelper.BAsketBil.CHeader()
+				{
+					IdC = form["IdC"],
+					IdT = form["IdT"],
+					Date = form["date"],
+					Note = form["sNote"],
+					SumDoc = form["sumDoc"],
+					Wars = form["sWars"],
+					Other = form["sOther"],
+					IdLoc = form["IdLoc"],
+					UserName = user
+				};
+				//var vOther = form["sOther"].Split(';');
+				//var sup = (vOther.Length > 0 && vOther[0].Length > 0) ? vOther[0].Split(':')[1] : "";
 
 				//			var sParam = string.Format("id={0};date={1};idCli={2};idTp={3};sOther={4};sWars={5};sNote={6};", 
 				//                form["id"], form["date"], form["idCli"], form["idTp"], form["sOther"], form["sWars"], form["sNote"], user.Split(';')[1]);
-				var idServ = form["idServ"];
-				var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7};|",
-					sup, form["date"], form["idCli"], form["idTp"], form["sNote"], userTp, idServ, form["sWars"]);
+				//var idServ = form["idServ"];
+				var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|",
+					userId, h.Date, h.IdC, h.IdT, h.Note, h.IdLoc, h.SumDoc, h.Other, h.Wars);
 
 				var cmd = string.Format(SqlExecBilMSave, sParam);
 				var prm = BaseRepository.NewParamList(BaseRepository.NewParam("@Reply", "", ParameterDirection.Output, 100));
 
 				retvalue = BaseRepository.ExecuteScalar(cmd, prm).ToString();
+
+				h.Result = retvalue;
+				var b = new XmlHelper.BAsketBil {Header = h};
+				XmlHelper.XmlOut(b);
 			}
 			else if (comand == "SendRepo")
 			{
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
-			return new BilM() { sNote = retvalue };
+			return new BilM() { Note = retvalue };
 		}
 
 		#endregion
@@ -303,42 +337,45 @@ namespace BAsketWS.Helpers
 
 				foreach (var p in doc.Products.FProd)
 				{
-					BaseRepository.ExecuteTransactionalCommand(tran, SqlExecUpdStock0, null);
-					cmd = string.Format(SqlGetProductById, p.Id);
-					//var reader = BaseRepository.ExecuteReaderTransactional(tran, cmd, null);
-					//if (reader.Read())
-					//{
-					//	// try update
-					//	//grpNames[val] = reader.GetString("r_war").ToString();
-					//}
-					//else
-					{	// insert
-						//"Insert Into " + Common.SProdTable + " (Id,IdP,N,N1,N2,N3,N4,O,P,isWare) Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',{0})";
-						cmd = string.Format(SqlExecUpdInsertProd, p.Id, p.IdP, p.Name, p.Name1, p.Name2, p.Name3, p.Name4,
-							p.Stock, p.Price, string.IsNullOrEmpty(p.IdP) ? 0 : 1);
-						BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
-					}
-				}
+					p.Name1 = string.IsNullOrEmpty(p.Name1) ? "null" : "'" + p.Name1 + "'";
+					p.Name2 = string.IsNullOrEmpty(p.Name2) ? "null" : "'" + p.Name2 + "'";
+					p.Name3 = string.IsNullOrEmpty(p.Name3) ? "null" : "'" + p.Name3 + "'";
+					p.Name4 = string.IsNullOrEmpty(p.Name4) ? "null" : "'" + p.Name4 + "'";
+					p.Stock = string.IsNullOrEmpty(p.Stock) ? "0" : p.Stock;
+					p.Price = string.IsNullOrEmpty(p.Price) ? "0" : p.Price.Replace(",", ".");
+					//(Id,IdP,N,N1,N2,N3,N4,O,P,isWare) Values('{0}','{1}','{2}',{3},{4},{5},{6}, {7},{8},{9})";
+					cmd = string.Format(SqlExecUpdInsProd, p.Id, p.IdP, p.Name, p.Name1, p.Name2, p.Name3, p.Name4,
+						p.Stock, p.Price, string.IsNullOrEmpty(p.IdP) ? 0 : 1);
+					BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
+				}/**/
+				foreach (var p in doc.Clients.FCli)
+				{
+					p.Name1 = string.IsNullOrEmpty(p.Name1) ? "null" : "'" + p.Name1 + "'";
+					p.Name2 = string.IsNullOrEmpty(p.Name2) ? "null" : "'" + p.Name2 + "'";
+					//(Id,IdP,N,N1,A) Values('{0}','{1}','{2}',{3},'{4}')";
+					cmd = string.Format(SqlExecUpdInsCli, p.Id, p.IdP, p.Name, p.Name1, p.Adres);
+					BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
+				}/**/
 
-				BaseRepository.CommitTransaction(tran);
+				tran.Commit();
 			}
 			catch (Exception ex)
 			{
 				// Handle the exception if the transaction fails to commit.
-				Common.SaveLog(ex.Message);
+				Common.SaveLog("UpdateDbFromSwapFile error: " + ex.Message);
 
-				//try
-				//{
-				//	// Attempt to roll back the transaction.
-				//	tran.Rollback();
-				//}
-				//catch (Exception exRollback)
-				//{
-				//	// Throws an InvalidOperationException if the connection 
-				//	// is closed or the transaction has already been rolled 
-				//	// back on the server.
-				//	Common.SaveLog(exRollback.Message);
-				//}
+				try
+				{	// Attempt to roll back the transaction.
+					tran.Rollback();
+				}
+				catch (Exception exRollback)
+				{
+				// Throws an InvalidOperationException if the connection 
+				// is closed or the transaction has already been rolled 
+				// back on the server.
+					Common.SaveLog("UpdateDbFromSwapFile Rollback error: " + exRollback.Message);
+					tran.Commit();
+				}
 			}
 		}
 
@@ -346,56 +383,3 @@ namespace BAsketWS.Helpers
 
 	}
 }
-
-//static public Dictionary<string, string> SqlCommands = new Dictionary<string, string>()
-//	{
-/// *
-//		//{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spWar Where isware=1 and bSusp=0 and Price > 0 and r_hwar={0} {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
-//		{"WarsByGId", "exec _BasketPaging 1, {0}, {1}, {2}, {3}"},
-//		{"WarById", "Select * From spWar Where r_war={0} "},
-//		{"War", "Select * From spWar Where isware=1 and bSusp=0 and Price > 0 and Ostat > 0 and r_hwar is not null and r_hwar not in (-182,18801,14967,15003) Order by Name"},
-//		{"WarGr", "Select * From spWar Where r_pwar=0 and r_war not in (-182,18801,14967,15003) Order by Name"},
-
-//		//{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [name] ASC) as rowNum, * from spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by Name"},
-//		{"Cli", "exec _BasketPaging 2, 0, {0}, {1}, {2}"},
-//		{"CliFil", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 and r_fcli={0} Order by Name"},
-//		{"CliById", "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}"},
-//		{"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
-
-//		//{"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
-//		{"BilM", "exec _BasketPaging 3, {0}, {1}, {2}, {3}"},
-//		{"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
-//		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
-
-
-/// * /
-//// Нормаль данные
-//		{"WarsByGId", "Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " + SWarTable + " Where IdP='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}"},
-
-//		{"WarById", "Select * from " + SWarTable + " Where Id='{0}'"},
-//		{"War", "Select * from " + SWarTable + " Where isware=1 and len(N)>1 and O>0 Order by N"},
-
-//		{"WarGr", "Select * from " + SWarTable + " Where IdP=0"},
-
-//		{"Cli", "Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " +SCliTable+ " Where N is not null and A is not null and IdP is null {0})x Where rowNum > {1} and rowNum <= {1}+{2} Order by N"},
-/// * * /
-//		{"CliFil", "Select * From " + SCliTable + " Where N is not null and A is not null and IdP='{0}' Order by N"},
-//		{"CliById", "Select c.*, par.N as PN, ISNULL(par.N + ' - ' + c.N, c.N) as FN From " + SCliTable + " c Left Join " + SCliTable + " par On c.IdP=par.Id Where c.Id='{0}'"},
-//		{"CliAll", "Select * From " + SCliTable + " Where N is not null and A is not null Order by N"},
-
-//		{"Nms", "Select 0 as IdP, 1 as Id, 'Предприятие' as N Union " +
-//				"Select 0 as IdP, 101 as Id, 'Отчет' as N Union " +
-//				"Select 1 as IdP, 1 as Id, 'Нормаль ООО' as N Union " +
-//				"Select 101 as IdP, 1 as Id, 'Отчет 1' as N " +
-//				"Order by IdP, Id"},
-
-//		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
-
-//		{"WebUsers", "Select * From " + SwuTable},
-//	};
-
-
-//public string GetSqlCommand(string cmd)
-//{
-//	return SqlCommands[cmd];
-//}

@@ -837,8 +837,8 @@ namespace BAsketWS.DataAccess
 			if (ret == null)
 				return "";
 			var rets = ret.ToString();
-			if (!string.IsNullOrEmpty(rets))
-				rets = rets.Replace("'", "''");
+			//if (!string.IsNullOrEmpty(rets))
+			//	rets = rets.Replace("''", "'").Replace("'", "''");
 			return rets;
 		}
 

@@ -34,9 +34,9 @@ BAsket.Order = function (params) {
 			else
 				dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
 			noteVal(result[0].sNote);
-			cliId(result[0].IdCli);
+			cliId(result[0].IdC);
 			cliName(result[0].cName);
-			tpId(result[0].IdTp);
+			tpId(result[0].IdT);
 
 			var arr = nmsNames();
 			var sOther = result[0].sOther;
@@ -61,7 +61,7 @@ BAsket.Order = function (params) {
 			}
 			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
 			tpName(tName);
-			DAL.ClientsPar(result[0].IdCli).load().done(function(result) {
+			DAL.ClientsPar(result[0].IdC).load().done(function(result) {
 				arrayTP(result);
 				showTP(result.length > 0);
 			});
@@ -124,8 +124,8 @@ BAsket.Order = function (params) {
 		prms['date'] = U.DateFormat(valueDate);
 		//console.log('Order save date=' + dataVal());
 		//console.log('Order save datetoLocaleString=' + prms['date']);
-		prms['idCli'] = valueCli;
-		prms['idTp'] = (valueTP ? valueTP : 0);
+		prms['IdC'] = valueCli;
+		prms['IdT'] = (valueTP ? valueTP : 0);
 		prms['sumDoc'] = Order_calcSum('-');
 
 		prms['sOther'] = '';

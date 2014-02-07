@@ -103,7 +103,12 @@ var DAL_web = (function ($, window) {
 	};
 
 	root.BilM = function(params) {
-		return execDataSource({ control: 'BilM', paging: true, prm: {} });
+		return execDataSource({ control: 'BilM', paging: true, prm: {}}, function (data) {
+            data.Name = data.N1;
+            data.Adres = data.N2;
+            data.ShortDate = data.DateDoc.substring(1, 5);
+            return data;
+        });
 	};
 	root.BilMById = function(params) {
 		return execDataSource({ control: 'BilM/' + params });
@@ -200,10 +205,11 @@ var DAL_web = (function ($, window) {
 						},
 						headers: P.ajaxHeaders,
 						success: function(result) {
-                            BAsket.notify('Server reply: ' + result.sNote);
+                            BAsket.notify('Server reply: ' + result.Note);
 						},
-						error: function(result) {
-                            BAsket.error(result.responseText);
+						error: function(result, arg) {
+                            // BAsket.error(result.responseText);
+                            BAsket.error(result.statusText + ': ' + result.status);
 						},
 					})
 					.done(function(result) {

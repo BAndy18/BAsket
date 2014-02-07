@@ -174,7 +174,7 @@ var DAL = (function ($, window) {
 			query: "SELECT r.*, c.Name as cName, t.Name as tName, " +
 				"IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
 				"IFNULL(t.Adres, c.Adres) as AdresDost, IFNULL(t.Id, c.Id) as IdDost  " +
-				"FROM RMAP r Join CLI c On r.IdCli=c.Id Left Join CLI t On r.IdTp=t.Id " +
+				"FROM RMAP r Join CLI c On r.IdC=c.Id Left Join CLI t On r.IdT=t.Id " +
 				"Where DateDoc='" + date + "' Order by Npp"
 		});
 	};
@@ -192,8 +192,8 @@ var DAL = (function ($, window) {
 		return execQuery("UPDATE RMAP set IdBil=" + idb + " Where Id=" + id);
 	};
 	root.AddCliRMap = function(prm, callback) {
-		execQuery("INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp) VALUES('" + prm['date'] + "'," + prm['Npp'] + ",'"
-				+ prm['idCli'] + "','" + prm['idTp'] + "')")
+		execQuery("INSERT INTO RMAP (DateDoc, Npp, IdC, IdT) VALUES('" + prm['date'] + "'," + prm['Npp'] + ",'"
+				+ prm['IdC'] + "','" + prm['IdT'] + "')")
 			.done(function() { callback(); })
 	};
 
@@ -204,13 +204,13 @@ var DAL = (function ($, window) {
 			query: "SELECT b.*, c.Name as cName, t.Name as tName, substr(b.DateDoc,1,5) as ShortDate, " +
 				"IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
 				"IFNULL(t.Adres, c.Adres) as AdresDost " +
-				"FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id"
+				"FROM BILM b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id"
 		});
 	};
 	root.BilMById = function (params) {
 		if (!P.useWebDb)
 			return DAL_web.BilMById(params);
-		return execDataSource({ query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdCli=c.Id Left Join CLI t On b.IdTp=t.Id WHERE b.Id='" + params + "'" });
+		return execDataSource({ query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id WHERE b.Id='" + params + "'" });
 	};
 
 	//     root.SelectLastId = function(params){                
@@ -226,13 +226,13 @@ var DAL = (function ($, window) {
 		if (!params['sNote']) params['sNote'] = '';
 		if (!params['sWars']) params['sWars'] = '';
 		if (params['id']) {
-			query = "UPDATE BILM set DateDoc='" + params['date'] + "', IdCli='" + params['idCli'] + "', IdTp='" + params['idTp'] +
+			query = "UPDATE BILM set DateDoc='" + params['date'] + "', IdC='" + params['IdC'] + "', IdT='" + params['IdT'] +
 				"', SumDoc='" + params['sumDoc'] + "', sNote='" + params['sNote'] + "', sOther='" + params['sOther'] +
 				"', sWars='" + params['sWars'] +
 				"' WHERE Id='" + params['id'] + "'";
 		} else {
-			query = "INSERT INTO BILM (DateDoc, IdCli, IdTp, SumDoc, sNote, sOther, sWars, bSusp) VALUES('" + params['date'] +
-				"', '" + params['idCli'] + "','" + params['idTp'] + "','" + params['sumDoc'] + "','" + params['sNote'] +
+			query = "INSERT INTO BILM (DateDoc, IdC, IdT, SumDoc, sNote, sOther, sWars, bSusp) VALUES('" + params['date'] +
+				"', '" + params['IdC'] + "','" + params['IdT'] + "','" + params['sumDoc'] + "','" + params['sNote'] +
 				"', '" + params['sOther'] + "', '" + params['sWars'] + "', 0)";
 		};
 		return execQuery(query);
@@ -275,16 +275,16 @@ var DAL = (function ($, window) {
         execQuery("SELECT * FROM BILM WHERE bSusp=0").done(function(result) {
             var prm = {};
             for (var i in result) {
-                prm['id'] = result[i].Id;
-                prm['idServ'] = result[i].IdServ;
+                prm['IdLoc'] = result[i].Id;
+                prm['IdC'] = result[i].IdC;
+                prm['IdT'] = result[i].IdT;
                 prm['date'] = result[i].DateDoc;
-                prm['idCli'] = result[i].IdCli;
-                prm['idTp'] = result[i].IdTp;
-                prm['sOther'] = result[i].sOther;
                 prm['sNote'] = result[i].sNote;
                 prm['sWars'] = result[i].sWars;
+                // prm['idServ'] = result[i].IdServ;
+                // prm['sOther'] = result[i].Other;
                 DAL_web.SaveBil(prm).done(function(res) {
-                    execQuery("UPDATE BILM set bSusp=1, sServRet='" + res[0].sNote + "' WHERE Id=" + result[i].Id);
+                    execQuery("UPDATE BILM set bSusp=1, sServRet='" + res[0].Note + "' WHERE Id=" + result[i].Id);
                 })
             }
         })
@@ -301,6 +301,9 @@ var DAL = (function ($, window) {
         DAL_web.NMS().load().done(function (result) { writeToLocalData(result, 'NMS'); });
         DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
 
+        var date = new Date();
+        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
+
 		if (!P.useWebDb) {
 			P.loadPanelVisible(false);
 			return;
@@ -315,8 +318,6 @@ var DAL = (function ($, window) {
         if (fullNews){
     		DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
         }
-		var date = new Date();
-		P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
@@ -616,8 +617,8 @@ var DAL = (function ($, window) {
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, Name, Price DECIMAL(20,2), N1, N2, N3, N4, N5, Ostat int, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, Name, Adres)',
-        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdCli, IdTp, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdBil int, IdCli, IdTp, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdC, IdT, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdB int, IdC, IdT, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
@@ -626,10 +627,10 @@ var DAL = (function ($, window) {
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
 	];
 
-	// "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
-	// "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
-	// "INSERT INTO RMAP (DateDoc, Npp, IdCli, IdTp, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
-	// "INSERT INTO BILM (DateDoc, IdCli, IdTp, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
+	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
+	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
+	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
+	// "INSERT INTO BILM (DateDoc, IdC, IdT, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
 	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
 	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
 

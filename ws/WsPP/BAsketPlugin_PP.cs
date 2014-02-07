@@ -134,7 +134,6 @@ namespace BAsketPlugin_PP
 					id, searchString, skip, top);
 
 			var result = ProcessProducts(cmd);
-			XmlHelper.XmlOut(result);
 
 			return result;
 		}
@@ -183,11 +182,11 @@ namespace BAsketPlugin_PP
 			return Common.ProcessCommand(cmd, reader => new BilM
 			{
 				Id = reader.GetStrValue("r_bil"),
-				IdCli = reader.GetStrValue("r_cli"),
-				IdTp = reader.GetStrValue("r_fcli"),
+				IdC = reader.GetStrValue("r_cli"),
+				IdT = reader.GetStrValue("r_fcli"),
 				DateDoc = reader.GetStrValue("DateDoc"),
 				SumDoc = reader.GetDecimal("SumDoc").ToString("N2"),
-				sNote = reader.GetStrValue("Note"),
+				Note = reader.GetStrValue("Note"),
 				cName = reader.GetStrValue("cName"),
 				tName = reader.GetStrValue("tName"),
 				FullName = reader.GetStrValue("FullName"),
@@ -262,7 +261,7 @@ namespace BAsketPlugin_PP
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
-			return new BilM() { sNote = retvalue };
+			return new BilM() { Note = retvalue };
 		}
 
 		#endregion

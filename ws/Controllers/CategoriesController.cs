@@ -24,6 +24,8 @@ namespace BAsketWS.Controllers
         //public string Get()
 		public List<Category> Get()
 		{
+			//Common.ReadTest(mPlugin);
+
 			var result = mPlugin.GetCategories();
 			return result;
 		}

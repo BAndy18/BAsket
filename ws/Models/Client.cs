@@ -10,8 +10,8 @@ namespace BAsketWS.Models
         public string Id { get; set; }
         public string IdP { get; set; }
         public string N { get; set; }
-        public string N2 { get; set; }
+		public string N1 { get; set; }
+		public string N2 { get; set; }
         public string A { get; set; }
-        //public string GeoLoc { get; set; }
     }
 }

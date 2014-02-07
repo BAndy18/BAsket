@@ -112,7 +112,7 @@ BAsket.Client = function (params) {
 		map.addMarker({ tooltip: _.Common.CurrentLocation, location: P.geoCurrent() });
 
 		DAL.ClientById(params.Id).load().done(function(result) {
-			cliName(result[0].FullName + ' (' + result[0].Adres + ')');
+			cliName(result[0].N2 + ' (' + result[0].A + ')');
 			//              location(P.geoCurrent());
 			//            if (location()){
 			//map.addMarker({tooltip: 'Current Location2', location: '56.843214,53.225489'});
