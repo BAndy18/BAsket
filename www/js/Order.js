@@ -15,9 +15,9 @@ BAsket.Order = function (params) {
 		P.arrayBAsket = [];
 
 	if (params.Id) {
-		DAL.BilMById(params.Id).load().done(function (result) {
-			if (!P.fromProducts && result[0].sWars) {
-				DAL.ProductsByWars(result[0].sWars).done(function(result) {
+		DAL.BilById(params.Id).load().done(function (result) {
+			if (!P.fromProducts && result[0].Wars) {
+				DAL.ProductsByWars(result[0].Wars).done(function(result) {
 					P.arrayBAsket = result;
 					calcSum(Order_calcSum());
 				});
@@ -33,13 +33,13 @@ BAsket.Order = function (params) {
 				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
 			else
 				dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
-			noteVal(result[0].sNote);
+			noteVal(result[0].Note);
 			cliId(result[0].IdC);
-			cliName(result[0].cName);
+			cliName(result[0].N1);
 			tpId(result[0].IdT);
 
 			var arr = nmsNames();
-			var sOther = result[0].sOther;
+			var sOther = result[0].P1;
 			if (sOther) {
 				sOther = sOther.split(';');
 				for (var i = 0; i < sOther.length; i++) {
@@ -59,7 +59,7 @@ BAsket.Order = function (params) {
 				}
 				nmsNames(arr);
 			}
-			var tName = result[0].tName ? result[0].tName : _.Order.SelectPoint + '...';
+			var tName = result[0].N2 ? result[0].N2 : _.Order.SelectPoint + '...';
 			tpName(tName);
 			DAL.ClientsPar(result[0].IdC).load().done(function(result) {
 				arrayTP(result);
@@ -93,7 +93,7 @@ BAsket.Order = function (params) {
 			mask = _.Products.SelSum.replace('#', P.arrayBAsket.length);
 		var sum = 0.0;
 		for (var i in P.arrayBAsket) {
-			sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
+			sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].P;
 		}
 		return mask + sum.toFixed(2);
 	};
@@ -125,7 +125,7 @@ BAsket.Order = function (params) {
 		//console.log('Order save date=' + dataVal());
 		//console.log('Order save datetoLocaleString=' + prms['date']);
 		prms['IdC'] = valueCli;
-		prms['IdT'] = (valueTP ? valueTP : 0);
+		prms['IdT'] = (valueTP ? valueTP : '');
 		prms['sumDoc'] = Order_calcSum('-');
 
 		prms['sOther'] = '';
@@ -146,7 +146,7 @@ BAsket.Order = function (params) {
 
 		Order_clickBack();
 
-		var cnt = DAL.CountTable('BILM');
+		var cnt = DAL.CountTable('Bil');
 		if (cnt)
 			cnt.done(function (result) {
 				P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
@@ -197,7 +197,7 @@ BAsket.Order = function (params) {
 			calcSum(Order_calcSum());
 			for (var i = 0; i < P.arrNMS[0].length; i++) {
 				var setNms = $("#idNms" + (i + 1));
-				if (setNms.length == 1 && P.arrNMS[0][i].Id < 100) {
+				if (setNms.length == 1 && P.arrNMS[0][i].Id < 10) {
 					setNms.parent().show();
 					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].N;
 				}
@@ -213,9 +213,13 @@ BAsket.OrderList = function (params) {
 	var holdTimeout = ko.observable(750);
 	var popVisible = ko.observable(false);
 	var idSelected = ko.observable(0);
+	var searchStr = ko.observable('');
+	var swTitle = ko.observable(_.Order.SwTitle1);
+	var swValue = ko.observable(false);
 
 	var viewModel = {
-		dataSource: DAL.BilM(),
+		dataSource: DAL.Bil(),
+		dataSourceS: DAL.Bil(true),
 
 		popVisible: popVisible,
 		holdTimeout: holdTimeout,
@@ -223,7 +227,37 @@ BAsket.OrderList = function (params) {
 		    { text: _.Order.ActionDelete, clickAction: function () { Order_DeleteClick() } },
 		    { text: _.Order.ChangeActivity, clickAction: function () { Order_ChangeActivity() } },
 		],
+
+		searchString: searchStr,
+		// find: function () {
+		// 	viewModel.showSearch(!viewModel.showSearch());
+		// 	viewModel.searchString('');
+		// },
+		// showSearch: ko.observable(false),
+		swTitle: swTitle,
+		swValue: swValue,
 	};
+	ko.computed(function() {
+		return viewModel.searchString();
+	}).extend({
+		throttle: 500
+	}).subscribe(function() {
+		viewModel.dataSource.pageIndex(0);
+		viewModel.dataSource.load();
+	});
+
+	Order_SwitchSource = function(){
+		swValue(!swValue());
+		if (swValue()){
+			swTitle(_.Order.SwTitle2)
+			// viewModel.dataSourceS.load();
+		}
+		else{
+			swTitle(_.Order.SwTitle1)
+			// viewModel.dataSource.load();
+		}
+		//viewModel.dataSource = DAL.Bil(swValue());
+	}
 
 	Order_DeleteClick = function() {
 		//    var result = DevExpress.ui.dialog.confirm(_.Order.ActionDelete + ' ?', _.Common.Confirm);
@@ -242,7 +276,7 @@ BAsket.OrderList = function (params) {
 	};
 	Order_Delete = function(arg) {
 		DAL.DeleteBil(idSelected());
-		DAL.CountTable('BILM').done(function(result) {
+		DAL.CountTable('Bil').done(function(result) {
 			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
 		viewModel.dataSource.load();

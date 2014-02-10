@@ -19,7 +19,7 @@
                 <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
                 <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
 		        	valueUpdateEvent: 'search change keyup' }"/>
-                <div id="CategoryLookup" class="dx-field-value" data-bind="dxLookup: { 
+                <div id="CategoryLookup" class="dx-field-value dx-button" data-bind="dxLookup: { 
                     title: _.Products.TitleCat, 
                     dataSource: dataSourceCat, 
                     displayExpr: 'N', 
@@ -46,10 +46,10 @@
             }, visible: bChoice() && P.modeProdView">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
-                <div class='marginleft' data-bind="text: $data.Name"/>
-                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
-                    (<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/>; 
-                        <span data-bind="text: Globalize.format($data.N4, 'n0')"/>)
+                <div class='marginleft' data-bind="text: $data.N"/>
+                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.P, 'n2')"/>
+                    (<span data-bind="text: Globalize.format($data.O, 'n0')"/>; 
+                        <span data-bind="text: Globalize.format($data.N1, 'n0')"/>)
                 </div>
             </div>
         </div>
@@ -75,8 +75,8 @@
                 noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#product-details/{Id}'">
-                <img class="tile-image" data-bind="attr: { src: N3 }"/>
-                <span class="tile-text" data-bind="text: Name"></span>
+                <img class="tile-image" data-bind="attr: { src: N4 }"/>
+                <span class="tile-text" data-bind="text: N"></span>
                 <span class="tile-text-top" data-bind="text: Quant"></span>
             </div>
         </div>
@@ -94,10 +94,10 @@
             }, visible: !bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#product-details/{Id}'">
                 <div><strong data-bind="text: Globalize.format($data.Quant, 'n0')"/></div>
-                <div class='marginleft' data-bind="text: $data.Name"/>
-                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.Price, 'n2')"/>
-                    (<span data-bind="text: Globalize.format($data.Ostat, 'n0')"/>; 
-                        <span data-bind="text: Globalize.format($data.N4, 'n0')"/>)
+                <div class='marginleft' data-bind="text: $data.N"/>
+                <div class='textSmall marginleft'><strong data-bind="text: Globalize.format($data.P, 'n2')"/>
+                    (<span data-bind="text: Globalize.format($data.O, 'n0')"/>; 
+                        <span data-bind="text: Globalize.format($data.N1, 'n0')"/>)
                 </div>
             </div>
         </div>

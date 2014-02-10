@@ -49,6 +49,8 @@ namespace BAsketWS.DataAccess
 		{
 			var returnValue = 0;
 
+			Common.SaveLog("ExecuteCommand: sql=" + procedureName);
+
 			using (var connection = GetConnection(connectionName))
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
 			{
@@ -68,6 +70,8 @@ namespace BAsketWS.DataAccess
 		{
 			object returnValue = null;
 
+			Common.SaveLog("ExecuteScalar: sql=" + procedureName);
+			
 			using (var connection = GetConnection(connectionName))
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
 			{
@@ -85,7 +89,9 @@ namespace BAsketWS.DataAccess
 		public static SqlDataReader ExecuteReader(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			SqlDataReader result = null;
-
+			
+			Common.SaveLog("ExecuteReader: sql=" + procedureName);
+			
 			var connection = GetConnection(connectionName);
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
 			{

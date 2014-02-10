@@ -31,6 +31,7 @@ namespace BAsketWS.DataAccess
 		const string DirMessages = "messages\\";
 		public const string DirMessagesOut = "messages\\outbox\\";
 
+		public const string SNmsTable = "bas_spNames";
 		public const string SProdTable = "bas_spProducts";
 		public const string SCliTable = "bas_spClients";
 		public const string SwuTable = "bas_WebUsers";
@@ -227,6 +228,19 @@ namespace BAsketWS.DataAccess
 					//",N_TP smallint"+
 					")"
 			},
+	        {SNmsTable, "Create table dbo.{0} (" +
+                    "IdP int not null," +
+                    "Id int not null," +
+                    "N nvarchar(250) not null)" +
+					";Insert Into {0} (IdP,Id,N) Values(0,1,N'Предприятие')" +
+					";Insert Into {0} (IdP,Id,N) Values(0,10,N'Product Properties')" +
+					";Insert Into {0} (IdP,Id,N) Values(0,20,N'Client Properties')" +
+					";Insert Into {0} (IdP,Id,N) Values(0,101,	N'Reports')" +
+					";Insert Into {0} (IdP,Id,N) Values(1,1,	N'BAsket ООО')" +
+					";Insert Into {0} (IdP,Id,N) Values(10,1,	N'Упаковка')" +
+					";Insert Into {0} (IdP,Id,N) Values(10,2,	N'Производитель')" +
+					""
+	        },
             {SProdTable, "Create table dbo.{0} (" +
                     "Id varchar(10) primary key," +
                     "IdP varchar(10) not null," +
@@ -262,10 +276,10 @@ namespace BAsketWS.DataAccess
 					"NumDoc varchar(50),"+
 					"DateDoc datetime not null,"+
 					"SumDoc money,"+
-                    "N1 nvarchar(250)," +
-                    "N2 nvarchar(250)," +
-                    "N3 nvarchar(250)," +
-                    "N4 nvarchar(250)," +
+                    "P1 nvarchar(250)," +
+                    "P2 nvarchar(250)," +
+                    "P3 nvarchar(250)," +
+                    "P4 nvarchar(250)," +
 					"Note nvarchar(250),"+
 					"Wars varchar(8000))"+
                     ";Create Index IX_bil_c On {0}(IdC)" + 
@@ -274,21 +288,22 @@ namespace BAsketWS.DataAccess
             },
 	        {SBasketProc, 
 @"CREATE Procedure [dbo].[{0}]
-	@Key int, @Param varchar(4000) = '', @Reply varchar(100)  OUTPUT 
+	@Key int, @Param nvarchar(4000) = '', @Reply nvarchar(100)  OUTPUT 
 As
-DECLARE @i int, @id int, @start int, @token varchar(4000), @NumDoc varchar(4000), 
-	@P1 varchar(100), @P2 varchar(100), @P3 varchar(100), @P4 varchar(100), @P5 varchar(100), @P6 varchar(100), @P7 varchar(100), @P8 varchar(100), @P9 varchar(100),
+DECLARE @i int, @id int, @start int, @token nvarchar(4000), @NumDoc nvarchar(4000), 
+	@P0 nvarchar(100), @P1 nvarchar(100), @P2 nvarchar(100), @P3 nvarchar(100), @P4 nvarchar(100), @P5 nvarchar(100), @P6 nvarchar(100), @P7 nvarchar(100), @P8 nvarchar(100), @P9 nvarchar(100),
 	@I1 int, @D1 money
 
-if (@Key = 1) -- BilM Save
+if (@Key = 1) -- Bil Save
 begin
-	set @i = 0
+	set @i = -1
 	while CHARINDEX('|', @Param) > 0
 	begin
 		set @i = @i + 1
 		SELECT @start = CHARINDEX('|', @Param)
 		SELECT @token = SUBSTRING(@Param, 0, @start)
 		SELECT @Param = SUBSTRING(@Param, @start + 1, len(@Param) - @start)
+		if @i = 0 set @P0 = @token else
 		if @i = 1 set @P1 = @token else
 		if @i = 2 set @P2 = @token else
 		if @i = 3 set @P3 = @token else
@@ -299,17 +314,32 @@ begin
 		if @i = 8 set @P8 = @token else
 		if @i = 9 set @P9 = @token 
 	end
-
-		if @P4 = '0'
-			set @P4 = null
-
-		Insert {1}(IdUser,DateDoc, IdC,IdT, Note,LocNum, SumDoc, N1, Wars)
+	if @P4 = '0'
+		set @P4 = null
+	if len(@P0) = 0 -- ID of new Bil 
+	begin
+		Insert {1}(IdUser,DateDoc, IdC,IdT, Note,LocNum, SumDoc, Wars, P1)
 		Select @P1, CONVERT(DateTime, @P2, 105), @P3,@P4, @P5, @P6, @P7, @P8, @P9
-		set @I1 = @@IDENTITY
-		if @P6=0 set @P6='# ' + ltrim(str(@I1))
-		Update {1} set NumDoc=@P6 Where Id=@I1
+		set @id = @@IDENTITY
+		
+		if @P6=0 set @P6='# ' + ltrim(str(@id))
+		Update {1} set NumDoc=@P6 Where Id=@id
 
-		set @Reply = ltrim(str(@I1)) + ' OK'
+		set @Reply = ltrim(str(@id)) + ' OK'
+	end else begin
+		set @id = @P0
+		
+		--Select @I1 = r_stad, @D1 = SumInv From Bil Where r_bil=@id
+		if 1=0 and (@I1 > 50 or @D1 > 0) -- ReadOnly condition
+		begin
+			set @Reply = 'Bil is ReadOnly, edit canceled'
+			return
+		end
+		
+		Update {1} set DateDoc=CONVERT(DateTime, @P2, 105), IdC=@P3,IdT=@P4,  Note=@P5, SumDoc=@P7, Wars=@P8
+		Where Id=@id
+	end
+	
 	return
 end
 "
@@ -375,9 +405,9 @@ end
 		Product GetProductById(string id);
 		List<ProdStock> GetProdStock();
 
-		List<BilM> GetBilM();
-		BilM GetBilMById(string id);
-		BilM PostBilM();
+		List<Bil> GetBil();
+		Bil GetBilById(string id);
+		Bil PostBil();
 
 		void UpdateDbFromSwapFile();
 	}
@@ -399,10 +429,10 @@ end
 		{"CliById", "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}"},
 		{"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
 
-		//{"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
-		{"BilM", "exec _BasketPaging 3, {0}, {1}, {2}, {3}"},
-		{"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
-		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
+		//{"Bil", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
+		{"Bil", "exec _BasketPaging 3, {0}, {1}, {2}, {3}"},
+		{"BilById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
+		{"BilSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
             
 /*/
@@ -426,7 +456,7 @@ end
 //				"Select 101 as IdP, 1 as Id, 'Отчет 1' as N " +
 //				"Order by IdP, Id"},
 
-//		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
+//		{"BilSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
 //		{"WebUsers", "Select * From " + SWUTable},
 //	};

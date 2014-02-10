@@ -74,7 +74,7 @@ var DAL = (function ($, window) {
 			return DAL_web.Products(params);
 		var paging = !nopaging;
 		return execDataSource({
-			query: "SELECT * FROM WAR WHERE IdP='" + params.Id + "' and Ostat>0",
+			query: "SELECT * FROM WAR WHERE IdP='" + params.pId + "' and O>0",
 			paging: paging,
 			searchString: params.search
 		}, function(data) {
@@ -98,15 +98,15 @@ var DAL = (function ($, window) {
 		DB.executeSql(dbLastQ, [], function(tx, results) {
         // execQuery(dbLastQ).done(function(results) {
 			params.Quant = '0';
-			params = setQuant(params);
+			params = P.setQuantToWar(params);
 			if (results.rows.length > 0) {
-				params.model.Name(results.rows.item(0).Name),
-				params.model.Price(results.rows.item(0).Price.toFixed(2))
+				params.model.Name(results.rows.item(0).N),
+				params.model.Price(results.rows.item(0).P.toFixed(2))
 				params.model.N1(results.rows.item(0).N1),
 				params.model.N2(results.rows.item(0).N2),
 				params.model.N3(results.rows.item(0).N3),
 				params.model.N4(results.rows.item(0).N4),
-				params.model.Ostat(results.rows.item(0).Ostat),
+				params.model.Ostat(results.rows.item(0).O),
 				params.model.Quant(params.Quant)
 			}
         })
@@ -128,26 +128,15 @@ var DAL = (function ($, window) {
 
 		return execQuery("SELECT * FROM WAR WHERE Id in (" + ids.substring(0, ids.length - 1) + ")",
             function (data) {
-            	for (var i in P.arrayBAsket) {
-            		if (P.arrayBAsket[i].Id == data.Id) {
-            			data.Quant = P.arrayBAsket[i].Quant;
-            		}
-            	}
-            	return data;
+            	return P.setQuantToWar(data);
             });
 	};
-	// root.NMS = function (params) {
-	// 	if (!P.useWebDb)
-	// 		return DAL_web.NMS(params);
-	// 	return execQuery("SELECT * FROM NMS Where IdRoot='" + params + "'");
-	// };
-
 
 	root.Clients = function (params) {
 		if (!P.useWebDb)
 			return DAL_web.Clients(params);
 
-		var param = { query: "SELECT * FROM CLI Where IdP='0'", paging: true };
+		var param = { query: "SELECT * FROM CLI Where IdP='0' or IdP=''", paging: true };
 		if (params && params.search)
 			param.searchString = params.search;
 
@@ -197,26 +186,21 @@ var DAL = (function ($, window) {
 			.done(function() { callback(); })
 	};
 
-	root.BilM = function (params) {
-		if (!P.useWebDb)
-			return DAL_web.BilM(params);
+	root.Bil = function (params) {
+		if (!P.useWebDb || params)
+			return DAL_web.Bil();
 		return execDataSource({
-			query: "SELECT b.*, c.Name as cName, t.Name as tName, substr(b.DateDoc,1,5) as ShortDate, " +
-				"IFNULL(t.Name || ' - ' || c.Name, c.Name) as FullName, " +
-				"IFNULL(t.Adres, c.Adres) as AdresDost " +
-				"FROM BILM b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id"
+			query: "SELECT b.*, c.N as N1, t.N as N2, substr(b.DateDoc,1,5) as ShortDate, " +
+				"IFNULL(c.N || ' - ' || t.N, c.N) as Name, " +
+				"IFNULL(t.A, c.A) as Adres " +
+				"FROM Bil b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id Order by bSusp, Id desc"
 		});
 	};
-	root.BilMById = function (params) {
+	root.BilById = function (params) {
 		if (!P.useWebDb)
-			return DAL_web.BilMById(params);
-		return execDataSource({ query: "SELECT b.*, c.Name as cName, t.Name as tName FROM BILM b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id WHERE b.Id='" + params + "'" });
+			return DAL_web.BilById(params);
+		return execDataSource({ query: "SELECT b.*, c.N as N1, t.N as N2 FROM Bil b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id WHERE b.Id='" + params + "'" });
 	};
-
-	//     root.SelectLastId = function(params){                
-	//         return execQuery("SELECT last_insert_rowid() as Id");
-	// //        return execQuery("SELECT Id FROM " + params + " WHERE rowid=last_insert_rowid()");
-	//     }
 
 	root.SaveBil = function(params) {
 		if (!P.useWebDb)
@@ -226,25 +210,58 @@ var DAL = (function ($, window) {
 		if (!params['sNote']) params['sNote'] = '';
 		if (!params['sWars']) params['sWars'] = '';
 		if (params['id']) {
-			query = "UPDATE BILM set DateDoc='" + params['date'] + "', IdC='" + params['IdC'] + "', IdT='" + params['IdT'] +
-				"', SumDoc='" + params['sumDoc'] + "', sNote='" + params['sNote'] + "', sOther='" + params['sOther'] +
-				"', sWars='" + params['sWars'] +
+			query = "UPDATE Bil set DateDoc='" + params['date'] + "', IdC='" + params['IdC'] + "', IdT='" + params['IdT'] +
+				"', SumDoc='" + params['sumDoc'] + "', Note='" + params['sNote'] + "', P1='" + params['sOther'] +
+				"', Wars='" + params['sWars'] +
 				"' WHERE Id='" + params['id'] + "'";
 		} else {
-			query = "INSERT INTO BILM (DateDoc, IdC, IdT, SumDoc, sNote, sOther, sWars, bSusp) VALUES('" + params['date'] +
+			query = "INSERT INTO Bil (DateDoc, IdC, IdT, SumDoc, Note, P1, Wars, bSusp) VALUES('" + params['date'] +
 				"', '" + params['IdC'] + "','" + params['IdT'] + "','" + params['sumDoc'] + "','" + params['sNote'] +
 				"', '" + params['sOther'] + "', '" + params['sWars'] + "', 0)";
 		};
 		return execQuery(query);
 	};
     root.ChangeActivityBil = function (params) {
-        return execQuery("UPDATE BILM set bSusp = 1-bSusp WHERE Id=" + params)
+        return execQuery("UPDATE Bil set bSusp = 1-bSusp WHERE Id=" + params)
     }
 	root.DeleteBil = function (params) {
 		if (!P.useWebDb) return DAL_web.DeleteBil(params);
 
-		return execQuery("DELETE FROM BILM Where Id='" + params + "'");
+		return execQuery("DELETE FROM Bil Where Id='" + params + "'");
 	};
+
+    root.SendBils = function(){
+        if (!P.useWebDb) 
+            return;
+        execQuery("SELECT * FROM Bil WHERE bSusp=0").done(function(result) {
+            var prm = {};
+            for (var i in result) {
+                prm['id'] = result[i].IdServ;
+                prm['IdLoc'] = result[i].Id;
+                prm['IdC'] = result[i].IdC;
+                prm['IdT'] = result[i].IdT;
+                prm['date'] = result[i].DateDoc;
+                prm['sNote'] = result[i].Note;
+                prm['sWars'] = result[i].Wars;
+                prm['sOther'] = result[i].Other;
+                prm['sumDoc'] = result[i].SumDoc;
+                // prm['idServ'] = result[i].IdServ;
+                DAL_web.SaveBil(prm).done(function(res) {
+                    var cmd = "UPDATE Bil set bSusp=1";
+                    if (res[0].Note.length > 0){
+                        cmd += ", ServRet='" + res[0].Note + "'"
+                        var idServ = res[0].Note.split(' ')[0];
+                        if (idServ.length > 0)
+                            cmd += ", IdServ='" + idServ + "'";
+                    }
+                    cmd += " WHERE Id=" + result[i].Id;
+                    execQuery(cmd);
+                        //"UPDATE Bil set bSusp=1, ServRet='" + res[0].Note + "', IdServ='" + servId + "' WHERE Id=" + result[i].Id);
+                })
+            }
+        })
+    }
+
 
 	root.CountTable = function (params) {
 		if (!P.useWebDb)
@@ -255,7 +272,7 @@ var DAL = (function ($, window) {
 		if (!P.useWebDb)
 			return null;
 
-		DAL.CountTable('BILM').done(function(result) {
+		DAL.CountTable('Bil').done(function(result) {
 			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
 		DAL.CountTable('CLI').done(function(result) {
@@ -269,27 +286,6 @@ var DAL = (function ($, window) {
 		});
 	};
 
-    root.SendBils = function(){
-        if (!P.useWebDb) 
-            return;
-        execQuery("SELECT * FROM BILM WHERE bSusp=0").done(function(result) {
-            var prm = {};
-            for (var i in result) {
-                prm['IdLoc'] = result[i].Id;
-                prm['IdC'] = result[i].IdC;
-                prm['IdT'] = result[i].IdT;
-                prm['date'] = result[i].DateDoc;
-                prm['sNote'] = result[i].sNote;
-                prm['sWars'] = result[i].sWars;
-                // prm['idServ'] = result[i].IdServ;
-                // prm['sOther'] = result[i].Other;
-                DAL_web.SaveBil(prm).done(function(res) {
-                    execQuery("UPDATE BILM set bSusp=1, sServRet='" + res[0].Note + "' WHERE Id=" + result[i].Id);
-                })
-            }
-        })
-    }
-
     var modeReadNews;
 	root.ReadNews = function (fullNews, createDB) {
 		P.loadPanelVisible(true);
@@ -302,7 +298,7 @@ var DAL = (function ($, window) {
         DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
 
         var date = new Date();
-        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + date.getMonth() + 1);
+        P.itemCount['ReadNews'] = P.ChangeValue('ReadNews', date.getDate() + '.' + (date.getMonth() + 1));
 
 		if (!P.useWebDb) {
 			P.loadPanelVisible(false);
@@ -360,7 +356,7 @@ var DAL = (function ($, window) {
 					else if (params['searchValue'])
 						searchValue = params['searchValue'];
 					if (searchValue)
-						dbLastQ += " and (Name LIKE '%" + searchValue + "%')";
+						dbLastQ += " and (N LIKE '%" + searchValue + "%')";
 
 					if (params.paging)
 						dbLastQ += " LIMIT " + params['skip'] + ", " + params['take'];
@@ -438,15 +434,15 @@ var DAL = (function ($, window) {
         // });
     }
 
-	function setQuant(resrow) {
-		for (var i in P.arrayBAsket) {
-			if (P.arrayBAsket[i].Id == resrow.Id) {
-				resrow.Quant = P.arrayBAsket[i].Quant;
-				return resrow;
-			}
-		}
-		return resrow;
-	};
+	// function setQuant(resrow) {
+	// 	for (var i in P.arrayBAsket) {
+	// 		if (P.arrayBAsket[i].Id == resrow.Id) {
+	// 			resrow.Quant = P.arrayBAsket[i].Quant;
+	// 			return resrow;
+	// 		}
+	// 	}
+	// 	return resrow;
+	// };
 
 
 
@@ -473,7 +469,7 @@ var DAL = (function ($, window) {
 		if (table == 'WAR') {
 			arrWAR = dataArray;
             DB.transaction(function (tx) {
-                dbLastQ = 'Update WAR set Ostat=0';
+                dbLastQ = 'Update WAR set O=0';
                 tx.executeSql(dbLastQ, [], function (tx, results) {
                     DB.transaction(writeToWAR,
                         function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
@@ -493,27 +489,32 @@ var DAL = (function ($, window) {
  	function writeToWAR(tx) {
 		P.loadPanelVisible(true);
 		var arr = arrWAR;
-		var i, maxlen = 50000;
-		var len = arr.length;   // < maxlen? arr.length:maxlen;
+		var i, maxlen = 47;
+		var len = arr.length; //    < maxlen? arr.length:maxlen;
 		//console.log('writeWars: writing=' + len);
 		//tx.executeSql("BEGIN TRANSACTION");
-		for (i = 0; i < arr.length; i++) {
+		for (i = 0; i < len; i++) {
             dbLastQ = "Select Id From WAR Where Id='" + arr[i].Id + "'";
             //tx.executeSql(dbLastQ, [], function (tx, results) {
             executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
                 if (modeReadNews == 'ost' && results.rows.length)
-                    dbLastQ = "UPDATE WAR set Ostat='" + item.O + "' WHERE Id='" + item.Id + "'";
+                    dbLastQ = "UPDATE WAR set O='" + item.O + "' WHERE Id='" + item.Id + "'";
                 else {
                     item.N1 = (item.N1) ? item.N1 : '';
                     item.N2 = (item.N2) ? item.N2 : '';
                     item.N3 = (item.N3) ? item.N3 : '';
+                    item.N = item.N.replace(/'/g, "''");
+                    item.N1 = item.N1.replace(/'/g, "''");
+                    item.N2 = item.N2.replace(/'/g, "''");
+                    item.N3 = item.N3.replace(/'/g, "''");
+                    item.N4 = item.N4.replace(/'/g, "''");
                     if (results.rows.length)
-                        dbLastQ = "UPDATE WAR set IdP='" + item.IdP + "', Name='" + item.N + "', N1='" + item.N1 + 
+                        dbLastQ = "UPDATE WAR set IdP='" + item.IdP + "', N='" + item.N + "', N1='" + item.N1 + 
                             "', N2='" + item.N2 + "', N3='" + item.N3 + "', N4='" + item.N4 + 
-                            "', Price='" + item.P + "', Ostat='" + item.O + 
+                            "', P='" + item.P + "', O='" + item.O + 
                             "' WHERE Id='" + item.Id + "'";
                     else
-                        dbLastQ = "INSERT INTO WAR (Id, IdP, Name, Price, N1, N2, N3, N4, Ostat) VALUES('"
+                        dbLastQ = "INSERT INTO WAR (Id, IdP, N, P, N1, N2, N3, N4, O) VALUES('"
                             + item.Id + "','" + item.IdP + "','" + item.N + "','" + item.P + "','"
                             + item.N1 + "','" + item.N2 + "','" + item.N3 + "','" + item.N4 + "','" + item.O
                             + "')";
@@ -542,11 +543,13 @@ var DAL = (function ($, window) {
             //var item = arr[i]
             executeQuery(tx, dbLastQ, [], function (tx, retval, results, item) {
                 item.IdP = (item.IdP == null || item.IdP == 'null') ? '0' : item.IdP;
+                item.N = item.N.replace(/'/g, "''");
+                item.A = item.A.replace(/'/g, "''");
                 if (results.rows.length)
-                    dbLastQ = "UPDATE CLI set IdP='" + item.IdP + "', Name='" + item.N + "', Adres='" + item.A + 
+                    dbLastQ = "UPDATE CLI set IdP='" + item.IdP + "', N='" + item.N + "', A='" + item.A + 
                         "' WHERE Id='" + item.Id + "'";
                 else
-                    dbLastQ = "INSERT INTO CLI (Id, IdP, Name, Adres) VALUES('"
+                    dbLastQ = "INSERT INTO CLI (Id, IdP, N, A) VALUES('"
                         + item.Id + "','" + item.IdP + "','" + item.N + "','" + item.A +
                         "')";
 
@@ -610,15 +613,15 @@ var DAL = (function ($, window) {
         'DROP TABLE IF EXISTS CAT',
         'DROP TABLE IF EXISTS WAR',
         'DROP TABLE IF EXISTS CLI',
-        'DROP TABLE IF EXISTS BILM',
+        'DROP TABLE IF EXISTS Bil',
         'DROP TABLE IF EXISTS RMAP',
         'DROP TABLE IF EXISTS NMS',
         // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
-        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, Name, Price DECIMAL(20,2), N1, N2, N3, N4, N5, Ostat int, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, Name, Adres)',
-        'CREATE TABLE IF NOT EXISTS BILM (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdC, IdT, SumDoc, sNote, sOther, sWars, NumD, DateSync DateTime, sServRet, IdServ, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdB int, IdC, IdT, sNote, sOther, DateSync DateTime, sServRet, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, N, P DECIMAL(20,2), N1, N2, N3, N4, N5, O int, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, N, A)',
+        'CREATE TABLE IF NOT EXISTS Bil (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdC, IdT, NumDoc, SumDoc, Note, P1, Wars, DateSync DateTime, ServRet, IdServ, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdB int, IdC, IdT, Note, P1, DateSync DateTime, ServRet, bSusp int)',
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",
@@ -630,7 +633,7 @@ var DAL = (function ($, window) {
 	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",
 	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 2, '4422','6473','Note2')",
 	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 3, '4191','','Note3')",
-	// "INSERT INTO BILM (DateDoc, IdC, IdT, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
+	// "INSERT INTO Bil (DateDoc, IdC, IdT, sNote, sOther, sWars) VALUES('22.12.2013', '10','','Note', '1:2', '10:1;11:2')",
 	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('10', '', 'Client10', 'Izhevsk KM/10', '56.844278,53.206272')",
 	// "INSERT INTO CLI (Id,  IdP, Name, Adres, GeoLoc) VALUES('11', '10', 'FilOfClient10', 'Izhevsk2 KM/102222', '56.844278,53.206272')",
 

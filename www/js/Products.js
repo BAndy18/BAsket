@@ -11,11 +11,11 @@ BAsket.products = function (params) {
 
 	var viewModel = {
 		searchString: searchStr,
-		find: function () {
-			viewModel.showSearch(!viewModel.showSearch());
-			viewModel.searchString('');
-		},
-		showSearch: ko.observable(false),
+		// find: function () {
+		// 	viewModel.showSearch(!viewModel.showSearch());
+		// 	viewModel.searchString('');
+		// },
+		// showSearch: ko.observable(false),
 
 		dataSourceCat: P.arrCategory,   //DAL.Categories(),
 		dataSourceBasket: new DevExpress.data.DataSource(new DevExpress.data.ArrayStore(P.arrayBAsket)),
@@ -47,7 +47,7 @@ BAsket.products = function (params) {
 	Products_calcSum = function() {
 		var sum = 0.0;
 		for (var i in P.arrayBAsket) {
-			sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].Price;
+			sum += P.arrayBAsket[i].Quant * P.arrayBAsket[i].P;
 		}
 		return _.Products.SelSum.replace('#', P.arrayBAsket.length) + sum.toFixed(2);
 	};

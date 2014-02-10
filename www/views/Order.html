@@ -66,15 +66,17 @@
 <div data-options="dxView : { name: 'OrderList', title: _.Navigation.OrderList } " >
     <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/OrderList' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
-
-		<!-- <div class="dx-table">
-            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColDate"></div>
-            <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColName"></div>
-            <div class="cell30 dx-button tbhead" data-bind="text: _.Order.ColTpName"></div>
-            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColNote"></div>
-            <div class="cell10 dx-button tbhead" data-bind="text: _.Order.ColWars"></div>
-        </div> -->
-		<div id="idOrderList" data-bind="dxList: { 
+        
+        <div class="dx-fieldset" >
+            <div class="dx-field">
+                <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
+                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
+                    valueUpdateEvent: 'search change keyup' }"/>
+                <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" />
+            </div>
+        </div>
+		
+		<div id="idOrderList" data-bind="dxList: { visible: !swValue(),
             dataSource: dataSource, 
             itemHoldAction: Order_processItemHold, 
             itemHoldTimeout: holdTimeout, 
@@ -82,13 +84,33 @@
             pullRefreshEnabled: true 
             }">
             <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
-                <!-- <div class="dx-table">
-                    <div class="cell10" data-bind="text: $data.DateDoc"></div>
-                    <div class="cell30" data-bind="text: $data.cName"></div>
-                    <div class="cell30" data-bind="text: $data.tName"></div>
-                    <div class="cell10" data-bind="text: $data.sNote"></div>
-                    <div class="cell10" data-bind="text: $data.sWars"></div>
-                </div> -->
+                
+                <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
+                <div>
+                    <!-- <span class='textSmall' data-bind="text: $data.bSusp"/> #  -->
+                    <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
+                    <span class='textSmall' data-bind="text: $data.ShortDate"/> 
+                    <span data-bind="text: $data.Name"/>
+                    <span class='textSmall' data-bind="text: ($data.Adres)"/>
+                </div>
+                <div class='marginleft'>
+                    <span data-bind="text: $data.SumDoc"/>
+                    <span class='textSmall' data-bind="text: $data.Note"/>
+                    (<span class='textSmall' data-bind="text: $data.Wars"/>) 
+                    <span class='textSmall' data-bind="text: $data.sServRet"/> 
+                </div></div>
+            </div>
+        </div>
+
+        <div id="idOrderListS" data-bind="dxList: { visible: swValue(),
+            dataSource: dataSourceS, 
+            itemHoldAction: Order_processItemHold, 
+            itemHoldTimeout: holdTimeout, 
+            noDataText: _.Common.NoDataText,
+            pullRefreshEnabled: true 
+            }">
+            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
+                
                 <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
                 <div>
                     <!-- <span class='textSmall' data-bind="text: $data.bSusp"/> #  -->

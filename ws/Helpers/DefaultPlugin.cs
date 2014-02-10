@@ -24,15 +24,16 @@ namespace BAsketWS.Helpers
 		const string SBasketProc = "bas_BAsketStuff";
 
 		const string SqlGetCategories = "Select * from " + Common.SProdTable + " Where IdP=0";
-		const string SqlGetNms = "Select 0 as IdP, 1 as Id, N'Предприятие' as N Union " +
-						"Select 0 as IdP, 101 as Id, N'Отчет' as N Union " +
-						"Select 1 as IdP, 1 as Id, N'BAsket ООО' as N Union " +
-						"Select 101 as IdP, 1 as Id, N'Отчет 1' as N " +
-						"Order by IdP, Id";
+		const string SqlGetNms = "Select * From " + Common.SNmsTable + " Order By IdP,Id";
+			//"Select 0 as IdP, 1 as Id, N'Предприятие' as N Union " +
+			//"Select 0 as IdP, 101 as Id, N'Отчет' as N Union " +
+			//"Select 1 as IdP, 1 as Id, N'BAsket ООО' as N Union " +
+			//"Select 101 as IdP, 1 as Id, N'Отчет 1' as N " +
+			//"Order by IdP, Id";
 
 		const string SqlGetAllProducts =
 			"Select * from " + Common.SProdTable + " Where isWare=1 and len(N)>1 and O>0 Order by N";
-		const string SqlGetProductById = "Select * from " + Common.SProdTable + " Where Id='{0}'";
+		const string SqlGetProductById = "Select * From " + Common.SProdTable + " Where Id In ('{0}')";
 		const string SqlGetProductsByPId =
 			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, * From " + Common.SProdTable +
 			" Where IdP='{0}' {1})x Where O>0 and rowNum > {2} and rowNum <= {2}+{3}";
@@ -48,15 +49,15 @@ namespace BAsketWS.Helpers
 		const string SqlGetAllClients =
 			"Select * From " + Common.SCliTable + " Where 1=1 Order by N";
 
-		const string SqlGetBilM =
-			"Select * FROM (Select Row_Number() OVER (ORDER BY [N1] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " + Common.SBilTable +
-			" b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
+		const string SqlGetBil =
+			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
+			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
 			" Where IdUser='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}";
-		const string SqlGetBilMById =
+		const string SqlGetBilById =
 			"Select b.*, c.N as N1, t.N as N2, ISNULL(c.N + ' - ' + t.N, c.N) as FN, ISNULL(t.A, c.A) as AD From " +
 			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC Left Join " + Common.SCliTable +
 			" t On t.Id=b.IdT Where b.Id={0}";
-		const string SqlExecBilMSave = "exec " + Common.SBasketProc + " 1, '{0}', @Reply output";
+		const string SqlExecBilSave = "exec " + Common.SBasketProc + " 1, N'{0}', @Reply output";
 
 		const string SqlGetWebUsers = "Select * From " + Common.SwuTable;
 
@@ -165,16 +166,31 @@ namespace BAsketWS.Helpers
 		{
 			var qs = HttpContext.Current.Request.QueryString;
 			var id = qs["pId"];
+			var wstr = qs["w"];
 			var top = qs["take"] ?? "30";
 			var skip = qs["skip"] ?? "0";
 			var searchString = qs["searchString"] ?? "";
 			if (!string.IsNullOrEmpty(searchString))
 	            searchString = string.Format(" and (N Like '%{0}%') ", searchString);
-			
-			var cmd = (id == "all" || id == "ost") ?
-				SqlGetAllProducts :
-				string.Format(SqlGetProductsByPId,
-					id, searchString, skip, top);
+
+			var cmd = (id == "all" || id == "ost") 
+				? SqlGetAllProducts 
+				: string.Format(SqlGetProductsByPId, id, searchString, skip, top);
+			if (!string.IsNullOrEmpty(wstr))
+			{
+				var wPrm = "";
+				foreach (var w in wstr.Split(';'))
+				{
+					var wV = w.Split(':');
+					if (wV.Length == 2)
+						wPrm += string.Format("'{0}',", wV[0]);
+				}
+				if (wPrm.Length < 4)
+					return new List<Product>();
+				else
+					wPrm = wPrm.Substring(1, wPrm.Length - 3);
+				cmd = string.Format(SqlGetProductById, wPrm);
+			}
 
 			var result = ProcessProducts(cmd);
 
@@ -200,11 +216,11 @@ namespace BAsketWS.Helpers
 		
 		#endregion
 
-		#region BilM Controller
+		#region Bil Controller
 
-		static List<BilM> ProcessBilM(string cmd)
+		static List<Bil> ProcessBil(string cmd)
 		{
-			return Common.ProcessCommand(cmd, reader => new BilM
+			return Common.ProcessCommand(cmd, reader => new Bil
 			{
 				Id = reader.GetStrValue("Id"),
 				IdC = reader.GetStrValue("IdC"),
@@ -217,13 +233,15 @@ namespace BAsketWS.Helpers
 				Wars = reader.GetStrValue("Wars"),
 				N1 = reader.GetStrValue("N1"),
 				N2 = reader.GetStrValue("N2"),
+				P1 = reader.GetStrValue("P1"),
+				P2 = reader.GetStrValue("P2"),
 				//tName = reader.GetStrValue("tName"),
 				//FullName = reader.GetStrValue("FullName"),
 				//AdresDost = reader.GetStrValue("AdresDost"),
 			});
 		}
 
-		public List<BilM> GetBilM()
+		public List<Bil> GetBil()
 		{
 			var qs = HttpContext.Current.Request.QueryString;
 			var id = qs["pId"];
@@ -241,22 +259,22 @@ namespace BAsketWS.Helpers
 			}
 			else
 			{
-				//return new List<BilM> { new BilM() { sNote = "user not found " + user } };
+				//return new List<Bil> { new Bil() { sNote = "user not found " + user } };
 			}
-			var cmd = string.Format(SqlGetBilM, userTp, searchString, skip + 1, top);
+			var cmd = string.Format(SqlGetBil, userTp, searchString, skip, top);
 
-			var result = ProcessBilM(cmd);
+			var result = ProcessBil(cmd);
 			return result;
 		}
 
-		public BilM GetBilMById(string id)
+		public Bil GetBilById(string id)
 		{
-			var cmd = string.Format(SqlGetBilMById, id);
-			var result = ProcessBilM(cmd);
+			var cmd = string.Format(SqlGetBilById, id);
+			var result = ProcessBil(cmd);
 			return result[0];
 		}
 
-		public BilM PostBilM()
+		public Bil PostBil()
 		{
 			var retvalue = "";
 			var user = HttpContext.Current.User.Identity.Name;
@@ -267,7 +285,7 @@ namespace BAsketWS.Helpers
 			}
 			else
 			{
-				//return new BilM() { Note = "user not found " + user };
+				//return new Bil() { Note = "user not found " + user };
 			}
 			var form = HttpContext.Current.Request.Form;
 			var comand = form["cmd"];
@@ -291,16 +309,24 @@ namespace BAsketWS.Helpers
 				//			var sParam = string.Format("id={0};date={1};idCli={2};idTp={3};sOther={4};sWars={5};sNote={6};", 
 				//                form["id"], form["date"], form["idCli"], form["idTp"], form["sOther"], form["sWars"], form["sNote"], user.Split(';')[1]);
 				//var idServ = form["idServ"];
-				var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|",
-					userId, h.Date, h.IdC, h.IdT, h.Note, h.IdLoc, h.SumDoc, h.Other, h.Wars);
+				var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|",
+					form["id"], userId, h.Date, h.IdC, h.IdT, h.Note, h.IdLoc, h.SumDoc, h.Wars, h.Other);
 
-				var cmd = string.Format(SqlExecBilMSave, sParam);
+				var cmd = string.Format(SqlExecBilSave, sParam);
 				var prm = BaseRepository.NewParamList(BaseRepository.NewParam("@Reply", "", ParameterDirection.Output, 100));
 
 				retvalue = BaseRepository.ExecuteScalar(cmd, prm).ToString();
 
 				h.Result = retvalue;
-				var b = new XmlHelper.BAsketBil {Header = h};
+				var p = new XmlHelper.BAsketBil.CProds();
+				if (h.Wars != null)
+				foreach (var w in h.Wars.Split(';'))
+				{
+					var wV = w.Split(':');
+					if (wV.Length == 2)
+						p.FProd.Add(new XmlHelper.BAsketBil.ProdItem{ProdId = wV[0], Quant = wV[1]});
+				}
+				var b = new XmlHelper.BAsketBil { Header = h, Products = p};
 				XmlHelper.XmlOut(b);
 			}
 			else if (comand == "SendRepo")
@@ -308,7 +334,7 @@ namespace BAsketWS.Helpers
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
-			return new BilM() { Note = retvalue };
+			return new Bil() { Note = retvalue };
 		}
 
 		#endregion

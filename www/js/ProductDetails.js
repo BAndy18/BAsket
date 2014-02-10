@@ -1,5 +1,4 @@
 ﻿BAsket['product-details'] = function (params) {
-	//var Quant = ko.observable('0');
 
 	var viewModel = {
 		Id: params.Id,
@@ -9,8 +8,11 @@
 		N2: ko.observable(''),
 		N3: ko.observable(''),
 		N4: ko.observable(''),
+		N1T: ko.observable(P.arrNMS[10][0] ? P.arrNMS[10][0].N:''),
+		N2T: ko.observable(P.arrNMS[10][1] ? P.arrNMS[10][1].N:''),
+		N3T: ko.observable(P.arrNMS[10][2] ? P.arrNMS[10][2].N:''),
+		N4T: ko.observable(P.arrNMS[10][3] ? P.arrNMS[10][3].N:''),
 		Ostat: ko.observable(''),
-
 		Quant: ko.observable(),
 
 		viewShown: function () {
@@ -32,7 +34,7 @@
 	// function simulateKeyPress(character) {
 	//   jQuery.event.trigger({ type : 'keypress', which : character.charCodeAt(0) });
 	// }
-
+	
 	Product_Details_saveClicked = function(arg) {
 		var bFound = false;
 		//var valueQuant = $("#idQuant").data("dxNumberBox").option("value");
@@ -54,7 +56,7 @@
 			}
 		}
 		if (!bFound && quant && quant > 0) {
-			P.arrayBAsket.push({ 'Id': this.Id, 'Name': this.Name(), 'N4': this.N4(), 'Ostat': this.Ostat(), 'Quant': quant, 'Price': this.Price() });
+			P.arrayBAsket.push({ 'Id': this.Id, 'N': this.Name(), 'O': this.Ostat(), 'Quant': quant, 'P': this.Price(), 'N1': this.N1(), 'N2': this.N2() });
 		}
 		// for(var i in P.arrayBAsket){
 		//     console.log('Product_Details_saveClicked arrayBAsket<' + P.arrayBAsket[i].Quant + '>');

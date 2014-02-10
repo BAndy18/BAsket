@@ -169,7 +169,7 @@ namespace BAsketWS.Helpers
 					if (user.Split(';').Length < 2)
 					{
 						user = ";-1";
-						//return new List<BilM> { new BilM() { cName = "user not found " + user } };
+						//return new List<Bil> { new Bil() { cName = "user not found " + user } };
 					}
 
 					sSQL = sSQL.Replace("#тип_торгпред#", "'N_TP=" + user.Split(';')[1] + "'");

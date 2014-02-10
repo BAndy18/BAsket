@@ -307,6 +307,14 @@ var P = (function ($, window) {
 		'ReadNews': iniLocalStor("ReadNews", ''),
 	};
 
+    root.setQuantToWar = function(war) {
+        for (var i in P.arrayBAsket) 
+            if (P.arrayBAsket[i].Id == war.Id) {
+                war.Quant = P.arrayBAsket[i].Quant;
+                return war;
+            }
+        return war;
+    };
     root.validateEmail = function(email) { 
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -391,9 +399,9 @@ var P = (function ($, window) {
 		root.deviceClass = {};
 		root.deviceClass['platform'] = root.platformDevice;
 		var pdArr = root.platformDevice.split(' ');
-        if (pdArr[0] == 'ios')
-            root.LoadFile('css/dx.ios.default.css', 'css');
-        else if (pdArr[0] == 'generic')
+        // if (pdArr[0] == 'ios')
+        //     root.LoadFile('css/dx.ios.default.css', 'css');
+        if (pdArr[0] == 'generic')
             root.LoadFile('css/dx.generic.light.css', 'css');
 		if (pdArr.length > 1) {
 			root.deviceClass['platform'] = pdArr[0];
@@ -457,7 +465,8 @@ var P = (function ($, window) {
         }
 		root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
 		for (var i = 0; i < root.arrNMS[0].length; i++) {
-			root.arrNMS[i + 1] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
+        //for (var i in root.arrNMS[0]) {
+			root.arrNMS[root.arrNMS[0][i].Id] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
 		}
         if (root.arrCategory.length > 0){
     		root.curCategoryId = root.arrCategory[0].Id;

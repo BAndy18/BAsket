@@ -21,7 +21,7 @@ var DAL_web = (function ($, window) {
 			return DAL_tst.Products_Data;
         var control = 'Products';
         if (params.pId == 'ost')
-            control = 'ProdOst';
+            control = 'ProdStock';
 
 		return execDataSource({
 			control: control, paging: true,
@@ -39,9 +39,9 @@ var DAL_web = (function ($, window) {
 			}
 			if (!bFound)
 				data.Quant = '';
-            data.Name = data.N;
-            data.Price = data.P;
-            data.Ostat = data.O;
+            //data.Name = data.N;
+            //data.Price = data.P;
+            //data.Ostat = data.O;
 			return data;
 		});
 	};
@@ -49,11 +49,12 @@ var DAL_web = (function ($, window) {
 		execDataSource({ control: 'Products/' + params.Id }).load()
 			.done(function(data) {
 				var quant = '0';
-				for (var i in P.arrayBAsket) {
-					if (P.arrayBAsket[i].Id == data[0].Id) {
-						quant = P.arrayBAsket[i].Quant;
-					}
-				};
+                data[0] = P.setQuantToWar(data[0]);
+				// for (var i in P.arrayBAsket) {
+				// 	if (P.arrayBAsket[i].Id == data[0].Id) {
+				// 		quant = P.arrayBAsket[i].Quant;
+				// 	}
+				// };
 				params.model.Name(data[0].N);
 				params.model.Price(data[0].P.toFixed(2));
 				params.model.N1(data[0].N1);
@@ -61,11 +62,13 @@ var DAL_web = (function ($, window) {
 				params.model.N3(data[0].N3);
 				params.model.N4(data[0].N4);
 				params.model.Ostat(data[0].O);
-				params.model.Quant(quant);
+				params.model.Quant(data[0].Quant);
 			});
 	};
 	root.ProductsByWars = function(params) {
-		return execDataSource({ control: 'Products/', prm: { w: params } });
+		return execDataSource({ control: 'Products/', prm: { w: params }}, function (data) {
+            return P.setQuantToWar(data);
+        }).load();
 	};
 
 	root.Clients = function (params) {
@@ -102,28 +105,28 @@ var DAL_web = (function ($, window) {
         });
 	};
 
-	root.BilM = function(params) {
-		return execDataSource({ control: 'BilM', paging: true, prm: {}}, function (data) {
+	root.Bil = function(params) {
+		return execDataSource({ control: 'Bil', paging: true, prm: {}}, function (data) {
             data.Name = data.N1;
             data.Adres = data.N2;
-            data.ShortDate = data.DateDoc.substring(1, 5);
+            data.ShortDate = data.DateDoc.substring(0, 5);
             return data;
         });
 	};
-	root.BilMById = function(params) {
-		return execDataSource({ control: 'BilM/' + params });
+	root.BilById = function(params) {
+		return execDataSource({ control: 'Bil/' + params });
 	};
 	root.SaveBil = function(params) {
         params['cmd'] = 'SaveBil';
-		return execMethod({ method: 'POST', control: 'BilM/', prm: params }).load();
+		return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
 	};
 	root.DeleteBil = function(params) {
-		return execMethod({ method: 'DELETE', control: 'BilM/', prm: params }).load();
+		return execMethod({ method: 'DELETE', control: 'Bil/', prm: params }).load();
 	};
 
     root.SendRepo = function(params) {
         params['cmd'] = 'SendRepo';
-        return execMethod({ method: 'POST', control: 'BilM/', prm: params }).load();
+        return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
     };
 
 
@@ -137,6 +140,8 @@ var DAL_web = (function ($, window) {
 						params.prm['skip'] = loadOptions.skip;
 						params.prm['take'] = loadOptions.take;
 					}
+                    if (loadOptions.searchValue)
+                        params.prm['searchString'] = loadOptions.searchValue;
 					// return $.get(P.dataSouceUrl + params.control, params.prm)
 					return $.ajax({
 						url: P.dataSouceUrl + params.control,

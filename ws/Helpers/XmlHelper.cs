@@ -93,7 +93,7 @@ namespace BAsketWS.Helpers
 		{
 			var i = 1;
 			var sFn = string.Format("{0}Bil-{1}.{2}-{3}", Common.GetRootDir() + Common.DirMessagesOut,
-				DateTime.Now.ToString("yy-MM-dd"), b.Header.UserName.Replace(";", "_"), i);
+				DateTime.Now.ToString("yyMMdd"), b.Header.UserName.Replace(";", "_"), i);
 			while (File.Exists(sFn + i + ".xml")) i++;
 
 			return XmlOutToFile(b, typeof(BAsketBil), sFn + ".xml");
@@ -223,8 +223,8 @@ namespace BAsketWS.Helpers
 			[XmlElementAttribute("BAsketBil-Header")]
 			public CHeader Header { get; set; }
 
-			//[XmlElementAttribute("BAsketSwap-Products")]
-			//public CProds Products { get; set; }
+			[XmlElementAttribute("BAsketSwap-Products")]
+			public CProds Products { get; set; }
 
 			public class CHeader
 			{
@@ -239,6 +239,18 @@ namespace BAsketWS.Helpers
 				public string Other { get; set; }
 				public string Wars { get; set; }
 				public string Result { get; set; }
+			}
+			public class CProds
+			{
+				[XmlElement("Prod")]
+				public List<ProdItem> FProd = new List<ProdItem>();
+			}
+			public class ProdItem
+			{
+				[XmlAttribute]
+				public string ProdId { get; set; }
+				[XmlAttribute]
+				public string Quant { get; set; }
 			}
 		}
 	}
