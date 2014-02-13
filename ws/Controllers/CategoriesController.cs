@@ -14,17 +14,17 @@ namespace BAsketWS.Controllers
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
-		private CategoriesController()
-		{
-			if (mPlugin == null) mPlugin = new DefaultPlugin();
-		}
+		//private CategoriesController()
+		//{
+		//	if (mPlugin == null) mPlugin = new DefaultPlugin();
+		//}
         // GET api/values
         //*
         //public void Get()
         //public string Get()
 		public List<Category> Get()
 		{
-			//Common.ReadTest(mPlugin);
+			mPlugin = Common.PluginInit(mPlugin);
 
 			var result = mPlugin.GetCategories();
 			return result;

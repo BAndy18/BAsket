@@ -2,7 +2,8 @@ BAsket.products = function (params) {
 	P.fromProducts = true;
 	var searchStr = ko.observable('');
 	P.curCategoryId = (params.Id == 'undefined') ? P.curCategoryId : params.Id;
-	//var arrayBAsket = ko.observable([]);
+	 if ((!P.curCategoryId || P.curCategoryId == 0) && P.arrCategory.length > 0)
+    		P.curCategoryId = root.arrCategory[0].Id;
 
 	var bChoice = ko.observable(P.curModeChoice);
 	var lbltitle = ko.observable(_.Products.Title1);
@@ -11,20 +12,12 @@ BAsket.products = function (params) {
 
 	var viewModel = {
 		searchString: searchStr,
-		// find: function () {
-		// 	viewModel.showSearch(!viewModel.showSearch());
-		// 	viewModel.searchString('');
-		// },
-		// showSearch: ko.observable(false),
 
 		dataSourceCat: P.arrCategory,   //DAL.Categories(),
 		dataSourceBasket: new DevExpress.data.DataSource(new DevExpress.data.ArrayStore(P.arrayBAsket)),
 
 		// dataSourceProd: DAL.Products({Id:P.curCategoryId, search:searchStr}),
 		dataSourceProd: DAL.Products({ pId: P.curCategoryId, search: searchStr }, !P.modeProdView),
-
-		//categoryId: categoryId,
-		//categoryName: P.curCategoryName,
 
 		bChoice: bChoice,
 		lbltitle: lbltitle,

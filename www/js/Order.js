@@ -15,7 +15,7 @@ BAsket.Order = function (params) {
 		P.arrayBAsket = [];
 
 	if (params.Id) {
-		DAL.BilById(params.Id).load().done(function (result) {
+		DAL.BilById(params.Id, params.s).load().done(function (result) {
 			if (!P.fromProducts && result[0].Wars) {
 				DAL.ProductsByWars(result[0].Wars).done(function(result) {
 					P.arrayBAsket = result;
@@ -142,7 +142,7 @@ BAsket.Order = function (params) {
 		}
 		prms['sWars'] = sWars.substring(0, sWars.length - 1);
 
-		DAL.SaveBil(prms);
+		DAL.SaveBil(prms, params.s);
 
 		Order_clickBack();
 
@@ -179,6 +179,7 @@ BAsket.Order = function (params) {
 
 
 	var viewModel = {
+		swValue: params.s,
 		clients: DAL.Clients(),
 		arrayTP: arrayTP,
 		showTP: showTP,
@@ -210,7 +211,7 @@ BAsket.Order = function (params) {
 
 
 BAsket.OrderList = function (params) {
-	var holdTimeout = ko.observable(750);
+	var holdTimeout = ko.observable(500);
 	var popVisible = ko.observable(false);
 	var idSelected = ko.observable(0);
 	var searchStr = ko.observable('');
@@ -225,7 +226,7 @@ BAsket.OrderList = function (params) {
 		holdTimeout: holdTimeout,
 		popActions: [
 		    { text: _.Order.ActionDelete, clickAction: function () { Order_DeleteClick() } },
-		    { text: _.Order.ChangeActivity, clickAction: function () { Order_ChangeActivity() } },
+		    { text: _.Order.ChangeActivity, disabled: swValue, clickAction: function () { Order_ChangeActivity() } },
 		],
 
 		searchString: searchStr,
@@ -275,11 +276,14 @@ BAsket.OrderList = function (params) {
 		}).show();
 	};
 	Order_Delete = function(arg) {
-		DAL.DeleteBil(idSelected());
+		DAL.DeleteBil({'id': idSelected()}, swValue());
 		DAL.CountTable('Bil').done(function(result) {
 			P.itemCount['OrderList'] = P.ChangeValue('OrderList', result[0].cnt);
 		});
-		viewModel.dataSource.load();
+		if (swValue())
+			viewModel.dataSourceS.load();
+		else
+			viewModel.dataSource.load();
 	};
 
 	Order_ChangeActivity = function() {

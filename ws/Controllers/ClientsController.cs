@@ -13,19 +13,23 @@ namespace BAsketWS.Controllers
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
-		private ClientsController()
-		{
-			if (mPlugin == null) mPlugin = new DefaultPlugin();
-		}
+		//private ClientsController()
+		//{
+		//	if (mPlugin == null) mPlugin = new DefaultPlugin();
+		//}
 
 		public List<Client> Get(string id)
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			var result = mPlugin.GetClientsById(id);
 			return result;
 		}
 		
 		public List<Client> Get()
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			var result = mPlugin.GetClients();
 			return result;
 		}

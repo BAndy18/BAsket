@@ -5,91 +5,91 @@
     <SwapDate>07.02.2014 11:28:10</SwapDate>
   </BAsketSwap-Header>
   <BAsketSwap-Products>
-    <Prod Id="-1" Name="Beverages" />
-    <Prod Id="-2" Name="Condiments" />
-    <Prod Id="-3" Name="Confections" />
-    <Prod Id="-4" Name="Dairy Products" />
-    <Prod Id="-5" Name="Grains/Cereals" />
-    <Prod Id="-6" Name="Meat/Poultry" />
-    <Prod Id="-7" Name="Produce" />
-    <Prod Id="-8" Name="Seafood" />
-    <Prod Id="1" IdP="-1" Name="Chai" Name2="Exotic Liquids" Name1="10 boxes x 20 bags" Stock="39" Price="18,0000" />
-    <Prod Id="2" IdP="-1" Name="Chang" Name2="Exotic Liquids" Name1="24 - 12 oz bottles" Stock="17" Price="19,0000" />
-    <Prod Id="3" IdP="-2" Name="Aniseed Syrup" Name2="Exotic Liquids" Name1="12 - 550 ml bottles" Stock="13" Price="10,0000" />
-    <Prod Id="4" IdP="-2" Name="Chef Anton''s Cajun Seasoning" Name2="New Orleans Cajun Delights" Name1="48 - 6 oz jars" Stock="53" Price="22,0000" />
-    <Prod Id="5" IdP="-2" Name="Chef Anton''s Gumbo Mix" Name2="New Orleans Cajun Delights" Name1="36 boxes" Stock="0" Price="21,3500" />
-    <Prod Id="6" IdP="-2" Name="Grandma''s Boysenberry Spread" Name2="Grandma Kelly''s Homestead" Name1="12 - 8 oz jars" Stock="120" Price="25,0000" />
-    <Prod Id="7" IdP="-7" Name="Uncle Bob''s Organic Dried Pears" Name2="Grandma Kelly''s Homestead" Name1="12 - 1 lb pkgs." Stock="15" Price="30,0000" />
-    <Prod Id="8" IdP="-2" Name="Northwoods Cranberry Sauce" Name2="Grandma Kelly''s Homestead" Name1="12 - 12 oz jars" Stock="6" Price="40,0000" />
-    <Prod Id="9" IdP="-6" Name="Mishi Kobe Niku" Name2="Tokyo Traders" Name1="18 - 500 g pkgs." Stock="29" Price="97,0000" />
-    <Prod Id="10" IdP="-8" Name="Ikura" Name2="Tokyo Traders" Name1="12 - 200 ml jars" Stock="31" Price="31,0000" />
-    <Prod Id="11" IdP="-4" Name="Queso Cabrales" Name2="Cooperativa de Quesos ''Las Cabras''" Name1="1 kg pkg." Stock="22" Price="21,0000" />
-    <Prod Id="12" IdP="-4" Name="Queso Manchego La Pastora" Name2="Cooperativa de Quesos ''Las Cabras''" Name1="10 - 500 g pkgs." Stock="86" Price="38,0000" />
-    <Prod Id="13" IdP="-8" Name="Konbu" Name2="Mayumi''s" Name1="2 kg box" Stock="24" Price="6,0000" />
-    <Prod Id="14" IdP="-7" Name="Tofu" Name2="Mayumi''s" Name1="40 - 100 g pkgs." Stock="35" Price="23,2500" />
-    <Prod Id="15" IdP="-2" Name="Genen Shouyu" Name2="Mayumi''s" Name1="24 - 250 ml bottles" Stock="39" Price="15,5000" />
-    <Prod Id="16" IdP="-3" Name="Pavlova" Name2="Pavlova, Ltd." Name1="32 - 500 g boxes" Stock="29" Price="17,4500" />
-    <Prod Id="17" IdP="-6" Name="Alice Mutton" Name2="Pavlova, Ltd." Name1="20 - 1 kg tins" Stock="0" Price="39,0000" />
-    <Prod Id="18" IdP="-8" Name="Carnarvon Tigers" Name2="Pavlova, Ltd." Name1="16 kg pkg." Stock="42" Price="62,5000" />
-    <Prod Id="19" IdP="-3" Name="Teatime Chocolate Biscuits" Name2="Specialty Biscuits, Ltd." Name1="10 boxes x 12 pieces" Stock="25" Price="9,2000" />
-    <Prod Id="20" IdP="-3" Name="Sir Rodney''s Marmalade" Name2="Specialty Biscuits, Ltd." Name1="30 gift boxes" Stock="40" Price="81,0000" />
-    <Prod Id="21" IdP="-3" Name="Sir Rodney''s Scones" Name2="Specialty Biscuits, Ltd." Name1="24 pkgs. x 4 pieces" Stock="3" Price="10,0000" />
-    <Prod Id="22" IdP="-5" Name="Gustaf''s Knäckebröd" Name2="PB Knäckebröd AB" Name1="24 - 500 g pkgs." Stock="104" Price="21,0000" />
-    <Prod Id="23" IdP="-5" Name="Tunnbröd" Name2="PB Knäckebröd AB" Name1="12 - 250 g pkgs." Stock="61" Price="9,0000" />
-    <Prod Id="24" IdP="-1" Name="Guaraná Fantástica" Name2="Refrescos Americanas LTDA" Name1="12 - 355 ml cans" Stock="20" Price="4,5000" />
-    <Prod Id="25" IdP="-3" Name="NuNuCa Nuß-Nougat-Creme" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="20 - 450 g glasses" Stock="76" Price="14,0000" />
-    <Prod Id="26" IdP="-3" Name="Gumbär Gummibärchen" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="100 - 250 g bags" Stock="15" Price="31,2300" />
-    <Prod Id="27" IdP="-3" Name="Schoggi Schokolade" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="100 - 100 g pieces" Stock="49" Price="43,9000" />
-    <Prod Id="28" IdP="-7" Name="Rössle Sauerkraut" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="25 - 825 g cans" Stock="26" Price="45,6000" />
-    <Prod Id="29" IdP="-6" Name="Thüringer Rostbratwurst" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="50 bags x 30 sausgs." Stock="0" Price="123,7900" />
-    <Prod Id="30" IdP="-8" Name="Nord-Ost Matjeshering" Name2="Nord-Ost-Fisch Handelsgesellschaft mbH" Name1="10 - 200 g glasses" Stock="10" Price="25,8900" />
-    <Prod Id="31" IdP="-4" Name="Gorgonzola Telino" Name2="Formaggi Fortini s.r.l." Name1="12 - 100 g pkgs" Stock="0" Price="12,5000" />
-    <Prod Id="32" IdP="-4" Name="Mascarpone Fabioli" Name2="Formaggi Fortini s.r.l." Name1="24 - 200 g pkgs." Stock="9" Price="32,0000" />
-    <Prod Id="33" IdP="-4" Name="Geitost" Name2="Norske Meierier" Name1="500 g" Stock="112" Price="2,5000" />
-    <Prod Id="34" IdP="-1" Name="Sasquatch Ale" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="111" Price="14,0000" />
-    <Prod Id="35" IdP="-1" Name="Steeleye Stout" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="20" Price="18,0000" />
-    <Prod Id="36" IdP="-8" Name="Inlagd Sill" Name2="Svensk Sjöföda AB" Name1="24 - 250 g  jars" Stock="112" Price="19,0000" />
-    <Prod Id="37" IdP="-8" Name="Gravad lax" Name2="Svensk Sjöföda AB" Name1="12 - 500 g pkgs." Stock="11" Price="26,0000" />
-    <Prod Id="38" IdP="-1" Name="Côte de Blaye" Name2="Aux joyeux ecclésiastiques" Name1="12 - 75 cl bottles" Stock="17" Price="263,5000" />
-    <Prod Id="39" IdP="-1" Name="Chartreuse verte" Name2="Aux joyeux ecclésiastiques" Name1="750 cc per bottle" Stock="69" Price="18,0000" />
-    <Prod Id="40" IdP="-8" Name="Boston Crab Meat" Name2="New England Seafood Cannery" Name1="24 - 4 oz tins" Stock="123" Price="18,4000" />
-    <Prod Id="41" IdP="-8" Name="Jack''s New England Clam Chowder" Name2="New England Seafood Cannery" Name1="12 - 12 oz cans" Stock="85" Price="9,6500" />
-    <Prod Id="42" IdP="-5" Name="Singaporean Hokkien Fried Mee" Name2="Leka Trading" Name1="32 - 1 kg pkgs." Stock="26" Price="14,0000" />
-    <Prod Id="43" IdP="-1" Name="Ipoh Coffee" Name2="Leka Trading" Name1="16 - 500 g tins" Stock="17" Price="46,0000" />
-    <Prod Id="44" IdP="-2" Name="Gula Malacca" Name2="Leka Trading" Name1="20 - 2 kg bags" Stock="27" Price="19,4500" />
-    <Prod Id="45" IdP="-8" Name="Rogede sild" Name2="Lyngbysild" Name1="1k pkg." Stock="5" Price="9,5000" />
-    <Prod Id="46" IdP="-8" Name="Spegesild" Name2="Lyngbysild" Name1="4 - 450 g glasses" Stock="95" Price="12,0000" />
-    <Prod Id="47" IdP="-3" Name="Zaanse koeken" Name2="Zaanse Snoepfabriek" Name1="10 - 4 oz boxes" Stock="36" Price="9,5000" />
-    <Prod Id="48" IdP="-3" Name="Chocolade" Name2="Zaanse Snoepfabriek" Name1="10 pkgs." Stock="15" Price="12,7500" />
-    <Prod Id="49" IdP="-3" Name="Maxilaku" Name2="Karkki Oy" Name1="24 - 50 g pkgs." Stock="10" Price="20,0000" />
-    <Prod Id="50" IdP="-3" Name="Valkoinen suklaa" Name2="Karkki Oy" Name1="12 - 100 g bars" Stock="65" Price="16,2500" />
-    <Prod Id="51" IdP="-7" Name="Manjimup Dried Apples" Name2="G''day, Mate" Name1="50 - 300 g pkgs." Stock="20" Price="53,0000" />
-    <Prod Id="52" IdP="-5" Name="Filo Mix" Name2="G''day, Mate" Name1="16 - 2 kg boxes" Stock="38" Price="7,0000" />
-    <Prod Id="53" IdP="-6" Name="Perth Pasties" Name2="G''day, Mate" Name1="48 pieces" Stock="0" Price="32,8000" />
-    <Prod Id="54" IdP="-6" Name="Tourtière" Name2="Ma Maison" Name1="16 pies" Stock="21" Price="7,4500" />
-    <Prod Id="55" IdP="-6" Name="Pâté chinois" Name2="Ma Maison" Name1="24 boxes x 2 pies" Stock="115" Price="24,0000" />
-    <Prod Id="56" IdP="-5" Name="Gnocchi di nonna Alice" Name2="Pasta Buttini s.r.l." Name1="24 - 250 g pkgs." Stock="21" Price="38,0000" />
-    <Prod Id="57" IdP="-5" Name="Ravioli Angelo" Name2="Pasta Buttini s.r.l." Name1="24 - 250 g pkgs." Stock="36" Price="19,5000" />
-    <Prod Id="58" IdP="-8" Name="Escargots de Bourgogne" Name2="Escargots Nouveaux" Name1="24 pieces" Stock="62" Price="13,2500" />
-    <Prod Id="59" IdP="-4" Name="Raclette Courdavault" Name2="Gai pâturage" Name1="5 kg pkg." Stock="79" Price="55,0000" />
-    <Prod Id="60" IdP="-4" Name="Camembert Pierrot" Name2="Gai pâturage" Name1="15 - 300 g rounds" Stock="19" Price="34,0000" />
-    <Prod Id="61" IdP="-2" Name="Sirop d''érable" Name2="Forêts d''érables" Name1="24 - 500 ml bottles" Stock="113" Price="28,5000" />
-    <Prod Id="62" IdP="-3" Name="Tarte au sucre" Name2="Forêts d''érables" Name1="48 pies" Stock="17" Price="49,3000" />
-    <Prod Id="63" IdP="-2" Name="Vegie-spread" Name2="Pavlova, Ltd." Name1="15 - 625 g jars" Stock="24" Price="43,9000" />
-    <Prod Id="64" IdP="-5" Name="Wimmers gute Semmelknödel" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="20 bags x 4 pieces" Stock="22" Price="33,2500" />
-    <Prod Id="65" IdP="-2" Name="Louisiana Fiery Hot Pepper Sauce" Name2="New Orleans Cajun Delights" Name1="32 - 8 oz bottles" Stock="76" Price="21,0500" />
-    <Prod Id="66" IdP="-2" Name="Louisiana Hot Spiced Okra" Name2="New Orleans Cajun Delights" Name1="24 - 8 oz jars" Stock="4" Price="17,0000" />
-    <Prod Id="67" IdP="-1" Name="Laughing Lumberjack Lager" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="52" Price="14,0000" />
-    <Prod Id="68" IdP="-3" Name="Scottish Longbreads" Name2="Specialty Biscuits, Ltd." Name1="10 boxes x 8 pieces" Stock="6" Price="12,5000" />
-    <Prod Id="69" IdP="-4" Name="Gudbrandsdalsost" Name2="Norske Meierier" Name1="10 kg pkg." Stock="26" Price="36,0000" />
-    <Prod Id="70" IdP="-1" Name="Outback Lager" Name2="Pavlova, Ltd." Name1="24 - 355 ml bottles" Stock="15" Price="15,0000" />
-    <Prod Id="71" IdP="-4" Name="Flotemysost" Name2="Norske Meierier" Name1="10 - 500 g pkgs." Stock="26" Price="21,5000" />
-    <Prod Id="72" IdP="-4" Name="Mozzarella di Giovanni" Name2="Formaggi Fortini s.r.l." Name1="24 - 200 g pkgs." Stock="14" Price="34,8000" />
-    <Prod Id="73" IdP="-8" Name="Röd Kaviar" Name2="Svensk Sjöföda AB" Name1="24 - 150 g jars" Stock="101" Price="15,0000" />
-    <Prod Id="74" IdP="-7" Name="Longlife Tofu" Name2="Tokyo Traders" Name1="5 kg pkg." Stock="4" Price="10,0000" />
-    <Prod Id="75" IdP="-1" Name="Rhönbräu Klosterbier" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="24 - 0.5 l bottles" Stock="125" Price="7,7500" />
-    <Prod Id="76" IdP="-1" Name="Lakkalikööri" Name2="Karkki Oy" Name1="500 ml" Stock="57" Price="18,0000" />
-    <Prod Id="77" IdP="-2" Name="Original Frankfurter grüne Soße" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="12 boxes" Stock="32" Price="13,0000" />
+    <Product Id="-1" Name="Beverages" />
+    <Product Id="-2" Name="Condiments" />
+    <Product Id="-3" Name="Confections" />
+    <Product Id="-4" Name="Dairy Products" />
+    <Product Id="-5" Name="Grains/Cereals" />
+    <Product Id="-6" Name="Meat/Poultry" />
+    <Product Id="-7" Name="Produce" />
+    <Product Id="-8" Name="Seafood" />
+    <Product Id="1" IdP="-1" Name="Chai" Name2="Exotic Liquids" Name1="10 boxes x 20 bags" Stock="39" Price="18,0000" />
+    <Product Id="2" IdP="-1" Name="Chang" Name2="Exotic Liquids" Name1="24 - 12 oz bottles" Stock="17" Price="19,0000" />
+    <Product Id="3" IdP="-2" Name="Aniseed Syrup" Name2="Exotic Liquids" Name1="12 - 550 ml bottles" Stock="13" Price="10,0000" />
+    <Product Id="4" IdP="-2" Name="Chef Anton''s Cajun Seasoning" Name2="New Orleans Cajun Delights" Name1="48 - 6 oz jars" Stock="53" Price="22,0000" />
+    <Product Id="5" IdP="-2" Name="Chef Anton''s Gumbo Mix" Name2="New Orleans Cajun Delights" Name1="36 boxes" Stock="0" Price="21,3500" />
+    <Product Id="6" IdP="-2" Name="Grandma''s Boysenberry Spread" Name2="Grandma Kelly''s Homestead" Name1="12 - 8 oz jars" Stock="120" Price="25,0000" />
+    <Product Id="7" IdP="-7" Name="Uncle Bob''s Organic Dried Pears" Name2="Grandma Kelly''s Homestead" Name1="12 - 1 lb pkgs." Stock="15" Price="30,0000" />
+    <Product Id="8" IdP="-2" Name="Northwoods Cranberry Sauce" Name2="Grandma Kelly''s Homestead" Name1="12 - 12 oz jars" Stock="6" Price="40,0000" />
+    <Product Id="9" IdP="-6" Name="Mishi Kobe Niku" Name2="Tokyo Traders" Name1="18 - 500 g pkgs." Stock="29" Price="97,0000" />
+    <Product Id="10" IdP="-8" Name="Ikura" Name2="Tokyo Traders" Name1="12 - 200 ml jars" Stock="31" Price="31,0000" />
+    <Product Id="11" IdP="-4" Name="Queso Cabrales" Name2="Cooperativa de Quesos ''Las Cabras''" Name1="1 kg pkg." Stock="22" Price="21,0000" />
+    <Product Id="12" IdP="-4" Name="Queso Manchego La Pastora" Name2="Cooperativa de Quesos ''Las Cabras''" Name1="10 - 500 g pkgs." Stock="86" Price="38,0000" />
+    <Product Id="13" IdP="-8" Name="Konbu" Name2="Mayumi''s" Name1="2 kg box" Stock="24" Price="6,0000" />
+    <Product Id="14" IdP="-7" Name="Tofu" Name2="Mayumi''s" Name1="40 - 100 g pkgs." Stock="35" Price="23,2500" />
+    <Product Id="15" IdP="-2" Name="Genen Shouyu" Name2="Mayumi''s" Name1="24 - 250 ml bottles" Stock="39" Price="15,5000" />
+    <Product Id="16" IdP="-3" Name="Pavlova" Name2="Pavlova, Ltd." Name1="32 - 500 g boxes" Stock="29" Price="17,4500" />
+    <Product Id="17" IdP="-6" Name="Alice Mutton" Name2="Pavlova, Ltd." Name1="20 - 1 kg tins" Stock="0" Price="39,0000" />
+    <Product Id="18" IdP="-8" Name="Carnarvon Tigers" Name2="Pavlova, Ltd." Name1="16 kg pkg." Stock="42" Price="62,5000" />
+    <Product Id="19" IdP="-3" Name="Teatime Chocolate Biscuits" Name2="Specialty Biscuits, Ltd." Name1="10 boxes x 12 pieces" Stock="25" Price="9,2000" />
+    <Product Id="20" IdP="-3" Name="Sir Rodney''s Marmalade" Name2="Specialty Biscuits, Ltd." Name1="30 gift boxes" Stock="40" Price="81,0000" />
+    <Product Id="21" IdP="-3" Name="Sir Rodney''s Scones" Name2="Specialty Biscuits, Ltd." Name1="24 pkgs. x 4 pieces" Stock="3" Price="10,0000" />
+    <Product Id="22" IdP="-5" Name="Gustaf''s Knäckebröd" Name2="PB Knäckebröd AB" Name1="24 - 500 g pkgs." Stock="104" Price="21,0000" />
+    <Product Id="23" IdP="-5" Name="Tunnbröd" Name2="PB Knäckebröd AB" Name1="12 - 250 g pkgs." Stock="61" Price="9,0000" />
+    <Product Id="24" IdP="-1" Name="Guaraná Fantástica" Name2="Refrescos Americanas LTDA" Name1="12 - 355 ml cans" Stock="20" Price="4,5000" />
+    <Product Id="25" IdP="-3" Name="NuNuCa Nuß-Nougat-Creme" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="20 - 450 g glasses" Stock="76" Price="14,0000" />
+    <Product Id="26" IdP="-3" Name="Gumbär Gummibärchen" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="100 - 250 g bags" Stock="15" Price="31,2300" />
+    <Product Id="27" IdP="-3" Name="Schoggi Schokolade" Name2="Heli Süßwaren GmbH &amp; Co. KG" Name1="100 - 100 g pieces" Stock="49" Price="43,9000" />
+    <Product Id="28" IdP="-7" Name="Rössle Sauerkraut" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="25 - 825 g cans" Stock="26" Price="45,6000" />
+    <Product Id="29" IdP="-6" Name="Thüringer Rostbratwurst" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="50 bags x 30 sausgs." Stock="0" Price="123,7900" />
+    <Product Id="30" IdP="-8" Name="Nord-Ost Matjeshering" Name2="Nord-Ost-Fisch Handelsgesellschaft mbH" Name1="10 - 200 g glasses" Stock="10" Price="25,8900" />
+    <Product Id="31" IdP="-4" Name="Gorgonzola Telino" Name2="Formaggi Fortini s.r.l." Name1="12 - 100 g pkgs" Stock="0" Price="12,5000" />
+    <Product Id="32" IdP="-4" Name="Mascarpone Fabioli" Name2="Formaggi Fortini s.r.l." Name1="24 - 200 g pkgs." Stock="9" Price="32,0000" />
+    <Product Id="33" IdP="-4" Name="Geitost" Name2="Norske Meierier" Name1="500 g" Stock="112" Price="2,5000" />
+    <Product Id="34" IdP="-1" Name="Sasquatch Ale" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="111" Price="14,0000" />
+    <Product Id="35" IdP="-1" Name="Steeleye Stout" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="20" Price="18,0000" />
+    <Product Id="36" IdP="-8" Name="Inlagd Sill" Name2="Svensk Sjöföda AB" Name1="24 - 250 g  jars" Stock="112" Price="19,0000" />
+    <Product Id="37" IdP="-8" Name="Gravad lax" Name2="Svensk Sjöföda AB" Name1="12 - 500 g pkgs." Stock="11" Price="26,0000" />
+    <Product Id="38" IdP="-1" Name="Côte de Blaye" Name2="Aux joyeux ecclésiastiques" Name1="12 - 75 cl bottles" Stock="17" Price="263,5000" />
+    <Product Id="39" IdP="-1" Name="Chartreuse verte" Name2="Aux joyeux ecclésiastiques" Name1="750 cc per bottle" Stock="69" Price="18,0000" />
+    <Product Id="40" IdP="-8" Name="Boston Crab Meat" Name2="New England Seafood Cannery" Name1="24 - 4 oz tins" Stock="123" Price="18,4000" />
+    <Product Id="41" IdP="-8" Name="Jack''s New England Clam Chowder" Name2="New England Seafood Cannery" Name1="12 - 12 oz cans" Stock="85" Price="9,6500" />
+    <Product Id="42" IdP="-5" Name="Singaporean Hokkien Fried Mee" Name2="Leka Trading" Name1="32 - 1 kg pkgs." Stock="26" Price="14,0000" />
+    <Product Id="43" IdP="-1" Name="Ipoh Coffee" Name2="Leka Trading" Name1="16 - 500 g tins" Stock="17" Price="46,0000" />
+    <Product Id="44" IdP="-2" Name="Gula Malacca" Name2="Leka Trading" Name1="20 - 2 kg bags" Stock="27" Price="19,4500" />
+    <Product Id="45" IdP="-8" Name="Rogede sild" Name2="Lyngbysild" Name1="1k pkg." Stock="5" Price="9,5000" />
+    <Product Id="46" IdP="-8" Name="Spegesild" Name2="Lyngbysild" Name1="4 - 450 g glasses" Stock="95" Price="12,0000" />
+    <Product Id="47" IdP="-3" Name="Zaanse koeken" Name2="Zaanse Snoepfabriek" Name1="10 - 4 oz boxes" Stock="36" Price="9,5000" />
+    <Product Id="48" IdP="-3" Name="Chocolade" Name2="Zaanse Snoepfabriek" Name1="10 pkgs." Stock="15" Price="12,7500" />
+    <Product Id="49" IdP="-3" Name="Maxilaku" Name2="Karkki Oy" Name1="24 - 50 g pkgs." Stock="10" Price="20,0000" />
+    <Product Id="50" IdP="-3" Name="Valkoinen suklaa" Name2="Karkki Oy" Name1="12 - 100 g bars" Stock="65" Price="16,2500" />
+    <Product Id="51" IdP="-7" Name="Manjimup Dried Apples" Name2="G''day, Mate" Name1="50 - 300 g pkgs." Stock="20" Price="53,0000" />
+    <Product Id="52" IdP="-5" Name="Filo Mix" Name2="G''day, Mate" Name1="16 - 2 kg boxes" Stock="38" Price="7,0000" />
+    <Product Id="53" IdP="-6" Name="Perth Pasties" Name2="G''day, Mate" Name1="48 pieces" Stock="0" Price="32,8000" />
+    <Product Id="54" IdP="-6" Name="Tourtière" Name2="Ma Maison" Name1="16 pies" Stock="21" Price="7,4500" />
+    <Product Id="55" IdP="-6" Name="Pâté chinois" Name2="Ma Maison" Name1="24 boxes x 2 pies" Stock="115" Price="24,0000" />
+    <Product Id="56" IdP="-5" Name="Gnocchi di nonna Alice" Name2="Pasta Buttini s.r.l." Name1="24 - 250 g pkgs." Stock="21" Price="38,0000" />
+    <Product Id="57" IdP="-5" Name="Ravioli Angelo" Name2="Pasta Buttini s.r.l." Name1="24 - 250 g pkgs." Stock="36" Price="19,5000" />
+    <Product Id="58" IdP="-8" Name="Escargots de Bourgogne" Name2="Escargots Nouveaux" Name1="24 pieces" Stock="62" Price="13,2500" />
+    <Product Id="59" IdP="-4" Name="Raclette Courdavault" Name2="Gai pâturage" Name1="5 kg pkg." Stock="79" Price="55,0000" />
+    <Product Id="60" IdP="-4" Name="Camembert Pierrot" Name2="Gai pâturage" Name1="15 - 300 g rounds" Stock="19" Price="34,0000" />
+    <Product Id="61" IdP="-2" Name="Sirop d''érable" Name2="Forêts d''érables" Name1="24 - 500 ml bottles" Stock="113" Price="28,5000" />
+    <Product Id="62" IdP="-3" Name="Tarte au sucre" Name2="Forêts d''érables" Name1="48 pies" Stock="17" Price="49,3000" />
+    <Product Id="63" IdP="-2" Name="Vegie-spread" Name2="Pavlova, Ltd." Name1="15 - 625 g jars" Stock="24" Price="43,9000" />
+    <Product Id="64" IdP="-5" Name="Wimmers gute Semmelknödel" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="20 bags x 4 pieces" Stock="22" Price="33,2500" />
+    <Product Id="65" IdP="-2" Name="Louisiana Fiery Hot Pepper Sauce" Name2="New Orleans Cajun Delights" Name1="32 - 8 oz bottles" Stock="76" Price="21,0500" />
+    <Product Id="66" IdP="-2" Name="Louisiana Hot Spiced Okra" Name2="New Orleans Cajun Delights" Name1="24 - 8 oz jars" Stock="4" Price="17,0000" />
+    <Product Id="67" IdP="-1" Name="Laughing Lumberjack Lager" Name2="Bigfoot Breweries" Name1="24 - 12 oz bottles" Stock="52" Price="14,0000" />
+    <Product Id="68" IdP="-3" Name="Scottish Longbreads" Name2="Specialty Biscuits, Ltd." Name1="10 boxes x 8 pieces" Stock="6" Price="12,5000" />
+    <Product Id="69" IdP="-4" Name="Gudbrandsdalsost" Name2="Norske Meierier" Name1="10 kg pkg." Stock="26" Price="36,0000" />
+    <Product Id="70" IdP="-1" Name="Outback Lager" Name2="Pavlova, Ltd." Name1="24 - 355 ml bottles" Stock="15" Price="15,0000" />
+    <Product Id="71" IdP="-4" Name="Flotemysost" Name2="Norske Meierier" Name1="10 - 500 g pkgs." Stock="26" Price="21,5000" />
+    <Product Id="72" IdP="-4" Name="Mozzarella di Giovanni" Name2="Formaggi Fortini s.r.l." Name1="24 - 200 g pkgs." Stock="14" Price="34,8000" />
+    <Product Id="73" IdP="-8" Name="Röd Kaviar" Name2="Svensk Sjöföda AB" Name1="24 - 150 g jars" Stock="101" Price="15,0000" />
+    <Product Id="74" IdP="-7" Name="Longlife Tofu" Name2="Tokyo Traders" Name1="5 kg pkg." Stock="4" Price="10,0000" />
+    <Product Id="75" IdP="-1" Name="Rhönbräu Klosterbier" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="24 - 0.5 l bottles" Stock="125" Price="7,7500" />
+    <Product Id="76" IdP="-1" Name="Lakkalikööri" Name2="Karkki Oy" Name1="500 ml" Stock="57" Price="18,0000" />
+    <Product Id="77" IdP="-2" Name="Original Frankfurter grüne Soße" Name2="Plutzer Lebensmittelgroßmärkte AG" Name1="12 boxes" Stock="32" Price="13,0000" />
   </BAsketSwap-Products>
   <BAsketSwap-Clients>
     <Client Id="ALFKI" Name="Alfreds Futterkiste" Adres="Obere Str. 57, Berlin, 12209, Germany" />

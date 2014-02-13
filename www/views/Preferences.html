@@ -101,7 +101,7 @@
 <div data-options="dxView : { name: 'Info' } " >
     <div class="home-view center"  data-options="dxContent : { targetPlaceholder: 'content' } " >
     	<div data-bind="visible: subTitle().length == 0">
-	    	<div><b class="basket-header">BAsket</b></div>
+	    	<!-- <div><b class="basket-header">BAsket</b></div> -->
 
 			<div id='idInfoTileView' class="tileView" data-bind="dxTileView: {
 		          dataSource: dsInfo, 
@@ -121,7 +121,7 @@
 		      <p><span data-bind="text: P.copyright"></span></p>
 			</div>
 		</div>
-		<div data-bind="visible: subTitle">
+		<div class="h100" data-bind="visible: subTitle">
 			<!-- <div data-bind="dxToolbar: { items: [{  align: 'center', text: subTitle}]}"></div> -->
 			<div data-bind="dxScrollView: {showScrollbar: true}">
             	<div class="infotext" id="textContainer"></div>

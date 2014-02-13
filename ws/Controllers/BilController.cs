@@ -13,22 +13,41 @@ namespace BAsketWS.Controllers
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
-		private BilController()
-		{
-			if (mPlugin == null) mPlugin = new DefaultPlugin();
-		}
+		//private BilController()
+		//{
+		//	if (mPlugin == null) mPlugin = new DefaultPlugin();
+		//}
 
 		public Bil Get(string id)
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			var result = mPlugin.GetBilById(id);
 			return result;
 		}
 		
 		public List<Bil> Get()
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			var result = mPlugin.GetBil();
 			return result;
 		}
+
+		// POST api/values
+		[HttpPost]
+		public Bil Post()
+		{
+			mPlugin = Common.PluginInit(mPlugin);
+
+			var result = mPlugin.PostBil();
+			return result;
+		}
+
+		//// DELETE api/values/5
+		//public void Delete(int id)
+		//{
+		//}
 
 		//var qs = HttpContext.Current.Request.QueryString;
 		//	var top = int.Parse(qs["take"] ?? "30");
@@ -96,16 +115,6 @@ namespace BAsketWS.Controllers
 		//	return result;
 		//}
 
-        // POST api/values
-		//public List<Bil> Post([FromBody]string value)
-		//public IEnumerable<SpWar> Post(JObject jsonData)
-		//public string Post(JObject jsonData)
-		[HttpPost]
-		public Bil Post()
-		{
-			var result = mPlugin.PostBil();
-			return result;
-		}
 
 //		var retvalue = "";
 //			var user = HttpContext.Current.User.Identity.Name;
@@ -153,9 +162,5 @@ namespace BAsketWS.Controllers
 		//	var fr = HttpContext.Current.Request.Form;
 		//}
 
-		//// DELETE api/values/5
-		//public void Delete(int id)
-		//{
-		//}
     }
 }

@@ -91,6 +91,7 @@
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\BilController.cs" />
+    <Compile Include="Controllers\RoadMapController.cs" />
     <Compile Include="Controllers\ProdStockController.cs" />
     <Compile Include="Controllers\NmsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Bil.cs" />
+    <Compile Include="Models\RoadMap.cs" />
     <Compile Include="Models\Nms.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

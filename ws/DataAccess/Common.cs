@@ -35,6 +35,7 @@ namespace BAsketWS.DataAccess
 		public const string SProdTable = "bas_spProducts";
 		public const string SCliTable = "bas_spClients";
 		public const string SwuTable = "bas_WebUsers";
+		public const string SRoadTable = "bas_RoadMaps";
 		public const string SBilTable = "bas_BilDocs";
 		public const string SBasketProc = "bas_BAsketStuff";
 		//public const string SWUTable = "sy_WebUsers";
@@ -63,6 +64,12 @@ namespace BAsketWS.DataAccess
 			return result;
 		}
 
+		static public IBAsketPlugin PluginInit(IBAsketPlugin mPlugin)
+		{
+			if (mPlugin == null) return new DefaultPlugin();
+			return mPlugin;
+		}
+	
 		static public void AddCorsHeaders()
 	    {
 		    var res = HttpContext.Current.Response;
@@ -148,6 +155,24 @@ namespace BAsketWS.DataAccess
 		    return sDir;
 	    }
 
+		static public List<DateTime> GetDateRecList(string sRec)
+		{
+			var lRet = new List<DateTime>();
+			var dt = DateTime.Now;
+			var dV = sRec.Split(';');
+			if (dV.Length > 1)
+			{
+				lRet.Add(dt);
+			}
+			else
+			{
+				if (DateTime.TryParse(sRec, out dt))
+					lRet.Add(dt);
+			}
+
+			return lRet;
+		}
+
         static public void SaveLog(string sLog)
         {
 			var sFN = GetRootDir() + "BAsketWS.log";
@@ -226,7 +251,9 @@ namespace BAsketWS.DataAccess
 					//",[SelSup] [varchar](500)"+
 					//",[SelWar] [varchar](500)"+
 					//",N_TP smallint"+
-					")"
+					")" +
+					";Insert Into {0} (Name) Values(N'BAsket User')" +
+					""
 			},
 	        {SNmsTable, "Create table dbo.{0} (" +
                     "IdP int not null," +
@@ -252,7 +279,7 @@ namespace BAsketWS.DataAccess
                     "O int," +
                     "P money," +
                     "isWare bit)" +
-                    ";Create Index IX_prod_idp On {0}(IdP)" + 
+                    ";Create Index IX_prod_p On {0}(IdP)" + 
                     ";Create Index IX_prod_n On {0}(N)" +
 					""
             },
@@ -263,8 +290,24 @@ namespace BAsketWS.DataAccess
                     "N1 nvarchar(250)," +
                     "N2 nvarchar(250)," +
 					"A nvarchar(250) not null)"+
-					";Create Index IX_cli_idp On {0}(IdP)" + 
+					";Create Index IX_cli_p On {0}(IdP)" + 
                     ";Create Index IX_cli_n On {0}(N)" +
+					""
+            },
+			{SRoadTable, "CREATE TABLE [dbo].{0}("+
+					"Id int IDENTITY(1,1) primary key,"+
+					"IdUser int not null,"+
+					"DateRM datetime not null,"+
+					"Npp int not null,"+
+					"IdC varchar(10) not null,"+
+					"IdT varchar(10),"+
+                    "P1 nvarchar(250)," +
+                    "P2 nvarchar(250)," +
+					"Note nvarchar(250))"+
+                    ";Create Index IX_road_u On {0}(IdUser)" + 
+                    ";Create Index IX_road_d On {0}(DateRM)" + 
+                    ";Create Index IX_road_c On {0}(IdC)" + 
+                    ";Create Index IX_road_t On {0}(IdT)" + 
 					""
             },
 			{SBilTable, "CREATE TABLE [dbo].{0}("+
@@ -322,10 +365,11 @@ begin
 		Select @P1, CONVERT(DateTime, @P2, 105), @P3,@P4, @P5, @P6, @P7, @P8, @P9
 		set @id = @@IDENTITY
 		
-		if @P6=0 set @P6='# ' + ltrim(str(@id))
+		--if @P6=0 
+		set @P6='# ' + ltrim(str(@id))
 		Update {1} set NumDoc=@P6 Where Id=@id
 
-		set @Reply = ltrim(str(@id)) + ' OK'
+		set @Reply = ltrim(str(@id)) + ' Insert'
 	end else begin
 		set @id = @P0
 		
@@ -336,8 +380,10 @@ begin
 			return
 		end
 		
-		Update {1} set DateDoc=CONVERT(DateTime, @P2, 105), IdC=@P3,IdT=@P4,  Note=@P5, SumDoc=@P7, Wars=@P8
+		Update {1} set DateDoc=CONVERT(DateTime, @P2, 105), IdC=@P3,IdT=@P4,  Note=@P5, SumDoc=@P7, Wars=@P8,P1=@P9
 		Where Id=@id
+
+		set @Reply = ltrim(str(@id)) + ' Edit'
 	end
 	
 	return
@@ -349,7 +395,7 @@ end
 
 		public static void ReadTest(IBAsketPlugin mPlugin)
 		{
-			return;
+			//return;
 			CreateDbObject(SwuTable, SwuTable);
 			//Common.CreateDbObject(Common.SProdTable, Common.SProdTable);
 			//Common.CreateDbObject(Common.SCliTable, Common.SCliTable);
@@ -408,6 +454,9 @@ end
 		List<Bil> GetBil();
 		Bil GetBilById(string id);
 		Bil PostBil();
+
+		List<RoadMap> GetRoadMap();
+		//RoadMap GetRoadMapById(string id);
 
 		void UpdateDbFromSwapFile();
 	}

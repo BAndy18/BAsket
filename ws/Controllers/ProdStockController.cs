@@ -13,13 +13,15 @@ namespace BAsketWS.Controllers
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
-		private ProdStockController()
-		{
-			if (mPlugin == null) mPlugin = new DefaultPlugin();
-		}
+		//private ProdStockController()
+		//{
+		//	if (mPlugin == null) mPlugin = new DefaultPlugin();
+		//}
 
 		public List<ProdStock> Get()
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			var result = mPlugin.GetProdStock();
 			return result;
 		}

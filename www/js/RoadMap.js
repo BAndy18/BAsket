@@ -1,6 +1,6 @@
 BAsket.RoadMapList = function (params) {
 	P.getGeo();
-	var date = params.Id ? new Date(params.Id) : new Date();
+	var date = params.Id && params.Id != "undefined"? new Date(params.Id) : new Date();
 	var dataVal = ko.observable(date);
 	var itemSelected = ko.observable(0);
 	var popVisible = ko.observable(false);
@@ -17,9 +17,10 @@ BAsket.RoadMapList = function (params) {
 
 	var viewModel = {
 		dataVal: dataVal,
+		popupVisible: popupVisible,
+
 		holdTimeout: holdTimeout,
 		popVisible: popVisible,
-		popupVisible: popupVisible,
 		popActions: [
 			{ text: _.RoadMap.OpenBil, clickAction: function () { RoadMap_Action('OpenBil') } },
 			{ text: _.RoadMap.MoveUp, clickAction: function () { RoadMap_Move('MoveUp') } },
@@ -74,8 +75,8 @@ BAsket.RoadMapList = function (params) {
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
 		var prms = {};
 		prms['date'] = U.DateFormat(dataVal());
-		prms['idCli'] = valueCli;
-		prms['idTp'] = (valueTP ? valueTP : 0);
+		prms['IdC'] = valueCli;
+		prms['IdT'] = (valueTP ? valueTP : 0);
 		prms['Npp'] = viewModel.dataSource.items().length > 0 ?
 			parseInt(viewModel.dataSource.items()[viewModel.dataSource.items().length - 1].Npp) + 1 : 1;
 
@@ -92,10 +93,10 @@ BAsket.RoadMapList = function (params) {
 		P.arrayBAsket = [];
 		P.arrayBAsketL = [];
 		for (var i in arr) {
-			if (arr[i].AdresDost) {
-				var cText = arr[i].tName ? arr[i].cName + ' - ' + arr[i].tName : arr[i].cName;
-				P.arrayBAsket.push({ tooltip: cText + ' (' + arr[i].AdresDost + ')', location: arr[i].AdresDost });
-				P.arrayBAsketL.push(arr[i].AdresDost);
+			if (arr[i].Adres) {
+				var cText = arr[i].N2 ? arr[i].N1 + ' - ' + arr[i].N2 : arr[i].N1;
+				P.arrayBAsket.push({ tooltip: cText + ' (' + arr[i].Adres + ')', location: arr[i].Adres });
+				P.arrayBAsketL.push(arr[i].Adres);
 			}
 		}
 		BAsket.app.navigate('RoadMap/');
@@ -140,9 +141,9 @@ BAsket.RoadMapList = function (params) {
 			}
 			var prms = {};
 			prms['date'] = U.DateFormat(dataVal());
-			prms['idCli'] = itemSelected().IdCli;
-			prms['idTp'] = itemSelected().IdTp;
-			prms['sNote'] = itemSelected().sNote;
+			prms['IdC'] = itemSelected().IdCli;
+			prms['IdT'] = itemSelected().IdTp;
+			prms['Note'] = itemSelected().sNote;
 			DAL.SaveBil(prms).done(function(res) {
 				DAL.SaveRMBil(itemSelected().Id, res.insertId).done(function() {
 					BAsket.app.navigate('Order/' + res.insertId);

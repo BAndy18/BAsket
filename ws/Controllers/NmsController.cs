@@ -13,13 +13,15 @@ namespace BAsketWS.Controllers
     {
 		[Import]
 		private IBAsketPlugin mPlugin;
-		private NmsController()
-		{
-			if (mPlugin == null) mPlugin = new DefaultPlugin();
-		}
+		//private NmsController()
+		//{
+		//	if (mPlugin == null) mPlugin = new DefaultPlugin();
+		//}
 
 		public List<Nms> Get()
 		{
+			mPlugin = Common.PluginInit(mPlugin);
+
 			Common.ReadTest(mPlugin);
 
 			var result = mPlugin.GetNms();

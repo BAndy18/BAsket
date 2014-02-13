@@ -32,9 +32,9 @@ namespace BAsketPlugin_PP
 		const string SqlGetClientById = "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}";
 		const string SqlGetAllClients = "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name";
 
-		const string SqlGetBilM = "exec _BasketPaging 3, {0}, '{1}', {2}, {3}";
-		const string SqlGetBilMById = "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}";
-		const string SqlExecBilMSave = "exec _BasketStuff 1, '{0}', @Reply output";
+		const string SqlGetBil = "exec _BasketPaging 3, {0}, '{1}', {2}, {3}";
+		const string SqlGetBilById = "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}";
+		const string SqlExecBilSave = "exec _BasketStuff 1, '{0}', @Reply output";
 		
 		const string SqlGetWebUsers = "Select * From sy_WebUsers";
 		#endregion
@@ -175,11 +175,11 @@ namespace BAsketPlugin_PP
 		//}
 		#endregion
 
-		#region BilM Controller
+		#region Bil Controller
 
-		static List<BilM> ProcessBilM(string cmd)
+		static List<Bil> ProcessBil(string cmd)
 		{
-			return Common.ProcessCommand(cmd, reader => new BilM
+			return Common.ProcessCommand(cmd, reader => new Bil
 			{
 				Id = reader.GetStrValue("r_bil"),
 				IdC = reader.GetStrValue("r_cli"),
@@ -187,14 +187,14 @@ namespace BAsketPlugin_PP
 				DateDoc = reader.GetStrValue("DateDoc"),
 				SumDoc = reader.GetDecimal("SumDoc").ToString("N2"),
 				Note = reader.GetStrValue("Note"),
-				cName = reader.GetStrValue("cName"),
-				tName = reader.GetStrValue("tName"),
-				FullName = reader.GetStrValue("FullName"),
-				AdresDost = reader.GetStrValue("AdresDost"),
+				N1 = reader.GetStrValue("cName"),
+				N2 = reader.GetStrValue("tName"),
+				//FullName = reader.GetStrValue("FullName"),
+				//AdresDost = reader.GetStrValue("AdresDost"),
 			});
 		}
 
-		public List<BilM> GetBilM()
+		public List<Bil> GetBil()
 		{
 			var qs = HttpContext.Current.Request.QueryString;
 			var id = qs["pId"];
@@ -210,22 +210,22 @@ namespace BAsketPlugin_PP
 			}
 			else
 			{
-				//return new List<BilM> { new BilM() { sNote = "user not found " + user } };
+				//return new List<Bil> { new Bil() { sNote = "user not found " + user } };
 			}
-			var cmd = string.Format(SqlGetBilM, userTp, searchString, skip + 1, top);
+			var cmd = string.Format(SqlGetBil, userTp, searchString, skip + 1, top);
 
-			var result = ProcessBilM(cmd);
+			var result = ProcessBil(cmd);
 			return result;
 		}
 
-		public BilM GetBilMById(string id)
+		public Bil GetBilById(string id)
 		{
-			var cmd = string.Format(SqlGetBilMById, id);
-			var result = ProcessBilM(cmd);
+			var cmd = string.Format(SqlGetBilById, id);
+			var result = ProcessBil(cmd);
 			return result[0];
 		}
 
-		public BilM PostBilM()
+		public Bil PostBil()
 		{
 			var retvalue = "";
 			var user = HttpContext.Current.User.Identity.Name;
@@ -236,7 +236,7 @@ namespace BAsketPlugin_PP
 			}
 			else
 			{
-				//return new BilM() { sNote = "user not found " + user };
+				//return new Bil() { sNote = "user not found " + user };
 			}
 			var form = HttpContext.Current.Request.Form;
 			var comand = form["cmd"];
@@ -251,7 +251,7 @@ namespace BAsketPlugin_PP
 				var sParam = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7};|",
 					sup, form["date"], form["idCli"], form["idTp"], form["sNote"], userTp, idServ, form["sWars"]);
 
-				var cmd = string.Format(SqlExecBilMSave, sParam);
+				var cmd = string.Format(SqlExecBilSave, sParam);
 				var prm = BaseRepository.NewParamList(BaseRepository.NewParam("@Reply", "", ParameterDirection.Output, 100));
 
 				retvalue = BaseRepository.ExecuteScalar(cmd, prm).ToString();
@@ -261,10 +261,45 @@ namespace BAsketPlugin_PP
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
-			return new BilM() { Note = retvalue };
+			return new Bil() { Note = retvalue };
 		}
 
 		#endregion
+
+		public List<RoadMap> GetRoadMap()
+		{
+			var qs = HttpContext.Current.Request.QueryString;
+			var date = qs["date"];
+			var top = qs["take"] ?? "30";
+			var skip = qs["skip"] ?? "0";
+			var searchString = qs["searchString"] ?? "";
+			if (!string.IsNullOrEmpty(searchString))
+				searchString = string.Format(" and (N Like '%{0}%') ", searchString);
+
+			var user = HttpContext.Current.User.Identity.Name;
+			var userId = "-1";
+			if (user.Split(';').Length > 1)
+			{
+				userId = user.Split(';')[1];
+			}
+			else
+			{
+				//return new List<Bil> { new Bil() { sNote = "user not found " + user } };
+			}
+			var cmd = "";	//string.Format(SqlGetRoadMap, userId, date, searchString, skip, top);
+
+			var result = Common.ProcessCommand(cmd, reader => new RoadMap
+			{
+				Id = reader.GetStrValue("Id"),
+				IdC = reader.GetStrValue("IdC"),
+				IdT = reader.GetStrValue("IdT"),
+				N1 = reader.GetStrValue("N1"),
+				N2 = reader.GetStrValue("N2"),
+				//P1 = reader.GetStrValue("P1"),
+				//P2 = reader.GetStrValue("P2"),
+			});
+			return result;
+		}
 
 		public void UpdateDbFromSwapFile()
 		{
@@ -290,10 +325,10 @@ namespace BAsketPlugin_PP
 //		{"CliById", "Select c.*, par.Name as ParName, ISNULL(par.Name + ' - ' + c.Name, c.Name) as FullName From spCli c Left Join spCLI par On c.r_fcli=par.r_cli Where c.r_cli={0}"},
 //		{"CliAll", "Select * From spCli Where n_tcli=1 and name is not null and adres is not null and ascii(left(adres,1))>0 Order by Name"},
 
-//		//{"BilM", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
-//		{"BilM", "exec _BasketPaging 3, {0}, '{1}', {2}, {3}"},
-//		{"BilMById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
-//		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
+//		//{"Bil", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where b.N_TP={0} and datediff(day, Datedoc, getdate())<20 Order by DateDoc desc"},
+//		{"Bil", "exec _BasketPaging 3, {0}, '{1}', {2}, {3}"},
+//		{"BilById", "Select b.*, c.Name as cName, t.Name as tName, ISNULL(c.Name + ' - ' + t.Name, c.Name) as FullName, ISNULL(t.Adres, c.Adres) as AdresDost From Bil b Join spCLI c On c.r_cli=b.r_cli Left Join spCLI t On t.r_cli=b.r_fcli Where r_bil={0}"},
+//		{"BilSave", "exec _BasketStuff 1, '{0}', @Reply output"},
 
 //		{"Nms", "Select 0 as t_nms, 1 as n_nms, 'Предприятие' as Name Union " +
 //				"Select 0 as t_nms, 101 as n_nms, 'Отчет' as Name Union " +
@@ -324,7 +359,7 @@ namespace BAsketPlugin_PP
 				"Select 101 as IdP, 1 as Id, 'Отчет 1' as N " +
 				"Order by IdP, Id"},
 
-		{"BilMSave", "exec _BasketStuff 1, '{0}', @Reply output"},
+		{"BilSave", "exec _BasketStuff 1, '{0}', @Reply output"},
  /**/
 //	{"WebUsers", "Select * From spWar"},
 //};

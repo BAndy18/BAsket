@@ -121,7 +121,8 @@ var DAL_web = (function ($, window) {
 		return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
 	};
 	root.DeleteBil = function(params) {
-		return execMethod({ method: 'DELETE', control: 'Bil/', prm: params }).load();
+        params['cmd'] = 'DelBil';
+		return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
 	};
 
     root.SendRepo = function(params) {
@@ -129,6 +130,14 @@ var DAL_web = (function ($, window) {
         return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
     };
 
+    root.RoadMap = function (params) {
+        var date = U.DateFormat(params, 'yyyy-mm-dd');
+        return execDataSource({ control: 'RoadMap', paging: true, prm: {'date': date}}, function (data) {
+            data.Name = data.N1;
+            data.Adres = data.N2;
+            return data;
+        });
+    }
 
 	function execDataSource(params, mapCallback) {
 		//P.getDeviceId();
@@ -152,6 +161,8 @@ var DAL_web = (function ($, window) {
 						headers: P.ajaxHeaders,
 					})
                     .done(function (result) {
+                        if (!result)
+                            return null;
                     	var mapped = $.map(result, function (item) {
                     		if (mapCallback)
                     			return mapCallback(item)
@@ -218,6 +229,8 @@ var DAL_web = (function ($, window) {
 						},
 					})
 					.done(function(result) {
+                        if (!result)
+                            return null;
 						var mapped = $.map(result, function(item) {
 							if (mapCallback)
 								return mapCallback(item);

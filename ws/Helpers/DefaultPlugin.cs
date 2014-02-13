@@ -50,7 +50,7 @@ namespace BAsketWS.Helpers
 			"Select * From " + Common.SCliTable + " Where 1=1 Order by N";
 
 		const string SqlGetBil =
-			"Select * FROM (Select Row_Number() OVER (ORDER BY [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
+			"Select * FROM (Select Row_Number() OVER (ORDER BY b.Id desc, [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
 			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
 			" Where IdUser='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}";
 		const string SqlGetBilById =
@@ -58,8 +58,17 @@ namespace BAsketWS.Helpers
 			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC Left Join " + Common.SCliTable +
 			" t On t.Id=b.IdT Where b.Id={0}";
 		const string SqlExecBilSave = "exec " + Common.SBasketProc + " 1, N'{0}', @Reply output";
+		const string SqlDelBilSave = "Delete " + Common.SBilTable + " Where Id='{0}'";
 
-		const string SqlGetWebUsers = "Select * From " + Common.SwuTable;
+		const string SqlGetRoadMap =
+			"Select * FROM (Select Row_Number() OVER (ORDER BY b.Id desc, [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
+			Common.SRoadTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
+			" Where IdUser='{0}' and DateRM='{1}' {2})x Where rowNum > {3} and rowNum <= {3}+{4}";
+		const string SqlDeleteRoadMap = "Delete From " + Common.SRoadTable + " Where IdUser='{0}' and DateRM>=getdate()";
+		const string SqlInsertRoadMap = 
+			//"If Exists(Select Id From " + Common.SRoadTable + " Where IdUser='{0}' and DateRec='{1}') Delete From " + 
+			//Common.SRoadTable + " Where IdUser='{0}' and DateRec='{1}';" +
+			"Insert Into " + Common.SRoadTable + " (IdUser,DateRM,Npp,IdC,IdT) Values({0},'{1}',{2},'{3}',{4})";
 
 		const string SqlExecUpdStock0 = "Update " + Common.SProdTable + " set O=0";
 		const string SqlExecUpdInsProd =
@@ -71,6 +80,7 @@ namespace BAsketWS.Helpers
 			" set IdP='{1}',N='{2}',N1={3},A='{4}' Where Id='{0}' Else Insert Into " +
 			Common.SCliTable + " (Id,IdP,N,N1,A) Values('{0}','{1}','{2}',{3},'{4}')";
 
+		const string SqlGetWebUsers = "Select * From " + Common.SwuTable;
 		#endregion
 
 		#region Category & Nms Controllers
@@ -329,6 +339,10 @@ namespace BAsketWS.Helpers
 				var b = new XmlHelper.BAsketBil { Header = h, Products = p};
 				XmlHelper.XmlOut(b);
 			}
+			else if (comand == "DelBil")
+			{
+				BaseRepository.ExecuteScalar(string.Format(SqlDelBilSave, form["id"]));
+			}
 			else if (comand == "SendRepo")
 			{
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
@@ -339,16 +353,55 @@ namespace BAsketWS.Helpers
 
 		#endregion
 
+		#region
+
+		public List<RoadMap> GetRoadMap()
+		{
+			var qs = HttpContext.Current.Request.QueryString;
+			var date = qs["date"];
+			var top = qs["take"] ?? "30";
+			var skip = qs["skip"] ?? "0";
+			var searchString = qs["searchString"] ?? "";
+			if (!string.IsNullOrEmpty(searchString))
+				searchString = string.Format(" and (N Like '%{0}%') ", searchString);
+
+			var user = HttpContext.Current.User.Identity.Name;
+			var userId = "-1";
+			if (user.Split(';').Length > 1)
+			{
+				userId = user.Split(';')[1];
+			}
+			else
+			{
+				//return new List<Bil> { new Bil() { sNote = "user not found " + user } };
+			}
+			var cmd = string.Format(SqlGetRoadMap, userId, date, searchString, skip, top);
+
+			var result = Common.ProcessCommand(cmd, reader => new RoadMap
+			{
+				Id = reader.GetStrValue("Id"),
+				IdC = reader.GetStrValue("IdC"),
+				IdT = reader.GetStrValue("IdT"),
+				N1 = reader.GetStrValue("N1"),
+				N2 = reader.GetStrValue("N2"),
+				//P1 = reader.GetStrValue("P1"),
+				//P2 = reader.GetStrValue("P2"),
+			});
+			return result;
+		}
+	
+		#endregion
+
 		#region UpdateDBFromSwapFile
 
 		public void UpdateDbFromSwapFile()
 		{
 			Common.SaveLog("DefaultPlugin.UpdateDbFromSwapFile");
 
-			var cmd = "";
 			XmlHelper.BAsketSwap doc;
 			var ser = XmlSerializer.FromTypes(new[] { typeof(XmlHelper.BAsketSwap) })[0];
-			using (var reader = XmlReader.Create(Common.StockFileName))
+			var fn = XmlHelper.CheckXmlStockFileName();
+			using (var reader = XmlReader.Create(fn))
 			{
 				doc = (XmlHelper.BAsketSwap)ser.Deserialize(reader);
 			}
@@ -361,6 +414,7 @@ namespace BAsketWS.Helpers
 			{
 				BaseRepository.ExecuteTransactionalCommand(tran, SqlExecUpdStock0, null);
 
+				var cmd = "";
 				foreach (var p in doc.Products.FProd)
 				{
 					p.Name1 = string.IsNullOrEmpty(p.Name1) ? "null" : "'" + p.Name1 + "'";
@@ -381,6 +435,24 @@ namespace BAsketWS.Helpers
 					//(Id,IdP,N,N1,A) Values('{0}','{1}','{2}',{3},'{4}')";
 					cmd = string.Format(SqlExecUpdInsCli, p.Id, p.IdP, p.Name, p.Name1, p.Adres);
 					BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
+				}/**/
+				foreach (var p in doc.RoadMaps.FRoadMap)
+				{
+					if (string.IsNullOrEmpty(p.UserId) || string.IsNullOrEmpty(p.DateRec))
+						continue;
+					cmd = string.Format(SqlDeleteRoadMap, p.UserId);
+					BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
+					var dateList = Common.GetDateRecList(p.DateRec);
+					foreach (var dt in dateList)
+					{
+						var ipp = 1;
+						foreach (var c in p.FClients)
+						{
+							c.IdP = string.IsNullOrEmpty(c.IdP) ? "null" : "'" + c.IdP + "'";
+							cmd = string.Format(SqlInsertRoadMap, p.UserId, dt.ToString("yyyy-MM-dd"), ipp++, c.Id, c.IdP);
+							BaseRepository.ExecuteTransactionalCommand(tran, cmd, null);
+						}
+					}
 				}/**/
 
 				tran.Commit();

@@ -49,7 +49,9 @@ namespace BAsketWS.DataAccess
 		{
 			var returnValue = 0;
 
-			Common.SaveLog("ExecuteCommand: sql=" + procedureName);
+			var sDebug = ConfigurationManager.AppSettings["Debug"];
+			//if (!string.IsNullOrEmpty(sDebug) && sDebug.ToLower() == "true")
+				//Common.SaveLog("ExecuteCommand: sql=" + procedureName);
 
 			using (var connection = GetConnection(connectionName))
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
@@ -62,6 +64,10 @@ namespace BAsketWS.DataAccess
 			return returnValue;
 		}
 
+		public static object ExecuteScalar(string procedureName)
+		{
+			return ExecuteScalar("BAsket", procedureName, null);
+		}
 		public static object ExecuteScalar(string procedureName, List<SqlParameter> parameters)
 		{
 			return ExecuteScalar("BAsket", procedureName, parameters);
@@ -70,7 +76,9 @@ namespace BAsketWS.DataAccess
 		{
 			object returnValue = null;
 
-			Common.SaveLog("ExecuteScalar: sql=" + procedureName);
+			var sDebug = ConfigurationManager.AppSettings["Debug"];
+			//if (!string.IsNullOrEmpty(sDebug) && sDebug.ToLower() == "true")
+				Common.SaveLog("ExecuteScalar: sql=" + procedureName);
 			
 			using (var connection = GetConnection(connectionName))
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
@@ -78,7 +86,7 @@ namespace BAsketWS.DataAccess
 				connection.Open();
 				returnValue = command.ExecuteScalar();
 
-				if (parameters.Count > 0 && parameters[0].Direction == ParameterDirection.Output)
+				if (parameters != null && parameters.Count > 0 && parameters[0].Direction == ParameterDirection.Output)
 					returnValue = parameters[0].Value;
 			}
 
@@ -89,8 +97,10 @@ namespace BAsketWS.DataAccess
 		public static SqlDataReader ExecuteReader(string connectionName, string procedureName, List<SqlParameter> parameters)
 		{
 			SqlDataReader result = null;
-			
-			Common.SaveLog("ExecuteReader: sql=" + procedureName);
+
+			var sDebug = ConfigurationManager.AppSettings["Debug"];
+			if (!string.IsNullOrEmpty(sDebug) && sDebug.ToLower() == "true")
+				Common.SaveLog("ExecuteReader: sql=" + procedureName);
 			
 			var connection = GetConnection(connectionName);
 			using (var command = CreateSqlCommand(connection, procedureName, parameters))
@@ -102,9 +112,8 @@ namespace BAsketWS.DataAccess
 			    }
 			    catch (SqlException ex)
 			    {
-					if (ex is SqlException && (ex as SqlException).Number == 15350)
-						//Common.CreateDb(connectionName)
-							;
+					//if (ex is SqlException && (ex as SqlException).Number == 15350)
+						//Common.CreateDb(connectionName);
 			        if (ex.Number == 208)	// Invalid object
                         Common.CreateDbObject(ex.Message);
 			        else

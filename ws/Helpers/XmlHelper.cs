@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 using BAsketWS.DataAccess;
@@ -10,6 +11,24 @@ namespace BAsketWS.Helpers
 {
 	public class XmlHelper
 	{
+		public static string CheckXmlStockFileName()
+		{
+			var sRet = Common.StockFileName;
+			if (sRet.Contains("#"))
+			{
+				var user = HttpContext.Current.User.Identity.Name;
+				var userId = "-1";
+				if (user.Split(';').Length > 1)
+				{
+					userId = user.Split(';')[1];
+				}
+				sRet = File.Exists(sRet.Replace("#", userId))
+					? sRet.Replace("#", userId)
+					: sRet.Replace("#", "");
+			}
+			return sRet;
+		}
+
 		#region test XmlOut
 		public static string XmlOut(List<Category> inS)
 		{
@@ -157,6 +176,9 @@ namespace BAsketWS.Helpers
 			[XmlElementAttribute("BAsketSwap-Clients")]
 			public CClients Clients { get; set; }
 
+			[XmlElementAttribute("BAsketSwap-RoadMaps")]
+			public CRoadMaps RoadMaps { get; set; }
+
 			public class CHeader
 			{
 				public string SwapNumber { get; set; }
@@ -165,7 +187,7 @@ namespace BAsketWS.Helpers
 
 			public class CProds
 			{
-				[XmlElement("Prod")]
+				[XmlElement("Product")]
 				public List<ProdItem> FProd = new List<ProdItem>();
 			}
 			public class Prod
@@ -216,6 +238,29 @@ namespace BAsketWS.Helpers
 				public string Adres { get; set; }
 			}
 
+			public class CRoadMaps
+			{
+				[XmlElement("RoadMap")]
+				public List<RoadMap> FRoadMap = new List<RoadMap>();
+				//public List<RoadMapItem> FRoadMap = new List<RoadMapItem>();
+			}
+			public class RoadMap
+			{
+				[XmlAttribute]
+				public string UserId { get; set; }
+				[XmlAttribute]
+				public string DateRec { get; set; }
+				[XmlElement("Client")]
+				public List<FClients> FClients { get; set; }
+			}
+			public class FClients
+			{
+				[XmlAttribute]
+				public string Id { get; set; }
+				[XmlAttribute]
+				public string IdP { get; set; }
+			}
+
 		}
 
 		public class BAsketBil
@@ -223,7 +268,7 @@ namespace BAsketWS.Helpers
 			[XmlElementAttribute("BAsketBil-Header")]
 			public CHeader Header { get; set; }
 
-			[XmlElementAttribute("BAsketSwap-Products")]
+			[XmlElementAttribute("BAsketBil-Products")]
 			public CProds Products { get; set; }
 
 			public class CHeader

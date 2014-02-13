@@ -1,1 +1,1 @@
-namespace BAsketWS.DataAccess { public struct VerConst { static public string ProductVer = "2.0.0210.218"; } }
+namespace BAsketWS.DataAccess { public struct VerConst { static public string ProductVer = "2.0.0213.248"; } }

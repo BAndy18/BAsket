@@ -1,13 +1,20 @@
 BAsket.Clients = function (params) {
 	P.getGeo();
 	var searchStr = ko.observable('');
+	var holdTimeout = ko.observable(500);
+	var popVisible = ko.observable(false);
+	var idSelected = ko.observable(0);
+
 	var viewModel = {
 		searchString: searchStr,
-		find: function() {
-			viewModel.showSearch(!viewModel.showSearch());
-			viewModel.searchString('');
-		},
-		showSearch: ko.observable(false),
+		// find: function() {
+		// 	viewModel.showSearch(!viewModel.showSearch());
+		// 	viewModel.searchString('');
+		// },
+		// showSearch: ko.observable(false),
+		popVisible: popVisible,
+		holdTimeout: holdTimeout,
+		popActions: [],
 
 		dataSource: DAL.Clients({ search: searchStr }),
 	};
@@ -19,6 +26,12 @@ BAsket.Clients = function (params) {
 		viewModel.dataSource.pageIndex(0);
 		viewModel.dataSource.load();
 	});
+
+	Client_processItemHold = function (arg) {
+		idSelected(arg.itemData.Id);
+		popVisible(true);
+	};
+
 
 	return viewModel;
 };
@@ -80,6 +93,7 @@ BAsket.Client = function (params) {
 		if (arg.itemData == arg.model.menuItems[0]) {
 			Client_menuSaveGeo();
 		} else if (arg.itemData == arg.model.menuItems[1]) {
+			
 			var d = geoDirections();
 			if (!d.legs || d.legs.length == 0)
 				return;
@@ -90,11 +104,13 @@ BAsket.Client = function (params) {
 			text += '<br/><p>По шагам:</p>';
 			for (var i in d.legs[0].steps) {
 				text += '<p>' + (parseInt(i) + 1) + ') ' + d.legs[0].steps[i].duration.text + '; ' + d.legs[0].steps[i].distance.text;
-				text += '; ' + d.legs[0].steps[i].instructions + '</p>'
+				text += '; ' + d.legs[0].steps[i].instructions + '</p>';
 			}
 			arg.model.popupVisible(true);
-			//$("#textContainer").empty();
 			$("#textContainer").html(text);
+			// $("#scrollView").dxScrollView("instance").scrollTo($(".dx-scrollview-content").height() - $(".dx-scrollview").height(), true);
+			// $("#scrollView").dxScrollView("instance").release();
+			// $("#scrollView").dxScrollView("instance").update();			
 		}
 	};
 	Client_menuSaveGeo = function (arg) {
@@ -103,6 +119,11 @@ BAsket.Client = function (params) {
 	};
 	Client_clickCancel = function (arg) {
 		popupVisible(false);
+	};
+
+	Client_PullDownActionFunction = function (actionOptions) {
+		// DevExpress.ui.dialog.alert("The widget has been pulled down", "Action executed");
+		actionOptions.component.release();
 	};
 
 	Client_MapReadyAction = function (s) {
@@ -118,12 +139,12 @@ BAsket.Client = function (params) {
 			//map.addMarker({tooltip: 'Current Location2', location: '56.843214,53.225489'});
 
 			var locCli = result[0].geoLoc;
-			locCli = result[0].Adres;
+			locCli = result[0].A;
 			if (locCli) {
-				map.addMarker({ tooltip: result[0].Name + ', ' + result[0].Adres, location: locCli });
+				map.addMarker({ tooltip: result[0].N + ', ' + result[0].A, location: locCli });
 			} else {
 				P.geoCoder(result[0].Adres).done(function(geores) {
-					map.addMarker({ tooltip: result[0].Name + ', ' + result[0].Adres, location: geores });
+					map.addMarker({ tooltip: result[0].N + ', ' + result[0].A, location: geores });
 				});
 
 				var p1 = map._options.markers[0].location.split(',');

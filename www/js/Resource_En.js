@@ -78,12 +78,14 @@ var RU_RU = (function (window) {
 		NoDataText: "Нет данных",
         EMailNotValid: "EMail не корректный",
 		CurrentLocation: 'Текущее положение',
+        SomethingWrong: 'Что-то пошло не так',
+        ServerOper: 'Серверная Операция',
 	};
 
 	root.Navigation = {
 		Order: "Новый Заказ",
 		OrderList: "Заказы",
-		RoadMapList: "Дорожная Карта",
+		RoadMapList: "Дорожные Карты",
 		Clients: "Клиенты",
 		ReadNews: "Новости",
 		Preferences: "Настройка",
@@ -94,8 +96,8 @@ var RU_RU = (function (window) {
         Title: "Обмен Новостями",
         LoadData: "Загрузка Данных", 
         SaveOrd: "Отправить Заказы", 
-        LoadOst: "Обновить товарные остатки", 
-        LoadSpr: "Обновить справочники", 
+        LoadOst: "Обновить товарные остатки",
+        LoadSpr: "Обновить справочники и карты", 
         RepoName: "Отчет", 
         SelectRepo: "Выбери Отчет", 
         SendRepo: "Отправить Отчет на EMail", 
@@ -181,7 +183,7 @@ var RU_RU = (function (window) {
 	};
 
 	root.RoadMap = {
-		Title: 'Дорожная Карта',
+		Title: 'Дорожные Карты',
 		AddToTheMap: 'Добавить клиента',
 		ShowOnTheMap: 'Показать на карте',
 		OpenBil: 'Открыть Заказ',
@@ -209,7 +211,7 @@ var RU_RU = (function (window) {
         'OrderList':    '<h1 class="center">Справка по Списку Заказов</h1><br/><p>нету пока )</p>',
         'Clients':      '<h1 class="center">Справка по Списку клиентов</h1><br/><p>нету пока )</p>',
         'Client':       '<h1 class="center">Справка по Клиенту</h1><br/><p>нету пока )</p>',
-        'RoadMap':      '<h1 class="center">Справка по Дорожной Карте</h1><br/><p>нету пока )</p>',
+        'RoadMap':      '<h1 class="center">Справка по Дорожным Картам</h1><br/><p>нету пока )</p>',
         'RoadMapList':  '<h1 class="center">Справка по Списку Дорожная Карта</h1><br/><p>нету пока )</p>',
         'Preferences':  '<h1 class="center">Справка по Настройке</h1><br/><p>нету пока )</p>',
         'ReadNews':    '<h1 class="center">Справка по Обновлению Новостей</h1><br/><p>нету пока )</p>',

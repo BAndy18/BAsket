@@ -57,8 +57,8 @@
 
         </div>
 
-		<div class="dx-button but50 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/>
-        </div>
+        <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: swValue || !P.useWebDb, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
+		<div class="dx-button but50 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/></div>
 		
     </div>
 </div>
@@ -69,10 +69,10 @@
         
         <div class="dx-fieldset" >
             <div class="dx-field">
-                <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
                 <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
                     valueUpdateEvent: 'search change keyup' }"/>
                 <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" />
+                <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb || swValue, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
             </div>
         </div>
 		
@@ -87,7 +87,6 @@
                 
                 <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
                 <div>
-                    <!-- <span class='textSmall' data-bind="text: $data.bSusp"/> #  -->
                     <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
                     <span class='textSmall' data-bind="text: $data.ShortDate"/> 
                     <span data-bind="text: $data.Name"/>
@@ -109,11 +108,10 @@
             noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
-            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
+            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}?s=true'">
                 
                 <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
                 <div>
-                    <!-- <span class='textSmall' data-bind="text: $data.bSusp"/> #  -->
                     <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
                     <span class='textSmall' data-bind="text: $data.ShortDate"/> 
                     <span data-bind="text: $data.Name"/>

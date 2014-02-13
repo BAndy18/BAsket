@@ -432,12 +432,13 @@ var P = (function ($, window) {
         BAsket.navigation = BAsket.navigation.splice(1);
 
         root.UserName = iniLocalStor("userName", "-");
-        if (root.UserName == '-') root.UserName = 'BAndy';
+        if (root.UserName == '-') root.UserName = 'BAsket User';
         root.UserPassword = iniLocalStor("userPassword", "-");
         if (root.UserPassword == '-') root.UserPassword = root.getDeviceId();
         root.UserEMail = iniLocalStor("userEMail", "-");
 
-        var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
+        var auth = "Basic " + [root.UserName, root.UserPassword].join(":");
+        // var auth = "Basic " + [root.UserName + ":" + root.UserPassword].join(":");
         auth = DevExpress.data.base64_encode(auth);
         // document.cookie = ".ASPXAUTH=" + auth;
         // document.cookie = ".ASPXAUTH=" + DevExpress.data.base64_encode(auth);
