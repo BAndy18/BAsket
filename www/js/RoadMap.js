@@ -74,7 +74,7 @@ BAsket.RoadMapList = function (params) {
 		}
 		var valueTP = $("#lookupTP").data("dxLookup").option("value");
 		var prms = {};
-		prms['date'] = U.DateFormat(dataVal());
+		prms['date'] = U.DateFormat(dataVal(), 'yyyy-mm-dd');
 		prms['IdC'] = valueCli;
 		prms['IdT'] = (valueTP ? valueTP : 0);
 		prms['Npp'] = viewModel.dataSource.items().length > 0 ?
@@ -135,18 +135,20 @@ BAsket.RoadMapList = function (params) {
 				]
 			}).show();
 		} else if (action == 'OpenBil') {
-			if (itemSelected().IdBil) {
-				BAsket.app.navigate('Order/' + itemSelected().IdBil);
+			if (itemSelected().IdB) {
+				BAsket.app.navigate('Order/' + itemSelected().IdB);
 				return;
 			}
 			var prms = {};
 			prms['date'] = U.DateFormat(dataVal());
-			prms['IdC'] = itemSelected().IdCli;
-			prms['IdT'] = itemSelected().IdTp;
-			prms['Note'] = itemSelected().sNote;
+			prms['IdC'] = itemSelected().IdC;
+			prms['IdT'] = itemSelected().IdT;
+			prms['Note'] = itemSelected().Note;
 			DAL.SaveBil(prms).done(function(res) {
-				DAL.SaveRMBil(itemSelected().Id, res.insertId).done(function() {
-					BAsket.app.navigate('Order/' + res.insertId);
+				var id = (P.useWebDb) ? res.insertId : res[0].Id;
+				DAL.SaveRMBil(itemSelected().Id, id).done(function() {
+					BAsket.app.navigate('Order/' + id);
+					viewModel.dataSource.load();
 				});
 			});
 		} else
@@ -177,8 +179,6 @@ BAsket.RoadMapList = function (params) {
 BAsket.RoadMap = function (params) {
 	//P.loadPanelVisible(true);
 	//P.getGeo();
-	// var markers = window.localStorage.getItem('RoadMap_Markers');
-	// var locations = window.localStorage.getItem('RoadMap_Locations');
 
 	var viewModel = {
 		options: {

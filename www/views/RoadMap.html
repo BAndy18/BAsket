@@ -1,4 +1,4 @@
-<div data-options="dxView : { name: 'RoadMapList', title: _.Navigation.RoadMap } " >
+<div data-options="dxView : { name: 'RoadMapList', title: _.Navigation.RoadMapList } " >
     <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/RoadMapList' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
@@ -7,7 +7,9 @@
                 <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, valueUpdateAction: RoadMap_ChangeDate }"/>
 
                 <div class="but20" data-bind="dxButton:{text:_.RoadMap.AddToTheMap, clickAction: RoadMap_AddToTheMap}"/>
-                <div class="but20" data-bind="dxButton:{text:_.RoadMap.ShowOnTheMap, clickAction: RoadMap_ClickShow}"/>                    
+                <div class="but20" data-bind="dxButton:{text:_.RoadMap.ShowOnTheMap, clickAction: RoadMap_ClickShow}
+                "/>
+                <div data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
             </div>
         </div>
 		<div data-bind="dxList: { 
@@ -17,7 +19,7 @@
             noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{P2}'">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{N3}'">
                 <div>
                     <span class='textSmall' data-bind="text: $data.Npp"/>  
                     <span class='textSmall' data-bind="text: $data.IdB"/>
@@ -25,7 +27,7 @@
                 </div>
                 <div class='textSmall marginleft'><span data-bind="text: $data.Note"/>
                     (<span data-bind="text: $data.Adres"/>) 
-                    (<span data-bind="text: $data.P2"/>) 
+                    (<span data-bind="text: $data.N3"/>) 
                 </div>
            </div>
         </div>
@@ -34,7 +36,6 @@
 
         <div data-bind="dxPopup: { visible:popupVisible }">
             <div data-options="dxTemplate: {name: 'title'}">
-               <!--  <p><b data-bind="text: 'popupTitle'"></b></p> -->
                <div data-bind="dxToolbar: { items: [
                   {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: RoadMap_clickCancel}},
                   {  align: 'center', text: _.RoadMap.AddToTheMap},          
@@ -57,7 +58,6 @@
                             fullScreen: true,
                             valueChangeAction: RoadMap_clientChanged}"/>
                     </div>
-                    <!-- <div class="dx-button" data-bind="text: 'arrayTP.length = ' + arrayTP.length + ' ; showTP='+ showTP()"></div> -->
                     <div class="dx-field" data-bind="visible: showTP()">
                         <div class="dx-field-label" data-bind="text: _.Order.Point" />
                         <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { 

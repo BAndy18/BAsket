@@ -28,5 +28,14 @@ namespace BAsketWS.Controllers
 			var result = mPlugin.GetRoadMap();
 			return result;
 		}
+
+		[HttpPost]
+		public RoadMap Post()
+		{
+			mPlugin = Common.PluginInit(mPlugin);
+
+			var result = mPlugin.PostRoadMap();
+			return result;
+		}
 	}
 }

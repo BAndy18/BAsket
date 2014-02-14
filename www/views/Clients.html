@@ -1,6 +1,6 @@
 <div data-options="dxView : { name: 'Clients', title: _.Navigation.Clients } " >
     <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Clients' } "></div>
-    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+    <div class="home-view"  data-options="dxContent: { targetPlaceholder: 'content' } " >
         <div class="dx-fieldset" >
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', 
@@ -10,13 +10,14 @@
         </div>
 
         <div data-bind="dxList: { 
-                dataSource: dataSource, 
+                dataSource: dataSource,  scrollingEnabled: true,
                 itemHoldAction: Client_processItemHold, 
                 itemHoldTimeout: holdTimeout, 
-                noDataText: _.Common.NoDataText,
                 pullRefreshEnabled: true,
+                noDataText: _.Common.NoDataText,
             }">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{Id}'">
+
+            <div data-options="dxTemplate : { name: 'item' }"  data-bind="dxAction: '#Client/{Id}'"> 
                 <div data-bind="text: $data.N"></div>
                 <div class='textSmall marginleft'><span data-bind="text: $data.A"/>
                     (<span data-bind="text: $data.GeoLoc"/> 
@@ -38,17 +39,11 @@
           { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Client' }},
           { location: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
         ]}"></div>
-<!--           {  location: 'menu', text: _.Clients.RoutDetail, clickAction: Client_ClickMenuAction}, -->
 
-        <!-- <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " > -->
-        <!-- <div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div> -->
         <div class="dx-fieldset">
             <div class="dx-field">
                 <div data-bind="text: cliName()" />
-<!--                 <div class="dx-field-value" >
-                 	<div style="width: 20%" data-bind="dxTextBox: {value: P.geoCurrent}" />
-                </div>
- -->			</div>
+			</div>
 		</div>
        
 
@@ -62,8 +57,7 @@
         </div>
 
         <div data-bind="dxPopup:{visible:popupVisible}">
-            <div data-options="dxTemplate:{name: 'title'}">
-               <!--  <p><b data-bind="text: 'popupTitle'"></b></p> -->
+            <div data-options="dxTemplate:{name: 'title'}">               
                <div data-bind="dxToolbar: { items: [
                   {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: Client_clickCancel}},
                   {  align: 'center', text: _.Clients.RoutDetail},          

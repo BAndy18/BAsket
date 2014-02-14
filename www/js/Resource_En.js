@@ -80,6 +80,7 @@ var RU_RU = (function (window) {
 		CurrentLocation: 'Текущее положение',
         SomethingWrong: 'Что-то пошло не так',
         ServerOper: 'Серверная Операция',
+        ServerReply: 'Ответ Сервера: ',
 	};
 
 	root.Navigation = {
@@ -183,7 +184,7 @@ var RU_RU = (function (window) {
 	};
 
 	root.RoadMap = {
-		Title: 'Дорожные Карты',
+		Title: 'Дорожная Карта',
 		AddToTheMap: 'Добавить клиента',
 		ShowOnTheMap: 'Показать на карте',
 		OpenBil: 'Открыть Заказ',

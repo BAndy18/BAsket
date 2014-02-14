@@ -33,10 +33,6 @@ BAsket.Order = function (params) {
 				dataVal(new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]));
 			else
 				dataVal(new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]));
-			noteVal(result[0].Note);
-			cliId(result[0].IdC);
-			cliName(result[0].N1);
-			tpId(result[0].IdT);
 
 			var arr = nmsNames();
 			var sOther = result[0].P1;
@@ -59,6 +55,10 @@ BAsket.Order = function (params) {
 				}
 				nmsNames(arr);
 			}
+			noteVal(result[0].Note);
+			cliId(result[0].IdC);
+			cliName(result[0].N1);
+			tpId(result[0].IdT);
 			var tName = result[0].N2 ? result[0].N2 : _.Order.SelectPoint + '...';
 			tpName(tName);
 			DAL.ClientsPar(result[0].IdC).load().done(function(result) {
@@ -219,8 +219,8 @@ BAsket.OrderList = function (params) {
 	var swValue = ko.observable(false);
 
 	var viewModel = {
-		dataSource: DAL.Bil(),
-		dataSourceS: DAL.Bil(true),
+		dataSource: DAL.Bil({ search: searchStr }),
+		dataSourceS: DAL.Bil({ search: searchStr }, true),
 
 		popVisible: popVisible,
 		holdTimeout: holdTimeout,
@@ -237,6 +237,11 @@ BAsket.OrderList = function (params) {
 		// showSearch: ko.observable(false),
 		swTitle: swTitle,
 		swValue: swValue,
+		viewShown: function () {
+			if (swValue())
+				viewModel.dataSourceS.load();
+			else
+				viewModel.dataSource.load();		}
 	};
 	ko.computed(function() {
 		return viewModel.searchString();
@@ -245,6 +250,8 @@ BAsket.OrderList = function (params) {
 	}).subscribe(function() {
 		viewModel.dataSource.pageIndex(0);
 		viewModel.dataSource.load();
+		viewModel.dataSourceS.pageIndex(0);
+		viewModel.dataSourceS.load();
 	});
 
 	Order_SwitchSource = function(){
@@ -255,7 +262,7 @@ BAsket.OrderList = function (params) {
 		}
 		else{
 			swTitle(_.Order.SwTitle1)
-			// viewModel.dataSource.load();
+			viewModel.dataSource.load();
 		}
 		//viewModel.dataSource = DAL.Bil(swValue());
 	}

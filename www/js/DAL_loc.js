@@ -159,15 +159,14 @@ var DAL = (function ($, window) {
 	};
 
 
-	root.Bil = function (toServer) {
+	root.Bil = function (params, toServer) {
 		if (!P.useWebDb || toServer)
-			return DAL_web.Bil();
+			return DAL_web.Bil(params);
 
-		return execDataSource({
+		return execDataSource({paging: true, searchString: params.search, searchReg: " and (c.N LIKE '%@%')",
 			query: "SELECT b.*, c.N as N1, t.N as N2, substr(b.DateDoc,1,5) as ShortDate, " +
-				"IFNULL(c.N || ' - ' || t.N, c.N) as Name, " +
-				"IFNULL(t.A, c.A) as Adres " +
-				"FROM Bil b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id Order by bSusp, Id desc"
+				"IFNULL(c.N || ' - ' || t.N, c.N) as Name, IFNULL(t.A, c.A) as Adres " +
+				"FROM Bil b Join CLI c On b.IdC=c.Id Left Join CLI t On b.IdT=t.Id Where 1=1 # Order by bSusp, Id desc"
 		});
 	};
 	root.BilById = function (params, toServer) {
@@ -186,6 +185,7 @@ var DAL = (function ($, window) {
 		if (!params['sOther']) params['sOther'] = '';
 		if (!params['sNote']) params['sNote'] = '';
 		if (!params['sWars']) params['sWars'] = '';
+        if (!params['sumDoc']) params['sumDoc'] = '';
 		if (params['id']) {
 			query = "UPDATE Bil set DateDoc='" + params['date'] + "', IdC='" + params['IdC'] + "', IdT='" + params['IdT'] +
 				"', SumDoc='" + params['sumDoc'] + "', Note='" + params['sNote'] + "', P1='" + params['sOther'] +
@@ -232,7 +232,7 @@ var DAL = (function ($, window) {
                         if (idServ.length > 0)
                             cmd += ", IdServ='" + idServ + "'";
                     }
-                    cmd += " WHERE Id=" + result[i].Id;
+                    cmd += " WHERE Id=" + res[0].LocNum;    //result[i].Id;
                     execQuery(cmd);
                         //"UPDATE Bil set bSusp=1, ServRet='" + res[0].Note + "', IdServ='" + servId + "' WHERE Id=" + result[i].Id);
                 })
@@ -244,11 +244,11 @@ var DAL = (function ($, window) {
     root.RoadMap = function (params) {
         if (!P.useWebDb) 
             return DAL_web.RoadMap(params);
-        var date = U.DateFormat(params);   //yyyy-mm-dd
+        var date = U.DateFormat(params, 'yyyy-mm-dd');
         return execDataSource({
             query: "SELECT r.*, c.N as N1, t.N as N2, " +
                 "IFNULL(t.N || ' - ' || c.N, c.N) as Name, " +
-                "IFNULL(t.A, c.A) as Adres, IFNULL(t.Id, c.Id) as P2 " +
+                "IFNULL(t.A, c.A) as Adres, IFNULL(t.Id, c.Id) as N3 " +
                 "FROM RMAP r Join CLI c On r.IdC=c.Id Left Join CLI t On r.IdT=t.Id " +
                 "Where DateDoc='" + date + "' Order by Npp"
         });
@@ -266,7 +266,9 @@ var DAL = (function ($, window) {
         return execQuery("DELETE FROM RMAP Where Id='" + params + "'");
     };
     root.SaveRMBil = function (id, idb) {
-        return execQuery("UPDATE RMAP set IdBil=" + idb + " Where Id=" + id);
+        if (!P.useWebDb) 
+            return DAL_web.SaveRMBil(id, idb);
+        return execQuery("UPDATE RMAP set IdB=" + idb + " Where Id=" + id);
     };
     root.AddCliRMap = function(prm, callback) {
         execQuery("INSERT INTO RMAP (DateDoc, Npp, IdC, IdT) VALUES('" + prm['date'] + "'," + prm['Npp'] + ",'"
@@ -301,7 +303,7 @@ var DAL = (function ($, window) {
     var modeReadNews;
 	root.ReadNews = function (fullNews, createDB) {
 		P.loadPanelVisible(true);
-        waitPanelSwitch = {NMS: true, CAT: true, WAR: true, CLI: true};
+        waitPanelSwitch = {NMS: true, CAT: true, WAR: true, CLI: true, MAP: true};
         
 		// var source0 = DAL_web.NMS();
 		// if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
@@ -328,7 +330,8 @@ var DAL = (function ($, window) {
 		DAL_web.Products({ pId: modeReadNews }).load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
-    		DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
+            DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
+            DAL_web.RoadMap(new Date(), true).load().done(function (result) { writeToLocalData(result, 'MAP'); });
         }
         else {
             waitPanelSwitch.CLI = false;
@@ -377,8 +380,12 @@ var DAL = (function ($, window) {
 						searchValue = params.searchString();
 					else if (params['searchValue'])
 						searchValue = params['searchValue'];
-					if (searchValue)
-						dbLastQ += " and (N LIKE '%" + searchValue + "%')";
+					if (searchValue) {
+                        var sr = " and (N LIKE '%" + searchValue + "%')";
+                        if (params.searchReg) sr = params.searchReg.replace("@", searchValue);
+						dbLastQ = dbLastQ.indexOf('#') > 0 ? dbLastQ.replace("#", sr) : dbLastQ + sr;
+                    }
+                    dbLastQ = dbLastQ.replace("#","");
 
 					if (params.paging)
 						dbLastQ += " LIMIT " + params['skip'] + ", " + params['take'];
@@ -464,8 +471,7 @@ var DAL = (function ($, window) {
             }
         return true;
     }
-	var arrWAR;
-	var arrCLI;
+	var arrWAR, arrCLI, arrMAP;
 	function writeToLocalData(dataArray, table) {
 
 		if (table == 'NMS') {
@@ -508,16 +514,26 @@ var DAL = (function ($, window) {
             });
 		}
 		if (table == 'CLI') {
-			arrCLI = dataArray;
+            arrCLI = dataArray;
             // writeToCLI();
-			DB.transaction(writeToCLI,
+            DB.transaction(writeToCLI,
                 function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
                 function () { trace(_.ReadNews.WroteRecs + table + ": success");        
                     waitPanelSwitch.CLI = false;
                     if (CheckWaitPanelSwitch())
                         P.loadPanelVisible(false);
                 });
-		}
+        }
+        if (table == 'MAP') {
+            arrMAP = dataArray;
+            DB.transaction(writeToMAP,
+                function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
+                function () { trace(_.ReadNews.WroteRecs + table + ": success");        
+                    waitPanelSwitch.MAP = false;
+                    if (CheckWaitPanelSwitch())
+                        P.loadPanelVisible(false);
+                });
+        }
 	};
     
  	function writeToWAR(tx) {
@@ -526,7 +542,6 @@ var DAL = (function ($, window) {
 		var i, maxlen = 47;
 		var len = arr.length; //    < maxlen? arr.length:maxlen;
 		//console.log('writeWars: writing=' + len);
-		//tx.executeSql("BEGIN TRANSACTION");
 		for (i = 0; i < len; i++) {
             dbLastQ = "Select Id From WAR Where Id='" + arr[i].Id + "'";
             //tx.executeSql(dbLastQ, [], function (tx, results) {
@@ -559,7 +574,6 @@ var DAL = (function ($, window) {
             }, arr[i]);
             //}, function (err, err2) {errorCB("*writeToWAR-rd sql*", err, err2)});
 		}
-		//tx.executeSql("COMMIT TRANSACTION", errorCB);
 		trace(_.ReadNews.ReadRecs + ' WAR: ' + i);
 		// P.loadPanelVisible(false);
 	};
@@ -598,6 +612,30 @@ var DAL = (function ($, window) {
 		P.itemCount['Clients'] = P.ChangeValue('Clients', i);
 		// P.loadPanelVisible(false);
 	};
+
+    function writeToMAP(tx) {
+        P.loadPanelVisible(true);
+        var date = U.DateFormat(new Date(), 'yyyy-mm-dd');
+        dbLastQ = "Delete From RMAP Where DateDoc>='" + date + "'";
+        tx.executeSql(dbLastQ, [], function (tx, results) {
+            var arr = arrMAP;
+            var i, maxlen = 50000;
+            var len = arr.length;   // < maxlen? arr.length:maxlen;
+            for (i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                item.IdT = (item.IdT == null || item.IdT == 'null') ? '0' : item.IdT;
+                date = U.DateFormat(item.D, 'yyyy-mm-dd');
+                dbLastQ = "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, Note) VALUES('"
+                    + item.D + "','" + + item.Npp + "','" + item.IdC + "','" + item.IdT + "','" + item.Note +
+                    "')";
+
+                tx.executeSql(dbLastQ, [], function (tx, results) { },
+                    function (err, err2) { errorCB("*writeToMAP sql*", err, err2); }
+                );
+            }
+            trace(_.ReadNews.ReadRecs + ' MAP: ' + i);
+        }, function (err, err2) {errorCB("*writeToMAP-rd sql*", err, err2)} );
+    };
 
 
 	// Transaction error callback
@@ -644,18 +682,19 @@ var DAL = (function ($, window) {
 	};
 
 	var LocalScript = [
-        'DROP TABLE IF EXISTS CAT',
         'DROP TABLE IF EXISTS WAR',
         'DROP TABLE IF EXISTS CLI',
         'DROP TABLE IF EXISTS Bil',
         'DROP TABLE IF EXISTS RMAP',
-        'DROP TABLE IF EXISTS NMS',
+        'DROP TABLE IF EXISTS BILM',
+        //'DROP TABLE IF EXISTS CAT',
+        //'DROP TABLE IF EXISTS NMS',
         // 'CREATE TABLE IF NOT EXISTS NMS (IdRoot, Id, Name)',
         // 'CREATE TABLE IF NOT EXISTS CAT (Id unique, Name)',
         'CREATE TABLE IF NOT EXISTS WAR (Id unique, IdP, N, P DECIMAL(20,2), N1, N2, N3, N4, N5, O int, bSusp int)',
         'CREATE TABLE IF NOT EXISTS CLI (Id unique, IdP, N, A)',
-        'CREATE TABLE IF NOT EXISTS Bil (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdC, IdT, NumDoc, SumDoc, Note, P1, Wars, DateSync DateTime, ServRet, IdServ, bSusp int)',
-        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdB int, IdC, IdT, Note, P1, DateSync DateTime, ServRet, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS Bil (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, IdC, IdT, NumDoc, SumDoc, Note, Wars, P1, P2, DateSync DateTime, ServRet, IdServ, bSusp int)',
+        'CREATE TABLE IF NOT EXISTS RMAP (Id INTEGER PRIMARY KEY AUTOINCREMENT, DateDoc DateTime, Npp int, IdB int, IdC, IdT, Note, DateSync DateTime, ServRet, bSusp int)',
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '1', 'Предприятие')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '1', 'Пупкин ЧП')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('1', '2', 'Ступкин ООО')",

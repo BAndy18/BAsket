@@ -301,8 +301,7 @@ namespace BAsketWS.DataAccess
 					"Npp int not null,"+
 					"IdC varchar(10) not null,"+
 					"IdT varchar(10),"+
-                    "P1 nvarchar(250)," +
-                    "P2 nvarchar(250)," +
+					"IdB varchar(10),"+
 					"Note nvarchar(250))"+
                     ";Create Index IX_road_u On {0}(IdUser)" + 
                     ";Create Index IX_road_d On {0}(DateRM)" + 
@@ -395,7 +394,7 @@ end
 
 		public static void ReadTest(IBAsketPlugin mPlugin)
 		{
-			//return;
+			return;
 			CreateDbObject(SwuTable, SwuTable);
 			//Common.CreateDbObject(Common.SProdTable, Common.SProdTable);
 			//Common.CreateDbObject(Common.SCliTable, Common.SCliTable);
@@ -455,8 +454,9 @@ end
 		Bil GetBilById(string id);
 		Bil PostBil();
 
-		List<RoadMap> GetRoadMap();
 		//RoadMap GetRoadMapById(string id);
+		List<RoadMap> GetRoadMap();
+		RoadMap PostRoadMap();
 
 		void UpdateDbFromSwapFile();
 	}

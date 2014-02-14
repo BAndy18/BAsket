@@ -55,7 +55,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 5829,
+				"buffer_size": 5813,
 				"line_ending": "Windows"
 			}
 		},
@@ -71,7 +71,7 @@
 			"file": "js/Utils.js",
 			"settings":
 			{
-				"buffer_size": 16323,
+				"buffer_size": 16449,
 				"line_ending": "Windows"
 			}
 		},
@@ -79,31 +79,7 @@
 			"file": "js/Resource_En.js",
 			"settings":
 			{
-				"buffer_size": 8717,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/Products.js",
-			"settings":
-			{
-				"buffer_size": 2831,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/Preferences.js",
-			"settings":
-			{
-				"buffer_size": 7319,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "views/Preferences.html",
-			"settings":
-			{
-				"buffer_size": 9180,
+				"buffer_size": 8807,
 				"line_ending": "Windows"
 			}
 		},
@@ -111,7 +87,7 @@
 			"file": "js/DAL_loc.js",
 			"settings":
 			{
-				"buffer_size": 24851,
+				"buffer_size": 27439,
 				"line_ending": "Unix"
 			}
 		},
@@ -119,23 +95,7 @@
 			"file": "js/DAL_web.js",
 			"settings":
 			{
-				"buffer_size": 6942,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "views/Order.html",
-			"settings":
-			{
-				"buffer_size": 7562,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/Order.js",
-			"settings":
-			{
-				"buffer_size": 8397,
+				"buffer_size": 7539,
 				"line_ending": "Windows"
 			}
 		},
@@ -143,7 +103,7 @@
 			"file": "js/Clients.js",
 			"settings":
 			{
-				"buffer_size": 7287,
+				"buffer_size": 7590,
 				"line_ending": "Windows"
 			}
 		},
@@ -151,7 +111,39 @@
 			"file": "views/Clients.html",
 			"settings":
 			{
-				"buffer_size": 4201,
+				"buffer_size": 3341,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/i.js",
+			"settings":
+			{
+				"buffer_size": 913,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "i.html",
+			"settings":
+			{
+				"buffer_size": 2063,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/Order.html",
+			"settings":
+			{
+				"buffer_size": 7670,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/Order.js",
+			"settings":
+			{
+				"buffer_size": 8652,
 				"line_ending": "Windows"
 			}
 		},
@@ -159,7 +151,7 @@
 			"file": "css/index.css",
 			"settings":
 			{
-				"buffer_size": 2927,
+				"buffer_size": 3035,
 				"line_ending": "Windows"
 			}
 		},
@@ -207,22 +199,25 @@
 	},
 	"file_history":
 	[
+		"/D/P/BAsketPG/PhoneJS/public/js/DAL_tst.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/home.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/C.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/C.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/Resource_En.js",
+		"/D/P/BAsketPG/PhoneJS/public/js/DAL_web.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/Products.js",
-		"/D/P/BAsketPG/PhoneJS/public/views/Products.html",
-		"/D/P/BAsketPG/PhoneJS/public/css/index.css",
+		"/D/P/BAsketPG/PhoneJS/public/js/RoadMap.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/RoadMap.html",
+		"/D/P/BAsketPG/PhoneJS/public/js/Order.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/Order.html",
 		"/D/P/BAsketPG/PhoneJS/public/views/Preferences.html",
 		"/D/P/BAsketPG/PhoneJS/public/js/Preferences.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/DAL_tst.js",
+		"/D/P/BAsketPG/PhoneJS/public/views/Products.html",
+		"/D/P/BAsketPG/PhoneJS/public/css/index.css",
 		"/D/P/BAsketPG/PhoneJS/public/js/Clients.js",
 		"/D/P/BAsketPG/PhoneJS/public/views/Clients.html",
 		"/D/P/BAsketPG/PhoneJS/public/views/ProductDetails.html",
-		"/D/P/BAsketPG/PhoneJS/public/views/RoadMap.html",
-		"/D/P/BAsketPG/PhoneJS/public/js/RoadMap.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/ProductDetails.js",
-		"/D/P/BAsketPG/PhoneJS/public/views/Order.html",
-		"/D/P/BAsketPG/PhoneJS/public/js/Order.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/DAL_web.js",
-		"/D/P/BAsketPG/PhoneJS/public/js/Resource_En.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/DAL.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/DAL_loc.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/DataBoundApp.js",
@@ -231,7 +226,6 @@
 		"/D/P/BAsketPG/PhoneJS/public/views/NewBil.html",
 		"/D/P/BAsketPG/PhoneJS/public/js/index.js",
 		"/D/P/BAsketPG/PhoneJS/public/js/bilHeader.js",
-		"/D/P/BAsketPG/PhoneJS/public/views/home.html",
 		"/D/P/BAsketPG/PhoneJS/public/views/bilHeader.html",
 		"/D/P/BAsketPG/PhoneJS/public/index.html",
 		"/D/P/BAsketPG/PhoneJS/public/index.js",
@@ -283,6 +277,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"viewPort",
+			"OpenBil",
+			"Delete",
+			"getDeviceId",
+			"bandy",
+			"IdDost",
+			"Order_processItemHold",
+			"holdTimeout",
 			"popActions",
 			"SaveBil",
 			"DeleteBil",
@@ -402,15 +404,7 @@
 			"R.get",
 			"forE",
 			"fore",
-			"forea",
-			"changeLanguageUI",
-			"CategoryChange",
-			"dxLookup",
-			"dsSQLiteTable",
-			"tx.executeSql",
-			"GetCategoryName",
-			"createDB",
-			"typeof"
+			"forea"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -429,7 +423,7 @@
 	"groups":
 	[
 		{
-			"selected": 9,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -438,15 +432,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5829,
+						"buffer_size": 5813,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1212,
-								1212
+								2077,
+								2077
 							]
 						],
 						"settings":
@@ -456,10 +450,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 40.0,
+						"translation.y": 458.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
@@ -475,8 +469,8 @@
 						"selection":
 						[
 							[
-								1972,
-								1959
+								0,
+								0
 							]
 						],
 						"settings":
@@ -486,10 +480,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 720.0,
+						"translation.y": 272.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
@@ -498,15 +492,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16323,
+						"buffer_size": 16449,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								15997,
-								16082
+								12667,
+								12667
 							]
 						],
 						"settings":
@@ -516,10 +510,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 8850.0,
+						"translation.y": 8453.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
@@ -528,131 +522,43 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8717,
+						"buffer_size": 8807,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1153,
-								1153
+								1622,
+								1622
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1080.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "js/Products.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2831,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								252,
-								252
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 180.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "js/Preferences.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7319,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								7175,
-								7175
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4255.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "views/Preferences.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9180,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6951,
-								6951
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 2660.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
+					"buffer": 4,
 					"file": "js/DAL_loc.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 24851,
+						"buffer_size": 27439,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6421,
-								6428
+								13398,
+								13398
 							]
 						],
 						"settings":
@@ -662,57 +568,84 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4087.0,
+						"translation.y": 3146.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 5,
 					"file": "js/DAL_web.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6942,
+						"buffer_size": 7539,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3534,
-								3543
+								7329,
+								7329
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2220.0,
+						"translation.y": 3745.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
-					"file": "views/Order.html",
+					"buffer": 6,
+					"file": "js/Clients.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7562,
+						"buffer_size": 7590,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4510,
-								4510
+								505,
+								505
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "views/Clients.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3341,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								177,
+								85
 							]
 						],
 						"settings":
@@ -722,85 +655,86 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1020.0,
+						"translation.y": 1056.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
+					"buffer": 8,
+					"file": "js/i.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 913,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								913,
+								913
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "i.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2063,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								924,
+								924
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 396.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
 					"buffer": 10,
-					"file": "js/Order.js",
+					"file": "views/Order.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8397,
+						"buffer_size": 7670,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6591,
-								6591
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4205.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "js/Clients.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7287,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3094,
-								3094
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1020.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "views/Clients.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4201,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3953,
-								3941
+								6184,
+								6184
 							]
 						],
 						"settings":
@@ -810,27 +744,56 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 900.0,
+						"translation.y": 2508.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
-					"file": "css/index.css",
+					"buffer": 11,
+					"file": "js/Order.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2927,
+						"buffer_size": 8652,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1555,
-								1559
+								6989,
+								6989
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 467.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "css/index.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3035,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2593,
+								2593
 							]
 						],
 						"settings":
@@ -840,14 +803,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": -0.0,
-						"translation.y": 120.0,
+						"translation.y": 1188.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 13,
 					"file": "js/ProductDetails.js",
 					"semi_transient": false,
 					"settings":
@@ -876,7 +839,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 14,
 					"file": "views/ProductDetails.html",
 					"semi_transient": false,
 					"settings":
@@ -946,7 +909,7 @@
 	"project": "BAsket.sublime-project",
 	"replace":
 	{
-		"height": 80.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":

@@ -391,7 +391,8 @@ var P = (function ($, window) {
 		// }
 		//alert("Test openDatabase OK " + root.useWebDb);
 
-		root.platformDevice = 'android';
+        root.platformDevice = 'android';
+		// root.platformDevice = 'win8';
 		root.platformDevice = iniLocalStor("Platform", 'android');
 		if (root.platformDevice == '-')
 			root.platformDevice = root.deviceInfo.platform;

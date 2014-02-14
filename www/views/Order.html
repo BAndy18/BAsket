@@ -34,8 +34,9 @@
                     dataSource: arrayTP, 
                     displayExpr: 'N', 
                     valueExpr: 'Id',
-                    searchEnabled: false, 
-                    placeholder: tpName }"/>
+                    value: tpId, 
+                    placeholder: tpName,
+                    searchEnabled: false }"/>
             </div>
         </div>
         <div class="dx-fieldset">
@@ -103,9 +104,9 @@
 
         <div id="idOrderListS" data-bind="dxList: { visible: swValue(),
             dataSource: dataSourceS, 
-            itemHoldAction: Order_processItemHold, 
-            itemHoldTimeout: holdTimeout, 
             noDataText: _.Common.NoDataText,
+            itemHoldAction: Order_processItemHold, 
+            itemHoldTimeout: holdTimeout,  
             pullRefreshEnabled: true 
             }">
             <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}?s=true'">

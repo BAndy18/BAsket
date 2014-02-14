@@ -106,7 +106,7 @@ var DAL_web = (function ($, window) {
 	};
 
 	root.Bil = function(params) {
-		return execDataSource({ control: 'Bil', paging: true, prm: {}}, function (data) {
+		return execDataSource({ control: 'Bil', paging: true, prm: {searchString: params.search}}, function (data) {
             data.Name = data.N1;
             data.Adres = data.N2;
             data.ShortDate = data.DateDoc.substring(0, 5);
@@ -130,13 +130,20 @@ var DAL_web = (function ($, window) {
         return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
     };
 
-    root.RoadMap = function (params) {
-        var date = U.DateFormat(params, 'yyyy-mm-dd');
-        return execDataSource({ control: 'RoadMap', paging: true, prm: {'date': date}}, function (data) {
+    root.RoadMap = function (params, allGt) {
+        var date = U.DateFormat(params, 'yyyy-mm-dd')
+        prms = {'date': date};
+        if (allGt)
+            prms['allGt'] = true;
+        
+        return execDataSource({ control: 'RoadMap', paging: true, prm: prms}, function (data) {
             data.Name = data.N1;
             data.Adres = data.N2;
             return data;
         });
+    }
+    root.SaveRMBil = function (id, idb) {
+        return execMethod({ method: 'POST', control: 'RoadMap/', prm: {'cmd': 'UpdIdB', 'Id':id, 'IdB':idb} }).load();
     }
 
 	function execDataSource(params, mapCallback) {
@@ -221,7 +228,7 @@ var DAL_web = (function ($, window) {
 						},
 						headers: P.ajaxHeaders,
 						success: function(result) {
-                            BAsket.notify('Server reply: ' + result.Note);
+                            BAsket.notify(_.Common.ServerReply + result.Note);
 						},
 						error: function(result, arg) {
                             // BAsket.error(result.responseText);

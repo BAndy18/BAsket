@@ -50,8 +50,9 @@ namespace BAsketWS.Helpers
 			"Select * From " + Common.SCliTable + " Where 1=1 Order by N";
 
 		const string SqlGetBil =
-			"Select * FROM (Select Row_Number() OVER (ORDER BY b.Id desc, [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
-			Common.SBilTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
+			"Select * FROM (Select Row_Number() OVER (ORDER BY b.Id desc, c.N ASC) as rowNum, b.*, " +
+			"ISNULL(c.N + ' - ' + t.N, c.N) as N1, ISNULL(t.A, c.A) as N2  From " + Common.SBilTable + 
+			" b Join " + Common.SCliTable + " c On c.Id=b.IdC Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
 			" Where IdUser='{0}' {1})x Where rowNum > {2} and rowNum <= {2}+{3}";
 		const string SqlGetBilById =
 			"Select b.*, c.N as N1, t.N as N2, ISNULL(c.N + ' - ' + t.N, c.N) as FN, ISNULL(t.A, c.A) as AD From " +
@@ -61,14 +62,16 @@ namespace BAsketWS.Helpers
 		const string SqlDelBilSave = "Delete " + Common.SBilTable + " Where Id='{0}'";
 
 		const string SqlGetRoadMap =
-			"Select * FROM (Select Row_Number() OVER (ORDER BY b.Id desc, [N] ASC) as rowNum, b.*, c.N as N1, c.A as N2 From " +
-			Common.SRoadTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC " + //"Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
-			" Where IdUser='{0}' and DateRM='{1}' {2})x Where rowNum > {3} and rowNum <= {3}+{4}";
+			"Select * FROM (Select Row_Number() OVER (ORDER BY DateRM, b.Npp) as rowNum, b.*, " +
+			"ISNULL(c.N + ' - ' + t.N, c.N) as N1, ISNULL(t.A, c.A) as N2, ISNULL(t.Id, c.Id) as N3 From " +
+			Common.SRoadTable + " b Join " + Common.SCliTable + " c On c.Id=b.IdC Left Join " + Common.SCliTable + " t On t.Id=b.IdT " +
+			" Where IdUser='{0}' and DateRM{1} {2})x Where rowNum > {3} and rowNum <= {3}+{4}";
 		const string SqlDeleteRoadMap = "Delete From " + Common.SRoadTable + " Where IdUser='{0}' and DateRM>=getdate()";
 		const string SqlInsertRoadMap = 
 			//"If Exists(Select Id From " + Common.SRoadTable + " Where IdUser='{0}' and DateRec='{1}') Delete From " + 
 			//Common.SRoadTable + " Where IdUser='{0}' and DateRec='{1}';" +
 			"Insert Into " + Common.SRoadTable + " (IdUser,DateRM,Npp,IdC,IdT) Values({0},'{1}',{2},'{3}',{4})";
+		const string SqlUpdateRoadMapIdB = "Update " + Common.SRoadTable + " set IdB={0} Where Id={1}";
 
 		const string SqlExecUpdStock0 = "Update " + Common.SProdTable + " set O=0";
 		const string SqlExecUpdInsProd =
@@ -259,7 +262,7 @@ namespace BAsketWS.Helpers
 			var skip = qs["skip"] ?? "0";
 			var searchString = qs["searchString"] ?? "";
 			if (!string.IsNullOrEmpty(searchString))
-				searchString = string.Format(" and (N Like '%{0}%') ", searchString);
+				searchString = string.Format(" and (c.N Like '%{0}%') ", searchString);
 
 			var user = HttpContext.Current.User.Identity.Name;
 			var userTp = "-1";
@@ -286,7 +289,8 @@ namespace BAsketWS.Helpers
 
 		public Bil PostBil()
 		{
-			var retvalue = "";
+			var ret = new Bil {Note = ""};
+
 			var user = HttpContext.Current.User.Identity.Name;
 			var userId = "-1";
 			if (user.Split(';').Length > 1)
@@ -325,35 +329,42 @@ namespace BAsketWS.Helpers
 				var cmd = string.Format(SqlExecBilSave, sParam);
 				var prm = BaseRepository.NewParamList(BaseRepository.NewParam("@Reply", "", ParameterDirection.Output, 100));
 
-				retvalue = BaseRepository.ExecuteScalar(cmd, prm).ToString();
+				ret.Note = BaseRepository.ExecuteScalar(cmd, prm).ToString();
+				var vV = ret.Note.Split(' ');
+				if (vV.Length > 1)
+					ret.Id = vV[0];
+				ret.LocNum = h.IdLoc;
 
-				h.Result = retvalue;
+				h.Result = ret.Note;
 				var p = new XmlHelper.BAsketBil.CProds();
 				if (h.Wars != null)
-				foreach (var w in h.Wars.Split(';'))
 				{
-					var wV = w.Split(':');
-					if (wV.Length == 2)
-						p.FProd.Add(new XmlHelper.BAsketBil.ProdItem{ProdId = wV[0], Quant = wV[1]});
+					foreach (var w in h.Wars.Split(';'))
+					{
+						var wV = w.Split(':');
+						if (wV.Length == 2)
+							p.FProd.Add(new XmlHelper.BAsketBil.ProdItem {ProdId = wV[0], Quant = wV[1]});
+					}
+					var b = new XmlHelper.BAsketBil {Header = h, Products = p};
+					XmlHelper.XmlOut(b);
 				}
-				var b = new XmlHelper.BAsketBil { Header = h, Products = p};
-				XmlHelper.XmlOut(b);
 			}
 			else if (comand == "DelBil")
 			{
 				BaseRepository.ExecuteScalar(string.Format(SqlDelBilSave, form["id"]));
+				ret.Note = "Done";
 			}
 			else if (comand == "SendRepo")
 			{
 				RepoHelper.RepoPrint(form["id"], form["mail"]);
 			}
 
-			return new Bil() { Note = retvalue };
+			return ret;
 		}
 
 		#endregion
 
-		#region
+		#region RoadMap
 
 		public List<RoadMap> GetRoadMap()
 		{
@@ -375,19 +386,39 @@ namespace BAsketWS.Helpers
 			{
 				//return new List<Bil> { new Bil() { sNote = "user not found " + user } };
 			}
+			date = (string.IsNullOrEmpty(qs["allGt"])) ? string.Format("='{0}'", date) : string.Format(">='{0}'", date);
+
 			var cmd = string.Format(SqlGetRoadMap, userId, date, searchString, skip, top);
 
 			var result = Common.ProcessCommand(cmd, reader => new RoadMap
 			{
 				Id = reader.GetStrValue("Id"),
+				Npp = reader.GetStrValue("Npp"),
+				D = reader.GetDateTime("DateRM").ToString("yyyy-MM-dd"),
 				IdC = reader.GetStrValue("IdC"),
 				IdT = reader.GetStrValue("IdT"),
+				IdB = reader.GetStrValue("IdB"),
+				Note = reader.GetStrValue("Note"),
 				N1 = reader.GetStrValue("N1"),
 				N2 = reader.GetStrValue("N2"),
-				//P1 = reader.GetStrValue("P1"),
+				N3 = reader.GetStrValue("N3"),
 				//P2 = reader.GetStrValue("P2"),
 			});
 			return result;
+		}
+
+		public RoadMap PostRoadMap()
+		{
+			var ret = new RoadMap {Note = ""};
+			var form = HttpContext.Current.Request.Form;
+			var comand = form["cmd"];
+			if (comand == "UpdIdB")
+			{
+				BaseRepository.ExecuteScalar(string.Format(SqlUpdateRoadMapIdB, form["IdB"], form["Id"]));
+				ret.Note = form["Id"] + " Updated";
+			}
+
+			return ret;
 		}
 	
 		#endregion
