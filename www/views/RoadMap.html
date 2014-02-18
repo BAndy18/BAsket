@@ -4,15 +4,15 @@
 
         <div class="dx-fieldset">
             <div class="dx-field" >
-                <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, valueUpdateAction: RoadMap_ChangeDate }"/>
+                <div id="idDate" class="dx-field-label" data-bind="dxDateBox: { format: 'date', value: dataVal, valueUpdateAction: RoadMap_ChangeDate }"></div>
 
-                <div class="but20" data-bind="dxButton:{text:_.RoadMap.AddToTheMap, clickAction: RoadMap_AddToTheMap}"/>
+                <div class="but20" data-bind="dxButton:{text:_.RoadMap.AddToTheMap, clickAction: RoadMap_AddToTheMap}"></div>
                 <div class="but20" data-bind="dxButton:{text:_.RoadMap.ShowOnTheMap, clickAction: RoadMap_ClickShow}
-                "/>
+                "></div>
                 <div data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
             </div>
         </div>
-		<div data-bind="dxList: { 
+		<div class="offset-list" data-bind="dxList: { 
             dataSource: dataSource, 
             itemHoldAction: RoadMap_processItemHold, 
             itemHoldTimeout: holdTimeout,

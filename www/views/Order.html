@@ -71,13 +71,13 @@
         <div class="dx-fieldset" >
             <div class="dx-field">
                 <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
-                    valueUpdateEvent: 'search change keyup' }"/>
-                <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" />
+                    valueUpdateEvent: 'search change keyup' }"></div>
+                <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" ></div>
                 <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb || swValue, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
             </div>
         </div>
 		
-		<div id="idOrderList" data-bind="dxList: { visible: !swValue(),
+		<div id="idOrderList" class="offset-list" data-bind="dxList: { visible: !swValue(),
             dataSource: dataSource, 
             itemHoldAction: Order_processItemHold, 
             itemHoldTimeout: holdTimeout, 
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div id="idOrderListS" data-bind="dxList: { visible: swValue(),
+        <div id="idOrderListS" class="offset-list" data-bind="dxList: { visible: swValue(),
             dataSource: dataSourceS, 
             noDataText: _.Common.NoDataText,
             itemHoldAction: Order_processItemHold, 

@@ -19,6 +19,9 @@
     
     <link rel="stylesheet" type="text/css" href="css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="css/dx.android.holo-light.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.generic.light.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.ios.default.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.win8.white.css" /> 
 
     <!-- Layouts -->
     <link rel="stylesheet" type="text/css" href="layouts/SlideOut/SlideOutLayout.css" />
@@ -29,14 +32,27 @@
     <link rel="dx-template" type="text/html" href="layouts/Navbar/NavbarLayout.html" />
     <script type="text/javascript" src="layouts/Navbar/NavbarLayout.js"></script>
 
-
     <!-- App -->
-    <script type="text/javascript" src="js/i.js"></script>    
+    <script type="text/javascript" src="js/i.js"></script>
+
+    <script type="text/javascript" src="js/Resource_En.js"></script>    
+    <script type="text/javascript" src="js/VerConst.js"></script>    
+    <script type="text/javascript" src="js/Utils.js"></script>    
+    <!--script type="text/javascript" src="js/index.js"></script-->
+    <script type="text/javascript" src="js/DAL_tst.js"></script>
+    <script type="text/javascript" src="js/DAL_web.js"></script>    
+    <script type="text/javascript" src="js/DAL_loc.js"></script>    
+
+    <!--script type="text/javascript" src="js/Order.js"></script>
+    <link rel="dx-template" type="text/html" href="views/Order.html"/-->
+    <!--script type="text/javascript" src="js/Clients.js"></script-->
+    <!--link rel="dx-template" type="text/html" href="views/Clients.html"/-->
+
 </head>
 <body>
   <div data-options="dxView : { name: 'home' } " >
   </div>
-
+<!-- 
   <div data-options="dxView : { name: 'Clients', title: 'Clients' } " >
     <div class="home-view"  data-options="dxContent: { targetPlaceholder: 'content' } " >
         <div data-bind="dxList: { dataSource: dataSource, scrollingEnabled: true }">
@@ -45,7 +61,35 @@
             </div>
         </div>
     </div>
-  </div>
+  </div> -->
   
+
+  <div data-options="dxView : { name: 'Clients', title: '_.Navigation.Clients' } " >
+    <div class="home-view"  data-options="dxContent: { targetPlaceholder: 'content' } " >
+        <!-- <div class="dx-fieldset" >
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', 
+                     visible: true, 
+                    valueUpdateEvent: 'search change keyup' }">
+                </div>
+            </div>
+        </div> -->
+
+        <div data-bind="dxList: { 
+                dataSource: dataSource,  scrollingEnabled: true,
+                
+                pullRefreshEnabled: true,
+                noDataText: '_.Common.NoDataText',
+            }">
+
+            <div data-options="dxTemplate : { name: 'item' }"  data-bind="dxAction: '#Client/{Id}'"> 
+                <div data-bind="text: $data.N"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 </body>
 </html>

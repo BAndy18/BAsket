@@ -18,7 +18,7 @@
             <div class="dx-field">
                 <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
                 <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
-		        	valueUpdateEvent: 'search change keyup' }"/>
+		        	valueUpdateEvent: 'search change keyup' }"></div>
                 <div id="CategoryLookup" class="dx-field-value dx-button" data-bind="dxLookup: { 
                     title: _.Products.TitleCat, 
                     dataSource: dataSourceCat, 
@@ -28,7 +28,7 @@
                     placeholder: P.curCategoryName,
                     searchEnabled: false, 
                     valueChangeAction: Products_categoryChanged,
-                    width:'50%'}"/>
+                    width:'50%'}"></div>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
             <div class="cell10 dx-button tbhead" data-bind="text: _.Products.ColPrice"></div>
         </div> -->
 
-         <div id="listProducts" data-bind="dxList: { 
+         <div id="listProducts" class="offset-list2" data-bind="dxList: { 
                 dataSource: dataSourceProd, 
                 noDataText: _.Common.NoDataText,
                 pullRefreshEnabled: true
@@ -87,7 +87,7 @@
             </div>
         </div>
         
-        <div id="listBAsket" data-bind="dxList: { 
+        <div id="listBAsket" class="offset-list2" data-bind="dxList: { 
                 dataSource: dataSourceBasket, 
                 noDataText: _.Common.NoDataText,
                 pullRefreshEnabled: true

@@ -67,7 +67,8 @@ UL { padding-left: 50px; margin-top: 10px;}
 /*.orderItem-0 {background: red}*/
 
 /*.dx-list .dx-scrollable-container{ overflow-y: scroll; height: 95%; -webkit-overflow-scroll:touch;}*/
-
+.offset-list {position: absolute; bottom: 0; top: 70px; width: 100%; height: auto; }
+.offset-list2 {position: absolute; bottom: 0; top: 110px; width: 100%; height: auto; }
 
 .dx-theme-ios  #tabs + div.map {
     height: 100%;

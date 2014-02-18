@@ -5,11 +5,11 @@
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', 
                     value: searchString, visible: true, 
-                    valueUpdateEvent: 'search change keyup' }"/>
+                    valueUpdateEvent: 'search change keyup' }"></div>               
             </div>
         </div>
 
-        <div data-bind="dxList: { 
+        <div class="offset-list" data-bind="dxList: { 
                 dataSource: dataSource,  scrollingEnabled: true,
                 itemHoldAction: Client_processItemHold, 
                 itemHoldTimeout: holdTimeout, 
