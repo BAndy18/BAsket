@@ -133,7 +133,10 @@
 <div data-options="dxView : { name: 'ReadNews', title: _.ReadNews.Title } " >
 	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/ReadNews' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
-	<div data-bind="dxScrollView: { }">
+
+    <div class="center" data-bind="text: _.Common.NoDataText, visible: !P.useWebDb"/>
+
+	<div data-bind="dxScrollView: { }, visible: P.useWebDb">
 		<div class="dx-fieldset">
 		    <div class="dx-field">
                 <div class="dx-field-label" data-bind="text: _.ReadNews.SaveOrd "></div>

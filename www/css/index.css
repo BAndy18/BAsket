@@ -5,7 +5,7 @@ body {    margin: 0;    padding: 0;    /*text-align: center;*/}
 
 H1 { color: navy; font-size: 200%;  text-align: center; margin-bottom: 20px;}
 P { padding-left: 10px; margin-top: 10px;}
-UL { padding-left: 50px; margin-top: 10px;}
+UL { padding-left: 50px; margin-top: -1px;}
 
 .dx-button {  margin: 0, 10px }
 

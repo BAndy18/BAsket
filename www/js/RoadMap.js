@@ -36,10 +36,19 @@ BAsket.RoadMapList = function (params) {
 		cliName: cliName,
 		tpId: tpId,
 		tpName: tpName,
+		viewShown: function () {
+			var date = new Date();
+			if (location.hash.indexOf('/') < 0 && dataVal().toLocaleDateString() != date.toLocaleDateString()){
+				RoadMap_ChangeDate();
+			}
+		}
 	};
 
+	// RoadMap_Back = function (arg) {
+	// 	debugger;
+	// }
 	RoadMap_ChangeDate = function (arg) {
-		BAsket.app.navigate('RoadMapList/' + dataVal(), { direction: 'none' });
+		BAsket.app.navigate('RoadMapList/' + dataVal(), { direction: 'none', root: true });
 	};
 
 	RoadMap_AddToTheMap = function (arg) {

@@ -241,7 +241,8 @@ BAsket.OrderList = function (params) {
 			if (swValue())
 				viewModel.dataSourceS.load();
 			else
-				viewModel.dataSource.load();		}
+				viewModel.dataSource.load();		
+		}
 	};
 	ko.computed(function() {
 		return viewModel.searchString();
