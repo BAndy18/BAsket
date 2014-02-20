@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BAsket</title>
+        
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <script type="text/javascript" src="js/vendor/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
+    <script type="text/javascript" src="js/vendor/globalize.min.js"></script>
+
+    <script type="text/javascript" src="js/vendor/dx.phonejs.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.generic.light.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.android.holo-light.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.ios.default.css" />
+
+    <link rel="stylesheet" type="text/css" href="layouts/SlideOut/SlideOutLayout.css" />
+    <link rel="stylesheet" type="text/css" href="layouts/Empty/EmptyLayout.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <!-- App -->
+    <script type="text/javascript" src="layouts/SlideOut/SlideOutLayout.js"></script>
+    <script type="text/javascript" src="layouts/Empty/EmptyLayout.js"></script>
+
+	<script type="text/javascript" src="js/VerConst.js"></script>    
+    <script type="text/javascript" src="site.js"></script>
+
+    <link rel="dx-template" type="text/html" href="layouts/SlideOut/SlideOutLayout.html" />
+    <link rel="dx-template" type="text/html" href="layouts/Empty/EmptyLayout.html" />
+
+    <!--link rel="dx-template" type="text/html" href="site-Home.html"/-->
+</head>
+<body>
+
+<div data-options="dxView : { name: 'home', title: 'BAsket' } " >
+    <div class="center" data-options="dxContent : { targetPlaceholder: 'content'}">
+
+      	<div class="tileView" data-bind="dxTileView: {
+    	    dataSource: P.navigation, 
+        	itemMargin: 5, baseItemHeight: 25, baseItemWidth: 25, height: '130', 
+          	itemClickAction: P.itemClick }">
+
+	        <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="style: {background: backcolor}" >
+	            <span class="center" data-bind="attr: { 'class': P.itemIcon(icon) }"></span>
+	            <p class="tiletext">
+	                <span data-bind="text: title"></span>
+	                <span class="fl-right" data-bind="text: P.itemCount[id]"></span>
+	            </p>
+	        </div>
+	    </div>
+
+		<div data-bind="dxScrollView: {}">
+            <div class="infotext" id="textContainer"></div>
+        </div>
+
+	    <div class="copyright">
+	          <p><span data-bind="text: P.copyright"></span></p>
+	    </div>
+    </div>
+</div>
+
+</body>
+</html>

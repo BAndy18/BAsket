@@ -55,7 +55,7 @@ function SQLite(cfg) {
         },
         transaction: function (e, error, data) {
             db.transaction(e, error, data)
-        },
+        }
     }  
 }
 
@@ -701,6 +701,7 @@ var DAL = (function ($, window) {
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('0', '2', 'Тип Оплаты')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '1', 'наличные')",
         // "INSERT INTO NMS (IdRoot, Id, Name) VALUES('2', '2', 'безнал')",
+        ''
 	];
 
 	// "INSERT INTO RMAP (DateDoc, Npp, IdC, IdT, sNote) VALUES('07-01-2014', 1, '4422','4423','Note')",

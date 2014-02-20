@@ -173,7 +173,7 @@ BAsket.Order = function (params) {
 	};
 
 	Order_clickProduct = function() {
-		BAsket.app.navigate('products/' + P.curCategoryId);
+		BAsket.app.navigate('Products/' + P.curCategoryId);
 		//	    BAsket.app.navigationManager.saveState(window.localStorage);
 	};
 
@@ -203,7 +203,7 @@ BAsket.Order = function (params) {
 					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].N;
 				}
 			}
-		},
+		}
 	};
 
 	return viewModel;
@@ -226,7 +226,7 @@ BAsket.OrderList = function (params) {
 		holdTimeout: holdTimeout,
 		popActions: [
 		    { text: _.Order.ActionDelete, clickAction: function () { Order_DeleteClick() } },
-		    { text: _.Order.ChangeActivity, disabled: swValue, clickAction: function () { Order_ChangeActivity() } },
+		    { text: _.Order.ChangeActivity, disabled: swValue, clickAction: function () { Order_ChangeActivity() } }
 		],
 
 		searchString: searchStr,

@@ -165,7 +165,7 @@ var DAL_web = (function ($, window) {
 						xhrFields: {
 							withCredentials: true
 						},
-						headers: P.ajaxHeaders,
+						headers: P.ajaxHeaders
 					})
                     .done(function (result) {
                         if (!result)
@@ -199,11 +199,11 @@ var DAL_web = (function ($, window) {
 						xhrFields: {
 							withCredentials: true
 						},
-						headers: P.ajaxHeaders,
 						// beforeSend: function (xhrObj) {
 							// xhrObj.setRequestHeader("Accept","application/json");
 							// xhrObj.setRequestHeader("Authorization","Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":")));
 						// }
+						headers: P.ajaxHeaders
 					});
 				},
 				map: function (item) {
@@ -211,7 +211,7 @@ var DAL_web = (function ($, window) {
 						return mapCallback(item)
 					else
 						return item;
-				},
+				}
 			});
 	}
 
@@ -233,7 +233,7 @@ var DAL_web = (function ($, window) {
 						error: function(result, arg) {
                             // BAsket.error(result.responseText);
                             BAsket.error(result.statusText + ': ' + result.status);
-						},
+						}
 					})
 					.done(function(result) {
                         if (!result)

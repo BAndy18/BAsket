@@ -141,36 +141,36 @@ var P = (function ($, window) {
 	root.navigation = [
             {
             	"id": "Home", "action": "#home", "heightRatio": 4, "widthRatio": 4, "icon": "home",
-            	"title": "BAsket", "backcolor": "black",
+            	"title": "BAsket", "backcolor": "black"
             },
             {
             	"id": "Order", "action": "#Order", "heightRatio": 4, "widthRatio": 8, "icon": "cart",
-            	"title": "NewOrder", "backcolor": "#FF981D",
+            	"title": "NewOrder", "backcolor": "#FF981D"
             },
             {
             	"id": "OrderList", "action": "#OrderList", "heightRatio": 4, "widthRatio": 4, "icon": "favorites",
-            	"title": "Order List", "backcolor": "#15992A",
+            	"title": "Order List", "backcolor": "#15992A"
             },
             {
             	"id": "RoadMapList", "action": "#RoadMapList", "heightRatio": 4, "widthRatio": 8, "icon": "map",
-            	"title": "RoadMap", "backcolor": "#006AC1",
+            	"title": "RoadMap", "backcolor": "#006AC1"
             },
             {
             	"id": "Clients", "action": "#Clients", "heightRatio": 4, "widthRatio": 8, "icon": "globe",
-            	"title": "Clients", "backcolor": "#7200AC",
+            	"title": "Clients", "backcolor": "#7200AC"
             },
             {
             	"id": "ReadNews", "action": "#ReadNews", "heightRatio": 4, "widthRatio": 4, "icon": "download",
-            	"title": "ReadNews", "backcolor": "red",
+            	"title": "ReadNews", "backcolor": "red"
             },
             {
             	"id": "Preferences", "action": "#Preferences", "heightRatio": 4, "widthRatio": 4, "icon": "preferences",
-            	"title": "Preferences", "backcolor": "red",
+            	"title": "Preferences", "backcolor": "red"
             },
             {
             	"id": "Info", "action": "#Info", "heightRatio": 4, "widthRatio": 2, "icon": "info",
-            	"title": "Info", "backcolor": "#7200AC",
-            },
+            	"title": "Info", "backcolor": "#7200AC"
+            }
 	];
 
 	root.loadPanelVisible = ko.observable(false);
@@ -202,7 +202,7 @@ var P = (function ($, window) {
 
 	var languageMap = {
 		'English': EN_US,
-		'Русский': RU_RU,
+		'Русский': RU_RU
 	};
 	function getValue(obj, key) {
 		for (var i in obj) {
@@ -295,7 +295,7 @@ var P = (function ($, window) {
 	};
 
 	root.itemClick = function(e) {
-		BAsket.app.navigate(e.itemData.action.substring(1), { direction: 'none' });
+		BAsket.app.navigate(e.itemData.action.substring(1), { direction: 'none', root: true });
 	};
 	root.itemIcon = function(icon) {
 		return 'tileicon dx-icon-' + icon.toLowerCase();
@@ -304,7 +304,7 @@ var P = (function ($, window) {
 		'OrderList': iniLocalStor("OrderList", '0'),
 		'RoadMapList': iniLocalStor("RoadMapList", ''),
 		'Clients': iniLocalStor("Clients", ''),
-		'ReadNews': iniLocalStor("ReadNews", ''),
+		'ReadNews': iniLocalStor("ReadNews", '')
 	};
 
     root.setQuantToWar = function(war) {
@@ -359,16 +359,7 @@ var P = (function ($, window) {
 	root.arrCategory = [];
 	root.arrNMS = [];
 
-
-	// root.dataSouceUrl = "http://sampleservices.devexpress.com/api/";
-	// root.dataSouceUrl = "http://87.249.234.190:55777/BWS2/api/";
-	// root.dataSouceUrl = "http://10.0.0.2/BWS2/api/";
-	// root.dataSouceUrl = "http://192.168.1.146/BAsketWS/api/";
 	root.dataSouceUrl = '';
-
-	// root.dataSouceType = "DAL_local";
-	// root.dataSouceType = "DAL_web";
-
 	root.pageSize = 30;
 
 	root.Init = function () {
@@ -446,7 +437,7 @@ var P = (function ($, window) {
         document.cookie = ".BAsketAUTH=" + auth;
         sessionStorage['.BAsketAUTH'] = auth;
         root.ajaxHeaders = (root.bPhoneGap || !location.port) ? {
-            'Authorization': auth,
+            'Authorization': auth
             // 'Cookie' : document.cookie
             // 'Access-Control-Allow-Origin': true,
             // 'Authorization' : getToken()
@@ -454,7 +445,7 @@ var P = (function ($, window) {
         } : {};
         // root.ajaxHeaders = {};
 
-        root.copyright = 'BAsket \u00A9 2014 BAndy Soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + VerConst + ')';
+        root.copyright = 'BAsket \u00A9 2014 BAndy Soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
         if (!root.arrCategory.length) {

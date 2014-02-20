@@ -10,7 +10,7 @@ var DAL_tst = (function ($, window) {
     	{'IdP': 1, 'Id': 18, 'Name': "ЧП BAsket"},
     	{'IdP': 2, 'Id': 1, 'Name': "наличные"},
     	{'IdP': 2, 'Id': 2, 'Name': "безнал"},
-        {'IdP': 101, 'Id': 1, 'Name': "Отчет 1"},
+        {'IdP': 101, 'Id': 1, 'Name': "Отчет 1"}
     ]));
 
     root.Categories_Data = new DevExpress.data.DataSource({pageSize: P.maxSizeLocalDb, store: new DevExpress.data.ArrayStore([

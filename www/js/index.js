@@ -1,17 +1,7 @@
-﻿"use strict";
-window.BAsket = {};
 
-// window.onerror = function (msg, url, line, column, errorObj) {
-// 	// You can view the information in an alert to see things working
-// 	// like so:
-// 	var addlog = '';
-// 	//addlog = (errorObj) ? "\n" + errorObj.stack : ' no addlog';
-// 	var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
-// 	alert(str);
-// 	console.log(str);
-// 	console.log(errorObj.stack);
-// 	return true;
-// };
+//"use strict";
+eval('"use strict";');
+window.BAsket = {};
 
 $(function() {
 	// are we running in native app or in browser?
@@ -41,7 +31,7 @@ function onDeviceReady() {
       'android-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
       'ios-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
       'tizen-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
-      'generic-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+      'generic-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] }
     }
 	});
 	//Globalize.culture = Globalize.culture["ru-RU"];
@@ -64,16 +54,16 @@ BAsket.error = function(message) {
 };
 
 
-BAsket.home = function() {
-	var viewModel = {
-		itemClick: function(e) {
-			//debugger;
-			var act = e.itemData.action.substring(1);
-			BAsket.app.navigate(e.itemData.action.substring(1));
-		}
-	};
-	return viewModel;
-};
+// BAsket.home = function() {
+// 	var viewModel = {
+// 		itemClick: function(e) {
+// 			//debugger;
+// 			var act = e.itemData.action.substring(1);
+// 			BAsket.app.navigate(e.itemData.action.substring(1));
+// 		}
+// 	};
+// 	return viewModel;
+// };
 
 var _ = EN_US;
 

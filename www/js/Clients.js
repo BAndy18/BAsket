@@ -16,7 +16,7 @@ BAsket.Clients = function (params) {
 		holdTimeout: holdTimeout,
 		popActions: [],
 
-		dataSource: DAL.Clients({ search: searchStr }),
+		dataSource: DAL.Clients({ search: searchStr })
 	};
 	ko.computed(function () {
 		return viewModel.searchString();
@@ -79,7 +79,7 @@ BAsket.Client = function (params) {
         	//       [40.755823, -73.986397]
         	//     ]
         	// }]
-        },
+        }
 	};
 
 

@@ -2,7 +2,7 @@ BAsket.Preferences = function (params) {
 	tabs = [
 	  { text: _.Preferences.Main, icon: "comment" },
 	  { text: _.Preferences.Functions, icon: "user" },
-	  { text: _.Preferences.Admin, icon: "preferences" },
+	  { text: _.Preferences.Admin, icon: "preferences" }
 	];
 	var tabContent = ko.observable();
 	var selectedTab = ko.observable(0);
@@ -101,20 +101,7 @@ BAsket.Preferences = function (params) {
 		popupTitle: "Login",
 		dataSouceUrl: dataSouceUrl,
 
-		dsWsUrl: ['', 
-			// 'http://87.249.234.190:55777/BWS2/api/', 
-			'http://10.0.0.30/BWS2/api/', 
-			'http://192.168.1.146/BAsketWS/api/',
-			// 'http://192.168.1.125/BAsketWS/api/',
-			],
 
-		// "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
-		dsPlatform: {
-			data: ['-', "generic", "ios", "ios v6", "android", "android black", "tizen", "tizen black"],
-			// data: ['-', "generic", "ios", "android", "win8", "tizen"],
-			//            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
-			value: ko.observable(P.platformDevice)
-		},
 		dsMapProvider: {
 			data: ["google", "googleStatic", "bing"],
 			value: ko.observable(P.mapProvider)
@@ -130,6 +117,21 @@ BAsket.Preferences = function (params) {
 		userName: userName,
 		userPass: userPass,
 		userEMail: userEMail,
+
+		// "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "desktop" and "tizen". 
+		dsPlatform: {
+			data: ['-', "generic", "ios", "ios v6", "android", "android black", "tizen", "tizen black"],
+			// data: ['-', "generic", "ios", "android", "win8", "tizen"],
+			//            data: ['-', "iPhone", "iPhone5", "iPad", "iPadMini", "androidPhone", "androidTablet", "win8", "win8Phone", "msSurface", "tizen"],
+			value: ko.observable(P.platformDevice)
+		},
+
+		dsWsUrl: ['', 
+			'http://10.0.0.30/BWS2/api/', 
+			// 'http://87.249.234.190:55777/BWS2/api/', 
+			// 'http://192.168.1.125/BAsketWS/api/',
+			'http://192.168.1.146/BAsketWS/api/'
+			]
 	};
 
 	return viewModel;
@@ -158,7 +160,7 @@ BAsket.Info = function (params) {
 	} else {
 		dsInfo.splice(-1, 1);
 		dsInfo.push({"id": "Products", "heightRatio": 4, "widthRatio": 8, "icon": "cart", "title": _.Info.IProducts, "backcolor": "#FF981D"});
-		dsInfo.push({"id": "Product-Details", "heightRatio": 4, "widthRatio": 4, "icon": "cart", "title": _.Info.IProductDet, "backcolor": "#FF981D"});
+		dsInfo.push({"id": "Product_Details", "heightRatio": 4, "widthRatio": 4, "icon": "cart", "title": _.Info.IProductDet, "backcolor": "#FF981D"});
 		dsInfo.push({"id": "Client", "heightRatio": 4, "widthRatio": 4, "icon": "globe", "title": _.Info.IClient, "backcolor": "#7200AC"});
 		dsInfo.push({"id": "RoadMap", "heightRatio": 4, "widthRatio": 4, "icon": "map", "title": _.Info.IMap, "backcolor": "#006AC1"});
 		dsInfo.push({"id": "Contacts", "heightRatio": 4, "widthRatio": 8, "icon": "home", "title": _.Info.IContacts, "backcolor": "red"});
@@ -168,13 +170,14 @@ BAsket.Info = function (params) {
 		}
 	}
 	var viewModel = {
+		dsInfo: dsInfo,
 		title: _.Info.Title,	//'Info',	// + subTitle(),
 		// rootShow: rootShow,
 		subTitle: subTitle,
+
 		viewShown: function () {
 			$("#textContainer").html(subText());
-		},
-		dsInfo: dsInfo, 
+		}
 	};
 	return viewModel;
 };
@@ -199,7 +202,7 @@ BAsket.ReadNews = function (params) {
 		arrayRepo: arrayRepo,
 		viewShown: function () {
 			$('#consoleOut').html();
-		},
+		}
 	};
 
 	ReadNews_SUA = function(arg){

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BAsketBil xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BAsketBil-Header>
+    <UserName>BAsket User;1</UserName>
+    <IdLoc>6</IdLoc>
+    <Date>14-02-2014</Date>
+    <IdC>ANATR</IdC>
+    <IdT />
+    <Note />
+    <SumDoc>57.00</SumDoc>
+    <Wars>2:3</Wars>
+    <Result>30 Insert</Result>
+  </BAsketBil-Header>
+  <BAsketBil-Products>
+    <Prod ProdId="2" Quant="3" />
+  </BAsketBil-Products>
+</BAsketBil>

@@ -25,7 +25,7 @@ BAsket.RoadMapList = function (params) {
 			{ text: _.RoadMap.OpenBil, clickAction: function () { RoadMap_Action('OpenBil') } },
 			{ text: _.RoadMap.MoveUp, clickAction: function () { RoadMap_Move('MoveUp') } },
 			{ text: _.RoadMap.MoveDown, clickAction: function () { RoadMap_Move('MoveDown') } },
-			{ text: _.RoadMap.ActionDelete, clickAction: function () { RoadMap_Action('DeleteClick') } },
+			{ text: _.RoadMap.ActionDelete, clickAction: function () { RoadMap_Action('DeleteClick') } }
 		],
 
 		dataSource: DAL.RoadMap(dataVal()),
@@ -207,7 +207,7 @@ BAsket.RoadMap = function (params) {
 			routes: [{
 				weight: 5,
 				color: "blue",
-				locations: P.arrayBAsketL,
+				locations: P.arrayBAsketL
 				// [
 				//   [56.851248,53.20271],
 				//   [56.864278,53.216272],
