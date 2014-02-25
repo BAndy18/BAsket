@@ -18,8 +18,11 @@ UL { padding-left: 50px; margin-top: -1px;}
 /*.iconsmall {width: 28px; height: 28px; background-size: 28px 28px; display: inline-block; }*/
 
 .tileicon { width: 55px; height: 55px; background-size: 55px 55px; display: inline-block; margin-top: 15px;}
-.tiletext { font-size:smaller; text-align: left; margin: 15px 5px 0px; color:#F7F7F7;}
-/*.tiletext { text-align: left; margin-left: 5px;  margin-right: 5px; margin-top: 15px; color:#F7F7F7;}*/
+.tiletext { font-size:smaller; text-align: left; margin: 15px 5px 10px; color:#F7F7F7; }
+.tiletextover {max-height: 100%; overflow: hidden; }
+
+/*.tiletext { text-align: left; margin-left: 5px;  margin-right: 5px; margin-top: 15px; color:#F7F7F7;
+background: -webkit-gradient(linear, left top, left bottom, from(#55aaee), to(#F7F7F7));    }*/
 
 .tile-text-top {color: black; opacity: 0.8; position: absolute; top: 0.5em; left: 0.5em;}
 .tile-text {color: black; font-size:smaller; opacity: 0.8; position: absolute; bottom: 0; left: 0.5em;}
@@ -35,7 +38,7 @@ UL { padding-left: 50px; margin-top: -1px;}
 .but30 {  width:30%; margin: 10px; }
 .but50 {  width:50%; margin: 10px; }
 
-.h100 {height: 100%}
+.h100 {height: 100%;}
 
 .prodtext {float:left; margin:30px;}
 .textSmall {font-size:smaller; opacity: 0.8;}

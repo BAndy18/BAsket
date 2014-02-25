@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0219.49";(function($, DX, undefined) {
+BAsketVer = "2.0.0220.50";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -834,7 +834,7 @@ var P = (function ($, window) {
         } : {};
         // root.ajaxHeaders = {};
 
-        root.copyright = 'BAsket \u00A9 2014 BAndy Soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
+        root.copyright = 'BAsket \u00A9 2014 BAndySoft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
         if (!root.arrCategory.length) {
@@ -874,7 +874,8 @@ window.onerror = function (msg, url, line, column, errorObj) {
   var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
   alert(str);
   console.log(str);
-  console.log(errorObj.stack);
+  if (errorObj)
+    console.log(errorObj.stack);
   return true;
 };
 

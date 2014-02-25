@@ -9,6 +9,7 @@ window.onerror = function (msg, url, line, column, errorObj) {
   var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
   alert(str);
   console.log(str);
-  console.log(errorObj.stack);
+  if (errorObj)
+    console.log(errorObj.stack);
   return true;
 };

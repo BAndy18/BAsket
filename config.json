@@ -1,0 +1,10 @@
+[
+{"id": "Home"  },
+{"id": "About", "title": "Общие сведения", "icon": "cart", "backcolor": "#FF981D", "ratio":1 },
+{"id": "Mobile", "title": "Мобильное приложение", "icon": "favorites", "backcolor": "#15992A", "ratio":2 },
+{"id": "Server", "title": "Серверный модуль", "icon": "favorites", "backcolor": "#006AC1", "ratio":2 },
+{"id": "Download", "backcolor": "#7200AC", "ratio":3 },
+{"id": "Demo", "title": "Online Demo", "icon": "home", "backcolor": "#222222", "ratio":1 },
+{"id": "Preferences", "title": "Настройка", "backcolor": "#15992A", "ratio":2 },
+{"id": "Info", "title": "Контакты", "backcolor": "red", "ratio":2 }
+]

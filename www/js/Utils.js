@@ -445,7 +445,7 @@ var P = (function ($, window) {
         } : {};
         // root.ajaxHeaders = {};
 
-        root.copyright = 'BAsket \u00A9 2014 BAndy Soft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
+        root.copyright = 'BAsket \u00A9 2014 BAndySoft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
         if (!root.arrCategory.length) {
