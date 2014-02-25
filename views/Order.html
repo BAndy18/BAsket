@@ -1,0 +1,140 @@
+<div data-options="dxView : { name: 'Order', layout: 'empty' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxToolbar: { items: [
+            { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: Order_clickBack}},
+            { location: 'center', text: _.Order.Title},
+            { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Order' }},          
+            { location: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: Order_clickProduct}},
+        ]}"></div>
+
+        <div id="scrollViewContainer" data-bind="dxScrollView: { }">
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.Order.Date" />
+                <div id="idDate" class="dx-field-value" data-bind="dxDateBox: { format: 'date', value: dataVal }"/>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.Order.Client" />
+	            <div id="lookupClient" class="dx-field-value" data-bind="dxLookup: { 
+                    title: _.Order.SelectClient, 
+                    dataSource: clients, 
+                    displayExpr: 'N', 
+                    valueExpr: 'Id', 
+                    value: cliId, 
+                    placeholder: cliName, 
+                    searchEnabled: true, searchPlaceholder: _.Common.Search,
+                    fullScreen: true,
+                    valueChangeAction: Order_clientChanged}"/>
+            </div>
+            <!-- <div class="dx-button" data-bind="text: 'arrayTP.length = ' + arrayTP.length + ' ; showTP='+ showTP()"></div> -->
+            <div class="dx-field" data-bind="visible: showTP()">
+                <div class="dx-field-label" data-bind="text: _.Order.Point" />
+                <div id="lookupTP" class="dx-field-value" data-bind="dxLookup: { 
+                    title: _.Order.SelectPoint, 
+                    dataSource: arrayTP, 
+                    displayExpr: 'N', 
+                    valueExpr: 'Id',
+                    value: tpId, 
+                    placeholder: tpName,
+                    searchEnabled: false }"/>
+            </div>
+        </div>
+        <div class="dx-fieldset">
+            <div class="dx-field" data-bind="visible: false">
+                <div class="dx-field-label"></div>
+                <div id="idNms1" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[1], displayExpr: 'N', valueExpr: 'Id', placeholder: nmsNames()[0] }" /> 
+            </div>
+            <div class="dx-field" data-bind="visible: false">
+                <div class="dx-field-label"></div>
+                <div id="idNms2" class="dx-field-value" data-bind="dxSelectBox: {dataSource: P.arrNMS[2], displayExpr: 'N', valueExpr: 'Id', placeholder: nmsNames()[1] }" />
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: _.Order.Note" />
+                <div id="txtNote" class="dx-field-value" data-bind="dxTextArea: { placeholder: _.Order.NotePrompt, value: noteVal }"/>
+            </div>            
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="text: calcSum"/>
+            </div>
+
+        </div>
+
+        <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: swValue || !P.useWebDb, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
+		<div class="dx-button but50 fl-right" data-bind="dxButton:{text: _.Common.Save, clickAction: Order_btnSaveClicked}"/></div>
+		
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'OrderList', title: _.Navigation.OrderList } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/OrderList' } "></div>
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        
+        <div class="dx-fieldset" >
+            <div class="dx-field">
+                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
+                    valueUpdateEvent: 'search change keyup' }"></div>
+                <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" ></div>
+                <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb || swValue, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
+            </div>
+        </div>
+		
+		<div id="idOrderList" class="offset-list" data-bind="dxList: { visible: !swValue(),
+            dataSource: dataSource, 
+            itemHoldAction: Order_processItemHold, 
+            itemHoldTimeout: holdTimeout, 
+            noDataText: _.Common.NoDataText,
+            pullRefreshEnabled: true 
+            }">
+            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
+                
+                <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
+                <div>
+                    <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
+                    <span class='textSmall' data-bind="text: $data.ShortDate"/> 
+                    <span data-bind="text: $data.Name"/>
+                    <span class='textSmall' data-bind="text: ($data.Adres)"/>
+                </div>
+                <div class='marginleft'>
+                    <span data-bind="text: $data.SumDoc"/>
+                    <span class='textSmall' data-bind="text: $data.Note"/>
+                    (<span class='textSmall' data-bind="text: $data.Wars"/>) 
+                    <span class='textSmall' data-bind="text: $data.sServRet"/> 
+                </div></div>
+            </div>
+        </div>
+
+        <div id="idOrderListS" class="offset-list" data-bind="dxList: { visible: swValue(),
+            dataSource: dataSourceS, 
+            noDataText: _.Common.NoDataText,
+            itemHoldAction: Order_processItemHold, 
+            itemHoldTimeout: holdTimeout,  
+            pullRefreshEnabled: true 
+            }">
+            <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}?s=true'">
+                
+                <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
+                <div>
+                    <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
+                    <span class='textSmall' data-bind="text: $data.ShortDate"/> 
+                    <span data-bind="text: $data.Name"/>
+                    <span class='textSmall' data-bind="text: ($data.Adres)"/>
+                </div>
+                <div class='marginleft'>
+                    <span data-bind="text: $data.SumDoc"/>
+                    <span class='textSmall' data-bind="text: $data.Note"/>
+                    (<span class='textSmall' data-bind="text: $data.Wars"/>) 
+                    <span class='textSmall' data-bind="text: $data.sServRet"/> 
+                </div></div>
+            </div>
+        </div>
+
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
+
+<!--     <div data-bind="dxPopover: { width: 200, height: 'auto', visible: popVisible }">
+        <div data-bind="dxList: { items: popActions, itemClickAction: Order_processClick }" />
+    </div> -->
+<!--     <div data-bind="dxDropDownMenu: { buttonText: 'Show menu', items: popActions, itemClickAction: Order_processClick }"></div> -->
+
+    </div>
+</div>
+
+

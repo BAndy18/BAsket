@@ -1,0 +1,75 @@
+<div data-options="dxView : { name: 'Clients', title: _.Navigation.Clients } " >
+    <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Clients' } "></div>
+    <div class="home-view"  data-options="dxContent: { targetPlaceholder: 'content' } " >
+        <div class="dx-fieldset" >
+            <div class="dx-field">
+                <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', 
+                    value: searchString, visible: true, 
+                    valueUpdateEvent: 'search change keyup' }"></div>               
+            </div>
+        </div>
+
+        <div class="offset-list" data-bind="dxList: { 
+                dataSource: dataSource,  scrollingEnabled: true,
+                itemHoldAction: Client_processItemHold, 
+                itemHoldTimeout: holdTimeout, 
+                pullRefreshEnabled: true,
+                noDataText: _.Common.NoDataText,
+            }">
+
+            <div data-options="dxTemplate : { name: 'item' }"  data-bind="dxAction: '#Client/{Id}'"> 
+                <div data-bind="text: $data.N"></div>
+                <div class='textSmall marginleft'><span data-bind="text: $data.A"/>
+                    (<span data-bind="text: $data.GeoLoc"/> 
+                     Id=<strong data-bind="text: $data.Id"/>)
+                </div>
+            </div>
+        </div>
+
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
+
+    </div>
+</div>
+
+<div data-options="dxView : { name: 'Client', layout: 'empty' } " >
+    <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
+        <div data-bind="dxToolbar: { items: [
+          { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          { location: 'center', text: _.Clients.Title},
+          { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Client' }},
+          { location: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
+        ]}"></div>
+
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div data-bind="text: cliName()" />
+			</div>
+		</div>
+       
+
+        <div id="idClientMap" data-bind="dxMap: options"/>
+
+
+        <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"></div>
+
+        <div data-bind="dxPopover: { width: 250, height: 'auto', visible: visibleMenu, target: '.dx-icon-menu'}">
+            <div data-bind="dxList: { items: menuItems, itemClickAction: Client_ClickMenuAction }"></div>
+        </div>
+
+        <div data-bind="dxPopup:{visible:popupVisible}">
+            <div data-options="dxTemplate:{name: 'title'}">               
+               <div data-bind="dxToolbar: { items: [
+                  {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: Client_clickCancel}},
+                  {  align: 'center', text: _.Clients.RoutDetail},          
+                ]}"></div>
+            </div>
+
+            <div class="h100" data-options="dxTemplate:{name: 'content'}">
+                <div id="scrollView" data-bind="dxScrollView: {}">
+                    <div id="textContainer"/>
+                </div><br/>
+            </div>
+        </div>        
+    </div>
+</div>
+

@@ -1,0 +1,253 @@
+﻿/// *** Web REST Data Access *** ///
+var DAL_web = (function ($, window) {
+	var root = {};
+
+    if (!window.localStorage.getItem("dataSouceUrl") && !window['DAL_tst'])
+        P.LoadFile('js/DAL_tst.js', 'js');
+
+    root.NMS = function (params) {
+        if (!P.dataSouceUrl)
+            return DAL_tst.NMS_Data;
+        return execDataSource({ control: 'Nms' });
+    };
+	root.Categories = function (params) {
+		if (!P.dataSouceUrl)
+			return DAL_tst.Categories_Data;
+
+		return execDataSource({ control: 'Categories', lookup: true });
+	};
+	root.Products = function (params) {
+		if (!P.dataSouceUrl)
+			return DAL_tst.Products_Data;
+        var control = 'Products';
+        if (params.pId == 'ost')
+            control = 'ProdStock';
+
+		return execDataSource({
+			control: control, paging: true,
+			prm: {
+				pId: params.pId,
+				searchString: params.search
+			}
+		}, function (data) {
+			var bFound = false;
+			for (var i in P.arrayBAsket) {
+				if (P.arrayBAsket[i].Id == data.Id) {
+					data.Quant = P.arrayBAsket[i].Quant;
+					bFound = true;
+				}
+			}
+			if (!bFound)
+				data.Quant = '';
+            //data.Name = data.N;
+            //data.Price = data.P;
+            //data.Ostat = data.O;
+			return data;
+		});
+	};
+	root.ProductDetails = function(params) {
+		execDataSource({ control: 'Products/' + params.Id }).load()
+			.done(function(data) {
+				var quant = '0';
+                data[0] = P.setQuantToWar(data[0]);
+				// for (var i in P.arrayBAsket) {
+				// 	if (P.arrayBAsket[i].Id == data[0].Id) {
+				// 		quant = P.arrayBAsket[i].Quant;
+				// 	}
+				// };
+				params.model.Name(data[0].N);
+				params.model.Price(data[0].P.toFixed(2));
+				params.model.N1(data[0].N1);
+				params.model.N2(data[0].N2);
+				params.model.N3(data[0].N3);
+				params.model.N4(data[0].N4);
+				params.model.Ostat(data[0].O);
+				params.model.Quant(data[0].Quant);
+			});
+	};
+	root.ProductsByWars = function(params) {
+		return execDataSource({ control: 'Products/', prm: { w: params }}, function (data) {
+            return P.setQuantToWar(data);
+        }).load();
+	};
+
+	root.Clients = function (params) {
+		if (!P.dataSouceUrl)
+			return DAL_tst.Clients_Data;
+
+		var param = { control: 'Clients', paging: true, prm: {} };
+		if (params) {
+			if (params.search)
+				param['prm'] = { searchString: params.search };
+			else
+				param['prm'] = params;
+		} else
+			param['lookup'] = true;
+
+		return execDataSource(param, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
+	};
+	root.ClientsPar = function(params) {
+		return execDataSource({ control: 'Clients/' + params, prm: { fil: true } }, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
+	};
+	root.ClientById = function(params) {
+		return execDataSource({ control: 'Clients/' + params }, function (data) {
+            data.Name = data.N;
+            data.Adres = data.A;
+            return data;
+        });
+	};
+
+	root.Bil = function(params) {
+		return execDataSource({ control: 'Bil', paging: true, prm: {searchString: params.search}}, function (data) {
+            data.Name = data.N1;
+            data.Adres = data.N2;
+            data.ShortDate = data.DateDoc.substring(0, 5);
+            return data;
+        });
+	};
+	root.BilById = function(params) {
+		return execDataSource({ control: 'Bil/' + params });
+	};
+	root.SaveBil = function(params) {
+        params['cmd'] = 'SaveBil';
+		return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
+	};
+	root.DeleteBil = function(params) {
+        params['cmd'] = 'DelBil';
+		return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
+	};
+
+    root.SendRepo = function(params) {
+        params['cmd'] = 'SendRepo';
+        return execMethod({ method: 'POST', control: 'Bil/', prm: params }).load();
+    };
+
+    root.RoadMap = function (params, allGt) {
+        var date = U.DateFormat(params, 'yyyy-mm-dd')
+        prms = {'date': date};
+        if (allGt)
+            prms['allGt'] = true;
+        
+        return execDataSource({ control: 'RoadMap', paging: true, prm: prms}, function (data) {
+            data.Name = data.N1;
+            data.Adres = data.N2;
+            return data;
+        });
+    }
+    root.SaveRMBil = function (id, idb) {
+        return execMethod({ method: 'POST', control: 'RoadMap/', prm: {'cmd': 'UpdIdB', 'Id':id, 'IdB':idb} }).load();
+    }
+
+	function execDataSource(params, mapCallback) {
+		//P.getDeviceId();
+		if (params.lookup)
+			return new DevExpress.data.DataSource({
+				pageSize: P.pageSize,
+				load: function (loadOptions) {
+					if (params.paging) {
+						params.prm['skip'] = loadOptions.skip;
+						params.prm['take'] = loadOptions.take;
+					}
+                    if (loadOptions.searchValue)
+                        params.prm['searchString'] = loadOptions.searchValue;
+					// return $.get(P.dataSouceUrl + params.control, params.prm)
+					return $.ajax({
+						url: P.dataSouceUrl + params.control,
+						data: params.prm,
+						xhrFields: {
+							withCredentials: true
+						},
+						headers: P.ajaxHeaders
+					})
+                    .done(function (result) {
+                        if (!result)
+                            return null;
+                    	var mapped = $.map(result, function (item) {
+                    		if (mapCallback)
+                    			return mapCallback(item)
+                    		else
+                    			return item;
+                    	});
+                    });
+				},
+				lookup: function (key) {
+					return 'lookup';
+				}
+			});
+		else
+			return new DevExpress.data.DataSource({
+				pageSize: P.pageSize,
+				load: function (loadOptions) {
+					if (params.paging) {
+						params.prm['skip'] = loadOptions.skip;
+						params.prm['take'] = loadOptions.take;
+					}
+					//                    return $.get(P.dataSouceUrl + params.control, params.prm);
+					return $.ajax({
+						type: "GET",
+						url: P.dataSouceUrl + params.control,
+						data: params.prm,
+                        //crossDomain: true,
+						xhrFields: {
+							withCredentials: true
+						},
+						// beforeSend: function (xhrObj) {
+							// xhrObj.setRequestHeader("Accept","application/json");
+							// xhrObj.setRequestHeader("Authorization","Basic " + DevExpress.data.base64_encode([P.UserName, P.UserPassword].join(":")));
+						// }
+						headers: P.ajaxHeaders
+					});
+				},
+				map: function (item) {
+					if (mapCallback)
+						return mapCallback(item)
+					else
+						return item;
+				}
+			});
+	}
+
+	function execMethod(params, mapCallback) {
+		return new DevExpress.data.DataSource({
+			pageSize: P.pageSize,
+			load: function (loadOptions) {
+				return $.ajax({
+						type: params.method,
+						url: P.dataSouceUrl + params.control,
+						data: params.prm,
+						xhrFields: {
+							withCredentials: true
+						},
+						headers: P.ajaxHeaders,
+						success: function(result) {
+                            BAsket.notify(_.Common.ServerReply + result.Note);
+						},
+						error: function(result, arg) {
+                            // BAsket.error(result.responseText);
+                            BAsket.error(result.statusText + ': ' + result.status);
+						}
+					})
+					.done(function(result) {
+                        if (!result)
+                            return null;
+						var mapped = $.map(result, function(item) {
+							if (mapCallback)
+								return mapCallback(item);
+							else
+								return item;
+						});
+					});
+			}
+		});
+	}
+
+	return root;
+})(jQuery, window);

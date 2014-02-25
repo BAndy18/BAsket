@@ -1,0 +1,69 @@
+﻿<div data-options="dxView : { name: 'product-details', layout: 'empty' } " >
+  <div class="product-details" data-options="dxContent : { targetPlaceholder: 'content' } " >
+      <div data-bind="dxToolbar: { items: [
+        { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+        { location: 'center', text: _.Products.TitleDetails },
+        { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Product-Details' }},
+      ]}">
+  </div>
+
+  <div id="scrollViewContainer" data-bind="dxScrollView: { }">
+    <div class="dx-fieldset">
+      <div class="dx-field">
+        <div class="dx-field-label" data-bind="text: _.Products.FldQuantity"/>
+        <div class="dx-field-value">
+          <div id="idQuant" class="cell20" data-bind="dxNumberBox: {
+              min: 0,
+              value: Quant,
+              valueUpdateEvent: 'keyup',
+              placeholder: _.Products.ErrQuantity                     
+            }" />
+          <div class="dx-button but30 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: Product_Details_saveClicked}" />
+        </div>
+      </div>
+      <div class="dx-field">
+          <div class="dx-field-label" data-bind="text: _.Products.FldName" />
+          <div id="idName" class="dx-field-value" data-bind="text: Name" />
+<!--      <div id="idName" class="dx-field-value" data-bind="dxTextBox: { placeholder: Name, disabled: true }"/> -->
+      </div>
+      <div class="dx-field">
+          <div class="dx-field-label" data-bind="text: _.Products.FldPrice" />
+          <div class="dx-field-value" data-bind="text: Price" />
+      </div>
+      <div class="dx-field">
+            <div class="dx-field-label" data-bind="text: _.Products.FldOstat" />
+            <div class="dx-field-value" data-bind="text: Ostat" />
+      </div>
+    </div>
+    <div class="dx-fieldset">
+      <div class="dx-field" data-bind="visible: N1">
+            <div class="dx-field-label" data-bind="text: N1T" />
+            <div class="dx-field-value" data-bind="text: N1" />
+      </div>
+      <div class="dx-field" data-bind="visible: N2">
+            <div class="dx-field-label" data-bind="text: N2T" />
+            <div class="dx-field-value" data-bind="text: N2" />
+      </div>
+      <div class="dx-field" data-bind="visible: N3">
+            <div class="dx-field-label" data-bind="text: N3T" />
+            <div class="dx-field-value" data-bind="text: N3" />
+      </div>
+      <div class="dx-field" data-bind="visible: N4">
+            <div class="dx-field-label" data-bind="text: N4T" />
+            <div class="dx-field-value" data-bind="text: N4" />
+      </div>
+<!-- 
+      <div class="dx-field">
+            <div class="dx-field-label">Id: </div>
+            <div class="dx-field-value" data-bind="text: Id"></div>
+      </div> -->
+
+    </div>
+
+    <center>
+      <div data-bind="visible: N4">
+        <img class = "image" data-bind="attr: { src: N4 }" />
+      </div>
+    </center>
+  </div>
+</div>
