@@ -251,7 +251,7 @@
                 
                 <div data-bind="attr: { 'class': 'orderItem-' + $data.bSusp }">
                 <div>
-                    <span class='textSmall' data-bind="text: $data.NumDoc"/> - 
+                    <span class='textSmall' data-bind="text: $data.Id"/> - 
                     <span class='textSmall' data-bind="text: $data.ShortDate"/> 
                     <span data-bind="text: $data.Name"/>
                     <span class='textSmall' data-bind="text: ($data.Adres)"/>
@@ -397,7 +397,7 @@
             noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
-            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Client/{N3}'">
+            <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: RoadMap_ClickClient">
                 <div>
                     <span class='textSmall' data-bind="text: $data.Npp"/>  
                     <span class='textSmall' data-bind="text: $data.IdB"/>
