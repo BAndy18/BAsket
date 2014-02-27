@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0227.59";(function($, DX, undefined) {
+BAsketVer = "2.0.0227.60";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -699,6 +699,16 @@ var P = (function ($, window) {
 		'ReadNews': iniLocalStor("ReadNews", '')
 	};
 
+	root.trace = function(str) {
+		if (P.debugMode){
+			var element = document.getElementById('consoleOut');
+			if (element)
+				element.innerHTML += str + '<br />';
+		}
+		console.log(str);
+	};
+
+
     root.setQuantToWar = function(war) {
         for (var i in P.arrayBAsket) 
             if (P.arrayBAsket[i].Id == war.Id) {
@@ -849,9 +859,13 @@ var P = (function ($, window) {
             return;
         }
 		root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
+       	P.trace('arrNMS 0 length ' + root.arrNMS[0].length);
 		for (var i = 0; i < root.arrNMS[0].length; i++) {
         //for (var i in root.arrNMS[0]) {
-			root.arrNMS[root.arrNMS[0][i].Id] = JSON.parse(iniLocalStor("NMS" + root.arrNMS[0][i].Id, ''));
+        	P.trace('arrNMS ' + i);
+        	var str = iniLocalStor("NMS" + root.arrNMS[0][i].Id, '');
+        	if (str)
+				root.arrNMS[root.arrNMS[0][i].Id] = JSON.parse(str);
 		}
         if (root.arrCategory.length > 0){
     		root.curCategoryId = root.arrCategory[0].Id;
@@ -874,12 +888,18 @@ window.onerror = function (msg, url, line, column, errorObj) {
   // like so:
   var addlog = '';
   //addlog = (errorObj) ? "\n" + errorObj.stack : ' no addlog';
-  if (!url) url = '-';
-  var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
-  alert(str);
-  // console.log(str);
-  // if (errorObj)
-  //   console.log(errorObj.stack);
+  var str = "Error: ";
+  if (msg.target){
+    // for (var i in msg)
+    str += msg.target.src;
+  } else {
+    if (!url) url = '-';
+      str += msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
+    alert(str);
+  }
+  console.log(str);
+  if (errorObj)
+    console.log(errorObj.stack);
   return true;
 };
 
@@ -1545,8 +1565,9 @@ var DAL = (function ($, window) {
 		// var source0 = DAL_web.NMS();
 		// if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
 		// else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
-
+		trace('NMS');
         DAL_web.NMS().load().done(function (result) { writeToLocalData(result, 'NMS'); });
+		trace('Categories');
         DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
 
         var date = new Date();
@@ -1563,11 +1584,14 @@ var DAL = (function ($, window) {
         if (createDB)
 		    root.RecreateLocalDB();
 
+		trace('Products');
         modeReadNews = fullNews ? 'all':'ost';
 		DAL_web.Products({ pId: modeReadNews }).load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
+			trace('Clients');
             DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
+            trace('RoadMap');
             DAL_web.RoadMap(new Date(), true).load().done(function (result) { writeToLocalData(result, 'MAP'); });
         }
         else {
