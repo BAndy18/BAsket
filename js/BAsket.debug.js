@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0226.58";(function($, DX, undefined) {
+BAsketVer = "2.0.0227.59";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -874,11 +874,12 @@ window.onerror = function (msg, url, line, column, errorObj) {
   // like so:
   var addlog = '';
   //addlog = (errorObj) ? "\n" + errorObj.stack : ' no addlog';
+  if (!url) url = '-';
   var str = "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
   alert(str);
-  console.log(str);
-  if (errorObj)
-    console.log(errorObj.stack);
+  // console.log(str);
+  // if (errorObj)
+  //   console.log(errorObj.stack);
   return true;
 };
 
