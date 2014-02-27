@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0225.57";(function($, DX, undefined) {
+BAsketVer = "2.0.0226.58";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
