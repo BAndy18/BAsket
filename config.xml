@@ -16,8 +16,6 @@
     <preference name="phonegap-version" value="3.1.0" />
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />
-    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
-    <preference name="android-windowSoftInputMode" value="stateVisible|adjustResize" />
 
     <content src="index.html" />
 
