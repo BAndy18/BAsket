@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0227.60";(function($, DX, undefined) {
+BAsketVer = "2.0.0227.61";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -705,7 +705,8 @@ var P = (function ($, window) {
 			if (element)
 				element.innerHTML += str + '<br />';
 		}
-		console.log(str);
+		if (console)
+			console.log(str);
 	};
 
 
@@ -766,23 +767,10 @@ var P = (function ($, window) {
 
 	root.Init = function () {
 		root.useWebDb = iniLocalStor("useWebDb", "true") == "true";
-		// var e;
-		// try {
-		// 	if (!window.openDatabase)
-		// 		root.useWebDb = false;
-		// 	else {
-		// 		var mydb = openDatabase("BAsketDB", "1.0", "BAsketDB", 5000000);
-		// 	}
-		// } catch (e) {
-		// 	// Error handling code goes here. 
-		// 	if (e == INVALID_STATE_ERR) {
-		// 		// Version number mismatch. 
-		// 		alert("Invalid database version.");
-		// 	} else {
-		// 		alert("Unknown error " + e + ".");
-		// 	}
-		// }
-		//alert("Test openDatabase OK " + root.useWebDb);
+	    if (typeof window.openDatabase === 'undefined') {
+	    	root.useWebDb = false;
+			//alert("Test openDatabase OK " + root.useWebDb);
+		}
 
         root.platformDevice = 'android';
 		// root.platformDevice = 'win8';
@@ -859,10 +847,9 @@ var P = (function ($, window) {
             return;
         }
 		root.arrNMS[0] = JSON.parse(iniLocalStor("NMS0", '{}'));
-       	P.trace('arrNMS 0 length ' + root.arrNMS[0].length);
+       	// P.trace('arrNMS 0 length ' + root.arrNMS[0].length);
 		for (var i = 0; i < root.arrNMS[0].length; i++) {
-        //for (var i in root.arrNMS[0]) {
-        	P.trace('arrNMS ' + i);
+        	// P.trace('arrNMS ' + i);
         	var str = iniLocalStor("NMS" + root.arrNMS[0][i].Id, '');
         	if (str)
 				root.arrNMS[root.arrNMS[0][i].Id] = JSON.parse(str);
@@ -897,6 +884,7 @@ window.onerror = function (msg, url, line, column, errorObj) {
       str += msg + "\nurl: " + url + "\nline #: " + line + "/" + column + addlog;
     alert(str);
   }
+  if (!console) return true;
   console.log(str);
   if (errorObj)
     console.log(errorObj.stack);
@@ -912,6 +900,8 @@ $(function() {
 	window.isphone = document.URL.indexOf("http://") === -1 && document.URL.indexOf("https://") === -1;
 
 	if (window.isphone) {
+		P.trace('! window.isphone !');
+		P.LoadFile('cordova.js', 'js');
 		document.addEventListener("deviceready", onDeviceReady, false);
 	} else {
 		onDeviceReady();
@@ -1310,6 +1300,8 @@ function SQLite(cfg) {
             execute(q, p, data, error);
         },
         transaction: function (e, error, data) {
+        	if (!error) error = function (){} ;
+        	if (!data) data = function (){} ;
             db.transaction(e, error, data)
         }
     }  
@@ -1565,9 +1557,9 @@ var DAL = (function ($, window) {
 		// var source0 = DAL_web.NMS();
 		// if (Object.prototype.toString.call(source0) == '[object Array]') writeToLocalData(source0, 'NMS');
 		// else source0.load().done(function (result) { writeToLocalData(result, 'NMS'); });
-		trace('NMS');
+		// P.trace('NMS');
         DAL_web.NMS().load().done(function (result) { writeToLocalData(result, 'NMS'); });
-		trace('Categories');
+		// P.trace('Categories');
         DAL_web.Categories().load().done(function (result) { writeToLocalData(result, 'CAT'); });
 
         var date = new Date();
@@ -1584,14 +1576,14 @@ var DAL = (function ($, window) {
         if (createDB)
 		    root.RecreateLocalDB();
 
-		trace('Products');
+		// P.trace('Products');
         modeReadNews = fullNews ? 'all':'ost';
 		DAL_web.Products({ pId: modeReadNews }).load().done(function (result) { writeToLocalData(result, 'WAR'); });
 
         if (fullNews){
-			trace('Clients');
+			// P.trace('Clients');
             DAL_web.Clients({ pId: 'all' }).load().done(function (result) { writeToLocalData(result, 'CLI'); });
-            trace('RoadMap');
+            // P.trace('RoadMap');
             DAL_web.RoadMap(new Date(), true).load().done(function (result) { writeToLocalData(result, 'MAP'); });
         }
         else {
@@ -1609,7 +1601,7 @@ var DAL = (function ($, window) {
 	};
 
 	root.RecreateLocalDB = function () {
-        trace('Local DB SCRIPT');
+        P.trace('Local DB SCRIPT');
 		DB.transaction(function(tx) {
 			for (i = 0; i < LocalScript.length; i++) {
 				tx.executeSql(LocalScript[i], [], function(tx, results) {},
@@ -1766,7 +1758,7 @@ var DAL = (function ($, window) {
                 tx.executeSql(dbLastQ, [], function (tx, results) {
                     DB.transaction(writeToWAR,
                         function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
-                        function () { trace(_.ReadNews.WroteRecs + table + ": success");        
+                        function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                             waitPanelSwitch.WAR = false;
                             if (CheckWaitPanelSwitch())
                                 P.loadPanelVisible(false);
@@ -1779,7 +1771,7 @@ var DAL = (function ($, window) {
             // writeToCLI();
             DB.transaction(writeToCLI,
                 function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
-                function () { trace(_.ReadNews.WroteRecs + table + ": success");        
+                function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                     waitPanelSwitch.CLI = false;
                     if (CheckWaitPanelSwitch())
                         P.loadPanelVisible(false);
@@ -1789,7 +1781,7 @@ var DAL = (function ($, window) {
             arrMAP = dataArray;
             DB.transaction(writeToMAP,
                 function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
-                function () { trace(_.ReadNews.WroteRecs + table + ": success");        
+                function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                     waitPanelSwitch.MAP = false;
                     if (CheckWaitPanelSwitch())
                         P.loadPanelVisible(false);
@@ -1835,7 +1827,7 @@ var DAL = (function ($, window) {
             }, arr[i]);
             //}, function (err, err2) {errorCB("*writeToWAR-rd sql*", err, err2)});
 		}
-		trace(_.ReadNews.ReadRecs + ' WAR: ' + i);
+		P.trace(_.ReadNews.ReadRecs + ' WAR: ' + i);
 		// P.loadPanelVisible(false);
 	};
 
@@ -1869,7 +1861,7 @@ var DAL = (function ($, window) {
             // }, function (err, err2) {errorCB("*writeToCLI-rd sql*", err, err2)} );
 		}
 		//tx.executeSql("COMMIT TRANSACTION", errorCB);
-		trace(_.ReadNews.ReadRecs + ' CLI: ' + i);
+		P.trace(_.ReadNews.ReadRecs + ' CLI: ' + i);
 		P.itemCount['Clients'] = P.ChangeValue('Clients', i);
 		// P.loadPanelVisible(false);
 	};
@@ -1894,7 +1886,7 @@ var DAL = (function ($, window) {
                     function (err, err2) { errorCB("*writeToMAP sql*", err, err2); }
                 );
             }
-            trace(_.ReadNews.ReadRecs + ' MAP: ' + i);
+            P.trace(_.ReadNews.ReadRecs + ' MAP: ' + i);
         }, function (err, err2) {errorCB("*writeToMAP-rd sql*", err, err2)} );
     };
 
@@ -1903,7 +1895,7 @@ var DAL = (function ($, window) {
 	function errorCB(src, err, err2) {
 		var message = (err) ? ((err.message) ? err.message : err2.message) : src;
 		var code = (err) ? ((err.code || (err && err.code == 0)) ? err.code : err2.code) : "";
-		trace(src + " SQLError: " + message + '(' + code + ') dbLastQ=' + dbLastQ);
+		P.trace(src + " SQLError: " + message + '(' + code + ') dbLastQ=' + dbLastQ);
 		return false;
 	};
 	// Transaction success callback
@@ -1923,6 +1915,7 @@ var DAL = (function ($, window) {
 	};
 	function querySuccess1(tx, results) {
 		var len = results.rows.length;
+		if (!console) return;
 		console.log("CAT table: " + len + " rows found.");
 		maxlen = 50;
 		var len = len < maxlen ? len : maxlen;
@@ -1930,17 +1923,17 @@ var DAL = (function ($, window) {
 			console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Name =  " + results.rows.item(i).name);
 		}
 	};
-	function consoleOut(str) {
-		var element = document.getElementById('consoleOut');
-		if (element)
-			element.innerHTML += str + '<br />';
-	};
-	function trace(str) {
-		if (P.debugMode)
-			consoleOut(str);
+	// function consoleOut(str) {
+	// 	var element = document.getElementById('consoleOut');
+	// 	if (element)
+	// 		element.innerHTML += str + '<br />';
+	// };
+	// function trace(str) {
+	// 	if (P.debugMode)
+	// 		consoleOut(str);
 
-		console.log(str);
-	};
+	// 	console.log(str);
+	// };
 
 	var LocalScript = [
         'DROP TABLE IF EXISTS WAR',
@@ -2106,7 +2099,7 @@ var DAL = (function ($, window) {
 		prms['sOther'] = '';
 		for (var i = 0; i < P.arrNMS[0].length; i++) {
 			var setNms = $("#idNms" + (i + 1)).data("dxSelectBox");
-			if (setNms && setNms.option().value && P.arrNMS[0][i].Id < 100) {
+			if (setNms && setNms.option().value && P.arrNMS[0][i].Id < 10) {
 				prms['sOther'] += (i + 1) + ':' + setNms.option().value + ';';
 			}
 		}
@@ -3062,15 +3055,19 @@ BAsket.Products = function (params) {
 	Products_clickBack = function(arg) {
 		//BAsket.app.navigate('Order/' + P.curCategoryId);
 		//BAsket.app.navigationManager.restoreState(window.localStorage);
+		P.trace('Products_clickBack ' + BAsket.app.navigationManager.currentStack.items.length);
 		var cur = 0;
 		for (var i = BAsket.app.navigationManager.currentStack.items.length - 1; i > 0; i--) {
 			if (BAsket.app.navigationManager.currentStack.items[i - 1].uri.indexOf('Order') == 0) {
+				P.trace('Products_clickBack cur= ' + i);
 				cur = i;
 				break;
 			} else {
+				P.trace('Products_clickBack splice= ' + i);
 				BAsket.app.navigationManager.currentStack.items.splice(i - 1, 1);
 			}
 		}
+		P.trace('Products_clickBack back= ' + cur);
 		BAsket.app.navigationManager.currentStack.currentIndex = cur; //BAsket.app.navigationManager.currentStack.items.length - 1;
 		BAsket.app.back();
 	};
