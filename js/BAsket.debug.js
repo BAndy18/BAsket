@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0228.62";(function($, DX, undefined) {
+BAsketVer = "2.0.0228.63";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -838,7 +838,7 @@ var P = (function ($, window) {
         root.copyright = 'BAsket \u00A9 2014 BAndySoft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
-        if (!root.arrCategory.length) {
+        if (!root.arrCategory.length || true) {
             // DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
             // if (dialogResult){
             DAL.ReadNews(true, true);
@@ -1594,6 +1594,7 @@ var DAL = (function ($, window) {
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
+		return;
         if (P.arrCategory.length > 0) 
             P.Init();
         else
@@ -1604,9 +1605,11 @@ var DAL = (function ($, window) {
         P.trace('Local DB SCRIPT');
 		DB.transaction(function(tx) {
 			for (i = 0; i < LocalScript.length; i++) {
-				tx.executeSql(LocalScript[i], [], function(tx, results) {},
-					function(err, err2) { errorCB("*RecreateLocalDB*", err, err2); }
-				);
+				dbLastQ = LocalScript[i];
+				if (dbLastQ)
+					tx.executeSql(dbLastQ, [], function(tx, results) {},
+						function(err, err2) { errorCB("*RecreateLocalDB*", err, err2); }
+					);
 			}
 		});
 	};
