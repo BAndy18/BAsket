@@ -164,7 +164,7 @@
 <div data-options="dxView : { name: 'Order', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-            { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: Order_clickBack}},
+            { location: 'left', widget: 'button', options: { type: 'back', clickAction: Order_clickBack}},
             { location: 'center', text: _.Order.Title},
             { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Order' }},          
             { location: 'right', widget: 'button', options: { icon: 'product', text: _.Order.Products, clickAction: Order_clickProduct}},
@@ -185,7 +185,7 @@
                     valueExpr: 'Id', 
                     value: cliId, 
                     placeholder: cliName, 
-                    searchEnabled: true, searchPlaceholder: _.Common.Search,
+                    searchEnabled: true, 
                     fullScreen: true,
                     valueChangeAction: Order_clientChanged}"/>
             </div>
@@ -244,7 +244,6 @@
             dataSource: dataSource, 
             itemHoldAction: Order_processItemHold, 
             itemHoldTimeout: holdTimeout, 
-            noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
             <div id="idOrderListTemplate" data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Order/{Id}'">
@@ -267,7 +266,6 @@
 
         <div id="idOrderListS" class="offset-list" data-bind="dxList: { visible: swValue(),
             dataSource: dataSourceS, 
-            noDataText: _.Common.NoDataText,
             itemHoldAction: Order_processItemHold, 
             itemHoldTimeout: holdTimeout,  
             pullRefreshEnabled: true 
@@ -317,7 +315,6 @@
                 itemHoldAction: Client_processItemHold, 
                 itemHoldTimeout: holdTimeout, 
                 pullRefreshEnabled: true,
-                noDataText: _.Common.NoDataText,
             }">
 
             <div data-options="dxTemplate : { name: 'item' }"  data-bind="dxAction: '#Client/{Id}'"> 
@@ -337,7 +334,7 @@
 <div data-options="dxView : { name: 'Client', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          { location: 'left', widget: 'button', options: { type: 'back', clickAction: '#_back'}},
           { location: 'center', text: _.Clients.Title},
           { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Client' }},
           { location: 'right', widget: 'button', options: { icon: 'menu', clickAction: Client_ClickMenu}},
@@ -394,7 +391,6 @@
             dataSource: dataSource, 
             itemHoldAction: RoadMap_processItemHold, 
             itemHoldTimeout: holdTimeout,
-            noDataText: _.Common.NoDataText,
             pullRefreshEnabled: true 
             }">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: RoadMap_ClickClient">
@@ -432,7 +428,7 @@
                             valueExpr: 'Id', 
                             value: cliId, 
                             placeholder: cliName, 
-                            searchEnabled: true, searchPlaceholder: _.Common.Search,
+                            searchEnabled: true, 
                             fullScreen: true,
                             valueChangeAction: RoadMap_clientChanged}"/>
                     </div>
@@ -455,7 +451,7 @@
 <div data-options="dxView : { name: 'RoadMap', layout: 'empty' } " >
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+          { location: 'left', widget: 'button', options: { type: 'back', clickAction: '#_back'}},
           { location: 'center', text: _.RoadMap.Title},
           { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/RoadMap' }},          
         ]}"></div>
@@ -647,7 +643,7 @@
 </div>﻿<div data-options="dxView : { name: 'Products', layout: 'empty'} " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxToolbar: { items: [
-          { location: 'left', widget: 'button', options: { type: 'back', text:  _.Common.Back, clickAction: Products_clickBack }},
+          { location: 'left', widget: 'button', options: { type: 'back', clickAction: Products_clickBack }},
           { location: 'center', text: lbltitle},
           { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Products' }},
           { location: 'right', widget: 'button', options: { icon: 'cart', text: btnSwText, clickAction: Products_swichClicked}},
@@ -687,7 +683,6 @@
 
          <div id="listProducts" class="offset-list2" data-bind="dxList: { 
                 dataSource: dataSourceProd, 
-                noDataText: _.Common.NoDataText,
                 pullRefreshEnabled: true
             }, visible: bChoice() && P.modeProdView">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Product_Details/{Id}'">
@@ -700,7 +695,7 @@
             </div>
         </div>
 <!--
-          <div id="listProducts" data-bind="dxList: { dataSource: dataSourceProd, noDataText: _.Common.NoDataText }, visible: bChoice() && P.modeProdView">
+          <div id="listProducts" data-bind="dxList: { dataSource: dataSourceProd }, visible: bChoice() && P.modeProdView">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Product_Details/{Id}'">
                 <div class="dx-table">
                     <div class="cell70" data-bind="text: $data.Name"></div>
@@ -718,7 +713,6 @@
                 listHeight: '80%', 
                 showScrollbar: true,
                 activeStateEnabled: true,
-                noDataText: _.Common.NoDataText
             }, visible: bChoice() && !P.modeProdView">
             <div class="tile" data-options="dxTemplate:{name:'item'}" data-bind="dxAction: '#Product_Details/{Id}'">
                 <img class="tile-image" data-bind="attr: { src: N4 }"/>
@@ -735,7 +729,6 @@
         
         <div id="listBAsket" class="offset-list2" data-bind="dxList: { 
                 dataSource: dataSourceBasket, 
-                noDataText: _.Common.NoDataText,
                 pullRefreshEnabled: true
             }, visible: !bChoice()">
             <div data-options="dxTemplate : { name: 'item' }" data-bind="dxAction: '#Product_Details/{Id}'">
@@ -756,7 +749,7 @@
 <div data-options="dxView : { name: 'Product_Details', layout: 'empty' } " >
   <div class="Product_Details" data-options="dxContent : { targetPlaceholder: 'content' } " >
       <div data-bind="dxToolbar: { items: [
-        { location: 'left', widget: 'button', options: { type: 'back', text: _.Common.Back, clickAction: '#_back'}},
+        { location: 'left', widget: 'button', options: { type: 'back', clickAction: '#_back'}},
         { location: 'center', text: _.Products.TitleDetails },
         { location: 'right', widget: 'button', options: { icon: 'info', clickAction: '#Info/Product-Details' }},
       ]}">

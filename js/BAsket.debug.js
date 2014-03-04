@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0304.69";(function($, DX, undefined) {
+BAsketVer = "2.0.0304.70";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -928,6 +928,7 @@ function onDeviceReady() {
     }
 	});
 	//Globalize.culture = Globalize.culture["ru-RU"];
+	Globalize.culture( "ru" );
 	//$.preferCulture("ru-RU");
 	// BAsket.app.viewShown.add(onViewShown);
 	BAsket.app.router.register(":view/:Id", { view: "home", Id: undefined });
