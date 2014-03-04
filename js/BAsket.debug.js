@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0304.68";(function($, DX, undefined) {
+BAsketVer = "2.0.0304.69";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -2784,6 +2784,7 @@ BAsket.Preferences = function (params) {
 	};
 	Preferences_useWebDb = function(arg) {
 		P.useWebDb = P.ChangeValue("useWebDb", useWebDb());
+		window.location.reload();
 	};
 	Preferences_debugMode = function(arg) {
 		P.debugMode = P.ChangeValue("debugMode", debugMode());
@@ -2936,7 +2937,7 @@ BAsket.ReadNews = function (params) {
 
 	var modeSaveOrd = ko.observable(P.getLocalStor('modeSaveOrd', true));
 	var modeLoadOst = ko.observable(P.getLocalStor('modeLoadOst', true));
-	var modeLoadSpr = ko.observable(P.getLocalStor('modeLoadSpr', false));
+	var modeLoadSpr = ko.observable(P.getLocalStor('modeLoadSpr', true));
 
 	var viewModel = {
 		modeSaveOrd: modeSaveOrd,
@@ -3058,19 +3059,19 @@ BAsket.Products = function (params) {
 	Products_clickBack = function(arg) {
 		//BAsket.app.navigate('Order/' + P.curCategoryId);
 		//BAsket.app.navigationManager.restoreState(window.localStorage);
-		P.trace('Products_clickBack ' + BAsket.app.navigationManager.currentStack.items.length);
+		// P.trace('Products_clickBack ' + BAsket.app.navigationManager.currentStack.items.length);
 		var cur = 0;
 		for (var i = BAsket.app.navigationManager.currentStack.items.length - 1; i > 0; i--) {
 			if (BAsket.app.navigationManager.currentStack.items[i - 1].uri.indexOf('Order') == 0) {
-				P.trace('Products_clickBack cur= ' + i);
+				// P.trace('Products_clickBack cur= ' + i);
 				cur = i;
 				break;
 			} else {
-				P.trace('Products_clickBack splice= ' + i);
+				// P.trace('Products_clickBack splice= ' + i);
 				BAsket.app.navigationManager.currentStack.items.splice(i - 1, 1);
 			}
 		}
-		P.trace('Products_clickBack back= ' + cur);
+		// P.trace('Products_clickBack back= ' + cur);
 		BAsket.app.navigationManager.currentStack.currentIndex = cur; //BAsket.app.navigationManager.currentStack.items.length - 1;
 		BAsket.app.back();
 	};
