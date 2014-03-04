@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0304.66";(function($, DX, undefined) {
+BAsketVer = "2.0.0304.67";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -838,7 +838,7 @@ var P = (function ($, window) {
         root.copyright = 'BAsket \u00A9 2014 BAndySoft. All rights reserved (' + root.deviceClass.platform + '; ver. ' + BAsketVer + ')';
 
 		root.arrCategory = JSON.parse(iniLocalStor("categories", "{}"));
-        if (!root.arrCategory.length || true) {
+        if (!root.arrCategory.length || false) {
             // DevExpress.ui.dialog.confirm("Вы уверены?", "Первичная загрузка данных").done(function (dialogResult) {
             // if (dialogResult){
             DAL.ReadNews(true, true);
@@ -1594,7 +1594,7 @@ var DAL = (function ($, window) {
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
-		return;
+		// return;
         if (P.arrCategory.length > 0) 
             P.Init();
         else
