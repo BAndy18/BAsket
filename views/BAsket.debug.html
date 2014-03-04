@@ -233,8 +233,10 @@
         
         <div class="dx-fieldset" >
             <div class="dx-field">
-                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
-                    valueUpdateEvent: 'search change keyup' }"></div>
+                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  
+                    value: searchString, visible: true, placeholder: _.Common.Search,
+                    valueUpdateEvent: 'search change keyup' }">
+                </div>
                 <div class="dx-field-value" data-bind="dxButton:{text: swTitle, visible: P.useWebDb, clickAction: Order_SwitchSource, width:'30%'}" ></div>
                 <div class="dx-button" data-bind="dxButton: {icon: 'tips', visible: !P.useWebDb || swValue, clickAction: function(){BAsket.notify(_.Common.ServerOper)} }"></div>
             </div>
@@ -305,7 +307,7 @@
         <div class="dx-fieldset" >
             <div class="dx-field">
                 <div class="dx-field-label" data-bind="dxTextBox: { mode: 'search', 
-                    value: searchString, visible: true, 
+                    value: searchString, visible: true, placeholder: _.Common.Search,
                     valueUpdateEvent: 'search change keyup' }"></div>               
             </div>
         </div>
@@ -659,8 +661,10 @@
         <div class="dx-fieldset" data-bind="visible: bChoice()">
             <div class="dx-field">
                 <!-- <span data-bind="attr: { 'class': 'iconsmall dx-icon-find' }"/> -->
-                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  value: searchString, visible: true, 
-		        	valueUpdateEvent: 'search change keyup' }"></div>
+                <div class="dx-field-label margintop" data-bind="dxTextBox: { mode: 'search',  
+                  value: searchString, visible: true, placeholder: _.Common.Search,
+                  valueUpdateEvent: 'search change keyup' }">
+                </div>
                 <div id="CategoryLookup" class="dx-field-value dx-button" data-bind="dxLookup: { 
                     title: _.Products.TitleCat, 
                     dataSource: dataSourceCat, 
