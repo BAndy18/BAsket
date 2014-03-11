@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0304.72";(function($, DX, undefined) {
+BAsketVer = "2.0.0311.73";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -418,8 +418,25 @@ var P = (function ($, window) {
 	   				var navi = tn[0];
 	   				if (navi)
 	   					_.Info[navi] = tn[1];
-	   				if (tn[0] == 'Contacts')
+	   				if (navi == 'Contacts')
 	   					_.Info[navi] = _.Info[navi].replace(/#EMail#/g, P.EMail);
+	   				else if (navi == 'SysInfo')
+	   					_.Info[navi] = _.Info[navi]
+	   						.replace('#device#', 
+		   						(DevExpress.devices.current().generic  ? ' =generic= ':'') + 
+					            (DevExpress.devices.current().phone  ? ' =phone= ':'') + 
+					            (DevExpress.devices.current().tablet  ? ' =tablet= ':'') + 
+					            (DevExpress.devices.current().android  ? ' =android= ':'') + 
+					            (DevExpress.devices.current().ios  ? ' =ios= ':'') + 
+					            (DevExpress.devices.current().tizen  ? ' =tizen= ':'') + 
+					            (DevExpress.devices.current().win8  ? ' =win8= ':''))
+				            .replace('#deviceType#', DevExpress.devices.current().deviceType)
+				            .replace('#platform#', DevExpress.devices.current().platform)
+				            .replace('#screen_height#', screen.height)
+				            .replace('#screen_width#', screen.width)
+				            .replace('#userAgent#', navigator.userAgent)
+				            .replace('#cookieEnabled#', (navigator.cookieEnabled ? 'Enabled':'Disabled'))
+				            ;
 	   			}
 	   		}
 			// for (var i=1; i<P.navigation.length; i++){

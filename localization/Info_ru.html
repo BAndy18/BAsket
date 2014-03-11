@@ -383,9 +383,47 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 </ul>
 
 
+##SysInfo|
+<h1 class="center">Системная информация</h1>
+CurrentDevice : #device#            
+<br/>DeviceType  : #deviceType#
+<br/>Platform  : #platform# 
+<br/>
+<br/>Screen Size: #screen_height# x #screen_width#
+<br/>Agent: #userAgent#
+<br/>Cookie: #cookieEnabled#
+
+
 ##Contacts|
 <h1>Наши Контакты</h1>
 <p>BAndySoft - это небольшая компания, производящая компьютерные программы для бизнеса.</p>
 <p>Мы будем рады, если Вы отправите Ваши отзывы по программе BAsket на EMail
 <a href="mailto: #EMail#">#EMail#</a></p>
-                                                                                        
+
+<p>Если Вы готовы оказать спонсорскую помощь в развитии нашего продукта, 
+мы будем рады прочувствовать глубину Ваших желаний по размерам Ваших пожертвований.</p>
+<p>Если Вы хотите быть не анонимным Спонсором, введите вместо "Спонсор" свое имя, 
+и мы с удовольствием опубликуем рейтинг самых "весомых" Спонсоров.</p>
+<p>Тем, кто оплачивает работу по развитию или адаптации, 
+просьба не забывать указывать утвержденную сумму и номер договора (вместо "Спонсор")</p>
+
+<div class="polls" align="center">
+<form method="post" action="https://sci.interkassa.com/" enctype="utf-8">
+	<input type='hidden' name='ik_co_id' value='530df1d5bf4efcf60e24dd69'>
+        сумма:
+	<input name='ik_am' id='ik_am' value='100' style='width: 40px;'> 
+	<input type="hidden" name="ik_cur" value="RUB" /--> RUB
+	<input type='hidden' id='ik_pm_no' name='ik_pm_no' value='-'>
+	<input name='ik_desc' id='ik_desc' value='Спонсор'>
+	&nbsp;&nbsp;
+	<input type='image' name='process' value='Пополнить InterKassa' style="margin-top: 50px;" src='/donate_small.png'
+		onclick="return P.checkRegForm();">
+
+	<!--select class="span1 has-tooltip-gb" name="ik_cur" 
+		style="margin-left: 4px; width: 72px; height:28px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) inset;" parent=ik_am> 
+		<option value="RUB">RUB</option>
+		<option value="USD">USD</option>
+		<option value="EUR">EUR</option>
+	</select-->
+ </form>
+</div>

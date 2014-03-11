@@ -62,7 +62,8 @@ Globalize.addCultureInfo("ru", {messages: {
             SelectRepo: "Выбери Отчет", 
             SendRepo: "Отправить Отчет на EMail", 
             ChoiceRepo: "Отчет не выбран", 
-
+            NoDataText: "Нет данных для отображения",
+            
             ReadRecs: 'Прочитано записей',
             WroteRecs: 'Запись ',
 
