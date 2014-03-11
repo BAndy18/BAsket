@@ -138,6 +138,7 @@
     <div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Home' } "></div>
     <div class="center" data-options="dxContent : { targetPlaceholder: 'content'}">
       <div><b class="basket-header">BAsket</b></div>
+      <span data-bind='{text: '@bAsket'}'></span>
 
       <div id='idMainTileView' class="tileView" data-bind="dxTileView: {
           dataSource: BAsket.navigation, 
@@ -290,7 +291,7 @@
             </div>
         </div>
 
-        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible }"/>
 
 <!--     <div data-bind="dxPopover: { width: 200, height: 'auto', visible: popVisible }">
         <div data-bind="dxList: { items: popActions, itemClickAction: Order_processClick }" />
@@ -328,7 +329,7 @@
             </div>
         </div>
 
-        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible, cancelText: _.Common.Cancel }"/>
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible }"/>
 
     </div>
 </div>
@@ -408,7 +409,7 @@
            </div>
         </div>
 
-        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible,cancelText: _.Common.Cancel }"/>  
+        <div id="actionSheetContainer" data-bind="dxActionSheet: { dataSource: popActions, visible: popVisible }"/>  
 
         <div data-bind="dxPopup: { visible:popupVisible }">
             <div data-options="dxTemplate: {name: 'title'}">
@@ -599,7 +600,7 @@
 	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/ReadNews' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 
-    <div class="center" data-bind="text: _.Common.NoDataText, visible: !P.useWebDb"/>
+    <div class="center" data-bind="text: _.ReadNews.NoDataText, visible: !P.useWebDb"/>
 
 	<div data-bind="dxScrollView: { }, visible: P.useWebDb">
 		<div class="dx-fieldset">
@@ -631,7 +632,7 @@
                     displayExpr: 'Name', 
                     valueExpr: 'Id', 
                     searchEnabled: false, 
-                    placeholder: _.Common.Select,
+                    placeholder: '@Select',
                     }"/>
             </div>
         </div> 

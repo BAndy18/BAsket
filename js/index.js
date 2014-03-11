@@ -36,7 +36,7 @@ function onDeviceReady() {
     }
 	});
 	//Globalize.culture = Globalize.culture["ru-RU"];
-	Globalize.culture( "ru" );
+	// Globalize.culture( "ru" );
 	//$.preferCulture("ru-RU");
 	// BAsket.app.viewShown.add(onViewShown);
 	BAsket.app.router.register(":view/:Id", { view: "home", Id: undefined });
@@ -55,5 +55,5 @@ BAsket.error = function(message) {
 	BAsket.notify(message, "error", 5000);
 };
 
-var _ = EN_US;
+// var _ = EN_US;
 
