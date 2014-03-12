@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0311.73";(function($, DX, undefined) {
+BAsketVer = "2.0.0311.74";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -408,13 +408,10 @@ var P = (function ($, window) {
 	root.getInfo = function() {
 		var getUrl = "localization/Info_" + root.Culture + ".html";
 		$.get(getUrl).then(function(text, status, xhr){
-	   		//text getUrl is what you want
-	   		//debugger;
 	   		var tV = text.split('##');
 	   		for (var i in tV){
 	   			var tn = tV[i].split('|');
 	   			if (tn.length > 1) {
-	   				// var navi = eval("_.Info." + tn[0]);
 	   				var navi = tn[0];
 	   				if (navi)
 	   					_.Info[navi] = tn[1];
@@ -435,20 +432,11 @@ var P = (function ($, window) {
 				            .replace('#screen_height#', screen.height)
 				            .replace('#screen_width#', screen.width)
 				            .replace('#userAgent#', navigator.userAgent)
+				            .replace('#language#', navigator.language)
 				            .replace('#cookieEnabled#', (navigator.cookieEnabled ? 'Enabled':'Disabled'))
 				            ;
 	   			}
 	   		}
-			// for (var i=1; i<P.navigation.length; i++){
-			// 	var clone = {};   
-		 //    	for (var j in P.navigation[i]) 
-		 //        	clone[j] = P.navigation[i][j];		    
-			// 	P.tileset.push(clone);
-			// }
-  	// 		if (!root.isInitSite){
-  	// 			BAsketSite.IniSite();	
-  	// 		} 
-  	// 		root.isGetConfig = true;
 		});
 	}
 
@@ -757,12 +745,12 @@ function onDeviceReady() {
 		navigation: P.navigation,
 		navigateToRootViewMode: true,
 		//        disableViewCache: true
-    commandMapping: {
-      'android-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
-      'ios-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
-      'tizen-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
-      'generic-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] }
-    }
+	    commandMapping: {
+			'android-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+			'ios-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+			'tizen-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] },
+			'generic-header-toolbar': { commands: [{id: 'cmdInfo', align: 'right'}] }
+	    }
 	});
 	//Globalize.culture = Globalize.culture["ru-RU"];
 	// Globalize.culture( "ru" );
