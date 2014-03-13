@@ -24,17 +24,9 @@ Globalize.addCultureInfo("ru", {messages: {
         "dxSwitch-offText": "ВЫКЛ",
 
         Common: {
-            // Yes: this.Yes,
-            // No: "Нет",
-            // Cancel: 'Отменить',
             Default: "по умолчанию",
-            // Back: "назад",
             Save: 'Сохранить',
-            // Search: 'Поиск',
-            // Select: 'Выбор ...',
             Confirm: 'Подтвердите',
-            // Loading: 'Загружается ...',
-            // NoDataText: "Нет данных",
             AreYouSure: "Вы уверены ?",
             EMailNotValid: "EMail не корректный",
             CurrentLocation: 'Текущее положение',
@@ -55,7 +47,7 @@ Globalize.addCultureInfo("ru", {messages: {
 
         ReadNews: {
             LoadData: "Загрузка Данных", 
-            SaveOrd: "Отправить Заказы", 
+            SendOrd: "Отправить Заказы", 
             LoadOst: "Обновить товарные остатки",
             LoadSpr: "Обновить справочники и карты", 
             RepoName: "Отчет", 
@@ -71,7 +63,7 @@ Globalize.addCultureInfo("ru", {messages: {
         },
 
         Preferences: {
-            Main: "Основные свойства",
+            Main: "Основные",
             Functions: "Пользователь",
             Admin: "Админ",
             Layout: 'Стиль Интерфейса',
@@ -85,7 +77,7 @@ Globalize.addCultureInfo("ru", {messages: {
             UserEMail: "EMail",
             RecreateDb: "Пересоздание локальной базы данных",
 
-            Incorrect_password: "Не правильный пароль",
+            IncorrectPassword: "Неправильный пароль",
 
             Title: "Настройка"
         },
@@ -97,8 +89,6 @@ Globalize.addCultureInfo("ru", {messages: {
             SelectClient: 'Выбор клиента ',
             Point: 'Торговая точка',
             SelectPoint: 'Выбор точки ',
-            SelectDop: 'Выбор типа параметра ',
-            SelectParam: 'Выбор параметра ',
             Note: 'Примечания',
             NotePrompt: 'комментарии если есть',
 
@@ -148,8 +138,8 @@ Globalize.addCultureInfo("ru", {messages: {
         },
 
         Info: {
-            IProducts:   "Список продуктов", 
-            IProductDet: "Характеристики",
+            IProducts:   "Выбор Товаров", 
+            IProductDet: "Количество",
             IMap:        "Карта",
             IClient:     "Клиент", 
             IContacts:   "Наши Контакты"

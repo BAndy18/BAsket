@@ -30,14 +30,14 @@ Globalize.addCultureInfo("default", {messages: {
             EMailNotValid: "EMail Not Valid",
             CurrentLocation: 'Current Location',
             SomethingWrong: 'Something went Wrong',
-            ServerOper: 'Server Oper',
+            ServerOper: 'Server Operation',
             ServerReply: 'Server Reply: ',
         },
 
         Navigation: {
             Order: "New Order",
-            OrderList: "Order List",
-            RoadMapList: "Road Map List",
+            OrderList: "Orders",
+            RoadMapList: "Road Maps",
             Clients: "Clients",
             ReadNews: "Read News",
             Preferences: "Preferences",
@@ -46,103 +46,101 @@ Globalize.addCultureInfo("default", {messages: {
 
         ReadNews: {
             LoadData: "Load Data", 
-            SaveOrd: "Send Orders", 
-            LoadOst: "Обновить товарные остатки",
-            LoadSpr: "Обновить справочники и карты", 
+            SendOrd: "Send Orders", 
+            LoadOst: "Renew Stock-in-Trade",
+            LoadSpr: "Renew Directories and Maps", 
             RepoName: "Report Name", 
             SelectRepo: "Select Report", 
             SendRepo: "Send Report to EMail", 
-            ChoiceRepo: "Report is not Choices", 
+            ChoiceRepo: "Report is not Selected", 
             NoDataText: "No Data to Display",
 
-            ReadRecs: 'Readen Records',
+            ReadRecs: 'Read Records',
             WroteRecs: 'Writen ',
 
             Title: "Read News"
         },
 
         Preferences: {
-            Main: "Основные свойства",
-            Functions: "Пользователь",
-            Admin: "Админ",
-            Layout: 'Стиль Интерфейса',
-            MapProvider: "Поставщик Карт",
-            Language: "Язык интерфейса",
-            TableMode: "Табличный выбор товаров",
-            UseWebDb: "Использовать Web Db",
-            DebugMode: "Режим отладки",
-            UserName: "Имя Пользователя",
-            UserPassword: "Пароль на сервере",
+            Main: "Main",
+            Functions: "User",
+            Admin: "Admin",
+            Layout: 'Interface Layout',
+            MapProvider: "Map Provider",
+            Language: "Interface Language",
+            TableMode: "TableMode Goods Selection",
+            UseWebDb: "Use Web Db",
+            DebugMode: "Debug Mode",
+            UserName: "User Name",
+            UserPassword: "Server User Password",
             UserEMail: "EMail",
-            RecreateDb: "Пересоздание локальной базы данных",
+            RecreateDb: "Local DB Recreation",
 
-            Incorrect_password: "Не правильный пароль",
+            IncorrectPassword: "Incorrect Password",
 
             Title: "Preferences"
         },
 
         Order: {
-            Products: "Товары",
-            Date: 'Дата',
-            Client: 'Клиент',
-            SelectClient: 'Выбор клиента ',
-            Point: 'Торговая точка',
-            SelectPoint: 'Выбор точки ',
-            SelectDop: 'Выбор типа параметра ',
-            SelectParam: 'Выбор параметра ',
-            Note: 'Примечания',
-            NotePrompt: 'комментарии если есть',
+            Products: "Goods",
+            Date: 'Date',
+            Client: 'Client',
+            SelectClient: 'Client Selection ',
+            Point: 'Trading Point',
+            SelectPoint: 'Point Selection ',
+            Note: 'Notes',
+            NotePrompt: 'Comments (optional)',
 
-            ActionDelete: 'Удалить заказ',
-            ChangeActivity: 'Сменить активность',
+            ActionDelete: 'Delete Order',
+            ChangeActivity: 'Change Activity',
 
-            SwTitle1: 'Заказы на сервере',
-            SwTitle2: 'Локальные заказы',
-            ErrNoWars: 'Не выбраны товары в заказе',
-            ErrNoDate: 'Не установлена дата в заказе',
-            ErrNoCli: 'Не выбран клиент',
+            SwTitle1: 'Server Orders',
+            SwTitle2: 'Local Orders',
+            ErrNoWars: 'Goods were not selected',
+            ErrNoDate: 'Date was not set',
+            ErrNoCli: 'Client was not Selected',
 
             Title: "Order"
         },
 
         Products: {
-            Title2: 'Корзина',
-            btnSwText1: 'корзина',
-            btnSwText2: 'товары',
-            TitleCat: 'Выбери категорию',
-            TitleDetails: 'количество товара',
-            ErrQuantity: 'Введите число больше 0',
-            FldQuantity: 'Количество:',
-            FldName: 'Наименование:',
-            FldPrice: 'Цена:',
-            FldOstat: 'Остаток:',
-            SelSum: 'выбрано: #; на сумму: ',
+            Title2: 'BAsket',
+            btnSwText1: 'basket',
+            btnSwText2: 'goods',
+            TitleCat: 'Select Category',
+            TitleDetails: 'Goods Quantity',
+            ErrQuantity: 'Number must be bigger than 0',
+            FldQuantity: 'Quantity:',
+            FldName: 'Name:',
+            FldPrice: 'Price:',
+            FldOstat: 'Stock:',
+            SelSum: 'Selected: #; Total Sum: ',
 
-            Title1: 'Выбор товаров'
+            Title1: 'Good Selection'
         },
 
         Clients: {
-            RoutDetail: "Маршрут подробно",
+            RoutDetail: "Rout Details",
             Title: 'Client'
         },
 
         RoadMap: {
-            AddToTheMap: 'Добавить клиента',
-            ShowOnTheMap: 'Маршрут на карте',
-            OpenBil: 'Открыть Заказ',
-            OpenClient: 'Открыть Клиента',
-            ActionDelete: 'Удалить клиента',
-            MoveDown: 'Переместить вниз',
-            MoveUp: 'Переместить вверх',
+            AddToTheMap: 'Add Client',
+            ShowOnTheMap: 'Route on the Map',
+            OpenBil: 'Open Order',
+            OpenClient: 'Open Client',
+            ActionDelete: 'Delete Client',
+            MoveDown: 'Move Down',
+            MoveUp: 'Move Up',
 
             Title: 'Road Map'
         },
 
         Info: {
-            IProducts:   "Список продуктов", 
-            IProductDet: "Характеристики",
-            IMap:        "Карта",
-            IClient:     "Клиент", 
-            IContacts:   "Наши Контакты"
+            IProducts:   "Good Selection", 
+            IProductDet: "Quantity",
+            IMap:        "Map",
+            IClient:     "Client", 
+            IContacts:   "Our Contact Details"
         }
 }});

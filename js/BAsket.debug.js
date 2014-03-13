@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0311.74";(function($, DX, undefined) {
+BAsketVer = "2.0.0312.75";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -779,18 +779,30 @@ var DAL_tst = (function ($, window) {
     var root = {};
 
     root.NMS_Data = new DevExpress.data.DataSource(new DevExpress.data.ArrayStore([
-        {'IdP': 0, 'Id': 1, 'N': "Предприятие"},
-        {'IdP': 0, 'Id': 2, 'N': "Тип Оплаты"},
+        {'IdP': 0, 'Id': 1, 'N': "Factory"},
+        {'IdP': 0, 'Id': 2, 'N': "Type of Payment"},
         {'IdP': 0, 'Id': 10, 'N': "Product Properties"},
         {'IdP': 0, 'Id': 20, 'N': "Client Properties"},
         {'IdP': 0, 'Id': 101, 'N': "Reports"},
-    	{'IdP': 1, 'Id': 16, 'N': "BAsket ООО"},
-    	{'IdP': 1, 'Id': 18, 'N': "ЧП BAsket"},
-    	{'IdP': 2, 'Id': 1, 'N': "наличные"},
-        {'IdP': 2, 'Id': 2, 'N': "безнал"},
-        {'IdP': 10, 'Id': 1, 'N': "Упаковка"},
-    	{'IdP': 10, 'Id': 2, 'N': "Производитель"},
-        {'IdP': 101, 'Id': 1, 'N': "Отчет 1"}
+    	{'IdP': 1, 'Id': 16, 'N': "BAsket Ltd"},
+    	{'IdP': 2, 'Id': 1, 'N': "cash"},
+        {'IdP': 2, 'Id': 2, 'N': "bank"},
+        {'IdP': 10, 'Id': 1, 'N': "Pack"},
+    	{'IdP': 10, 'Id': 2, 'N': "Manufacturer"},
+        {'IdP': 101, 'Id': 1, 'N': "Report 1"}
+
+        // {'IdP': 0, 'Id': 1, 'N': "Предприятие"},
+        // {'IdP': 0, 'Id': 2, 'N': "Тип Оплаты"},
+        // {'IdP': 0, 'Id': 10, 'N': "Product Properties"},
+        // {'IdP': 0, 'Id': 20, 'N': "Client Properties"},
+        // {'IdP': 0, 'Id': 101, 'N': "Reports"},
+        // {'IdP': 1, 'Id': 16, 'N': "BAsket ООО"},
+        // {'IdP': 1, 'Id': 18, 'N': "ЧП BAsket"},
+        // {'IdP': 2, 'Id': 1, 'N': "наличные"},
+        // {'IdP': 2, 'Id': 2, 'N': "безнал"},
+        // {'IdP': 10, 'Id': 1, 'N': "Упаковка"},
+        // {'IdP': 10, 'Id': 2, 'N': "Производитель"},
+        // {'IdP': 101, 'Id': 1, 'N': "Отчет 1"}
     ]));
 
     root.Categories_Data = new DevExpress.data.DataSource({pageSize: P.maxSizeLocalDb, store: new DevExpress.data.ArrayStore([
@@ -2653,7 +2665,7 @@ BAsket.Preferences = function (params) {
 			popupVisible(false);
 		}
 		else
-			BAsket.notify(_.Preferences.Incorrect_password, "error");
+			BAsket.notify(_.Preferences.IncorrectPassword, "error");
 	};
 	Preferences_clickCancel = function () {
 		//selectedTab(0);
