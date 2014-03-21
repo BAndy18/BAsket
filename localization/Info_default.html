@@ -7,92 +7,93 @@ UL { padding-left: 50px; margin-top: -15px;}
 
 
 ##Home|
-<h1>Справка по Домашнему экрану BAsket</h1>
-<p>BAsket -  это программный комплекс для торгового агента, который хочет формировать 
-Заказы для Клиентов с использованием мобильных устройств (планшетов и коммуникаторов), 
-то есть делать это быстро, эффективно и современно.</p>
-<p>Комплекс делится на Мобильное приложение (BAsket, который Вы сейчас видите) и серверный модуль, 
-отвечающий за передачу и хранение данных, а также за "общение" с учетной системой. 
-Серверный модуль может быть настроен на учетную систему Вашего предприятия при помощи плагинов.</p>
-<p>BAsket может работать в двух основных режимах:</p>
+<h1>Help on "Home"</h1>
+<p>BAsket - a software complex for trading agent who wants generate
+Orders for Clients using mobile devices (smartphones and tablets)
+i.e. to do it quickly, efficiently and with modern technology.</p>
+
+<p>The complex is divided into the Mobile Application (i.e. BAsket, which you see now) and the Server 
+Module. The Server Module is responsible for the data transmission and storage, as well as 
+"interaction" with the ERP system of the company. The Server module can be configured to your 
+company's ERP system with plug-ins.
+</p>
+<p>BAsket can operate in two basic modes:</p>
 <ul>
-    <li>Автономно - данные с сервера при чтении <a href="#Info/ReadNews">Новостей</a> запоминаются 
-в базе данных (Web Db) устройства. В основном программа работает именно с локальными данными; </li>
-    <li>Прямой доступ - все запросы поступают непосредственно на сервер, и ответ сервера отображается 
-сразу на Вашем экране.</li>
+    <li>Offline - data from the server when reading the <a href="#Info/ReadNews">News</a> is stored 
+into database (Web Db) of the device. Basically the program works exactly with the local data;</li>
+    <li>Direct Access - all requests are sent directly to the server, and the server's response 
+is displayed directly on your screen.</li>
 </ul>
-<p>Достоинства и недостатки этих двух режимов многочисленны, и мы приведем здесь только их часть.</p>
-<p>Автономный режим:</p>
+<p>These two modes have a lot of advantages and disadvantages, and we give here only a part of them.</p>
+<p>Offline Mode:</p>
 <ul>
-    <li>не требует постоянного доступа к Интернет;</li>
-    <li>значительно "дешевле" по интернет трафику;</li>
-    <li>скорость ответа системы уже полностью зависит от скорости работы Вашего мобильного устройства.</li>
+    <li>does not require permanent access to the Internet;</li>
+    <li>Internet traffic is very low;</li>
+    <li>system response entirely depends on the speed of your mobile device.</li>
 </ul></p>
-<p>Основное достоинство Прямого доступа - постоянно актуальные данные. Товарные остатки, а также списки
-Товаров и Клиентов на Вашем экране постоянно находятся в состоянии, максимально приближенном к Вашей учетной системе.</p>
+<p>The main advantage of Direct Access is permanently relevant data. 
+Stocks-in-Trade as well as the Lists of Goods and Clients on your screen are always as close 
+as possible to your ERP system.</p>
 
-<p>Есть еще технические ограничения на использование Автономного режима. Устройства, которые используют
-в качестве Интернет браузера Google Chrome (Android), Opera или Safari (iOs),
-смогут пользоваться Автономным режимом, остальным придется довольствоваться достоинствами Прямого доступа.</p>
-<p>Программой можно пользоваться и с обычного компьютера, но и в этом случае Автономный режим доступен 
-только из Google Chrome.</p>
+<p>There are additional technical limitations of using Offline Mode. Devices which use such an Internet 
+browsers as Google Chrome (Android), Opera or Safari (iOs), will be able to use Offline Mode, others 
+will have to be content with the advantages of Direct Access.</p>
+<p>Program can be used on an ordinary computer, but in this case, the Offline Mode is available 
+only with Google Chrome.</p>
 
-<p>BAsket - это кроссплатформенное и кроссбраузерное приложение, написанное с использованием 
-современной технологии Single-Page Application. Здесь использованы такие технологии, как HTML5, CSS3, 
-JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - это сайт, который может работать 
-еще и как нативное приложение для мобильных устройств, благодаря технологии PhoneGap.</p>
-<p>Естественно, что такое приложение на мобильном устройстве будет работать медленнее нативного. 
-Но, во-первых, производительность устройств растет очень быстро, а во-вторых, возможность работать с 
-одним продуктом на разных типах устройств сулит большую выгоду от использования.</p>
-<p>Хоть программа и анонсирована на поддержку коммуникаторов, мы все же советуем для реальной работы 
-использовать планшеты. Размер экрана здесь имеет очень большое значение.</p>
+<p>BAsket - the cross-platform and cross-browser application that is written with
+Single-Page Application modern technology. Such technologies as HTML5, CSS3,
+JS-frameworks PhoneJS, JQuery, Knockout are used here. In fact - BAsket is the website that can also work
+as a native application for mobile devices, thanks to PhoneGap technology.</p>
+<p>It is natural that this application works slower then native application on a mobile device. 
+But, first, device productivity is growing very fast, and secondly, the ability to work with
+one software on different types of devices promises great benefits from using.</p>
+<p>Although the program is announced to support communicators, we still advise using tablets for real 
+work, because screen size is very importan here.</p>
 
-<p>Функционально BAsket содержит:</p>
-<ul>
-    <li>Подготовку и корректировку <a href="#Info/Order">Заказов</a> для Клиентов;</li>
-    <li>Работу со <a href="#Info/OrderList">Списком Заказов</a>;</li>
-    <li>Список <a href="#Info/RoadMapList">Дорожные карты</a>, определяющий маршрут движения торгового агента;</li>
-    <li><a href="#Info/Clients">Список Клиентов</a>, где можно посмотреть маршрут от текущего положения до конкретной торговой точки;</li>
-    <li>Экран <a href="#Info/ReadNews">Новости</a>, где производится обмен информацией с сервером;</li>
-    <li><a href="#Info/Preferences">Настройку</a> системы, где кроме всего прочего можно "поиграться" 
-со стилями интерфейса разных типов мобильных устройств.</li>
+<p>BAsket contains the following functionality:</p>
+<ul>    
+    <li> <a href="www/#Info/Preferences" target="_blank"></a>, </li>
+
+    <li>Preparation and correction of Client <a href="#Info/Order">Orders</a></li>
+    <li>Working with a <a href="#Info/OrderList">List of Orders</a>;</li>
+    <li>List of <a href="#Info/RoadMapList">Road Maps</a>, which determines the route of trading agent;</li>
+    <li><a href="#Info/Clients">List of Clients</a>, where you can see the route from the current 
+location to a particular trading point;</li>
+    <li><a href="#Info/ReadNews">News</a> Screen, where information is exchanged with the server;</li>
+    <li>System <a href="#Info/Preferences">Configuration</a>, where among others you can "play" 
+with the interface styles of various types of mobile devices.</li>
 </ul>
 
 
 
 ##Order|
-<h1>Справка по экрану "Заказ"</h1>
-<p>Оформление и корректировка Заказа производится на трех, связанных переходами,
-    экранах:</p>
+<h1>Help on "Order"</h1>
+<p>Forming and correction of the Order is made on three screens connected with links:</p>
 <ul>
-    <li><a href="#Info/Order">Заказ</a></li>
-    <li><a href="#Info/Products">Выбор товаров</a></li>
-    <li><a href="#Info/Product_Details">Количество товара</a></li>
+    <li><a href="#Info/Order">Order</a></li>
+    <li><a href="#Info/Products">Good Selection</a></li>
+    <li><a href="#Info/Product_Details">Good Quantity</a></li>
 </ul>
-<p>На этом экране нужно указать параметры "шапки" Заказа:</p>
+<p>On this screen you have to specify the "headline" parameters of the Order:</p>
 <ul>
-    <li>Дата - дата предполагаемой отгрузки Заказа;</li>
-    <li>Клиент - выбор Клиента, которому будет отгружен Заказ;</li>
-    <li>Торговая Точка - выбор торговой точки Клиента, в которую будет
-        отгружен Заказ. Если выбранный Клиент не имеет торговых Точек, это поле
-        скрывается;</li>
-    <li>* Предприятие - выбор юридического лица, на которого будет оформлен
-        Заказ;</li>
-    <li>* Тип Оплаты - выбор типа оплаты для Заказа;</li>
-    <li>Примечания - любые примечания к Заказу;</li>
-    <li>Информация о том, сколько выбрано товаров в Заказ и на какую
-        сумму.</li>
+    <li>Date - the date of considered shipment of the Order;</li>
+    <li>Client - selection of a Client, to whom the Oder will be shiped;</li>
+    <li>Trading Point - Selection of the Client's Trading Point, where the Oder will be shiped. 
+If the selected Client has no Trading Points, this field is hidden;</li>
+    <li>* The Company - selection of the corporate body for which the Order will be issued;</li>
+    <li>* Payment Type - selection of payment type for the Order;</li>
+    <li>Notes - any notes to the Order;</li>
+    <li>Information about how many goods are selected in the Order and for what sum.</li>
 </ul>
-* параметры определяются конфигурацией программы и могут отсутствовать.
-<p>При нажатии на кнопку "Сохранить" производится проверка правильности
-    оформления Заказа, и, если все сделано правильно, Заказ сохраняется в
-    <a href="#Info/OrderList">Списке Заказов</a>
-    и производится переход на экран, из которого пришли сюда. 
-Это может быть <a href="#Info/Home">Домаший экран</a>, <a href="#Info/OrderList">Список Заказов</a> 
-или <a href="#Info/RoadMap">Дорожные Карты</a>.</p>
+* parameters are determined by the configuration of the program and may be missing.
+<p>By clicking  the "Save" button the validity of the Order is checked and if everything is done 
+correctly, the Order is saved in <a href="#Info/OrderList">Orders List</a>. Then transition to the screen 
+from which you came here is made. It may be <a href="#Info/Home">Home</a>, 
+<a href="#Info/OrderList">Orders List</a> 
+or <a href="#Info/RoadMap">Road Maps</a>.</p>
 
-<p>Если проверка завершилась с ошибкой, внизу всплывает сообщение об
-    ошибке. Список ошибочных ситуаций:</p>
+<p>Если проверка завершилась с ошибкой, внизу всплывает сообщение об ошибке. Список ошибочных ситуаций:</p>
 <ul>
     <li>Не выбраны товары в Заказе;</li>
     <li>Не установлена дата в Заказе;</li>
@@ -112,11 +113,11 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##Products|
-<h1>Справка по экрану "Выбор товаров"</h1>
+<h1>Help on "Goods Selection"</h1>
 <p>Выбор товаров - это второй из трех, связанных переходами, экранов
  для формирования Заказа:</p>
 <ul>
-<li><a href="#Info/Order">Заказ</a></li>
+<li><a href="#Info/Order">Order</a></li>
 <li><a href="#Info/Products">Выбор товаров</a></li>
 <li><a href="#Info/Product_Details">Количество товара</a></li>
 </ul>
@@ -156,10 +157,10 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##Product_Details|
-<h1>Справка по экрану "Количество товара"</h1>
+<h1>Help on "Количество товара"</h1>
 <p>Количество Товара - это третий из трех, связанных переходами, экранов для формирования Заказа:</p>
 <ul>
-	<li><a href="#Info/Order">Заказ</a></li>
+	<li><a href="#Info/Order">Order</a></li>
 	<li><a href="#Info/Products">Выбор товаров</a></li>
 	<li><a href="#Info/Product_Details">Количество товара</a></li>
 </ul>
@@ -190,7 +191,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##OrderList|
-<h1>Справка по экрану "Список Заказов"</h1>
+<h1>Help on "Список Заказов"</h1>
 <p>Здесь показывается Список Заказов в двух режимах:</p>
 <ul>
 	<li>Локальные Заказы - это заказы, сохраненные в локальной базе данных устройства. Для просмотра этого списка не требуется подключение к сети Интернет;</li>
@@ -223,7 +224,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##Clients|
-<h1>Справка по экрану "Список Клиентов"</h1>
+<h1>Help on "Список Клиентов"</h1>
 <p>Здесь показывается список Клиентов, на которых можно выписать Заказ.</p>
 <p>Слева сверху имеется строка поиска (фильтрации списка).</p>
 <p>При нажатии на строку списка Клиентов происходит переход на экран <a href="#Info/Client">Клиент</a>. 
@@ -246,7 +247,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##Client|
-<h1>Справка по экрану "Клиент"</h1>
+<h1>Help on "Client"</h1>
 <p>Здесь на карте показывается текущая точка (Ваше положение) и точка адреса Клиента. Надо иметь в виду, 
 что если адрес Клиента в системе сохранен неправильно, то и точка на карте может быть отмечена 
 в самом неожиданном месте :)</p>
@@ -278,7 +279,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##RoadMapList|
-<h1>Справка по экрану "Дорожные Карты" на дату</h1>
+<h1>Help on "Road Maps" on the date</h1>
 <p>Здесь показывается список Клиентов, включенных в Дорожную карту на установленную дату. Этим самым показывается маршрут движения торгового агента по Клиентам в определенный день.</p>
 <p>В строке над списком Клиентов слева направо:
 <ul>
@@ -317,7 +318,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##RoadMap|
-<h1>Справка по экрану "Дорожная Карта"</h1>
+<h1>help on "Road Map"</h1>
 <p>Здесь на карте показывается оптимальный (с точки зрания Google Map) маршрут движения торгового агента 
 по Клиентам в определенный день. 
 Маркерами на карте обозначены адреса Клиентов, включенных в текущую Дорожную карту</p>
@@ -332,8 +333,9 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##ReadNews|
-<h1>Справка по экрану "Новости"</h1>
-<p>Здесь в режиме автономной работы можно отсылать сформированные Заказы на сервер и обновлять справочники.</p>
+<h1>Help on "News"</h1>
+<p>Здесь в режиме автономной работы можно отсылать сформированные Заказы на сервер и обновлять 
+справочники.</p>
 <p>Если в экране <a href="#Info/Preferences">Настройка</a> выбрана работа без использования Web Db, 
 будет показано сообщение "Нет данных".</p>
 <p>Иначе можно установить значение следующих переключателей:</p>
@@ -356,7 +358,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##Preferences|
-<h1>Справка по экрану "Настройка"</h1>
+<h1>Help on "Preferences"</h1>
 <p>Здесь можно произвести некоторую настройку программы. Настройка имеет следующую структуру:</p>
 <ul>
     <li>Основные свойства:<br/><br/>
@@ -385,7 +387,7 @@ JS-фреймворки PhoneJS, JQuery, Knockout. На самом деле - э
 
 
 ##SysInfo|
-<h1 class="center">Системная информация</h1>
+<h1 class="center">System information</h1>
 CurrentDevice : #device#            
 <br/>DeviceType  : #deviceType#
 <br/>Platform  : #platform# 
@@ -397,17 +399,17 @@ CurrentDevice : #device#
 
 
 ##Contacts|
-<h1>Наши Контакты</h1>
-<p>BAndySoft - это небольшая компания, производящая компьютерные программы для бизнеса.</p>
-<p>Мы будем рады, если Вы отправите Ваши отзывы по программе BAsket на EMail
+<h1>Our Contact Details</h1>
+<p>BAndySoft is a small company that produces computer software for business.</p>
+<p><p>We'd appreciate if you send some feedback on the program on the EMail.
 <a href="mailto: #EMail#">#EMail#</a></p>
 
-<p>Если Вы готовы оказать спонсорскую помощь в развитии нашего продукта, 
-мы будем рады прочувствовать глубину Ваших желаний по размерам Ваших пожертвований.</p>
-<p>Если Вы хотите быть не анонимным Спонсором, введите вместо "Спонсор" свое имя, 
-и мы с удовольствием опубликуем рейтинг самых "весомых" Спонсоров.</p>
-<p>Тем, кто оплачивает работу по развитию или адаптации, 
-просьба не забывать указывать утвержденную сумму и номер договора (вместо "Спонсор")</p>
+<p>If you are willing to sponsor the development of our software, 
+we are happy to feel the depth of your desires in the size of your donation.</p>
+<p>If you don't want to be anonymous Sponsor enter your name instead of "Sponsor", 
+and we'll be pleased to publish the list of the most "weighty" Sponsors.</p>
+<p>Those who pays for the development or adaptation please don't forget to specify the approved 
+amount and the contract number (instead of the "Sponsor")</p>
 
 <div class="polls" align="center">
 <form method="post" action="https://sci.interkassa.com/" enctype="utf-8">

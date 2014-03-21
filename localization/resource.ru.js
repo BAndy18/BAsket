@@ -57,9 +57,7 @@ Globalize.addCultureInfo("ru", {messages: {
             NoDataText: "Нет данных для отображения",
             
             ReadRecs: 'Прочитано записей',
-            WroteRecs: 'Запись ',
-
-            Title: "Обмен Новостями"
+            WroteRecs: 'Запись '
         },
 
         Preferences: {
@@ -77,9 +75,7 @@ Globalize.addCultureInfo("ru", {messages: {
             UserEMail: "EMail",
             RecreateDb: "Пересоздание локальной базы данных",
 
-            IncorrectPassword: "Неправильный пароль",
-
-            Title: "Настройка"
+            IncorrectPassword: "Неправильный пароль"
         },
 
         Order: {

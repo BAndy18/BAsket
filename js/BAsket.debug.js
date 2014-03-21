@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0312.75";(function($, DX, undefined) {
+BAsketVer = "2.0.0313.76";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -366,6 +366,10 @@ var P = (function ($, window) {
 	// 	'English': EN_US,
 	// 	'Русский': RU_RU
 	// };
+	var languageMap = {
+		'English': 'en',
+		'Русский': 'ru'
+	};
 	function getValue(obj, key) {
 		for (var i in obj) {
 			if (!obj.hasOwnProperty(i)) continue;
@@ -382,9 +386,9 @@ var P = (function ($, window) {
 		// else
 		// 	_ = getValue(languageMap, root.languageUI);
 
-		root.Culture = (root.languageUI == '-') ? 'default':'ru';
+		root.Culture = (languageMap[root.languageUI] == 'ru') ? 'ru':'default';
 		
-		root.Culture = 'ru';
+		// root.Culture = 'ru';
 		Globalize.culture(root.Culture);
 		var mes = Globalize.cultures[root.Culture].messages;
 
@@ -630,8 +634,10 @@ var P = (function ($, window) {
         root.debugMode = iniLocalStor("debugMode", "true") == "true";
 
         root.mapProvider = iniLocalStor("MapProvider", "google");
-        root.languageUI = '-';
+
         root.languageUI = iniLocalStor("LanguageUI", '-');
+        if (root.languageUI == '-')
+        	root.languageUI = navigator.language == 'ru' ? 'Русский' : 'English';
         root.ChangeLanguageUI();
 
         BAsket.navigation = P.navigation.slice(0);

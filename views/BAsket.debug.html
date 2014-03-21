@@ -464,7 +464,7 @@
         <div data-bind="dxLoadPanel:{message: _.Common.Loading, visible: P.loadPanelVisible }"/>
     </div>
 </div>
-<div data-options="dxView : { name: 'Preferences', title: _.Preferences.Title } " >
+<div data-options="dxView : { name: 'Preferences', title: _.Navigation.Preferences } " >
 	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/Preferences' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 		<div id="tabs" data-bind="dxTabs: { items: tabs, selectedIndex: selectedTab }"></div>
@@ -479,11 +479,11 @@
 		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
 	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: Preferences_changeMapProvider}"></div>
 					</div> -->
-<!-- 	                <div class="dx-field">
+	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
 					</div>
- -->
+
  	                <div class="dx-field">
 	                    <div class="dx-field-label" data-bind="text: _.Preferences.TableMode "></div>
 	                    <div class="dx-field-value" data-bind="dxSwitch: { value: modeProdView,
@@ -596,7 +596,7 @@
     </div>
 </div>
 
-<div data-options="dxView : { name: 'ReadNews', title: _.ReadNews.Title } " >
+<div data-options="dxView : { name: 'ReadNews', title: _.Navigation.ReadNews } " >
 	<div data-bind="dxCommand: { id: 'cmdInfo', icon: 'info', action: '#Info/ReadNews' } "></div>
     <div class="home-view"  data-options="dxContent : { targetPlaceholder: 'content' } " >
 

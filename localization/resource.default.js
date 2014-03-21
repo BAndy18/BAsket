@@ -1,26 +1,26 @@
 Globalize.addCultureInfo("default", {messages: {
-        Back: "Back"
-        Cancel: "Cancel"
-        Clear: "Clear"
-        Done: "Done"
-        Loading: "Loading..."
-        No: "No"
-        Search: "Search"
-        Select: "Select..."
-        Yes: "Yes"
-        dxCollectionContainerWidget-noDataText: "No data to display"
-        dxList-pageLoadingText: "Loading..."
-        dxList-pulledDownText: "Release to refresh..."
-        dxList-pullingDownText: "Pull down to refresh..."
-        dxList-refreshingText: "Refreshing..."
-        dxListEditDecorator-delete: "Delete"
-        dxLookup-searchPlaceholder: "Minimum character number: {0}"
-        dxScrollView-pulledDownText: "Release to refresh..."
-        dxScrollView-pullingDownText: "Pull down to refresh..."
-        dxScrollView-reachBottomText: "Loading..."
-        dxScrollView-refreshingText: "Refreshing..."
-        dxSwitch-offText: "OFF"
-        dxSwitch-onText: "ON"
+        Back: "Back",
+        Cancel: "Cancel",
+        Clear: "Clear",
+        Done: "Done",
+        Loading: "Loading...",
+        No: "No",
+        Search: "Search",
+        Select: "Select...",
+        Yes: "Yes",
+        "dxCollectionContainerWidget-noDataText": "No data to display",
+        "dxList-pageLoadingText": "Loading...",
+        "dxList-pulledDownText": "Release to refresh...",
+        "dxList-pullingDownText": "Pull down to refresh...",
+        "dxList-refreshingText": "Refreshing...",
+        "dxListEditDecorator-delete": "Delete",
+        "dxLookup-searchPlaceholder": "Minimum character number: {0}",
+        "dxScrollView-pulledDownText": "Release to refresh...",
+        "dxScrollView-pullingDownText": "Pull down to refresh...",
+        "dxScrollView-reachBottomText": "Loading...",
+        "dxScrollView-refreshingText": "Refreshing...",
+        "dxSwitch-offText": "OFF",
+        "dxSwitch-onText": "ON",
 
         Common: {
             Default: "by default",
@@ -39,7 +39,7 @@ Globalize.addCultureInfo("default", {messages: {
             OrderList: "Orders",
             RoadMapList: "Road Maps",
             Clients: "Clients",
-            ReadNews: "Read News",
+            ReadNews: "Exchange",
             Preferences: "Preferences",
             Info: "Info"
         },
@@ -47,7 +47,7 @@ Globalize.addCultureInfo("default", {messages: {
         ReadNews: {
             LoadData: "Load Data", 
             SendOrd: "Send Orders", 
-            LoadOst: "Renew Stock-in-Trade",
+            LoadOst: "Renew Stocks-in-Trade",
             LoadSpr: "Renew Directories and Maps", 
             RepoName: "Report Name", 
             SelectRepo: "Select Report", 
@@ -56,9 +56,7 @@ Globalize.addCultureInfo("default", {messages: {
             NoDataText: "No Data to Display",
 
             ReadRecs: 'Read Records',
-            WroteRecs: 'Writen ',
-
-            Title: "Read News"
+            WroteRecs: 'Writen '
         },
 
         Preferences: {
@@ -76,9 +74,7 @@ Globalize.addCultureInfo("default", {messages: {
             UserEMail: "EMail",
             RecreateDb: "Local DB Recreation",
 
-            IncorrectPassword: "Incorrect Password",
-
-            Title: "Preferences"
+            IncorrectPassword: "Incorrect Password"
         },
 
         Order: {
@@ -96,8 +92,8 @@ Globalize.addCultureInfo("default", {messages: {
 
             SwTitle1: 'Server Orders',
             SwTitle2: 'Local Orders',
-            ErrNoWars: 'Goods were not selected',
-            ErrNoDate: 'Date was not set',
+            ErrNoWars: 'Goods were not Selected',
+            ErrNoDate: 'Date was not Set',
             ErrNoCli: 'Client was not Selected',
 
             Title: "Order"
@@ -109,7 +105,7 @@ Globalize.addCultureInfo("default", {messages: {
             btnSwText2: 'goods',
             TitleCat: 'Select Category',
             TitleDetails: 'Goods Quantity',
-            ErrQuantity: 'Number must be bigger than 0',
+            ErrQuantity: 'Number Must be Bigger Than 0',
             FldQuantity: 'Quantity:',
             FldName: 'Name:',
             FldPrice: 'Price:',
@@ -120,7 +116,7 @@ Globalize.addCultureInfo("default", {messages: {
         },
 
         Clients: {
-            RoutDetail: "Rout Details",
+            RoutDetail: "Route Details",
             Title: 'Client'
         },
 
