@@ -22,6 +22,9 @@ Globalize.addCultureInfo("default", {messages: {
         "dxSwitch-offText": "OFF",
         "dxSwitch-onText": "ON",
 
+        "Factory": "Factory",
+        "TypeOfPayment": "Type Of Payment",
+
         Common: {
             Default: "by default",
             Save: 'Save',
@@ -47,8 +50,8 @@ Globalize.addCultureInfo("default", {messages: {
         ReadNews: {
             LoadData: "Load Data", 
             SendOrd: "Send Orders", 
-            LoadOst: "Renew Stocks-in-Trade",
-            LoadSpr: "Renew Directories and Maps", 
+            LoadOst: "Update Stocks-in-Trade",
+            LoadSpr: "Update Directories and Maps", 
             RepoName: "Report Name", 
             SelectRepo: "Select Report", 
             SendRepo: "Send Report to EMail", 
@@ -63,6 +66,7 @@ Globalize.addCultureInfo("default", {messages: {
             Main: "Main",
             Functions: "User",
             Admin: "Admin",
+	    Platform: "Device Platform",
             Layout: 'Interface Layout',
             MapProvider: "Map Provider",
             Language: "Interface Language",

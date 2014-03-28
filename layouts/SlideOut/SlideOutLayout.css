@@ -41,6 +41,11 @@
     z-index: 200;
 }
 
+.dx-slideout .dx-slideout-item-container .dx-slideout-shield {
+    z-index: 201;
+    top: 42px;
+}
+
 .slideout-layout .layout-frame,
 .slideout-layout .layout-frame .layout-header,
 .slideout-layout .layout-frame .layout-header .dx-toolbar {
@@ -303,7 +308,8 @@
     height: 60px;    
 }
 
-.dx-theme-win8 .slideout-layout .layout-content {
+.dx-theme-win8 .slideout-layout .layout-content,
+.dx-theme-win8 .dx-slideout .dx-slideout-item-container .dx-slideout-shield {
     top: 60px;    
 }
 

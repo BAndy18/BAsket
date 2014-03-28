@@ -23,6 +23,9 @@ Globalize.addCultureInfo("ru", {messages: {
         "dxSwitch-onText": "ВКЛ",
         "dxSwitch-offText": "ВЫКЛ",
 
+        "Factory": "Предприятие",
+        "TypeOfPayment": "Тип Оплаты",
+
         Common: {
             Default: "по умолчанию",
             Save: 'Сохранить',
@@ -64,6 +67,7 @@ Globalize.addCultureInfo("ru", {messages: {
             Main: "Основные",
             Functions: "Пользователь",
             Admin: "Админ",
+	    Platform: "Стиль Устройства",
             Layout: 'Стиль Интерфейса',
             MapProvider: "Поставщик Карт",
             Language: "Язык интерфейса",

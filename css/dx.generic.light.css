@@ -1,7 +1,7 @@
 /*! 
 * DevExpress PhoneJS
-* Version: 13.2.7
-* Build date: Feb 10, 2014
+* Version: 13.2.8
+* Build date: Mar 11, 2014
 *
 * Copyright (c) 2012 - 2014 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -568,6 +568,18 @@
 {
   color: #b9b9b9;
 }
+.dx-theme-generic .dx-scrollable-native.dx-scrollable-native-android .dx-scrollview-pull-down
+{
+  background: #2c9fc9;
+}
+.dx-theme-generic .dx-scrollable-native.dx-scrollable-native-android .dx-scrollview-pull-down div
+{
+  background: #fff;
+}
+.dx-theme-generic .dx-scrollable-native.dx-scrollable-native-android.dx-scrollable-scrollbar-simulated ::-webkit-scrollbar
+{
+  display: none;
+}
 .dx-theme-generic .dx-scrollable-scroll
 {
   margin: 2px;
@@ -585,6 +597,10 @@
 .dx-theme-generic .dx-scrollable-scrollbar.dx-scrollbar-horizontal .dx-scrollable-scroll
 {
   height: 2px;
+}
+.dx-theme-generic .dx-scrollview-pull-down-image
+{
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAyCAQAAAD2dTOtAAAApElEQVRIx2OYxQCHvlggw38oZBgcCrFCihQ2YIFDViH1g+cMFjhkFVI/eP5jgUNWIfWDh2iFdbMuYUCsCmcS65lRhXRRqDXrwKzDYPgci8LDUFgKMilq1h+saREBt8xig1gai1fp9llsCDcm4FS2dxYnqmfS8ClD9XUmFq9wYk/hOWjKeHBnhVK4smMgZfjyTDVY2clZ/IQzVzWwuOPHyFz/iYQAhMbywidpE3YAAAAASUVORK5CYII=) 0 0 no-repeat;
 }
 .dx-theme-generic .dx-checkbox
 {
@@ -1165,7 +1181,7 @@
   right: 4px;
   top: 4px;
 }
-.dx-theme-generic .dx-popup-wrapper .dx-overlay-content .popup-content
+.dx-theme-generic .dx-popup-wrapper .dx-overlay-content .dx-popup-content
 {
   padding: 10px;
 }
@@ -1278,30 +1294,11 @@
 {
   min-width: 75px;
 }
-.dx-theme-generic .dx-lookup-popup-wrapper .dx-lookup-search
+.dx-theme-generic .dx-lookup-popup-wrapper .dx-lookup-search-wrapper
 {
   border-bottom: 1px solid #c3c5c6;
   background: #fff;
   padding: 10px 0;
-}
-.dx-theme-generic .dx-lookup-popup-wrapper .dx-lookup-search .dx-editbox-input
-{
-  padding-left: 45px;
-  line-height: 28px;
-  font-size: 1rem;
-}
-.dx-theme-generic .dx-lookup-popup-wrapper .dx-lookup-search:before
-{
-  content: "";
-  top: 12px;
-  left: 9px;
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAADyElEQVRo3u3aWYhWZRjA8d+ouVXatBFoiS1QkrYwRUFEaBGt1EXdFCmG3ZStnLZTcKhOVif0osWb6KJFI0rIYlKqSYJCimi7MSizRZIIY7Qyl3G6+J6PbJgZm+Y7Z76R74HD+y3nvM/5n+d9z/ssb1tvb68DWcY4wKUF2AJsAbYAW4DDkXHD7SDLi/rHQ3Ap5uIMzEQ72vAbNuFLdOEtdDcCIEuTcgED5B5cF5B12Y3t6MUUdMSxEDvwKh7Dhqa0YJYXE/AgEoyPm34Nq/FRWKxnn6kwA+fgElyN+fFQnkGKP5oGMMuL4/B6WGQHlmApfh3gkr34Lo6VmIrFYfnbcDGuwtcj/pLJ8mJWWKgD6zEb9w8C15904xGcjPej/TD6HDnALC+mYy2m4UWcj2+HoX8zLsRTOAKdOGVEALO8GB/DcjpexvwsTXY34B724lYsx1Gh4+CRsOC9OBufYmGWJo2OsxbjvbDgo5UCZnkxDfdhJ67P0mRXCS+8nnizbsfNmFWlBRNMxPIsTcpctzbH2jg2Rkz5gFleTMQC7METFXhXT4cVr8VhVVhwbqxba7M0+bkCwG1YhQm4ogrAedF2Vugjv91Hd6mAs6NdXyFgXdecKgBPiPabCgF/wF/hv5YOeCh6sjTZViFgb8zF9ioAeyOmq1raQnfpgNsxJsuLqRVnGqZEoFw6YH3unVQh4IxYJjZVAfhFtOdWCFjX9XkVgF3RXl4h4GV9dJcKuA5bMS8i+bKlPaL7P9WSUyX7ommyE8810gHej9yByXgllopKooll+B2LsryYUyLcTNyllpFbUl08mCZb8JBakuqlLC8mlwA3Di+E9ZY2ynMaSkS/FB+Eb7oyy4uxDV7Un8V5EVQvqz4nkyY9uCae7JVYleXFpAbcw0F4Hovi+wS8GSFapRaUpckvajnMDQH5MU4dhv4TY1Qs6PP7WXinEZBDz4umyUa1DPWagPtMLe137BC6ORqP46voa08/5zQE8n9Vl7I06Y6F/+4Ia25Ry1p3qiWMzvTvOsUknIab8AZ+imvb8LBa4ndjGZBtw91lkeXFMbgTN+LwPn/3RETQt0TQrZY4LiL2EyNgHY7vR80nuEg/FakqqktbwhoPRP5mHk4Ph/nIOGcrvo8h2RVW2dGnnx9xwQCQdUv2C1k2YF12xbxcM4w+Gg7ZjBXeOuRAc/LdoczJZi1hDwbZMRTIZq7RNwSy2Tch7A/y9tEOOBjkCrUi6qgH7A9yBW7wzx6AUQ+4L+ST/xWuIZ5Ms0trK1cLsAXYAmwBtgAHkb8B55D2dGOoHcUAAAAASUVORK5CYII=) 0 0 no-repeat;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
 }
 .dx-theme-generic .dx-lookup-popup-wrapper .dx-popup-content
 {
@@ -1538,11 +1535,11 @@
   -o-border-radius: 15px;
   border-radius: 15px;
 }
-.dx-theme-generic .dx-radio-group .dx-radio-button.checked .dx-radio-value-container .dx-radio-button-value:before
+.dx-theme-generic .dx-radio-group .dx-radio-button.dx-radio-button-checked .dx-radio-value-container .dx-radio-button-value:before
 {
   background-color: #fff;
 }
-.dx-theme-generic .dx-radio-group .dx-radio-button.dx-state-active.checked .dx-radio-value-container .dx-radio-button-value:before
+.dx-theme-generic .dx-radio-group .dx-radio-button.dx-state-active.dx-radio-button-checked .dx-radio-value-container .dx-radio-button-value:before
 {
   background-color: #e9eaec;
 }

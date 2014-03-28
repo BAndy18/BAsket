@@ -1,7 +1,7 @@
 /*! 
 * DevExpress PhoneJS
-* Version: 13.2.7
-* Build date: Feb 10, 2014
+* Version: 13.2.8
+* Build date: Mar 11, 2014
 *
 * Copyright (c) 2012 - 2014 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -222,6 +222,22 @@
 .dx-theme-win8 .dx-icon
 {
   background-position: 50% 50%;
+}
+.dx-theme-win8 .dx-icon-clear
+{
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAQAAAACj/OVAAABOUlEQVRYw+3YQW7FIAwE0OFeUQ6PuBdd/Ki/bbA9M9HviqyyMU+Kgs3QJv73aRvc4AZpsB3AHEBzVj0AjNfr5MB24ATQ52gOdwLoL5ICLw7vMpn7riXAH5xO3mpL8A+nkYvaOSrwxHFbiCPvHDBmrz+pRy45dO6n0cmA47eFRoYcDUpkwgkgTaacBFJkwYlgSZacDKYkwTkgsCbBcB64JsFwLsiQS84HKzLgnoAZGXLPwIhMuKfgaiMUbf0JuOYK0gdjLiVdMOcS0gNrLiQdcN0zwc1LHYxbNDUv1fGUTwSC1AZwPYBKUjliUPOuIvlDFMeVpJae2J6ZkGp6Ilt0TOrpieES0klPDBeSTnriuDVppCeeu5NGetK436SRnsbsxqXCVaunJ8xuXpuc11HZmRb76muDG/z48wWuFeoBQaRT5AAAAABJRU5ErkJggg==) 0 0 no-repeat;
+}
+.dx-theme-win8 .dx-icon-search
+{
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAQAAAACj/OVAAAB1ElEQVRYw9XYzYrCMBDA8f/Fu0qPih70UqRPsIpgq2/gRUGESgUFvRX68u5lzaa1H2mdZt3kJpn+apxMp/LA7uRjQPp4bNhzJSbmyp4NHn1qDiOQEWsuJDnzwpqRKEiXJbdc7DlvLOkKgYzZlmLPuWUsADLlaMQlJByZvgkyznAnAlwcOnRwcAk4ZcjxGyDd1GZemNN78EhH95inkmlb/VsWg0vtQjsm6vPsmLDTVi4bgoy0zNwx0Ba8joFG3qoOSRG41jZzklqQNybaxq4bgPS1C8wzC/LHXLvBfn3Q0zKzZwT2tIz16oMbFRy8LCgagYrZ1Af3Ktg1Bl0Vs68PXlWwYww6KuZaH4xVcMcY7KiY+B+A1rfUetJYPxbWD77t0ma9eP/B48n6A7hhi3F+o8Vo0EQlJHzZaxMNSalG+GxKyrX6CzNS8mVGJw+ExIT4DBuAxq9ri5xbipg1AiuLdzF5Z9UeCIfy3JUHw/LjIg/G5SfU3jf8IeVBv7wOyYNDojrk+yDMuJuTEqDeUFWSMmB+AdDnShqsIu/MpMEqMmIoDVaRvjxYToZtgGVk3A5YTIZtgUWk3x4IwUv1aSVL0wUvSjce8ufwtaz7v63V5/3J3tb8Bqf44yWHHCJ2AAAAAElFTkSuQmCC) 0 0 no-repeat;
+}
+.dx-theme-win8 .dx-infocus .dx-icon-clear
+{
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAQAAAACj/OVAAABIklEQVRYw+3YsQ7CMBCDYffFW5UXh4EBoSTn3zfAku7uJ6HmnON46rfPscENbpCDp6RH861FdgWeuiVdLbLMzsF3RC3SZGfgJ5KTNjuC35GMBNkRvHUOL2LkyEkPXf4n7ZGIW300OQm59bHISMxVB5+TAVePNkZGnJulngw5P7xrMuZIW6zJBsfqaU6qw9E+nJHqcLyAPYm4pPFrEnLZFWNNYi6908zJgEvB2UEIKzoB51xIcnDNRSQFay4gGeg5TBJwPjPVu/t4cD2iW3cfB9aN0CBr0BdQTFYg67uQrLYn2ncRWW9PdGYGpNue6IjGpN+eaCNAkmxPtIAQSbYn3ncg67enqF591m1PGQey9faUczZbbU9qcSa7//ra4Ab/D74AQSS+AWg2dyUAAAAASUVORK5CYII=) 0 0 no-repeat;
+}
+.dx-theme-win8 .dx-infocus .dx-icon-search
+{
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAQAAAACj/OVAAAB0UlEQVRYw9WYvY6CQBSF6XkLAg2voIUJLbGmsOBJltDQSYTwKPZS7RY2FJuQ3UapLHwBrM4WGyejAs7/ukNDMYcPbu693DkWLLOX9TpADzEq1OjQo0eHGhVieHqAC5Q4YmgdUWKhFuggwwlT64QMjipggC1Y1haBCuASe7CuPZaywOAO94kCEXzYsOEjQoHPO2QgA3RugnlAAvdhu4sEh5vAOuLAjHrQDuGoJMSO2pmJAhdUZu4wmxTNKOSJt0iuNyUVzPCpLKQCW4oAParMEyZhQrUCjx8YU5npMgldKmNjfmBFxAWztCCaih9YE3HELI2IpuYHdkTsM0t9oun4gT0R28xSm2j6fwA0HlLjSWO8LIwXvvHWZrx5/8HvyfgPWGzE+JIZMfiHKAB4MzcmCiJFB+FvUaT4qJ+KIWUOMzTyHQ0uaJBjrvO4lg68UouVzgPpEPKMtc4T8Adf7soDG75ykQde+CpU3xeOIOWBOV8fkgfO0fIgVXgvK5zZkWrsng17g1flMKVPkGv11tc08nxteCp9tGlk+9vW1Vp308hch5s4hWz02JfjyIsuvzQ1+4XjyFwf0MLmoftoydLbhtcODR46/e058sfR6oVMdk3XD7x7Ameo9MT3AAAAAElFTkSuQmCC) 0 0 no-repeat;
 }
 .dx-theme-win8-typography
 {
@@ -605,6 +621,14 @@
 {
   color: #000;
 }
+.dx-theme-win8 .dx-scrollview.dx-scrollable-native.dx-scrollable-native-android .dx-scrollview-pull-down
+{
+  background: #000;
+}
+.dx-theme-win8 .dx-scrollview.dx-scrollable-native.dx-scrollable-native-android .dx-scrollview-pull-down div
+{
+  background: #fff;
+}
 .dx-theme-win8 .dx-scrollview .dx-scrollview-pull-down-image
 {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAyCAQAAAD2dTOtAAAApElEQVRIx2P4zwCDDL6YEEl2UCjED8lRyNCACYesQhoEzxlMOGQV0iB4sMgPWYXUDx7iw7GO4RI6xK5wJrG+HlVID4UMWgwHGA6D4XMsUXwYCktBaqMY/hBIEVsY2CDGxuJVup2BDe5GhgScyvYycKJ4hiENnzJUX2di8Qon1hTOkIOmjAdnVgAHAwQeQ1aGJc8wVIOpkwz8BDMXUOkZdGUk5EIAd1aMO2/4PLIAAAAASUVORK5CYII=) 0 0 no-repeat;
@@ -798,6 +822,13 @@
 {
   text-align: left;
 }
+.dx-theme-win8 .dx-tabs.dx-navbar .dx-nav-item.dx-state-disabled
+{
+  filter: alpha(opacity=45);
+  opacity: .45;
+  zoom: 1;
+  cursor: default;
+}
 .dx-theme-win8 .dx-editbox
 {
   margin: 0;
@@ -836,6 +867,45 @@
 {
   color: rgba(0,0,0,.3);
   margin: .5em .9em;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox .dx-clear-button-area
+{
+  width: 22px;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox .dx-clear-button-area .dx-icon-clear
+{
+  top: 7px;
+  right: 3px;
+  height: 27px;
+  width: 27px;
+  background-position: 4px 4px;
+  -webkit-background-size: 19px;
+  -moz-background-size: 19px;
+  background-size: 19px;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox .dx-icon-search
+{
+  top: 7px;
+  right: 3px;
+  height: 27px;
+  width: 27px;
+  background-position: 4px 4px;
+  -webkit-background-size: 19px;
+  -moz-background-size: 19px;
+  background-size: 19px;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox input
+{
+  padding-right: 36px;
+  background-color: #fff;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox.dx-infocus .dx-icon-search, .dx-theme-win8 .dx-textbox.dx-searchbox.dx-infocus .dx-icon-clear
+{
+  background-color: #858585;
+}
+.dx-theme-win8 .dx-textbox.dx-searchbox:not(.dx-empty-input) .dx-icon-search
+{
+  display: none;
 }
 .dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content
 {
@@ -880,7 +950,7 @@
   height: 71px;
   line-height: 76px;
 }
-.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .datepicker-formatter-container
+.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .dx-datepicker-formatter-container
 {
   display: table;
   padding-top: 29px;
@@ -892,11 +962,11 @@
   border-color: #6a00ff;
   color: #fff;
 }
-.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .datepicker-value-formatter
+.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .dx-datepicker-value-formatter
 {
   display: table-row;
 }
-.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .datepicker-name-formatter
+.dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item .dx-datepicker-name-formatter
 {
   font-weight: 100;
   display: table-row;
@@ -916,8 +986,8 @@
   display: block;
   position: absolute;
   top: 0;
-  height: 152px;
-  width: 81px;
+  height: 153px;
+  width: 82px;
   background-color: #ddd;
 }
 .dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller .dx-datepicker-item-selected-frame:after
@@ -925,9 +995,9 @@
   content: "";
   display: block;
   position: relative;
-  top: -147px;
-  height: 152px;
-  width: 81px;
+  top: -148px;
+  height: 153px;
+  width: 82px;
   background-color: #ddd;
 }
 .dx-theme-win8 .dx-datepicker-wrapper .dx-popup-content .dx-datepicker-rollers .dx-datepicker-roller.dx-datepicker-roller-current .dx-datepicker-item-selected-frame
@@ -1022,6 +1092,8 @@
 }
 .dx-theme-win8 .dx-toolbar .dx-overlay-wrapper .dx-overlay-content .dx-toolbar-menu-button.dx-button .dx-button-text
 {
+  padding: 0 5px;
+  height: 88px;
   line-height: 0;
   font-size: 250%;
 }
@@ -1096,6 +1168,8 @@
 }
 .dx-theme-win8.dx-device-phone .dx-toolbar.dx-toolbar-bottom .dx-overlay-wrapper .dx-toolbar-menu-button.dx-button .dx-button-text
 {
+  padding: 0 5px;
+  height: 60px;
   font-size: 150%;
 }
 .dx-theme-win8.dx-device-phone .dx-toolbar .dx-toolbar-item
@@ -1139,14 +1213,6 @@
   font-weight: 200;
   line-height: 1.2;
   color: #000;
-  webkit-transition-property: transform;
-  moz-transition-property: transform;
-  o-transition-property: transform;
-  transition-property: transform;
-  webkit-transition-duration: 100ms;
-  moz-transition-duration: 100ms;
-  o-transition-duration: 100ms;
-  transition-duration: 100ms;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
@@ -1270,7 +1336,8 @@
 }
 .dx-theme-win8 .dx-toast-wrapper .dx-toast-content
 {
-  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-top: 25px;
 }
 .dx-theme-win8 .dx-toast-wrapper .dx-toast-content .dx-toast-icon
 {
@@ -1441,6 +1508,14 @@
 {
   background-color: #ddd;
 }
+.dx-theme-win8 .dx-popover-wrapper.dx-tooltip .dx-overlay-content
+{
+  background-color: #ddd;
+}
+.dx-theme-win8 .dx-popover-wrapper.dx-tooltip .dx-popover-arrow:after
+{
+  background: #ddd;
+}
 .dx-theme-win8 .dx-gallery .dx-gallery-indicator
 {
   text-align: center;
@@ -1534,6 +1609,7 @@
 .dx-theme-win8 .dx-lookup-popup-wrapper .dx-popup-content .dx-list
 {
   margin-top: 10px;
+  margin-right: 8px;
 }
 .dx-theme-win8 .dx-lookup-popup-wrapper .dx-popup-bottom .dx-popup-cancel.dx-button, .dx-theme-win8 .dx-lookup-popup-wrapper .dx-popup-bottom .dx-popup-clear.dx-button, .dx-theme-win8 .dx-lookup-popup-wrapper .dx-popup-bottom .dx-popup-done.dx-button
 {
@@ -1942,6 +2018,7 @@
 {
   max-height: 50%;
   position: absolute;
+  padding: 0;
 }
 .dx-theme-win8 .dx-popup-wrapper.dx-autocomplete-popup-wrapper .dx-overlay-content .dx-popup-content
 {
@@ -2029,7 +2106,7 @@
   -o-border-radius: 8px;
   border-radius: 8px;
 }
-.dx-theme-win8 .dx-radio-group .dx-radio-button.checked .dx-radio-value-container .dx-radio-button-value:after
+.dx-theme-win8 .dx-radio-group .dx-radio-button.dx-radio-button-checked .dx-radio-value-container .dx-radio-button-value:after
 {
   content: "";
   display: block;
@@ -2109,7 +2186,8 @@
 {
   background: #fff;
 }
-.dx-theme-win8 .dx-slideout .dx-slideout-item-container .dx-slideout-shield
+.dx-theme-win8 .dx-slideout .dx-slideout-item-container .dx-slideout-shield:after
 {
+  content: "";
   position: fixed;
 }

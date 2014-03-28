@@ -1,4 +1,4 @@
-BAsketVer = "2.0.0313.76";(function($, DX, undefined) {
+BAsketVer = "2.01.0328.88";(function($, DX, undefined) {
     var translator = DX.translator,
         fx = DX.fx,
         VIEW_OFFSET = 40,
@@ -129,6 +129,65 @@ BAsketVer = "2.0.0313.76";(function($, DX, undefined) {
         navigationType: "slideout",
         platform: "generic",
         controller: new DX.framework.html.SlideOutController
+    })
+})(jQuery, DevExpress);(function($, DX, undefined) {
+    var HAS_NAVBAR_CLASS = "has-navbar",
+        HAS_TOOLBAR_CLASS = "has-toolbar",
+        HAS_TOOLBAR_BOTTOM_CLASS = "has-toolbar-bottom",
+        TOOLBAR_BOTTOM_ACTIVE_CLASS = "dx-appbar-active",
+        SEMI_HIDDEN_CLASS = "semi-hidden",
+        TOOLBAR_BOTTOM_SELECTOR = ".layout-toolbar-bottom.win8",
+        ACTIVE_PIVOT_ITEM_SELECTOR = ".dx-pivot-item:not(.dx-pivot-item-hidden)",
+        LAYOUT_FOOTER_SELECTOR = ".layout-footer",
+        ACTIVE_TOOLBAR_SELECTOR = ".dx-active-view .dx-toolbar";
+    DX.framework.html.NavBarController = DX.framework.html.DefaultLayoutController.inherit({
+        _getLayoutTemplateName: function() {
+            return "navbar"
+        },
+        _createNavigation: function(navigationCommands) {
+            this.callBase(navigationCommands);
+            var $navbar = this._$mainLayout.find(".navbar-container");
+            if ($navbar.length && navigationCommands) {
+                var container = $navbar.dxCommandContainer("instance");
+                this._commandManager._arrangeCommandsToContainers(navigationCommands, [container]);
+                this._$mainLayout.addClass(HAS_NAVBAR_CLASS)
+            }
+        },
+        _showViewImpl: function(viewInfo) {
+            var self = this;
+            return self.callBase.apply(self, arguments).done(function() {
+                    var $toolbar = self._$mainLayout.find(LAYOUT_FOOTER_SELECTOR).find(ACTIVE_TOOLBAR_SELECTOR),
+                        isToolbarEmpty = !$toolbar.length || !$toolbar.dxToolbar("instance").option("visible");
+                    self._$mainLayout.toggleClass(HAS_TOOLBAR_CLASS, !isToolbarEmpty)
+                })
+        }
+    });
+    DX.framework.html.layoutControllers.push({
+        navigationType: "navbar",
+        platform: "ios",
+        controller: new DX.framework.html.NavBarController
+    });
+    DX.framework.html.layoutControllers.push({
+        navigationType: "navbar",
+        platform: "android",
+        controller: new DX.framework.html.NavBarController
+    });
+    DX.framework.html.layoutControllers.push({
+        navigationType: "navbar",
+        platform: "tizen",
+        controller: new DX.framework.html.NavBarController
+    });
+    DX.framework.html.layoutControllers.push({
+        navigationType: "navbar",
+        platform: "generic",
+        controller: new DX.framework.html.NavBarController
+    });
+    DX.framework.html.layoutControllers.push({
+        navigationType: "split",
+        platform: "win8",
+        phone: false,
+        root: true,
+        controller: new DX.framework.html.NavBarController
     })
 })(jQuery, DevExpress);(function($, DX, undefined) {
     DX.framework.html.EmptyLayoutController = DX.framework.html.DefaultLayoutController.inherit({ctor: function(options) {
@@ -437,6 +496,7 @@ var P = (function ($, window) {
 				            .replace('#screen_width#', screen.width)
 				            .replace('#userAgent#', navigator.userAgent)
 				            .replace('#language#', navigator.language)
+				            .replace('#copyright#', P.copyright)
 				            .replace('#cookieEnabled#', (navigator.cookieEnabled ? 'Enabled':'Disabled'))
 				            ;
 	   			}
@@ -565,12 +625,6 @@ var P = (function ($, window) {
 
 	//root.navAgent = navigator.userAgent;
 	root.deviceInfo = DevExpress.devices.current();
-	root.layout = "slideout";
-	//root.layout = "navbar";
-	//root.layout = "simple";
-	//root.layout = "pivot";
-
-	root.deviceClass = 'android';
 
 	root.curCategoryId = 0;
 	root.curCategoryName = '';
@@ -599,6 +653,8 @@ var P = (function ($, window) {
 	    	root.useWebDb = false;
 			//alert("Test openDatabase OK " + root.useWebDb);
 		}
+
+		root.layout = iniLocalStor("Layout", "slideout");
 
         root.platformDevice = 'android';
 		// root.platformDevice = 'win8';
@@ -786,7 +842,7 @@ var DAL_tst = (function ($, window) {
 
     root.NMS_Data = new DevExpress.data.DataSource(new DevExpress.data.ArrayStore([
         {'IdP': 0, 'Id': 1, 'N': "Factory"},
-        {'IdP': 0, 'Id': 2, 'N': "Type of Payment"},
+        {'IdP': 0, 'Id': 2, 'N': "TypeOfPayment"},
         {'IdP': 0, 'Id': 10, 'N': "Product Properties"},
         {'IdP': 0, 'Id': 20, 'N': "Client Properties"},
         {'IdP': 0, 'Id': 101, 'N': "Reports"},
@@ -838,6 +894,20 @@ var DAL_web = (function ($, window) {
 
     if (!window.localStorage.getItem("dataSouceUrl") && !window['DAL_tst'])
         P.LoadFile('js/DAL_tst.js', 'js');
+    
+    root.TestConnect = function (params) {
+    	if (!P.dataSouceUrl) return;
+    	$.ajax({ type: 'GET', url: P.dataSouceUrl + 'Nms',
+			xhrFields: { withCredentials: true}, headers: P.ajaxHeaders,
+			success: function(result) {
+				BAsket.notify('Connection is OK ' + P.dataSouceUrl);
+			},
+			error: function(result, arg) {
+                BAsket.error('Connection is FAIL ' + result.statusText + ': ' + result.status);
+			}
+		})
+    	// return execMethod({  method: 'GET', control: 'Nms' });    
+	}
 
     root.NMS = function (params) {
         if (!P.dataSouceUrl)
@@ -1431,7 +1501,7 @@ var DAL = (function ($, window) {
             DAL_web.RoadMap(new Date(), true).load().done(function (result) { writeToLocalData(result, 'MAP'); });
         }
         else {
-            waitPanelSwitch.CLI = false;
+            waitPanelSwitch.CLI = waitPanelSwitch.MAP = false;
             if (CheckWaitPanelSwitch())
                 P.loadPanelVisible(false);
         }
@@ -2015,7 +2085,8 @@ var DAL = (function ($, window) {
 				var setNms = $("#idNms" + (i + 1));
 				if (setNms.length == 1 && P.arrNMS[0][i].Id < 10) {
 					setNms.parent().show();
-					setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].N;
+					// setNms[0].parentNode.children[0].innerText = P.arrNMS[0][i].N;
+					setNms[0].parentNode.children[0].innerText = Globalize.localize(P.arrNMS[0][i].N);
 				}
 			}
 		}
@@ -2622,6 +2693,7 @@ BAsket.Preferences = function (params) {
 
 	Preferences_WsUrl = function(arg) {
 		P.dataSouceUrl = P.ChangeValue("dataSouceUrl", dataSouceUrl());
+		DAL_web.TestConnect();
 	};
 	Preferences_TableMode = function(arg) {
 		P.modeProdView = P.ChangeValue("modeProdView", modeProdView());
@@ -2650,7 +2722,12 @@ BAsket.Preferences = function (params) {
 	Preferences_changePlatform = function(arg) {
 		if (arg.element.length > 0) {
 			P.platformDevice = P.ChangeLookup("#lookupPlatform", "Platform");
-			//DevExpress.devices.current(P.platformDevice);
+			window.location.reload();
+		}
+	};	
+	Preferences_changeLayout = function(arg) {
+		if (arg.element.length > 0) {
+			P.layout = P.ChangeLookup("#lookupLayout", "Layout");
 			window.location.reload();
 		}
 	};
@@ -2661,7 +2738,6 @@ BAsket.Preferences = function (params) {
 	Preferences_changeLanguageUI = function(arg) {
 		if (arg.element.length > 0) {
 			P.languageUI = P.ChangeLookup("#lookupLanguageUI", "LanguageUI");
-			//P.ChangeLanguageUI();
 			window.location.reload();
 		}
 	};
@@ -2694,20 +2770,17 @@ BAsket.Preferences = function (params) {
 
 
 		dsMapProvider: {
-			data: ["google", "googleStatic", "bing"],
+			data: ["google", "bing"],	//"googleStatic", 
 			value: ko.observable(P.mapProvider)
 		},
 		dsLanguage: {
-			data: ['-', "English", "Русский"],
+			data: ["English", "Русский"],
 			value: ko.observable(P.languageUI)
 		},
-
-		modeProdView: modeProdView,
-		debugMode: debugMode,
-		useWebDb: useWebDb,
-		userName: userName,
-		userPass: userPass,
-		userEMail: userEMail,
+		dsLayout: {
+			data: ['slideout', 'navbar'],
+			value: ko.observable(P.layout)
+		},
 
 		dsPlatform: {
 			data: ['-', "generic", "ios", "ios v6", "android", "android black", "tizen", "tizen black"],
@@ -2716,10 +2789,17 @@ BAsket.Preferences = function (params) {
 			value: ko.observable(P.platformDevice)
 		},
 
-		dsWsUrl: ['', 
-			'http://10.0.0.30/BWS2/api/', 
-			'http://192.168.1.146/BAsketWS/api/'
-			]
+		modeProdView: modeProdView,
+		debugMode: debugMode,
+		useWebDb: useWebDb,
+		userName: userName,
+		userPass: userPass,
+		userEMail: userEMail
+
+		// dsWsUrl: ['', 
+		// 	'http://10.0.0.30/BWS2/api/', 
+		// 	'http://192.168.1.146/BAsketWS/api/'
+		// 	]
 	};
 
 	return viewModel;

@@ -15,7 +15,7 @@
 <div class="slideout-layout dx-black-background" data-options="dxLayout : { name: 'slideout', platform: 'ios' } " >
     <div class="layout-frame dx-content-background" data-options="dxTransition: { name: 'main', type: 'slide' }">
         <div class="layout-header dx-toolbar">
-            <div class="layout-toolbar" data-bind="dxToolbar: { items: [ { align: 'left', template: 'nav-button' }, { align: 'center', text: title } ] }" 
+            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ location: 'left', template: 'nav-button' }, { location: 'center', text: title }] }" 
                  data-options="dxCommandContainer : { id: 'ios-header-toolbar' }">
                 <div style="display: none" class="nav-button-item" data-options="dxTemplate : { name: 'nav-button' } ">
                     <div class="nav-button" data-bind="dxButton: { icon: 'menu' }"></div>
@@ -38,7 +38,7 @@
 <div class="slideout-layout dx-black-background" data-options="dxLayout : { name: 'slideout', platform: 'android' } " >
     <div class="layout-frame dx-content-background" data-options="dxTransition: { name: 'main', type: 'slide' }">
         <div class="layout-header dx-toolbar">
-            <div class="layout-toolbar" data-bind="dxToolbar: { items: [ { align: 'left', template: 'nav-button' }, { align: 'center', text: title } ] }"
+            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ location: 'left', template: 'nav-button' }, { location: 'center', text: title }] }"
                  data-options="dxCommandContainer : { id: 'android-header-toolbar' }">
                 <div style="display: none" class="nav-button-item" data-options="dxTemplate : { name: 'nav-button' } ">
                     <div class="nav-button" data-bind="dxButton: { icon: 'menu' }"></div>
@@ -57,7 +57,7 @@
 <div class="slideout-layout dx-black-background" data-options="dxLayout : { name: 'slideout', platform: 'tizen' } " >
     <div class="layout-frame dx-content-background" data-options="dxTransition: { name: 'main', type: 'slide' }">
         <div class="layout-header dx-toolbar">
-            <div class="layout-toolbar" data-bind="dxToolbar: { items: [ { align: 'left', template: 'nav-button' }, { align: 'center', text: title } ] }"
+            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ location: 'left', template: 'nav-button' }, { location: 'center', text: title }] }"
                  data-options="dxCommandContainer : { id: 'tizen-header-toolbar' }">
                 <div style="display: none" class="nav-button-item" data-options="dxTemplate : { name: 'nav-button' } ">
                     <div class="nav-button" data-bind="dxButton: { icon: 'menu' }"></div>
@@ -76,7 +76,7 @@
 <div class="slideout-layout dx-black-background" data-options="dxLayout : { name: 'slideout', platform: 'generic' } " >
     <div class="layout-frame dx-content-background" data-options="dxTransition: { name: 'main', type: 'slide' }">
         <div class="layout-header dx-toolbar">
-            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ align: 'left', template: 'nav-button' }, { align: 'center', text: title }] }" 
+            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ location: 'left', template: 'nav-button' }, { location: 'center', text: title }] }" 
                  data-options="dxCommandContainer : { id: 'generic-header-toolbar' }">
                 <div style="display: none" class="nav-button-item" data-options="dxTemplate : { name: 'nav-button' } ">
                     <div class="nav-button" data-bind="dxButton: { icon: 'menu' }"></div>
@@ -100,7 +100,7 @@
 <div class="slideout-layout dx-black-background" data-options="dxLayout : { name: 'slideout', platform: 'win8', phone: true } " >
     <div class="layout-frame dx-content-background" data-options="dxTransition: { name: 'main', type: 'slide' }">
         <div class="layout-header">
-            <div class="layout-toolbar" data-bind="dxToolbar: { items: [ { align: 'left', template: 'nav-button' }, { align: 'center', text: title } ] }">
+            <div class="layout-toolbar" data-bind="dxToolbar: { items: [{ location: 'left', template: 'nav-button' }, { location: 'center', text: title }] }">
                 <div style="display: none" class="nav-button-item" data-options="dxTemplate : { name: 'nav-button' } ">
                     <div class="nav-button" data-bind="dxButton: { icon: 'menu' }"></div>
                 </div>
@@ -118,6 +118,113 @@
     </div>
 
 </div>
+﻿<div class="navbar-layout" data-options="dxLayout : { name: 'navbar', platform: 'ios' } " >
+    <div class="transition-frame" data-options="dxTransition: { name: 'main', type: 'slide' }">
+        <div class="layout-header">
+            <div data-bind="dxToolbar: { items: [ { text: title, location: 'center' } ] }" 
+                 data-options="dxCommandContainer : { id: 'ios-header-toolbar' }">
+            </div>
+        </div>
+
+        <div class="layout-content dx-ios-stripes" data-options="dxContentPlaceholder : { name: 'content' }">
+            <div class="dx-loadindicator-container">
+                <div data-options="dxLoadIndicator: { visible: true }"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layout-footer">
+        <div class="navbar-container" data-bind="dxNavBar: { }, dxCommandContainer: { id: 'global-navigation' }">
+        </div>
+    </div>
+
+    <div class="view-footer" data-options="dxContent : { targetPlaceholder: 'view-footer' } " >
+        <div class="view-toolbar-bottom" data-options="dxToolbar: { visible: false }, dxCommandContainer : { id: 'ios-view-footer' } " >
+        </div>
+    </div>
+
+</div>
+
+<div class="navbar-layout" data-options="dxLayout : { name: 'navbar', platform: 'android' } " >
+
+    <div class="layout-header">
+        <div class="navbar-container" data-bind="dxNavBar: {}, dxCommandContainer: { id: 'global-navigation' }">
+        </div>
+    </div>
+
+    <div class="layout-content" data-options="dxContentPlaceholder : { name: 'content', transition: 'slide' }">
+        <div class="dx-loadindicator-container">
+            <div data-options="dxLoadIndicator: { visible: true }"></div>
+        </div>
+    </div>
+
+    <div class="layout-footer" data-options="dxContentPlaceholder: { name: 'footer' } ">
+        <div data-options="dxToolbar: { visible: false }, dxCommandContainer : { id: 'android-footer-toolbar' } "></div>
+    </div>
+
+</div>
+
+<div class="navbar-layout" data-options="dxLayout : { name: 'navbar', platform: 'tizen' } " >
+
+    <div class="layout-header" >
+        <div class="navbar-container" data-bind="dxNavBar: {}, dxCommandContainer: { id: 'global-navigation' }">
+        </div>
+    </div>
+
+    <div class="layout-content" data-options="dxContentPlaceholder : { name: 'content', transition: 'slide' }">
+        <div class="dx-loadindicator-container">
+            <div data-options="dxLoadIndicator: { visible: true }"></div>
+        </div>
+    </div>
+
+    <div class="layout-footer" data-options="dxContentPlaceholder : { name: 'footer' } " >
+        <div data-options="dxToolbar: { visible: false }, dxCommandContainer : { id: 'tizen-footer-toolbar' } ">
+        </div>
+    </div>
+
+</div>
+
+<div class="navbar-layout" data-options="dxLayout : { name: 'navbar', platform: 'generic' } " >
+
+    <div class="transition-frame" data-options="dxTransition: { name: 'main', type: 'slide' }">
+        <div class="layout-header">
+            <div data-bind="dxToolbar: { items: [{ text: title, location: 'center' }] }" 
+                 data-options="dxCommandContainer : { id: 'generic-header-toolbar' }">
+            </div>
+        </div>
+
+        <div class="layout-content" data-options="dxContentPlaceholder : { name: 'content' }">
+            <div class="dx-loadindicator-container">
+                <div data-options="dxLoadIndicator: { visible: true }"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layout-footer">
+        <div class="navbar-container" data-bind="dxNavBar: {}, dxCommandContainer: { id: 'global-navigation' }">
+        </div>
+    </div>
+
+    <div class="view-footer" data-options="dxContent : { targetPlaceholder: 'view-footer' } " >
+        <div class="view-toolbar-bottom" data-options="dxToolbar: { visible: false }, dxCommandContainer : { id: 'generic-view-footer' } " >
+        </div>
+    </div>
+
+</div>
+
+<div class="navbar-layout-tablet" data-options="dxLayout : { name: 'navbar', platform: 'win8', phone: false }">
+    <div class="layout-header">
+        <div data-options="dxContentPlaceholder : { name: 'header', contentCssPosition: 'static' }">
+            <h1 class="view-title" data-bind="text: title"></h1>
+        </div>
+        <div data-options="dxNavBar: { }, dxCommandContainer : { id: 'global-navigation' }"></div>
+    </div>
+    <div class="layout-content-wrapper">
+        <div class="layout-content" data-options="dxContentPlaceholder : { name: 'content', contentCssPosition: 'static' }">
+            <div class="dx-loadindicator-container">
+                <div data-options="dxLoadIndicator: { visible: true }"></div>
+            </div>
+        </div>
+    </div>
+</div>
 ﻿<div class="empty-layout" data-options="dxLayout : { name: 'empty' } " >
     <div class="content layout-content" data-options="dxContentPlaceholder : { name: 'content' }">
         <div class="dx-loadindicator-container">
@@ -128,7 +235,7 @@
   <div data-options="dxLayout : { name: 'default' } " >
     <!-- <div data-options="dxCommandContainer: { id: 'header-toolbar' }"></div> -->
     <div class="layout-header">
-        <div data-bind="dxToolbar: { items: [ { text: title, align: 'center' } ] }" 
+        <div data-bind="dxToolbar: { items: [ { text: title, location: 'center' } ] }" 
             data-options="dxCommandContainer : { id: 'header-toolbar' }">
         </div>
     </div>
@@ -362,8 +469,8 @@
         <div data-bind="dxPopup:{visible:popupVisible}">
             <div data-options="dxTemplate:{name: 'title'}">               
                <div data-bind="dxToolbar: { items: [
-                  {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: Client_clickCancel}},
-                  {  align: 'center', text: _.Clients.RoutDetail},          
+                  { location: 'left', widget: 'button', options: { icon: 'close', clickAction: Client_clickCancel}},
+                  { location: 'center', text: _.Clients.RoutDetail},          
                 ]}"></div>
             </div>
 
@@ -414,9 +521,9 @@
         <div data-bind="dxPopup: { visible:popupVisible }">
             <div data-options="dxTemplate: {name: 'title'}">
                <div data-bind="dxToolbar: { items: [
-                  {  align: 'left', widget: 'button', options: { icon: 'close', clickAction: RoadMap_clickCancel}},
-                  {  align: 'center', text: _.RoadMap.AddToTheMap},          
-                  {  align: 'right', widget: 'button', options: { icon: 'save', text: _.Common.Save, clickAction: RoadMap_ClientSave}},
+                  { location: 'left', widget: 'button', options: { icon: 'close', clickAction: RoadMap_clickCancel}},
+                  { location: 'center', text: _.RoadMap.AddToTheMap},          
+                  { location: 'right', widget: 'button', options: { icon: 'save', text: _.Common.Save, clickAction: RoadMap_ClientSave}},
                 ]}"></div>
             </div>
 
@@ -472,13 +579,17 @@
 			 <!-- ko if: selectedTab() == 0 -->
 				<div class="dx-fieldset">
 	                <div class="dx-field">
-		                <div class="dx-field-label" data-bind="text: _.Preferences.Layout"></div>
+		                <div class="dx-field-label" data-bind="text: _.Preferences.Platform"></div>
 	                    <div id="lookupPlatform" class="dx-field-value" data-bind="dxLookup: {placeholder:name, dataSource: dsPlatform.data, value: dsPlatform.value, searchEnabled: false, valueChangeAction: Preferences_changePlatform}"></div>
 					</div>
-	                <!-- <div class="dx-field">
+	                <div class="dx-field">
+		                <div class="dx-field-label" data-bind="text: _.Preferences.Layout"></div>
+	                    <div id="lookupLayout" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLayout.data, value: dsLayout.value, searchEnabled: false, valueChangeAction: Preferences_changeLayout}"></div>
+					</div>
+	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.MapProvider"></div>
 	                    <div id="lookupMapProvider" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsMapProvider.data, value: dsMapProvider.value, searchEnabled: false, valueChangeAction: Preferences_changeMapProvider}"></div>
-					</div> -->
+					</div>
 	                <div class="dx-field">
 		                <div class="dx-field-label" data-bind="text: _.Preferences.Language"></div>
 	                    <div id="lookupLanguageUI" class="dx-field-value"data-bind="dxLookup: {placeholder:name, dataSource: dsLanguage.data, value: dsLanguage.value, searchEnabled: false, valueChangeAction: Preferences_changeLanguageUI}"></div>
@@ -526,14 +637,23 @@
 	                        <div data-bind="dxTextBox: { mode: 'password', placeholder: 'Password', value: adminPassword }"></div>
 	                    </div>
 	                </div>
-                    <div class="dx-field">
+	                 <div class="dx-field">
+	                    <div class="dx-field-label">Web Service Url</div>
+	                    <div class="dx-field-value">
+	                    	<div data-bind="dxTextBox: { value: dataSouceUrl, valueUpdateAction: Preferences_WsUrl }"/>
+	                    </div>
+	                </div>
+                	<div class="dx-field">
+                    	<div class="dx-button but30 fl-right" data-bind="dxButton:{text:'Test Connection',clickAction: DAL_web.TestConnect }" />	                    	
+                	</div>
+                    <!-- <div class="dx-field">
 		                <div class="dx-field-label">Web Service Url</div>
 	                    <div class="dx-field-value" data-bind="dxSelectBox: {
 							dataSource: dsWsUrl,
 							value: dataSouceUrl,
 							valueChangeAction: Preferences_WsUrl
 						}"></div> 
-		            </div>
+		            </div> -->
 	            </div>
 				<div class="but50 fl-right" data-bind="dxButton:{text:'Delete Local DataBase', clickAction: Preferences_clickRecreateLocal}"></div>
             <!-- /ko -->
@@ -588,7 +708,7 @@
 			</div>
 		</div>
 		<div class="h100" data-bind="visible: subTitle">
-			<!-- <div data-bind="dxToolbar: { items: [{  align: 'center', text: subTitle}]}"></div> -->
+			<!-- <div data-bind="dxToolbar: { items: [{ location: 'center', text: subTitle}]}"></div> -->
 			<div data-bind="dxScrollView: {}">
             	<div class="infotext" id="textContainer"></div>
             </div>
@@ -771,8 +891,10 @@
               valueUpdateEvent: 'keyup',
               placeholder: _.Products.ErrQuantity                     
             }" />
-          <div class="dx-button but30 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: Product_Details_saveClicked}" />
         </div>
+      </div>
+      <div class="dx-field">
+          <div class="dx-button but30 fl-right" data-bind="dxButton:{text:_.Common.Save, clickAction: Product_Details_saveClicked}" />
       </div>
       <div class="dx-field">
           <div class="dx-field-label" data-bind="text: _.Products.FldName" />
