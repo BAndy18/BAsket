@@ -1,4 +1,4 @@
-BAsketVer = "2.01.0401.94";var U = (function ($, window) {
+BAsketVer = "2.01.0401.95";var U = (function ($, window) {
 	var root = {};
 
 	/*
