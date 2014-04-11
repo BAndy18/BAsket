@@ -1,4 +1,4 @@
-BAsketVer = "2.01.0401.98";var U = (function ($, window) {
+BAsketVer = "2.01.0401.99";var U = (function ($, window) {
 	var root = {};
 
 	/*
@@ -1310,8 +1310,8 @@ var DAL = (function ($, window) {
 		//return;
         if (P.arrCategory.length > 0) 
             P.Init();
-        else
-            BAsket.notify(_.Common.SomethingWrong, "error");
+        // else
+        //     BAsket.notify(_.Common.SomethingWrong, "error");
 	};
 
 	root.RecreateLocalDB = function () {
@@ -2091,11 +2091,12 @@ BAsket.Client = function (params) {
 			var d = geoDirections();
 			if (!d.legs || d.legs.length == 0)
 				return;
+			var lt = _.Clients.RoutDetText.split('/');
 			var text = '';
-			text += '<p>Движение на авто ' + d.legs[0].duration.text + '; расстояние ' + d.legs[0].distance.text +
-				'<br/>от: ' + d.legs[0].start_address + '<br/>до: ' + d.legs[0].end_address + '</p>';
-			text += '<p>в основном по ' + d.summary + '</p>';
-			text += '<br/><p>По шагам:</p>';
+			text += '<p>' + lt[0] + d.legs[0].duration.text + lt[1] + d.legs[0].distance.text +
+				'<br/>' + lt[2] + d.legs[0].start_address + '<br/>' + lt[3] + d.legs[0].end_address + '</p>';
+			text += '<p>' + lt[4] + d.summary + '</p>';
+			text += '<br/><p>' + lt[5] + '</p>';
 			for (var i in d.legs[0].steps) {
 				text += '<p>' + (parseInt(i) + 1) + ') ' + d.legs[0].steps[i].duration.text + '; ' + d.legs[0].steps[i].distance.text;
 				text += '; ' + d.legs[0].steps[i].instructions + '</p>';

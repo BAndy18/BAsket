@@ -122,6 +122,7 @@ Globalize.addCultureInfo("ru", {messages: {
 
         Clients: {
             RoutDetail: "Маршрут подробно",
+            RoutDetText: "Движение на авто /; расстояние /от: /до: /основная дорога: /По шагам:",
             Title: 'Клиент'
         },
 

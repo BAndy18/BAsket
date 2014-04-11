@@ -121,6 +121,7 @@ Globalize.addCultureInfo("default", {messages: {
 
         Clients: {
             RoutDetail: "Route Details",
+            RoutDetText: "Moveing by car /; distance /from: /to: /main road: /By steps:",
             Title: 'Client'
         },
 
