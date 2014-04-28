@@ -1,4 +1,4 @@
-BAsketVer = "2.01.0411.101";var U = (function ($, window) {
+BAsketVer = "2.01.0411.102";var U = (function ($, window) {
 	var root = {};
 
 	/*
@@ -1264,6 +1264,7 @@ var DAL = (function ($, window) {
 
     var modeReadNews;
 	root.ReadNews = function (fullNews, createDB) {
+		root.toCreateDB = createDB;
 		P.loadPanelVisible(true);
         waitPanelSwitch = {NMS: true, CAT: true, WAR: true, CLI: true, MAP: true};
         
@@ -1281,8 +1282,8 @@ var DAL = (function ($, window) {
 		if (!P.useWebDb) {
 			//P.loadPanelVisible(false);
             waitPanelSwitch.WAR = waitPanelSwitch.CLI = false;
-            if (CheckWaitPanelSwitch())
-                P.loadPanelVisible(false);
+            CheckWaitPanelSwitch();
+                
 			return;
 		}
 
@@ -1301,18 +1302,27 @@ var DAL = (function ($, window) {
         }
         else {
             waitPanelSwitch.CLI = waitPanelSwitch.MAP = false;
-            if (CheckWaitPanelSwitch())
-                P.loadPanelVisible(false);
+            CheckWaitPanelSwitch();
         }
 		P.itemCount['OrderList'] = P.ChangeValue('OrderList', 0);
 		P.itemCount['RoadMapList'] = P.ChangeValue('RoadMapList', 0);
 
 		//return;
-        if (P.arrCategory.length > 0) 
-            P.Init();
+        // if (P.arrCategory.length > 0) 
+        //     P.Init();
         // else
         //     BAsket.notify(_.Common.SomethingWrong, "error");
 	};
+    function CheckWaitPanelSwitch(){
+        for (var i in waitPanelSwitch)
+            if (waitPanelSwitch[i]){
+                return false;
+            }
+        if (root.toCreateDB && P.useWebDb && P.arrCategory.length > 0)
+        	P.Init();
+        P.loadPanelVisible(false);
+        return true;
+    }
 
 	root.RecreateLocalDB = function () {
         P.trace('Local DB SCRIPT');
@@ -1433,13 +1443,6 @@ var DAL = (function ($, window) {
     }
 
 
-    function CheckWaitPanelSwitch(){
-        for (var i in waitPanelSwitch)
-            if (waitPanelSwitch[i]){
-                return false;
-            }
-        return true;
-    }
 	var arrWAR, arrCLI, arrMAP;
 	function writeToLocalData(dataArray, table) {
 
@@ -1453,8 +1456,7 @@ var DAL = (function ($, window) {
 			}
             
             waitPanelSwitch.NMS = false;
-            if (CheckWaitPanelSwitch())
-                P.loadPanelVisible(false);
+            CheckWaitPanelSwitch();
 		}
 		if (table == 'CAT') {
             if (!dataArray.length)
@@ -1463,8 +1465,7 @@ var DAL = (function ($, window) {
 			P.arrCategory = JSON.parse(P.ChangeValue('categories', localData));
             
             waitPanelSwitch.CAT = false;
-            if (CheckWaitPanelSwitch())
-                P.loadPanelVisible(false);
+            CheckWaitPanelSwitch();
 		}
 
 		if (table == 'WAR') {
@@ -1476,8 +1477,7 @@ var DAL = (function ($, window) {
                         function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
                         function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                             waitPanelSwitch.WAR = false;
-                            if (CheckWaitPanelSwitch())
-                                P.loadPanelVisible(false);
+                            CheckWaitPanelSwitch();
                         });
                 }, function (err, err2) {errorCB("*writeToWAR-ost sql*", err, err2)});
             });
@@ -1489,8 +1489,7 @@ var DAL = (function ($, window) {
                 function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
                 function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                     waitPanelSwitch.CLI = false;
-                    if (CheckWaitPanelSwitch())
-                        P.loadPanelVisible(false);
+                    CheckWaitPanelSwitch();
                 });
         }
         if (table == 'MAP') {
@@ -1499,8 +1498,7 @@ var DAL = (function ($, window) {
                 function (err, err2) { errorCB("*write " + table + "*", err, err2);     P.loadPanelVisible(false); },
                 function () { P.trace(_.ReadNews.WroteRecs + table + ": success");        
                     waitPanelSwitch.MAP = false;
-                    if (CheckWaitPanelSwitch())
-                        P.loadPanelVisible(false);
+                    CheckWaitPanelSwitch();
                 });
         }
 	};
